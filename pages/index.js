@@ -11,6 +11,7 @@ import {
   useAddress,
   Web3Button,
 } from '@thirdweb-dev/react';
+import Link from 'next/link';
 
 const questionOfToday =
   'Can you remember the first time you created something that truly expressed who you are?';
@@ -58,70 +59,24 @@ export default function Home() {
   };
 
   return (
-    <div className='w-screen h-screen overflow-y-scroll px-4 pt-2 pb-8 '>
-      <div className='my-2'>
-        <p>{questionOfToday}</p>
+    <div className='w-screen text-white overflow-y-scroll px-4 pt-2 pb-8 '>
+      <div className='flex flex-wrap justify-center mt-4'>
+        {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((x, i) => (
+          <Link passHref href={`/read/${x}`}>
+            <div className='aspect-square rounded-full overflow-hidden border-2 border-white m-2'>
+              <Image
+                src={`/ankys/${x}.png`}
+                width={88}
+                height={88}
+                alt={`{i} image`}
+              />
+            </div>
+          </Link>
+        ))}
       </div>
-      <div className='flex my-2'>
-        <div className='aspect-square rounded-full overflow-hidden mr-4'>
-          <Image
-            src='https://i.seadn.io/gcs/files/9c75058c0fa096f7e6eb84503d413e1f.png'
-            width={88}
-            height={88}
-            alt='Lunamaria'
-          />
-        </div>
-        <div>
-          <small>sojourn 1 - wink 8 - poiesis</small>
-          <p>Lunamaria</p>
-        </div>
-      </div>
-      <div ref={writingDisplayContainerRef}>
-        {writings[writingIndex] &&
-          writings[writingIndex].split('\n').map((p, i) => {
-            return <p key={i}>{p}</p>;
-          })}
-      </div>
-      <div className='flex flex-col flex-wrap space-y-2 mt-4'>
-        <Button
-          buttonAction={collectWriting}
-          buttonText={
-            !setCollectWritingLoading ? 'loading...' : 'collect writing'
-          }
-          buttonColor='bg-yellow-400'
-        />
-        <Button
-          buttonAction={giveLoveToWriting}
-          buttonText={
-            !setGiveLoveLoading ? 'thxs for giving love' : 'give love'
-          }
-          buttonColor='bg-red-500'
-        />
-
-        <Button
-          buttonAction={loadAnotherWriting}
-          buttonText={!setAnotherOneLoading ? 'loading...' : 'read another one'}
-          buttonColor='bg-purple-400'
-        />
-      </div>
-      <hr className='h-px my-4 bg-gray-200 border-0 dark:bg-gray-700' />
-      <div className='flex flex-col'>
-        <p>anky 2023</p>
-        <a
-          href='https://www.farcaster.com/jpfraneto'
-          target='_blank'
-          rel='no-refferer'
-        >
-          farcaster
-        </a>
-        <a href='https://web.telegram.org/' target='_blank' rel='no-refferer'>
-          telegram
-        </a>
-
-        <a href='https://www.x.com/kithkui' target='_blank' rel='no-refferer'>
-          x
-        </a>
-      </div>
+      <p className='text-center w-full px-4 mt-4 text-xl'>
+        Who do you want to read?{' '}
+      </p>
     </div>
   );
 }

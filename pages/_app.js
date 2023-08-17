@@ -4,6 +4,7 @@ import { Righteous } from 'next/font/google';
 import { BaseGoerli } from '@thirdweb-dev/chains';
 import Head from 'next/head';
 import Navbar from '../components/Navbar';
+import Button from '../components/Button';
 import {
   ThirdwebProvider,
   metamaskWallet,
@@ -15,9 +16,19 @@ import {
 const righteous = Righteous({ subsets: ['latin'], weight: ['400'] });
 
 function MyApp({ Component, pageProps }) {
-  const [didUserWrite, setDidUserWrite] = useState(true);
+  const [didUserWrite, setDidUserWrite] = useState(false);
   return (
-    <main className={righteous.className}>
+    <main
+      className={`${righteous.className} text-white h-screen flex flex-col overflow-y-scroll w-full bg-cover bg-center`}
+      style={{
+        boxSizing: 'border-box',
+        backgroundImage:
+          "linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/images/mintbg.jpg')",
+        backgroundPosition: 'center center',
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+      }}
+    >
       <Head>
         <title>Anky</title>
         <meta name='description' content='Anky is you' />
@@ -100,14 +111,22 @@ function MyApp({ Component, pageProps }) {
         clientId={process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID}
         supportedWallets={[metamaskWallet(), coinbaseWallet(), trustWallet()]}
       >
+        <Navbar />
         {didUserWrite ? (
           <div>
-            <Navbar />
             <Component {...pageProps} />
           </div>
         ) : (
-          <div>
-            <p>You need to go to the web app and write in there!</p>
+          <div className='px-2 pt-4'>
+            <p className='mb-4'>
+              You need to go to the web app and write in there, before you can
+              read here.
+            </p>
+            <Button
+              buttonAction={() => setDidUserWrite(true)}
+              buttonText='I already wrote'
+              buttonColor='bg-purple-400 w-fit'
+            />
           </div>
         )}
       </ThirdwebProvider>
