@@ -1,4 +1,6 @@
 import '../styles/globals.css';
+import { useState } from 'react';
+import { Righteous } from 'next/font/google';
 import { BaseGoerli } from '@thirdweb-dev/chains';
 import Head from 'next/head';
 import Navbar from '../components/Navbar';
@@ -10,9 +12,12 @@ import {
   trustWallet,
 } from '@thirdweb-dev/react';
 
+const righteous = Righteous({ subsets: ['latin'], weight: ['400'] });
+
 function MyApp({ Component, pageProps }) {
+  const [didUserWrite, setDidUserWrite] = useState(true);
   return (
-    <>
+    <main className={righteous.className}>
       <Head>
         <title>Anky</title>
         <meta name='description' content='Anky is you' />
@@ -95,10 +100,18 @@ function MyApp({ Component, pageProps }) {
         clientId={process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID}
         supportedWallets={[metamaskWallet(), coinbaseWallet(), trustWallet()]}
       >
-        <Navbar />
-        <Component {...pageProps} />
+        {didUserWrite ? (
+          <div>
+            <Navbar />
+            <Component {...pageProps} />
+          </div>
+        ) : (
+          <div>
+            <p>You need to go to the web app and write in there!</p>
+          </div>
+        )}
       </ThirdwebProvider>
-    </>
+    </main>
   );
 }
 

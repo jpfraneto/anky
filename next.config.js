@@ -16,6 +16,12 @@ module.exports = withPWA({
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'i.seadn.io',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
 });
