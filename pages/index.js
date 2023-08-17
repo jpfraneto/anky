@@ -62,7 +62,7 @@ export default function Home() {
     <div className='w-screen text-white overflow-y-scroll px-4 pt-2 pb-8 '>
       <div className='flex flex-wrap justify-center mt-4'>
         {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((x, i) => (
-          <Link passHref href={`/read/${x}`}>
+          <Link passHref key={i} href={`/read/${x}`}>
             <div className='aspect-square rounded-full overflow-hidden border-2 border-white m-2'>
               <Image
                 src={`/ankys/${x}.png`}
