@@ -87,7 +87,9 @@ export default function Home() {
                     return <p key={i}>{x}</p>;
                   })}
               </div>
-              <hr className='border-2 border-white w-full px-2' />
+              <Link href='/chocapec' passHref>
+                <hr className='border-2 border-white w-full px-2' />
+              </Link>
             </div>
           ))}
       </div>
