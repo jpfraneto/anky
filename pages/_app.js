@@ -19,7 +19,7 @@ function MyApp({ Component, pageProps }) {
   const [didUserWrite, setDidUserWrite] = useState(false);
   return (
     <main
-      className={`${righteous.className} text-white h-screen flex flex-col overflow-y-scroll w-full bg-cover bg-center`}
+      className={`${righteous.className} text-white h-screen flex flex-col overflow-y-scroll w-screen md:w-96 mx-auto bg-cover bg-center`}
       style={{
         boxSizing: 'border-box',
         backgroundImage:

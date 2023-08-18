@@ -10,6 +10,7 @@ body {
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   max-width: 100vw;
   overflow-x: hidden;
+  background-color: black;
   scroll-behavior: smooth;
 }
 

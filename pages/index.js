@@ -77,7 +77,7 @@ export default function Home() {
   }
 
   return (
-    <div className='w-screen text-white overflow-y-scroll px-4 pt-2 pb-8 '>
+    <div className='w-full mx-auto text-white overflow-y-scroll px-4 pt-2 pb-8 '>
       <div className='flex flex-wrap justify-center mt-4'>
         {writings &&
           writings.map(writing => (
