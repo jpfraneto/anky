@@ -81,7 +81,7 @@ export default function Home() {
       <div className='flex flex-wrap justify-center mt-4'>
         {writings &&
           writings.map(writing => (
-            <div key={writing.id}>
+            <div className='pt-4' key={writing.id}>
               <div className='aspect-square relative rounded-full overflow-hidden border-2 border-white m-2'>
                 <Image
                   src={`/ankys/${Math.floor(8 * Math.random())}.png`}
