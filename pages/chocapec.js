@@ -1,7 +1,7 @@
 import React from 'react';
 import { usePrivy } from '@privy-io/react-auth';
 
-const chocapec = () => {
+const Chocapec = () => {
   const { login } = usePrivy();
   return (
     <div>
@@ -11,4 +11,4 @@ const chocapec = () => {
   );
 };
 
-export default chocapec;
+export default Chocapec;
