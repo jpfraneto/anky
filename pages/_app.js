@@ -112,7 +112,7 @@ function MyApp({ Component, pageProps }) {
         supportedWallets={[metamaskWallet(), coinbaseWallet(), trustWallet()]}
       >
         <Navbar />
-        {didUserWrite ? (
+        {true ? (
           <div>
             <Component {...pageProps} />
           </div>
