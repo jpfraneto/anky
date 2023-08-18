@@ -3,20 +3,11 @@ import Head from 'next/head';
 import Image from 'next/image';
 import styles from '../styles/Home.module.css';
 import Button from '../components/Button';
-import { ThirdwebSDK } from '@thirdweb-dev/sdk/evm';
-import {
-  useContract,
-  useContractWrite,
-  useSigner,
-  useAddress,
-  Web3Button,
-} from '@thirdweb-dev/react';
 import Link from 'next/link';
 
 export default function Home() {
   const writingDisplayContainerRef = useRef();
-  const signer = useSigner();
-  const address = useAddress();
+
   const [anotherOneLoading, setAnotherOneLoading] = useState(false);
   const [collectWritingLoading, setCollectWritingLoading] = useState(false);
   const [giveLoveLoading, setGiveLoveLoading] = useState(false);
@@ -78,9 +69,10 @@ export default function Home() {
 
   return (
     <div className='w-full mx-auto text-white overflow-y-scroll px-4 pt-2 pb-8 '>
-      <div className='flex flex-wrap justify-center mt-4'>
+      <h2 className='text-4xl text-center mt-2'>ANKY</h2>
+      <div className='flex flex-wrap justify-center'>
         {writings &&
-          writings.map(writing => (
+          writings.reverse().map(writing => (
             <div className='pt-4' key={writing.id}>
               <div className='aspect-square relative rounded-full overflow-hidden border-2 border-white m-2'>
                 <Image

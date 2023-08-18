@@ -1,19 +1,15 @@
 import '../styles/globals.css';
 import { useState } from 'react';
 import { Righteous } from 'next/font/google';
-import { BaseGoerli } from '@thirdweb-dev/chains';
+import { PrivyProvider } from '@privy-io/react-auth';
 import Head from 'next/head';
-import Navbar from '../components/Navbar';
 import Button from '../components/Button';
-import {
-  ThirdwebProvider,
-  metamaskWallet,
-  coinbaseWallet,
-  walletConnect,
-  trustWallet,
-} from '@thirdweb-dev/react';
 
 const righteous = Righteous({ subsets: ['latin'], weight: ['400'] });
+
+const handleLogin = user => {
+  console.log(`User ${user.id} logged in!`);
+};
 
 function MyApp({ Component, pageProps }) {
   const [didUserWrite, setDidUserWrite] = useState(false);
@@ -106,12 +102,19 @@ function MyApp({ Component, pageProps }) {
           content='https://anky.lat/images/touch/homescreen144.png'
         />
       </Head>
-      <ThirdwebProvider
-        activeChain={BaseGoerli}
-        clientId={process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID}
-        supportedWallets={[metamaskWallet(), coinbaseWallet(), trustWallet()]}
+      <PrivyProvider
+        appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID}
+        onSuccess={handleLogin}
+        config={{
+          loginMethods: ['sms'],
+          appearance: {
+            theme: 'light',
+            accentColor: '#676FFF',
+            logo: '',
+            showWalletLoginFirst: true,
+          },
+        }}
       >
-        <Navbar />
         {true ? (
           <div>
             <Component {...pageProps} />
@@ -129,7 +132,7 @@ function MyApp({ Component, pageProps }) {
             />
           </div>
         )}
-      </ThirdwebProvider>
+      </PrivyProvider>
     </main>
   );
 }
