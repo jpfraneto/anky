@@ -6,6 +6,7 @@ export default async function handler(req, res) {
   if (req.method === 'GET') {
     try {
       const writings = await prisma.writing.findMany({});
+      console.log('In here, the writings are: ', writings);
       return res.status(200).json(writings);
     } catch (error) {
       console.error(error);

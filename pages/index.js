@@ -79,9 +79,6 @@ export default function Home() {
   return (
     <div className='w-screen text-white overflow-y-scroll px-4 pt-2 pb-8 '>
       <div className='flex flex-wrap justify-center mt-4'>
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((x, i) => (
-          <Link passHref key={i} href={`/read/${x}`}></Link>
-        ))}
         {writings &&
           writings.map(writing => (
             <div key={writing.id}>
