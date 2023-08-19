@@ -1,7 +1,7 @@
 import '../styles/globals.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Righteous } from 'next/font/google';
-import { PrivyProvider } from '@privy-io/react-auth';
+import { PrivyProvider, useWallets } from '@privy-io/react-auth';
 import Head from 'next/head';
 import Button from '../components/Button';
 
@@ -13,6 +13,7 @@ const handleLogin = user => {
 
 function MyApp({ Component, pageProps }) {
   const [didUserWrite, setDidUserWrite] = useState(false);
+
   return (
     <main
       className={`${righteous.className} text-white h-screen flex flex-col overflow-y-scroll w-screen md:w-96 mx-auto bg-cover bg-center`}
@@ -116,9 +117,9 @@ function MyApp({ Component, pageProps }) {
         }}
       >
         {true ? (
-          <div>
+          <>
             <Component {...pageProps} />
-          </div>
+          </>
         ) : (
           <div className='px-2 pt-4'>
             <p className='mb-4'>
