@@ -2,8 +2,11 @@ import '../styles/globals.css';
 import { useEffect, useState } from 'react';
 import { Righteous } from 'next/font/google';
 import { PrivyProvider, useWallets } from '@privy-io/react-auth';
+import BottomNavbar from '../components/BottomNavbar';
 import Head from 'next/head';
 import Button from '../components/Button';
+import Image from 'next/image';
+import Link from 'next/link';
 
 const righteous = Righteous({ subsets: ['latin'], weight: ['400'] });
 
@@ -12,11 +15,11 @@ const handleLogin = user => {
 };
 
 function MyApp({ Component, pageProps }) {
-  const [didUserWrite, setDidUserWrite] = useState(false);
+  const [displaySettings, setDisplaySettings] = useState(false);
 
   return (
     <main
-      className={`${righteous.className} text-white h-screen flex flex-col overflow-y-scroll w-screen md:w-96 mx-auto bg-cover bg-center`}
+      className={`${righteous.className} relative text-white h-screen w-full flex flex-col overflow-y-scroll md:w-96 mx-auto bg-cover bg-center`}
       style={{
         boxSizing: 'border-box',
         backgroundImage:
@@ -116,23 +119,38 @@ function MyApp({ Component, pageProps }) {
           },
         }}
       >
-        {true ? (
-          <>
-            <Component {...pageProps} />
-          </>
-        ) : (
-          <div className='px-2 pt-4'>
-            <p className='mb-4'>
-              You need to go to the web app and write in there, before you can
-              read here.
-            </p>
-            <Button
-              buttonAction={() => setDidUserWrite(true)}
-              buttonText='I already wrote'
-              buttonColor='bg-purple-400 w-fit'
+        <div>
+          <Link
+            passHref
+            href='/profile'
+            className='rounded-full absolute top-3 left-1 overflow-hidden border border-white'
+          >
+            <Image
+              width={55}
+              height={55}
+              alt='Profile picture'
+              src='/ankys/1.png'
             />
-          </div>
-        )}
+          </Link>
+          {true ? (
+            <>
+              <Component {...pageProps} />
+            </>
+          ) : (
+            <div className='px-2 pt-4'>
+              <p className='mb-4'>
+                You need to go to the web app and write in there, before you can
+                read here.
+              </p>
+              <Button
+                buttonAction={() => setDidUserWrite(true)}
+                buttonText='I already wrote'
+                buttonColor='bg-purple-400 w-fit'
+              />
+            </div>
+          )}
+          <BottomNavbar />
+        </div>
       </PrivyProvider>
     </main>
   );
