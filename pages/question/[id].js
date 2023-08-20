@@ -2,15 +2,19 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import Button from '../../components/Button';
 import LandingQuestionCard from '../../components/LandingQuestionCard';
+import AnswerToQuestionCard from '../../components/AnswerToQuestionCard';
 
 const QuestionById = () => {
   const router = useRouter();
-  const writing =
-    "The first thing that comes is a certain resentment or criticism towards myself for 'not being able to channel my emotions and passions constructively. That is something that is deeply present today, right now, as yesterday I had a dream on which the only thing that I thought about throughout the dream was to make love to my partner. And more than making love it was about oral sex, and it was like a very strong way on which i felt that passion canalyzed through the dream. And I woke up in the middle of the night and i hugged her and i was grateful for her being there, next to me, giving me her heat. Giving me her warmth. It was beautiful to wake up and see her there, and to listen to my daughters breathing as she slept next to us. And how is that emotion channeled? Right now I don't have a strong way, more than this. Which is actually a very strong way lol. Writing about it, allowing it to come out and be set free. That is the thing. It is not about the consequences of doing it, it is about the importance of doing it. The act itself. So yes, this is a very strong way of doing it. And also sitting in meditation. Going into the introspection of how an why and where are those passions and emotions, so that there can be a new relationship built from there. From me to there. That is the thing. It is beautiful. It is wonderful. And it is the way that i discovered yesterday that i do it, actually. Because there was a lot of nervousness, and there was a recognition that the most important action that could be undertaken in that moment was to just sit in meditation and feel what was going on. These last days have been incredibly intense in relationship to these 'awakening symptoms' that are going on inside this body. There are intense sensations mainly in the area of the head, and there is a strong sensation as if the head was going to be opened in two. As if the head was going to explode. So the answer to that was just to sit in meditation, and to observe it. And then to go to sleep. Not engage too much more in what was going on in the world through social media - trying to be as social as i could - but just about being sincere with what was happening and going on with that. Moving with that. Evolving with that. That was the mission that i had, and i keep observing it. Being with it. There are ways on which i project that it could be great to channel those emotions, but that is not as present as it could be right now. For example, there is a deep willingness to do a course with my partner of sacred sexuality, to learn about ourselves, about our bodies, about our sexual life, together. Perhaps that is something beautiful that I can offer her in this transition that we are making towards living back in santiago. Starting that 'new life' with a course like that. Honoring ourselves, honoring our journey, honoring our life, and everything that we have done to get to where we are at. It is time to honor that. I guess that a good way of honoring those sensations is just to open them, and gift them as a present to each other. Being present with each other. Being there. I channel my emotions and passions by being with them, as deep as I can.";
+  const answers = [
+    'And that is why the relationship that AI will have with time is very important and informative about our own relationship with it. In a sense, AI is static because it is encapsulated in computers. But (from the pure basic understanding that I have of it) it evolves by bringing in more and more information related to inputs that they feed it with. So isn’t that as it is evolved with all these different inputs there is also a passing of time that happens? Isn’t it that that is how we frame time as passing? As more and more changing inputs come through our system there is a perception that there is something that is changed and that something is called time. If there is a car that is passing by in front of me right now, there is a perception that there is an input that is changing, and because of that, there is a conceptual understanding that time went by. I can’t relate this to the experience of no-time that happens in deep trance states because I can’t relate to them now, but I wonder these two things: How will AI perceive time, which will be it’s interpretation of it on a conceptual level, and also what is time ultimately in the sense of all this what goes on when there is no inputs that are changed in our whole perception system.',
+    'The future is bright, and humanity will wake up to the truth of our nature just by being creative. Just by allowing ourselves to be. We came here to just be. ',
+    'But yesterday I realized that that can also be an experience of the present moment. The way on which he was deriving the most out of that moment, was through recording it with his phone, so that he could send it to his friends, or whatever he wanted to do with it. That IS a valid way of spending his time as we were singing her happy birthday. It IS the way that makes more sense to him, in that moment, and that is why he is doing it. Who am I to judge that? Who am I to blame? No one. It doesn’t matter. If I find more value just by being a witness and enjoying it without the meditation of technology, it is perfect like that. Just do it. But make sure you respect the way on which other people decide to do things also. This was a big eye opener yesterday, because now I realize how much I have judged other people because of doing something like this. And what is the use of it? Why do I even care? I can only control my own life experience, the things that I do, what I care about, and caring about what other person decides to do in a particular moment doesn’t help at all. It is just noise. And I want to break free of that noise. I want to integrate it fully, and move towards the rest of my life without it. It ends up being a burden. And I don’t want that burden on top of myself. I just want to be able to enjoy every second of my experience as a human being, to be present with what is, and if I’m there judging him because he is recording, or even worse, telling him to stop, I’m just being the asshole that I have been for a big part of my life.',
+  ];
   return (
-    <div className='flex flex-col w-full px-4 mt-24 pb-24'>
-      <LandingQuestionCard question='Wtf?' avatar='8' />
-      <div className='my-4 px-2'>
+    <div className='flex flex-col w-full px-4 mt-8 pb-24'>
+      <LandingQuestionCard question='Wtf?' avatar='8' id='1' />
+      {/* <div className='my-4 px-2'>
         {writing &&
           writing.split('\n').map((x, i) => {
             return <p key={i}>{x}</p>;
@@ -20,7 +24,17 @@ const QuestionById = () => {
         buttonAction={() => router.back()}
         buttonText='Go Back'
         buttonColor='bg-green-700'
-      />
+      /> */}
+      {answers.map((answer, i) => (
+        <AnswerToQuestionCard answer={answer} key={i} />
+      ))}
+      <div className='mt-2'>
+        <Button
+          buttonAction={() => alert('Open the WritingGame component')}
+          buttonText='Write your answer'
+          buttonColor='bg-green-700'
+        />
+      </div>
     </div>
   );
 };

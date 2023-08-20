@@ -4,6 +4,7 @@ import Image from 'next/image';
 import styles from '../styles/Home.module.css';
 import Button from '../components/Button';
 import Link from 'next/link';
+import LandingQuestionCard from '../components/LandingQuestionCard';
 
 export default function Home() {
   const writingDisplayContainerRef = useRef();
@@ -60,7 +61,7 @@ export default function Home() {
   };
 
   if (isLoading) {
-    return <div className='text-white'>Loading...</div>;
+    return <div className='text-white p-4'>Loading...</div>;
   }
 
   if (!writings) {
@@ -70,13 +71,18 @@ export default function Home() {
   return (
     <div className='w-full mx-auto text-white overflow-y-scroll px-4 pt-2 pb-8 '>
       <h2 className='text-4xl text-center mt-2'>ANKY</h2>
+      <LandingQuestionCard
+        id='1'
+        question='What does personal transformation mean to you, and how have you pursued it?'
+        avatar='anky'
+      />
       <div className='flex flex-wrap justify-center'>
         {writings &&
           writings.reverse().map(writing => (
             <div className='pt-4' key={writing.id}>
               <div className='aspect-square relative rounded-full overflow-hidden border-2 border-white m-2'>
                 <Image
-                  src={`/ankys/${Math.floor(8 * Math.random())}.png`}
+                  src={`/ankys/${Math.floor(7 * Math.random())}.png`}
                   fill
                   alt={`{i} image`}
                 />

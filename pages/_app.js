@@ -7,6 +7,7 @@ import Head from 'next/head';
 import Button from '../components/Button';
 import Image from 'next/image';
 import Link from 'next/link';
+import Navbar from '../components/Navbar';
 
 const righteous = Righteous({ subsets: ['latin'], weight: ['400'] });
 
@@ -15,11 +16,9 @@ const handleLogin = user => {
 };
 
 function MyApp({ Component, pageProps }) {
-  const [displaySettings, setDisplaySettings] = useState(false);
-
   return (
     <main
-      className={`${righteous.className} relative text-white h-screen w-full flex flex-col overflow-y-scroll md:w-96 mx-auto bg-cover bg-center`}
+      className={`${righteous.className} relative text-white h-screen w-full overflow-y-scroll md:w-96 mx-auto bg-cover bg-center`}
       style={{
         boxSizing: 'border-box',
         backgroundImage:
@@ -119,36 +118,11 @@ function MyApp({ Component, pageProps }) {
           },
         }}
       >
-        <div>
-          <Link
-            passHref
-            href='/profile'
-            className='rounded-full absolute top-3 left-1 overflow-hidden border border-white'
-          >
-            <Image
-              width={55}
-              height={55}
-              alt='Profile picture'
-              src='/ankys/1.png'
-            />
-          </Link>
-          {true ? (
-            <>
-              <Component {...pageProps} />
-            </>
-          ) : (
-            <div className='px-2 pt-4'>
-              <p className='mb-4'>
-                You need to go to the web app and write in there, before you can
-                read here.
-              </p>
-              <Button
-                buttonAction={() => setDidUserWrite(true)}
-                buttonText='I already wrote'
-                buttonColor='bg-purple-400 w-fit'
-              />
-            </div>
-          )}
+        <div className='flex flex-col h-screen'>
+          <Navbar />
+          <div className='rounded-t-3xl flex-grow border border-white pb-36'>
+            <Component {...pageProps} />
+          </div>
           <BottomNavbar />
         </div>
       </PrivyProvider>

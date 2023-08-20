@@ -1,6 +1,6 @@
 import React from 'react';
 import Button from '../components/Button';
-import { useLogout, usePrivy } from '@privy-io/react-auth';
+import { usePrivy } from '@privy-io/react-auth';
 
 const Chocapec = () => {
   const { login, logout, user, authenticated, createWallet } = usePrivy();
