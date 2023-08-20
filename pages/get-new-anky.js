@@ -29,7 +29,7 @@ const GetNewAnky = () => {
       {userWriting && (
         <Button
           buttonAction={submitUserWriting}
-          buttonText='Submit'
+          buttonText='Get my Anky'
           buttonColor='bg-green-700'
         />
       )}
