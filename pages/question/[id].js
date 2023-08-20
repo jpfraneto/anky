@@ -13,7 +13,11 @@ const QuestionById = () => {
   ];
   return (
     <div className='flex flex-col w-full px-4 mt-8 pb-24'>
-      <LandingQuestionCard question='Wtf?' avatar='8' id='1' />
+      <LandingQuestionCard
+        question='What does personal transformation mean to you, and how have you pursued it?'
+        avatar='8'
+        id='1'
+      />
       {/* <div className='my-4 px-2'>
         {writing &&
           writing.split('\n').map((x, i) => {
