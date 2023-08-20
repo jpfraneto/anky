@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePrivy } from '@privy-io/react-auth';
+import { useRouter } from 'next/router';
 
 const Navbar = () => {
   const router = useRouter();
@@ -28,7 +29,7 @@ const Navbar = () => {
             />
           </Link>
           <button
-            className='border border-white p-2 rounded-xl text-white'
+            className='border border-white p-2 ml-4 my-auto h-fit rounded-xl text-white'
             onClick={() => router.push('/get-new-anky')}
           >
             Get my Anky

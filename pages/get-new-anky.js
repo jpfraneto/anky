@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Button from '../components/Button';
+import { Dancing_Script } from 'next/font/google';
+
+const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['400'] });
 
 const GetNewAnky = () => {
   const [userWriting, setUserWriting] = useState('');
+  const [hideEverything, setHideEverything] = useState(false);
   const submitUserWriting = async () => {
     if (userWriting.length < 300)
       return alert('Please write a little bit more about you.');
@@ -23,7 +27,7 @@ const GetNewAnky = () => {
         <textarea
           onChange={e => setUserWriting(e.target.value)}
           value={userWriting}
-          className='h-full w-full bg-gray-500 text-black p-2 rounded-xl '
+          className={`${dancingScript.className} text-2xl h-full w-full bg-black text-white p-2 rounded-xl`}
         />
       </div>
       {userWriting && (

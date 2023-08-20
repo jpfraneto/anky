@@ -120,7 +120,7 @@ function MyApp({ Component, pageProps }) {
       >
         <div className='flex flex-col h-screen'>
           <Navbar />
-          <div className='rounded-t-3xl overflow-hidden overflow-y-scroll flex-grow border  border-white pb-36'>
+          <div className=' overflow-y-scroll flex-grow border  border-white pb-36'>
             <Component {...pageProps} />
           </div>
           <BottomNavbar />
