@@ -24,6 +24,7 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('activate', event => {
+  console.log('inside the service worker!');
   setInterval(() => {
     const title = 'Hello!';
     const timestamp = new Date().toLocaleTimeString(); // Current time
@@ -31,7 +32,7 @@ self.addEventListener('activate', event => {
       body: `Current time: ${timestamp}`,
     };
     self.registration.showNotification(title, options);
-  }, 60 * 1000); // 5 minutes in milliseconds
+  }, 60 * 1000); // 1 minute in milliseconds
 });
 
 self.addEventListener('push', event => {
