@@ -20,7 +20,7 @@ const LandingQuestionCard = ({
         </div>
 
         <div className='flex flex-col w-3/4 p-2'>
-          <div className=' w-2/3 text-sm w-full'>
+          <div className='text-left text-sm w-full'>
             <p>{question}</p>
           </div>
           <div className='flex space-x-2'>

@@ -27,6 +27,30 @@ const Notifications = () => {
       }
     });
   };
+
+  const subscribeToPushManager = () => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.ready.then(registration => {
+        registration.pushManager
+          .subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(
+              process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
+            ),
+          })
+          .then(pushSubscription => {
+            localStorage.setItem(
+              'pushSubscription',
+              JSON.stringify(pushSubscription)
+            );
+          })
+          .catch(error => {
+            console.error('Could not subscribe to push', error);
+          });
+      });
+    }
+  };
+
   return (
     <div className='p-2'>
       {notificationsEnabled && (
