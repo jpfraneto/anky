@@ -1,44 +1,46 @@
 'use strict';
 
-// // To disable all workbox logging during development, you can set self.__WB_DISABLE_DEV_LOGS to true
-// // https://developers.google.com/web/tools/workbox/guides/configure-workbox#disable_logging
-// //
-// // self.__WB_DISABLE_DEV_LOGS = true
-
-// const util = require('./util');
-
-// util();
-
-// // listen to message event from window
-// self.addEventListener('message', event => {
-//   // HOW TO TEST THIS?
-//   // Run this in your browser console:
-//   //     window.navigator.serviceWorker.controller.postMessage({command: 'log', message: 'hello world'})
-//   // OR use next-pwa injected workbox object
-//   //     window.workbox.messageSW({command: 'log', message: 'hello world'})
-//   console.log(event.data);
-// });
-
 self.addEventListener('install', event => {
+  console.log('inside the install');
   self.skipWaiting();
 });
 
-self.addEventListener('activate', event => {
-  console.log('inside the service worker!');
-  setInterval(() => {
-    const title = 'Hello!';
-    const timestamp = new Date().toLocaleTimeString(); // Current time
-    const options = {
-      body: `Current time: ${timestamp}`,
-    };
-    self.registration.showNotification(title, options);
-  }, 60 * 1000); // 1 minute in milliseconds
+self.addEventListener('activate', async event => {
+  try {
+    console.log('inside the activate here.');
+    const registration = await navigator.serviceWorker.ready;
+    const subscription = await registration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey:
+        'BCKze16TV0lPlvhx4wTRKGNAgOCGnkEvG3WyW84zoiVPdQAHLMVxbmesEFyK3a9INd8yaC3KXxa2RdRv-Dl9FwI',
+    });
+    console.log('Subscription:', subscription);
+
+    const response = await fetch(`http://localhost:3000/subscribe`, {
+      method: 'POST',
+      body: JSON.stringify(subscription),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to subscribe the user');
+    }
+    const data = await response.json();
+    console.log('Successfully subscribed the user:', data);
+  } catch (error) {
+    console.error('Error subscribing the user:', error);
+  }
 });
 
 self.addEventListener('push', event => {
-  const title = 'Hello wooooooorld :)';
+  console.log('IN HERE, A NOT WILL BE SENT:', event.data);
+  const data = event.data.json(); // Assuming you're sending JSON payload from the server.
+  const title = data.title || 'Default title';
   const options = {
-    body: event.data.text(),
+    body: data.body || 'Default body message',
+    // You can add more options like icons, actions, etc.
   };
   event.waitUntil(self.registration.showNotification(title, options));
 });

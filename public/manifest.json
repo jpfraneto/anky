@@ -2,6 +2,8 @@
   "name": "Anky",
   "short_name": "Anky",
   "start_url": ".",
+  "gcm_sender_id": "BCKze16TV0lPlvhx4wTRKGNAgOCGnkEvG3WyW84zoiVPdQAHLMVxbmesEFyK3a9INd8yaC3KXxa2RdRv-Dl9FwI",
+  "gcm_user_visible_only": true,
   "display": "standalone",
   "background_color": "#21152C",
   "description": "Tell us who you are.",
