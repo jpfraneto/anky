@@ -6,6 +6,7 @@ import Button from '../components/Button';
 import Link from 'next/link';
 import LandingQuestionCard from '../components/LandingQuestionCard';
 import AnswerToQuestionCard from '../components/AnswerToQuestionCard';
+import WritingGame from '../components/WritingGame';
 
 const answers = [
   'And that is why the relationship that AI will have with time is very important and informative about our own relationship with it. In a sense, AI is static because it is encapsulated in computers. But (from the pure basic understanding that I have of it) it evolves by bringing in more and more information related to inputs that they feed it with. So isn’t that as it is evolved with all these different inputs there is also a passing of time that happens? Isn’t it that that is how we frame time as passing? As more and more changing inputs come through our system there is a perception that there is something that is changed and that something is called time. If there is a car that is passing by in front of me right now, there is a perception that there is an input that is changing, and because of that, there is a conceptual understanding that time went by. I can’t relate this to the experience of no-time that happens in deep trance states because I can’t relate to them now, but I wonder these two things: How will AI perceive time, which will be it’s interpretation of it on a conceptual level, and also what is time ultimately in the sense of all this what goes on when there is no inputs that are changed in our whole perception system.',
@@ -23,6 +24,7 @@ export default function Home() {
   const [writingIndex, setWritingIndex] = useState(0);
   const [success, setSuccess] = useState(false);
   const [writings, setWritings] = useState([]);
+  const [text, setText] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -77,7 +79,7 @@ export default function Home() {
   }
 
   return (
-    <div className='w-full mx-auto text-white overflow-y-scroll px-4 pt-2 pb-8 '>
+    <div className='w-full  h-full mx-auto text-white overflow-y-scroll px-4 pt-2 pb-16 '>
       <h2 className='text-4xl text-center mt-2'>ANKY</h2>
       <LandingQuestionCard
         setDisplayAnswers={setDisplayAnswers}
@@ -86,13 +88,18 @@ export default function Home() {
         question='When have you given or received love unconditionally?'
         avatar='anky'
       />
+      <WritingGame
+        text={text}
+        setText={setText}
+        prompt='When have you given or received love unconditionally?'
+      />
 
       {displayAnswers &&
         answers.map((answer, i) => (
           <AnswerToQuestionCard answer={answer} key={i} index={i} />
         ))}
 
-      <div className='flex flex-wrap justify-center'>
+      <div className='flex flex-wrap justify-center mb-8'>
         {writings &&
           writings.reverse().map(writing => (
             <div className='pt-4' key={writing.id}>

@@ -23,9 +23,7 @@ const Navbar = () => {
               width={55}
               height={55}
               alt='Profile picture'
-              src={
-                user.avatarUrl || '/ankys/get-my-anky.png' || '/ankys/anky.png'
-              }
+              src={user.avatarUrl || '/ankys/anky.png'}
             />
           </Link>
           <button

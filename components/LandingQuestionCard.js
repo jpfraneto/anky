@@ -11,10 +11,14 @@ const LandingQuestionCard = ({
   displayAnswers,
 }) => {
   return (
-    <button onClick={() => setDisplayAnswers(x => !x)}>
+    <button
+      onClick={() => {
+        if (setDisplayAnswers) setDisplayAnswers(x => !x);
+      }}
+    >
       <div className='w-full my-2 flex flex-row items-center  rounded-xl bg-black border-white border-2 shadow-orange-300 shadow-md'>
         <div className='w-1/4 flex items-center h-full justify-center '>
-          <div className='w-11/12 aspect-square relative rounded-full m-2 overflow-hidden border-2 border-white'>
+          <div className='z-0 w-11/12 aspect-square relative rounded-full m-2 overflow-hidden border-2 border-white'>
             <Image src={`/ankys/${avatar}.png`} fill />
           </div>
         </div>

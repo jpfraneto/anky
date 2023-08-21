@@ -162,16 +162,16 @@ function MyApp({ Component, pageProps }) {
         config={{
           loginMethods: ['sms'],
           appearance: {
-            theme: 'light',
+            theme: 'dark',
             accentColor: '#676FFF',
             logo: '',
             showWalletLoginFirst: true,
           },
         }}
       >
-        <div className='flex flex-col h-screen'>
+        <div className='flex flex-col h-screen flex-none'>
           <Navbar />
-          <div className=' overflow-y-scroll flex-grow border  border-white pb-36'>
+          <div className='overflow-y-scroll flex-grow border h-screen border-white'>
             <Component {...pageProps} />
           </div>
           <BottomNavbar />
