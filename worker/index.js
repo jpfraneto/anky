@@ -44,6 +44,7 @@ self.addEventListener('push', event => {
 
 self.addEventListener('notificationclick', event => {
   event.notification.close();
+  console.log('Hello world');
   event.waitUntil(
     clients.matchAll({ type: 'window' }).then(clientList => {
       if (clientList.length) {
