@@ -31,7 +31,7 @@ self.addEventListener('activate', event => {
       body: `Current time: ${timestamp}`,
     };
     self.registration.showNotification(title, options);
-  }, 5 * 60 * 1000); // 5 minutes in milliseconds
+  }, 60 * 1000); // 5 minutes in milliseconds
 });
 
 self.addEventListener('push', event => {

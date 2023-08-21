@@ -26,7 +26,7 @@ const GetNewAnky = () => {
   };
   return (
     <div>
-      <div className='rounded-full relative mt-16 mb-4 border-2 border-white overflow-hidden mx-auto w-2/3 aspect-square'>
+      <div className='rounded-full relative mt-12 mb-4 border-2 border-white overflow-hidden mx-auto w-2/3 aspect-square'>
         <Image src='/ankys/anky.png' fill />
       </div>
       <p className='text-center text-2xl text-white mb-1 '>

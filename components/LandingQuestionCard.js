@@ -2,9 +2,16 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
-const LandingQuestionCard = ({ question, id, avatar = '1', user }) => {
+const LandingQuestionCard = ({
+  question,
+  id,
+  avatar = '1',
+  user,
+  setDisplayAnswers,
+  displayAnswers,
+}) => {
   return (
-    <Link href={`/question/${id}`} passHref>
+    <button onClick={() => setDisplayAnswers(x => !x)}>
       <div className='w-full my-2 flex flex-row items-center  rounded-xl bg-black border-white border-2 shadow-orange-300 shadow-md'>
         <div className='w-1/4 flex items-center h-full justify-center '>
           <div className='w-11/12 aspect-square relative rounded-full m-2 overflow-hidden border-2 border-white'>
@@ -18,18 +25,24 @@ const LandingQuestionCard = ({ question, id, avatar = '1', user }) => {
           </div>
           <div className='flex space-x-2'>
             <div className='flex space-x-1'>
-              <span className='text-gray-600'>3 answers |</span>
+              <span
+                className={`${
+                  displayAnswers ? 'text-gray-400' : 'text-gray-600'
+                }`}
+              >
+                3 answers
+              </span>
             </div>
 
             <div className='flex space-x-1'>
-              <span className='text-gray-500'>
+              <span className=' text-gray-500'>
                 @{user?.username || 'ankytheape'}
               </span>
             </div>
           </div>
         </div>
       </div>
-    </Link>
+    </button>
   );
 };
 
