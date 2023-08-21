@@ -16,6 +16,57 @@ const handleLogin = user => {
 };
 
 function MyApp({ Component, pageProps }) {
+  useEffect(() => {
+    // Asking for permission once the user starts the journey in the app
+    Notification.requestPermission().then(permission => {
+      if (permission === 'granted') {
+        console.log('Notification permission granted.');
+        subscribeToPushManager();
+      } else {
+        console.error('Unable to get permission to notify.');
+      }
+    });
+  }, []);
+
+  const subscribeToPushManager = () => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.ready.then(registration => {
+        registration.pushManager
+          .subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(
+              process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
+            ),
+          })
+          .then(pushSubscription => {
+            localStorage.setItem(
+              'pushSubscription',
+              JSON.stringify(pushSubscription)
+            );
+          })
+          .catch(error => {
+            console.error('Could not subscribe to push', error);
+          });
+      });
+    }
+  };
+
+  // Utility function
+  function urlBase64ToUint8Array(base64String) {
+    const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+    const base64 = (base64String + padding)
+      .replace(/\-/g, '+')
+      .replace(/_/g, '/');
+
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+
+    for (let i = 0; i < rawData.length; ++i) {
+      outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+  }
+
   return (
     <main
       className={`${righteous.className} relative text-white h-screen w-full overflow-y-scroll md:w-96 mx-auto bg-cover bg-center`}

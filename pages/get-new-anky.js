@@ -11,7 +11,17 @@ const GetNewAnky = () => {
   const submitUserWriting = async () => {
     if (userWriting.length < 300)
       return alert('Please write a little bit more about you.');
-    alert('submit user writing');
+    const response = await fetch('/api/getNewAnky', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        userWriting: userWriting,
+      }),
+    });
+    const data = await response.json();
+    const jsonResponse = await data.json();
     console.log(userWriting);
   };
   return (

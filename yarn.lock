@@ -6789,7 +6789,7 @@
   "resolved" "https://registry.npmjs.org/typescript/-/typescript-5.1.6.tgz"
   "version" "5.1.6"
 
-"ua-parser-js@^1.0.33":
+"ua-parser-js@^1.0.33", "ua-parser-js@^1.0.35":
   "integrity" "sha512-fKnGuqmTBnIE+/KXSzCn4db8RTigUzw1AN0DmdU6hJovUTbYJKyqj+8Mt1c4VfRDnOVJnENmfYkIPZ946UrSAA=="
   "resolved" "https://registry.npmjs.org/ua-parser-js/-/ua-parser-js-1.0.35.tgz"
   "version" "1.0.35"
