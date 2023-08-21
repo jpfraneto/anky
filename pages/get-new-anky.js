@@ -13,6 +13,9 @@ const GetNewAnky = () => {
   const [hideEverything, setHideEverything] = useState(false);
   const submitUserWriting = async () => {
     if (text.length < 300) return alert('Please write a little bit more');
+    alert(
+      'I created a machine that creates Ankys. Are you still doubting how valuable the NFTs of the Anky Genesis collection will be in a world on which every human being owns one? Dont say that I didnt tell you'
+    );
     setAnkyFetched(true);
     return;
     const response = await fetch('/api/getNewAnky', {
@@ -33,6 +36,8 @@ const GetNewAnky = () => {
   };
   return (
     <div>
+      <h2 className='text-center text-xl '>get your anky</h2>
+
       <div className='rounded-full relative mt-12 mb-4 border-2  border-white overflow-hidden mx-auto w-1/2 aspect-square'>
         <Image src='/ankys/anky.png' fill />
       </div>

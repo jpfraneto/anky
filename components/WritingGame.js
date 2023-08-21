@@ -8,6 +8,7 @@ const WritingGame = ({
   text,
   setText,
   btnTwoText = 'Discard',
+  messageForUser,
 }) => {
   const [timeLeft, setTimeLeft] = useState(3);
   const [isWriting, setIsWriting] = useState(false);
@@ -28,9 +29,7 @@ const WritingGame = ({
   if (!onSubmit) {
     onSubmit = async () => {
       await navigator.clipboard.writeText(text);
-      alert(
-        'Now your text will be saved to your anky. For now, it is on your clipboard.'
-      );
+      alert(messageForUser);
       setText('');
     };
   }
@@ -54,9 +53,9 @@ const WritingGame = ({
         }}
         placeholder='Your answer here...'
         value={text}
-        className={` p-2 bg-black ${
-          text.length > 0 ? 'grow' : 'h-24'
-        } rounded-xl text-white max-h-max overflow-hidden border`}
+        className={`flex-grow p-2 bg-black ${
+          text.length > 0 ? 'h-full' : 'h-24'
+        } rounded-xl text-white border overflow-y-auto`} // Updated this line
         onChange={e => {
           setText(e.target.value);
         }}

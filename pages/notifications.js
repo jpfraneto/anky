@@ -67,11 +67,15 @@ const Notifications = () => {
   };
 
   return (
-    <div className='p-2'>
+    <div className=''>
+      <h2 className='text-center text-xl '>notifications</h2>
+
       {notificationsEnabled && (
         <div>
-          <h2 className='text-2xl text-center'>Notifications</h2>
-          <p>Thanks for enabling your notifications.</p>
+          <p className='mt-48 text-center'>
+            I&apos;ll be as simple as I can with this.
+          </p>
+          <p className=' text-center'>We&apos;ll vote on them on community.</p>
         </div>
       )}
     </div>

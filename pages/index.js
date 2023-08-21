@@ -92,6 +92,7 @@ export default function Home() {
         text={text}
         setText={setText}
         prompt='When have you given or received love unconditionally?'
+        messageForUser='Each human being will own an Anky. It will store each one of these writings inside of its infinite notebook forever. Patience. I will have it ready soon.'
       />
 
       {displayAnswers &&
