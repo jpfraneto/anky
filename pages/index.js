@@ -43,7 +43,7 @@ export default function Home() {
   }
 
   return (
-    <div className='w-full h-full mx-auto text-white overflow-y-scroll px-4 pt-2 pb-16 '>
+    <div className='w-full h-full mx-auto text-white overflow-y-scroll px-4 pt-2 pb-32 '>
       <h2 className='text-4xl text-center mt-2'>ANKY</h2>
       <LandingQuestionCard
         setDisplayAnswers={setDisplayAnswers}
@@ -56,7 +56,10 @@ export default function Home() {
       <WritingGame
         text={text}
         setText={setText}
-        onSubmit={() => setAnswers(x => [...x, text])}
+        onSubmit={() => {
+          setAnswers(x => [...x, text]);
+          setText('');
+        }}
         prompt='When have you given or received love unconditionally?'
         messageForUser='Each human being will own an Anky. It will store each one of these writings inside of its infinite notebook forever. Anonymously. Patience. I will have it ready soon.'
       />

@@ -22,9 +22,10 @@ self.addEventListener('message', event => {
         });
         const response = await fetch(`${apiRoute}/check-image/${imagineApiId}`);
         const data = await response.json();
-
+        console.log('After this, the data is: ', data);
         if (data.status === 'completed') {
           clearInterval(intervalId);
+          console.log('The anky avatar is ready!');
           self.registration.showNotification('Anky Avatar Ready!', {
             body: 'Your Anky: ${characterName} is ready to be chosen.',
           });
