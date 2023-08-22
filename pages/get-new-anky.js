@@ -50,9 +50,67 @@ const GetNewAnky = () => {
   };
 
   const handleEnableNotifications = async () => {
-    alert('enable notifications!');
-    setNotificationsResponse(true);
+    // Check for service worker
+    if ('serviceWorker' in navigator && 'PushManager' in window) {
+      try {
+        // Register your Service Worker if you haven't done that already
+        const registration = await navigator.serviceWorker.ready;
+
+        // Ask user for permission
+        const permission = await Notification.requestPermission();
+
+        if (permission !== 'granted') {
+          alert('Notifications disabled by the user.');
+          return;
+        }
+
+        // Subscribe user
+        const subscribeOptions = {
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(
+            process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
+          ),
+        };
+
+        const subscription = await registration.pushManager.subscribe(
+          subscribeOptions
+        );
+
+        // Send subscription to backend
+        // await fetch('http://localhost:3000/subscribe', {
+        //   method: 'POST',
+        //   headers: {
+        //     'Content-Type': 'application/json',
+        //   },
+        //   body: JSON.stringify(subscription),
+        // });
+
+        alert('Notifications enabled!');
+        setNotificationsResponse(true);
+      } catch (error) {
+        console.error('Error enabling notifications', error);
+        alert('Error enabling notifications.');
+      }
+    } else {
+      alert('Push notifications are not supported in this browser.');
+    }
   };
+
+  function urlBase64ToUint8Array(base64String) {
+    const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+    const base64 = (base64String + padding)
+      .replace(/\-/g, '+')
+      .replace(/_/g, '/');
+
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+
+    for (let i = 0; i < rawData.length; ++i) {
+      outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+  }
+
   return (
     <div>
       <h2 className='text-center text-xl '>get your anky</h2>
