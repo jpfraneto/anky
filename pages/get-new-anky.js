@@ -14,7 +14,7 @@ const GetNewAnky = () => {
   const submitUserWriting = async () => {
     if (text.length < 300) return alert('Please write a little bit more');
     alert(
-      'I created a machine that creates Ankys. Are you still doubting how valuable the NFTs of the Anky Genesis collection will be in a world on which every human being owns one? Dont say that I didnt tell you'
+      'I invented a machine that creates Ankys. Are you still doubting how valuable the NFTs of the Anky Genesis collection will be in a world on which every human being owns one? Dont say that I didnt tell you'
     );
     setAnkyFetched(true);
     return;
@@ -59,7 +59,7 @@ const GetNewAnky = () => {
           </div>
         </div>
       ) : (
-        <>
+        <div className='px-2'>
           <p className='text-center text-2xl text-white mb-1 '>
             TELL ME WHO YOU ARE
           </p>
@@ -79,7 +79,7 @@ const GetNewAnky = () => {
               <small className='text-red-400 text-center'>{userMessage}</small>
             </div>
           )}
-        </>
+        </div>
       )}
     </div>
   );

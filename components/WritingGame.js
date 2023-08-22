@@ -37,7 +37,7 @@ const WritingGame = ({
   return (
     <div
       className={`${
-        text.length > 0 ? 'h-full z-50 absolute top-0 left-0' : 'my-4'
+        text.length > 0 ? 'h-1/2 z-50 absolute top-0 left-0' : 'my-4'
       } flex flex-col w-full rounded-xl`}
     >
       {text.length > 0 && (
