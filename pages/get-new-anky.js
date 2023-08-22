@@ -71,8 +71,10 @@ const GetNewAnky = () => {
         // Ask user for permission
         const permission = await Notification.requestPermission();
 
+        console.log('the permission is:', permission);
+
         if (permission !== 'granted') {
-          alert('Notifications disabled by the user.');
+          alert('You have your notifications disabled.');
           return;
         }
 
