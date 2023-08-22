@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 
 const Navbar = () => {
   const router = useRouter();
-  const { login, user, authenticated } = usePrivy();
+  const { login, user, authenticated, logout } = usePrivy();
   console.log('the user is: ', user);
 
   return (
@@ -31,6 +31,12 @@ const Navbar = () => {
             onClick={() => router.push('/get-new-anky')}
           >
             Get my Anky
+          </button>
+          <button
+            className='border border-white p-2 ml-4 my-auto h-fit rounded-xl bg-red-300 text-black'
+            onClick={logout}
+          >
+            Logout
           </button>
         </div>
       ) : (
