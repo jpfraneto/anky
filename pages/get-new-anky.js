@@ -21,7 +21,7 @@ const GetNewAnky = () => {
 
     try {
       setAnkyFetched(true);
-      const response = await fetch('http://localhost:3000/get-anky-image', {
+      const response = await fetch(`${process.env.SERVER_URL}/get-anky-image`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

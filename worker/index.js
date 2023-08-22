@@ -14,7 +14,7 @@ self.addEventListener('message', event => {
       console.log('fetching for the image once again');
       try {
         const response = await fetch(
-          `http://localhost:3000/check-image/${imagineApiId}`
+          `${process.env.SERVER_URL}/check-image/${imagineApiId}`
         );
         const data = await response.json();
 
