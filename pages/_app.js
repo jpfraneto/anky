@@ -162,7 +162,7 @@ function MyApp({ Component, pageProps }) {
         config={{
           loginMethods: ['sms'],
           appearance: {
-            theme: 'dark',
+            theme: 'light',
             accentColor: '#676FFF',
             logo: '',
             showWalletLoginFirst: true,

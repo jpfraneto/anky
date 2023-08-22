@@ -5,6 +5,32 @@ self.addEventListener('install', event => {
   self.skipWaiting();
 });
 
+self.addEventListener('message', event => {
+  console.log('IN HERE, THE SERVICE WORKER GOT A MESSAGE', event);
+  if (event.data && event.data.type === 'FETCH_IMAGE') {
+    const { imagineApiId, characterName, characterBackstory } = event.data;
+
+    const intervalId = setInterval(async () => {
+      console.log('fetching for the image once again');
+      try {
+        const response = await fetch(
+          `http://localhost:3000/check-image/${imagineApiId}`
+        );
+        const data = await response.json();
+
+        if (data.status === 'completed') {
+          clearInterval(intervalId);
+          self.registration.showNotification('Anky Avatar Ready!', {
+            body: 'Your Anky: ${characterName} is ready to be chosen.',
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching image:', error);
+      }
+    }, 60 * 1000); // every minute
+  }
+});
+
 self.addEventListener('activate', async event => {
   try {
     console.log('inside the activate here.');

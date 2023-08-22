@@ -6,6 +6,7 @@ const LandingQuestionCard = ({
   question,
   id,
   avatar = '1',
+  totalAnswers = 3,
   user,
   setDisplayAnswers,
   displayAnswers,
@@ -34,7 +35,7 @@ const LandingQuestionCard = ({
                   displayAnswers ? 'text-gray-400' : 'text-gray-600'
                 }`}
               >
-                3 answers
+                {totalAnswers} answers
               </span>
             </div>
 
