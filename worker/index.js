@@ -1,5 +1,8 @@
 'use strict';
 
+// const apiRoute = "http://localhost:3000"
+const apiRoute = 'https://api.anky.lat';
+
 self.addEventListener('install', event => {
   console.log('inside the install');
   self.skipWaiting();
@@ -8,14 +11,16 @@ self.addEventListener('install', event => {
 self.addEventListener('message', event => {
   console.log('IN HERE, THE SERVICE WORKER GOT A MESSAGE', event);
   if (event.data && event.data.type === 'FETCH_IMAGE') {
+    console.log('INSIDE HERE AGAIN.');
     const { imagineApiId, characterName, characterBackstory } = event.data;
 
     const intervalId = setInterval(async () => {
       console.log('fetching for the image once again');
       try {
-        const response = await fetch(
-          `${process.env.SERVER_URL}/check-image/${imagineApiId}`
-        );
+        self.registration.showNotification('Fetching for your anky', {
+          body: 'We are looking for your anky on the backend',
+        });
+        const response = await fetch(`${apiRoute}/check-image/${imagineApiId}`);
         const data = await response.json();
 
         if (data.status === 'completed') {
