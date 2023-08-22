@@ -69,7 +69,7 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <main
-      className={`${righteous.className} relative text-white h-screen w-full overflow-y-scroll md:w-96 mx-auto bg-cover bg-center`}
+      className={`${righteous.className} relative text-white h-screen w-full md:w-96 mx-auto bg-cover bg-center`}
       style={{
         boxSizing: 'border-box',
         backgroundImage:
@@ -169,9 +169,9 @@ function MyApp({ Component, pageProps }) {
           },
         }}
       >
-        <div className='flex flex-col h-screen flex-none'>
+        <div className='flex flex-col h-screen'>
           <Navbar />
-          <div className='overflow-y-scroll flex-grow border h-screen border-white'>
+          <div className='overflow-y-scroll flex-grow border border-white'>
             <Component {...pageProps} />
           </div>
           <BottomNavbar />

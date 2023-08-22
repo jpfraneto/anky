@@ -21,26 +21,38 @@ const GetNewAnky = () => {
 
     try {
       setAnkyFetched(true);
-      const response = await fetch(`${process.env.SERVER_URL}/get-anky-image`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          text: text,
-        }),
-      });
+      console.log(
+        'THe image is gonna be fetched',
+        process.env.NEXT_PUBLIC_SERVER_URL
+      );
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/get-anky-image`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            text: text,
+          }),
+        }
+      );
       const data = await response.json();
       // Add data.character to service worker and fetch for the image every minute.
       const { imagineApiId, characterName, characterBackstory } =
         data.character;
-      if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
-        navigator.serviceWorker.controller.postMessage({
-          type: 'FETCH_IMAGE',
-          imagineApiId,
-          characterName,
-          characterBackstory,
-        });
+      if (imagineApiId) {
+        if (
+          'serviceWorker' in navigator &&
+          navigator.serviceWorker.controller
+        ) {
+          navigator.serviceWorker.controller.postMessage({
+            type: 'FETCH_IMAGE',
+            imagineApiId,
+            characterName,
+            characterBackstory,
+          });
+        }
       }
     } catch (error) {
       await navigator.clipboard.writeText(text);

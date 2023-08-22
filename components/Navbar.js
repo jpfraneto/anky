@@ -9,7 +9,7 @@ const Navbar = () => {
   console.log('the user is: ', user);
 
   return (
-    <div className='w-full h-24 px-4 bg-black relative flex items-center '>
+    <div className='w-full h-24 px-4 bg-black relative flex flex-none items-center '>
       {authenticated && user ? (
         // If the user is authenticated and user object is available
         <div className='flex space-x-2'>

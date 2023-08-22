@@ -15,7 +15,7 @@ const AnswerToQuestionCard = ({ answer, index }) => {
         </div>
       </div>
 
-      <div className=' w-full text-sm py-2'>
+      <div className=' w-full text-sm py-2 pr-2'>
         <p>
           {answer.slice(0, `${opened ? answer.length : '50'}`)}
           {!opened && '...'}
