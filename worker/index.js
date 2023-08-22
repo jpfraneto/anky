@@ -10,6 +10,11 @@ self.addEventListener('install', event => {
 
 self.addEventListener('message', event => {
   console.log('IN HERE, THE SERVICE WORKER GOT A MESSAGE', event);
+  self.clients.matchAll().then(clients => {
+    clients.forEach(client => {
+      client.postMessage({ type: 'ANKY_LOADING' });
+    });
+  });
   if (event.data && event.data.type === 'FETCH_IMAGE') {
     console.log('INSIDE HERE AGAIN.');
     const { imagineApiId, characterName, characterBackstory } = event.data;
@@ -25,9 +30,30 @@ self.addEventListener('message', event => {
         console.log('After this, the data is: ', data);
         if (data.status === 'completed') {
           clearInterval(intervalId);
-          console.log('The anky avatar is ready!');
+          console.log(
+            'The anky avatar is ready!, time to choose which one of the four images.'
+          );
+
+          const upscaledAnkyImages = data.upscaled.map(
+            upscaledId => `https://88minutes.xyz/assets/${upscaledId}.png`
+          );
+          console.log('the upscaled images are: ', upscaledAnkyImages);
+
           self.registration.showNotification('Anky Avatar Ready!', {
             body: 'Your Anky: ${characterName} is ready to be chosen.',
+          });
+          self.clients.matchAll().then(clients => {
+            clients.forEach(client =>
+              client.postMessage({
+                type: 'ANKY_IMAGES_READY',
+                images: upscaledAnkyImages,
+              })
+            );
+          });
+          self.clients.matchAll().then(clients => {
+            clients.forEach(client => {
+              client.postMessage({ type: 'ANKY_READY' });
+            });
           });
         }
       } catch (error) {

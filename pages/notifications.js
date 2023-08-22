@@ -75,7 +75,6 @@ const Notifications = () => {
           <p className='mt-48 text-center'>
             I&apos;ll be as simple as I can with this.
           </p>
-          <p className=' text-center'>We&apos;ll vote on them on community.</p>
         </div>
       )}
     </div>

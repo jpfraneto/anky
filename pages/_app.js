@@ -8,6 +8,7 @@ import Button from '../components/Button';
 import Image from 'next/image';
 import Link from 'next/link';
 import Navbar from '../components/Navbar';
+import { PWAProvider, usePWA } from '../context/pwaContext';
 
 const righteous = Righteous({ subsets: ['latin'], weight: ['400'] });
 
@@ -16,6 +17,41 @@ const handleLogin = user => {
 };
 
 function MyApp({ Component, pageProps }) {
+  const { isAnkyReady, setAnkyImages, setIsAnkyReady, setIsAnkyLoading } =
+    usePWA();
+  useEffect(() => {
+    console.log('THIS USE EFFECT IS RUNNING');
+    const handleServiceWorkerMessage = event => {
+      if (event.data && event.data.type === 'ANKY_LOADING') {
+        console.log('listening to the anky loading event');
+        setIsAnkyLoading(true);
+      }
+      if (event.data && event.data.type === 'ANKY_READY') {
+        console.log('listening to the anky ready event');
+        setIsAnkyReady(true);
+        setIsAnkyLoading(false);
+      }
+      if (event.data && event.data.type === 'ANKY_IMAGES_READY') {
+        console.log(
+          'listening to the anky images event on the app',
+          event.data.images
+        );
+        setAnkyImages(event.data.images);
+      }
+    };
+
+    navigator.serviceWorker.addEventListener(
+      'message',
+      handleServiceWorkerMessage
+    );
+    return () => {
+      navigator.serviceWorker.removeEventListener(
+        'message',
+        handleServiceWorkerMessage
+      );
+    };
+  }, []);
+
   useEffect(() => {
     // Asking for permission once the user starts the journey in the app
     Notification.requestPermission().then(permission => {
@@ -156,6 +192,7 @@ function MyApp({ Component, pageProps }) {
           content='https://anky.lat/images/touch/homescreen144.png'
         />
       </Head>
+
       <PrivyProvider
         appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID}
         onSuccess={handleLogin}
@@ -169,13 +206,15 @@ function MyApp({ Component, pageProps }) {
           },
         }}
       >
-        <div className='flex flex-col h-screen'>
-          <Navbar />
-          <div className='overflow-y-scroll flex-grow border border-white'>
-            <Component {...pageProps} />
+        <PWAProvider>
+          <div className='flex flex-col h-screen'>
+            <Navbar />
+            <div className='overflow-y-scroll flex-grow border border-white'>
+              <Component {...pageProps} />
+            </div>
+            <BottomNavbar />
           </div>
-          <BottomNavbar />
-        </div>
+        </PWAProvider>
       </PrivyProvider>
     </main>
   );

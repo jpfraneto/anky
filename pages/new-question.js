@@ -16,7 +16,7 @@ const NewQuestion = () => {
   return (
     <>
       <h2 className='text-center text-xl '>ask the ankyverse</h2>
-      <div className=' mt-32 my-2 w-9/11 flex flex-row  rounded-xl bg-black border-white border-2 shadow-orange-300 shadow-md'>
+      <div className=' mt-32 px-2 my-2 w-9/11 flex flex-row  rounded-xl bg-black border-white border-2 shadow-orange-300 shadow-md'>
         <div className='w-1/4 flex items-center h-full justify-center '>
           <div className='w-11/12 aspect-square relative rounded-full m-2 overflow-hidden border-2 border-white'>
             <Image src={`/ankys/1.png`} fill />
@@ -36,15 +36,13 @@ const NewQuestion = () => {
           {questionMessage && (
             <small className='text-red-500 my-0'>{questionMessage}</small>
           )}
-          {newQuestion.length > 8 && (
-            <div>
-              <Button
-                buttonAction={submitNewQuestion}
-                buttonText={loadingQuestionSubmitting ? 'Loading...' : 'Submit'}
-                buttonColor='bg-green-700'
-              />
-            </div>
-          )}
+          <div>
+            <Button
+              buttonAction={submitNewQuestion}
+              buttonText={loadingQuestionSubmitting ? 'Loading...' : 'Submit'}
+              buttonColor='bg-green-700'
+            />
+          </div>
         </div>
       </div>
     </>

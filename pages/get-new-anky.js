@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import Button from '../components/Button';
 import { Dancing_Script } from 'next/font/google';
+import Spinner from '../components/Spinner';
 import WritingGame from '../components/WritingGame';
 import { useRouter } from 'next/router';
 
@@ -14,6 +15,7 @@ const GetNewAnky = () => {
   const [ankyFetched, setAnkyFetched] = useState(false);
   const [hideEverything, setHideEverything] = useState(false);
   const [notificationsResponse, setNotificationsResponse] = useState(false);
+  const [notificationsLoading, setNotificationsLoading] = useState(false);
   const [fetchingAnkyError, setFetchingAnkyError] = useState(false);
 
   const submitUserWriting = async () => {
@@ -63,6 +65,7 @@ const GetNewAnky = () => {
 
   const handleEnableNotifications = async () => {
     // Check for service worker
+    setNotificationsLoading(true);
     if ('serviceWorker' in navigator && 'PushManager' in window) {
       try {
         // Register your Service Worker if you haven't done that already
@@ -100,6 +103,7 @@ const GetNewAnky = () => {
         // });
 
         alert('Notifications enabled!');
+        setNotificationsLoading(false);
         setNotificationsResponse(true);
       } catch (error) {
         console.error('Error enabling notifications', error);
@@ -127,9 +131,7 @@ const GetNewAnky = () => {
 
   return (
     <div>
-      <h2 className='text-center text-xl '>get your anky</h2>
-
-      <div className='rounded-full relative mt-12 mb-4 border-2  border-white overflow-hidden mx-auto w-1/2 aspect-square'>
+      <div className='rounded-full relative mt-12 mb-4 border-2 border-white overflow-hidden mx-auto w-1/2 aspect-square'>
         <Image src='/ankys/anky.png' fill alt='Anky' />
       </div>
 
@@ -153,7 +155,9 @@ const GetNewAnky = () => {
               <Button
                 buttonAction={handleEnableNotifications}
                 buttonColor='bg-purple-600'
-                buttonText='Enable Notifications'
+                buttonText={
+                  notificationsLoading ? <Spinner /> : 'Enable Notifications'
+                }
               />
             )}
           </div>

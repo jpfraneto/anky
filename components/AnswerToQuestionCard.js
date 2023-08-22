@@ -7,7 +7,7 @@ const AnswerToQuestionCard = ({ answer, index }) => {
   return (
     <div
       onClick={() => setOpened(x => !x)}
-      className='w-full my-2 flex flex-row  rounded-xl bg-gray-700 border-white border-2 shadow-orange-300 shadow-md'
+      className='w-full my-2 flex flex-row hover:cursor-pointer rounded-xl bg-gray-700 border-white border-2 shadow-orange-300 shadow-md'
     >
       <div className='w-1/4 flex items-start h-full justify-start'>
         <div className='w-11/12 aspect-square relative rounded-full m-2 overflow-hidden border-2 border-white'>
