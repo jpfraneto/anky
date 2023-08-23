@@ -10,14 +10,18 @@ import WritingGame from '../components/WritingGame';
 
 export default function Home() {
   const writingDisplayContainerRef = useRef();
+  const audioRef = useRef();
 
   const [anotherOneLoading, setAnotherOneLoading] = useState(false);
   const [collectWritingLoading, setCollectWritingLoading] = useState(false);
   const [displayAnswers, setDisplayAnswers] = useState(false);
   const [giveLoveLoading, setGiveLoveLoading] = useState(false);
   const [writingIndex, setWritingIndex] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(null);
   const [success, setSuccess] = useState(false);
   const [writings, setWritings] = useState([]);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [meditationReady, setMeditationReady] = useState(false);
   const [answers, setAnswers] = useState([
     'And that is why the relationship that AI will have with time is very important and informative about our own relationship with it. In a sense, AI is static because it is encapsulated in computers. But (from the pure basic understanding that I have of it) it evolves by bringing in more and more information related to inputs that they feed it with. So isn’t that as it is evolved with all these different inputs there is also a passing of time that happens? Isn’t it that that is how we frame time as passing? As more and more changing inputs come through our system there is a perception that there is something that is changed and that something is called time. If there is a car that is passing by in front of me right now, there is a perception that there is an input that is changing, and because of that, there is a conceptual understanding that time went by. I can’t relate this to the experience of no-time that happens in deep trance states because I can’t relate to them now, but I wonder these two things: How will AI perceive time, which will be it’s interpretation of it on a conceptual level, and also what is time ultimately in the sense of all this what goes on when there is no inputs that are changed in our whole perception system.',
     'The future is bright, and humanity will wake up to the truth of our nature just by being creative. Just by allowing ourselves to be. We came here to just be. ',
@@ -26,12 +30,31 @@ export default function Home() {
   const [text, setText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
+  useEffect(() => {
+    if (isPlaying && timeLeft > 0) {
+      const timer = setInterval(() => {
+        setTimeLeft(prevTime => prevTime - 1);
+      }, 1000);
+
+      return () => clearInterval(timer);
+    }
+  }, [isPlaying, timeLeft]);
+
   const collectWriting = () => {
     setCollectWritingLoading(true);
   };
 
   const giveLoveToWriting = () => {
     setGiveLoveLoading(true);
+  };
+
+  const startMeditation = () => {
+    setTimeLeft(Math.floor(audioRef.current.duration));
+    setIsPlaying(true);
+    if (audioRef.current) {
+      console.log('in here');
+      audioRef.current.play();
+    }
   };
 
   if (isLoading) {
@@ -43,31 +66,61 @@ export default function Home() {
   }
 
   return (
-    <div className='w-full h-full mx-auto text-white overflow-y-scroll px-4 pt-2 pb-32 '>
-      <h2 className='text-4xl text-center mt-2'>ANKY</h2>
-      <LandingQuestionCard
-        setDisplayAnswers={setDisplayAnswers}
-        displayAnswers={displayAnswers}
-        totalAnswers={answers.length}
-        id='1'
-        question='When have you given or received love unconditionally?'
-        avatar='anky'
-      />
-      <WritingGame
-        text={text}
-        setText={setText}
-        onSubmit={() => {
-          setAnswers(x => [...x, text]);
-          setText('');
+    <>
+      <audio
+        ref={audioRef}
+        src='/assets/meditation.mp3'
+        className='hidden'
+        onPlay={() => setIsPlaying(true)}
+        onEnded={() => {
+          setIsPlaying(false);
+          setMeditationReady(true);
         }}
-        prompt='When have you given or received love unconditionally?'
-        messageForUser='Each human being will own an Anky. It will store each one of these writings inside of its infinite notebook forever. Anonymously. Patience. I will have it ready soon.'
       />
+      {!meditationReady && (
+        <div className='w-full h-96 flex justify-center items-center text-center'>
+          {!isPlaying ? (
+            <div className='flex flex-col space-y-2'>
+              <p>sojourn 1 - wink 16 - insightia</p>
+              <button onClick={startMeditation}>Start Guided Meditation</button>
+            </div>
+          ) : (
+            <div className='text-5xl'>
+              {Math.floor(timeLeft / 60)}:{timeLeft % 60 < 10 ? '0' : ''}
+              {timeLeft % 60}
+            </div>
+          )}
+        </div>
+      )}
 
-      {displayAnswers &&
-        answers.map((answer, i) => (
-          <AnswerToQuestionCard answer={answer} key={i} index={i} />
-        ))}
-    </div>
+      {meditationReady && (
+        <div className='w-full h-full mx-auto text-white overflow-y-scroll px-4 pt-2 pb-32 '>
+          <h2 className='text-4xl text-center mt-2'>ANKY</h2>
+          <LandingQuestionCard
+            setDisplayAnswers={setDisplayAnswers}
+            displayAnswers={displayAnswers}
+            totalAnswers={answers.length}
+            id='1'
+            question='When have you given or received love unconditionally?'
+            avatar='anky'
+          />
+          <WritingGame
+            text={text}
+            setText={setText}
+            onSubmit={() => {
+              setAnswers(x => [...x, text]);
+              setText('');
+            }}
+            prompt='When have you given or received love unconditionally?'
+            messageForUser='Each human being will own an Anky. It will store each one of these writings inside of its infinite notebook forever. Anonymously. Patience. I will have it ready soon.'
+          />
+
+          {displayAnswers &&
+            answers.map((answer, i) => (
+              <AnswerToQuestionCard answer={answer} key={i} index={i} />
+            ))}
+        </div>
+      )}
+    </>
   );
 }
