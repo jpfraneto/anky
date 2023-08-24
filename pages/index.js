@@ -67,7 +67,7 @@ export default function Home() {
 
   if (!meditationReady && !writingReady)
     return (
-      <div className='h-screen relative'>
+      <div className='h-full relative'>
         <small className='absolute top-0 left-0 right-0 text-center text-sm text-gray-500'>
           sojourn 1 - wink 15 - claridium
         </small>
