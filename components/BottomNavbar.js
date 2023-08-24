@@ -13,6 +13,7 @@ const BottomNavbar = () => {
     setMeditationReady,
     writingReady,
     setWritingReady,
+    enteredTheAnkyverse,
   } = usePWA();
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const { login, user, authenticated, logout } = usePrivy();
