@@ -8,24 +8,83 @@ const WritingGame = ({
   text,
   setText,
   btnTwoText = 'Discard',
+  onDiscard,
   messageForUser,
   fullDisplay = false,
 }) => {
   const [timeLeft, setTimeLeft] = useState(3);
+  const [isActive, setIsActive] = useState(false);
+  const [time, setTime] = useState(0);
+  const [isDone, setIsDone] = useState(false);
   const [isWriting, setIsWriting] = useState(false);
+  const [lastKeystroke, setLastKeystroke] = useState(Date.now());
+  const [finished, setFinished] = useState(false);
   const [lastTyped, setLastTyped] = useState(Date.now());
+  const [startTime, setStartTime] = useState(null);
+  const [lifeBarLength, setLifeBarLength] = useState(100);
 
   const textareaRef = useRef(null);
+  const intervalRef = useRef(null);
+  const keystrokeIntervalRef = useRef(null);
 
-  const handleKeystroke = () => {
-    setLastTyped(Date.now());
+  useEffect(() => {
+    if (isActive && !isDone) {
+      intervalRef.current = setInterval(() => {
+        setTime(time => time + 1);
+      }, 1000);
+    } else if (!isActive && !isDone) {
+      clearInterval(intervalRef.current);
+    }
+    return () => clearInterval(intervalRef.current);
+  }, [isActive, time, isDone]);
+
+  useEffect(() => {
+    if (isActive) {
+      keystrokeIntervalRef.current = setInterval(() => {
+        const elapsedTime = Date.now() - lastKeystroke;
+        if (time === 480) {
+          audioRef.current.play();
+        }
+        if (elapsedTime > 3000 && !isDone) {
+          finishRun();
+        } else {
+          // calculate life bar length
+          const newLifeBarLength = 100 - elapsedTime / 30; // 100% - (elapsed time in seconds * (100 / 3))
+          setLifeBarLength(Math.max(newLifeBarLength, 0)); // do not allow negative values
+        }
+      }, 100);
+    } else {
+      clearInterval(keystrokeIntervalRef.current);
+    }
+
+    return () => clearInterval(keystrokeIntervalRef.current);
+  }, [isActive, lastKeystroke]);
+
+  const handleTextChange = event => {
+    setText(event.target.value);
+    if (!isActive && event.target.value.length > 0) {
+      setIsActive(true);
+      setStartTime(Date.now());
+    }
+    setLastKeystroke(Date.now());
   };
 
-  const handleDiscard = async () => {
-    await navigator.clipboard.writeText(text);
-    alert('Your text was copied on the clipboard');
-    setText('');
+  const finishRun = async () => {
+    setLifeBarLength(0);
+    setFinished(true);
+    setIsDone(true);
+    setIsActive(false);
+    clearInterval(intervalRef.current);
+    clearInterval(keystrokeIntervalRef.current);
   };
+
+  if (!onDiscard) {
+    onDiscard = async () => {
+      await navigator.clipboard.writeText(text);
+      alert('Your text was copied on the clipboard');
+      setText('');
+    };
+  }
 
   if (!onSubmit) {
     onSubmit = async () => {
@@ -43,6 +102,17 @@ const WritingGame = ({
           : 'my-4'
       } flex flex-col w-full rounded-xl`}
     >
+      <div className='text-thewhite w-full h-8 flex justify-between items-center'>
+        <div className='h-full w-full bg-black'>
+          <div
+            className='h-full'
+            style={{
+              width: `${lifeBarLength}%`,
+              backgroundColor: lifeBarLength > 30 ? 'green' : 'red',
+            }}
+          ></div>
+        </div>
+      </div>
       {(fullDisplay || text.length > 0) && (
         <div className='w-full text-sm flex-none bg-black py-2 px-2'>
           {prompt}
@@ -50,6 +120,7 @@ const WritingGame = ({
       )}
       <textarea
         ref={textareaRef}
+        disabled={finished}
         style={{
           width: '100%',
           fontSize: '16px',
@@ -59,11 +130,9 @@ const WritingGame = ({
         className={`flex-grow p-2 bg-black ${
           text.length > 0 ? 'h-full' : 'h-24'
         } rounded-xl text-white border overflow-y-auto`} // Updated this line
-        onChange={e => {
-          setText(e.target.value);
-        }}
+        onChange={handleTextChange}
       />
-      {(fullDisplay || text.length) > 0 && (
+      {(fullDisplay || text.length) > 0 && isDone && (
         <div
           className='h-8 flex-none'
           style={{ display: 'flex', justifyContent: 'space-between' }}
@@ -78,7 +147,7 @@ const WritingGame = ({
           <button
             className='bg-red-700'
             style={{ width: '50%' }}
-            onClick={handleDiscard}
+            onClick={onDiscard}
           >
             {btnTwoText}
           </button>

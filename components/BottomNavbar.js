@@ -1,11 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePrivy } from '@privy-io/react-auth';
 import { usePWA } from '../context/pwaContext';
 
 const BottomNavbar = () => {
-  const { meditationReady, writingReady } = usePWA();
+  const {
+    isAnkyReady,
+    setIsAnkyReady,
+    isAnkyLoading,
+    meditationReady,
+    setMeditationReady,
+    writingReady,
+    setWritingReady,
+  } = usePWA();
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+  const { login, user, authenticated, logout } = usePrivy();
 
   useEffect(() => {
     if (Notification.permission === 'granted') {
@@ -53,8 +63,8 @@ const BottomNavbar = () => {
       });
     }
   };
-  
-  if (!meditationReady && !writingReady) return;
+
+  if (!meditationReady || !writingReady || !enteredTheAnkyverse) return;
 
   return (
     <nav className='w-full md:w-96 flex-none bottom-0 fixed pt-3 pb-5 bg-white flex space-x-4 justify-between px-8'>

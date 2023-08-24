@@ -17,7 +17,7 @@ const Profile = () => {
           buttonText='Get new avatar'
           buttonAction={() => router.push('/get-new-anky')}
         />
-        <Button
+        {/* <Button
           buttonColor='bg-green-700 text-white'
           buttonText='My asked questions'
           buttonAction={() => router.push('/profile/my-questions')}
@@ -26,7 +26,7 @@ const Profile = () => {
           buttonColor='bg-purple-800 text-white'
           buttonText='My answered questions'
           buttonAction={() => router.push('/profile/answered-questions')}
-        />
+        /> */}
         <Button
           buttonColor='bg-red-800 text-white'
           buttonText='Delete account'

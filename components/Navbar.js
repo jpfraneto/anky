@@ -14,8 +14,11 @@ const Navbar = () => {
     setMeditationReady,
     writingReady,
     setWritingReady,
+    enteredTheAnkyverse,
   } = usePWA();
   const { login, user, authenticated, logout } = usePrivy();
+
+  if (!meditationReady || !writingReady || !enteredTheAnkyverse) return;
 
   return (
     <div className='w-full h-24 px-4 bg-black relative flex flex-none items-center '>
@@ -69,8 +72,6 @@ const Navbar = () => {
           >
             Logout
           </button>
-          <button onClick={() => setMeditationReady(true)}>a</button>
-          <button onClick={() => setWritingReady(true)}>b</button>
         </div>
       ) : (
         // If the user is not authenticated, show a login button

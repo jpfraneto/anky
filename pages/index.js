@@ -60,6 +60,11 @@ export default function Home() {
     setGiveLoveLoading(true);
   };
 
+  const handleWritingSaving = async () => {
+    console.log('text', text);
+    setEnteredTheAnkyverse(true);
+  };
+
   if (isLoading) {
     return <div className='text-white p-4'>Loading...</div>;
   }
@@ -81,11 +86,13 @@ export default function Home() {
           fullDisplay={true}
           text={text}
           setText={setText}
+          btnTwoText='Force'
           onSubmit={() => {
             setAnswers(x => [...x, text]);
             setText('');
             setWritingReady(true);
           }}
+          onDiscard={() => alert('Discard')}
           prompt='How do you cultivate a connection with the universe or a higher power?'
           messageForUser='You made it, once again. Congratulations, dear friend. This is all of what this game is about.'
         />
@@ -93,18 +100,18 @@ export default function Home() {
     );
   }
 
-  if (meditationReady && writingReady && !authenticated)
+  if (meditationReady && writingReady && !enteredTheAnkyverse)
     return (
       <div className='h-full p-4'>
-        <div>
-          <p className='text-sm mt-20'>
-            Would you like to create an account for storing your writings
-            anonymously every day?
-          </p>
-          <div className='flex flex-col space-y-2 mt-4'>
+        {authenticated ? (
+          <div>
+            <p className='text-sm mt-20'>
+              Do you want to store your writing forever associated with your
+              Anky?
+            </p>
             <Button
-              buttonText="Let's do it"
-              buttonAction={login}
+              buttonText='Store Writing'
+              buttonAction={handleWritingSaving}
               buttonColor='bg-green-600'
             />
             <Button
@@ -115,30 +122,49 @@ export default function Home() {
               buttonColor='bg-purple-600'
             />
           </div>
-        </div>
+        ) : (
+          <div>
+            <p className='text-sm mt-20'>
+              Would you like to create an account for storing your writings
+              anonymously every day?
+            </p>
+            <div className='flex flex-col space-y-2 mt-4'>
+              <Button
+                buttonText="Let's do it"
+                buttonAction={login}
+                buttonColor='bg-green-600'
+              />
+              <Button
+                buttonText='No thank you'
+                buttonAction={() => {
+                  setEnteredTheAnkyverse(true);
+                }}
+                buttonColor='bg-purple-600'
+              />
+            </div>
+          </div>
+        )}
       </div>
     );
 
   return (
     <div className='h-full relative'>
-      {meditationReady && (
-        <div className='w-full h-full mx-auto text-white overflow-y-scroll px-4 pt-2 pb-32 '>
-          <h2 className='text-4xl text-center mt-2'>ANKY</h2>
-          <LandingQuestionCard
-            setDisplayAnswers={setDisplayAnswers}
-            displayAnswers={displayAnswers}
-            totalAnswers={answers.length}
-            id='1'
-            question='How do you cultivate a connection with the universe or a higher power?'
-            avatar='anky'
-          />
+      <h2 className='text-center text-xl '>anky</h2>
+      <div className='w-full mx-auto text-white overflow-y-scroll px-4 pt-2 pb-32 '>
+        <LandingQuestionCard
+          setDisplayAnswers={setDisplayAnswers}
+          displayAnswers={displayAnswers}
+          totalAnswers={answers.length}
+          id='1'
+          question='How do you cultivate a connection with the universe or a higher power?'
+          avatar='anky'
+        />
 
-          {displayAnswers &&
-            answers.map((answer, i) => (
-              <AnswerToQuestionCard answer={answer} key={i} index={i} />
-            ))}
-        </div>
-      )}
+        {displayAnswers &&
+          answers.map((answer, i) => (
+            <AnswerToQuestionCard answer={answer} key={i} index={i} />
+          ))}
+      </div>
     </div>
   );
 }

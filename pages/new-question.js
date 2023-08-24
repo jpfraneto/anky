@@ -14,6 +14,15 @@ const NewQuestion = () => {
     setLoadingQuestionSubmitting(true);
   };
   return (
+    <div className='h-full '>
+      <h2 className='text-center text-xl '>ask the ankyverse</h2>
+      <p className='mt-16 p-2'>
+        Here you will be able to ask a question for the community to answer
+      </p>
+    </div>
+  );
+
+  return (
     <>
       <h2 className='text-center text-xl '>ask the ankyverse</h2>
       <div className=' mt-32 px-2 my-2 w-9/11 flex flex-row  rounded-xl bg-black border-white border-2 shadow-orange-300 shadow-md'>

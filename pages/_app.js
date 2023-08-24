@@ -215,11 +215,11 @@ function MyApp({ Component, pageProps }) {
       >
         <PWAProvider>
           <div className='flex flex-col h-screen'>
-            {!writingReady && !meditationReady && <Navbar />}
+            {writingReady && meditationReady && <Navbar />}
             <div className='overflow-y-scroll flex-grow border border-white'>
               <Component {...pageProps} />
             </div>
-            {!writingReady && !meditationReady && <BottomNavbar />}
+            {writingReady && meditationReady && <BottomNavbar />}
           </div>
         </PWAProvider>
       </PrivyProvider>
