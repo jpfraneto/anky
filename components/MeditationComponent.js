@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { PWAProvider, usePWA } from '../context/pwaContext';
 import CircularPlayer from './CircularPlayer';
+import Button from './Button';
 
 const MeditationComponent = () => {
   const audioRef = useRef();
@@ -21,8 +22,16 @@ const MeditationComponent = () => {
           </button>
           <div className='w-full flex justify-center'>
             <CircularPlayer
+              setMeditationReady={setMeditationReady}
               image='/ankys/elmasmejor.png'
               audio='/assets/meditation15.mp3'
+            />
+          </div>
+          <div className='mt-12'>
+            <Button
+              buttonAction={setMeditationReady}
+              buttonText="I don't have time for this"
+              buttonColor='bg-purple-600'
             />
           </div>
         </div>

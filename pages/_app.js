@@ -112,7 +112,7 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <main
-      className={`${righteous.className} relative text-white h-screen w-full md:w-96 mx-auto bg-cover bg-center`}
+      className={`${righteous.className} h-[calc(100dvh)] relative text-white w-full md:w-96 mx-auto bg-cover bg-center`}
       style={{
         boxSizing: 'border-box',
         backgroundImage:
@@ -214,9 +214,9 @@ function MyApp({ Component, pageProps }) {
         }}
       >
         <PWAProvider>
-          <div className='flex flex-col h-screen'>
+          <div className='flex flex-col h-full'>
             {writingReady && meditationReady && <Navbar />}
-            <div className='overflow-y-scroll flex-grow border border-white'>
+            <div className={`overflow-y-scroll flex-grow border-white`}>
               <Component {...pageProps} />
             </div>
             {writingReady && meditationReady && <BottomNavbar />}

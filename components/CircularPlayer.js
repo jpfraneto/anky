@@ -1,7 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, use } from 'react';
 import classNames from 'classnames';
 
-const CircularPlayer = ({ image, audio }) => {
+const CircularPlayer = ({ image, audio, setMeditationReady }) => {
   const [active, setActive] = useState(false);
   const [strokeDashoffset, setStrokeDashoffset] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -19,15 +19,18 @@ const CircularPlayer = ({ image, audio }) => {
     }
   }, [active, timeLeft]);
 
+  useEffect(() => {
+    if (audioRef && audioRef.current) {
+      console.log('in here', audioRef.current.duration);
+      duration = audioRef.current.duration;
+      setTimeLeft(Math.floor(Math.floor(audioRef.current.duration)));
+      setLoading(false);
+    }
+  }, []);
+
   let duration = null;
   let pathLength = null;
   let progressLoop = null;
-
-  const onMetadataLoaded = () => {
-    duration = audioRef.current.duration;
-    setTimeLeft(Math.floor(Math.floor(audioRef.current.duration)));
-    setLoading(false);
-  };
 
   const onAudioEnded = () => {
     setActive(false);
@@ -71,12 +74,7 @@ const CircularPlayer = ({ image, audio }) => {
     <figure
       className={classNames('audio-bubble', { 'audio-bubble--active': active })}
     >
-      <audio
-        src={audio}
-        ref={audioRef}
-        onLoadedMetadata={onMetadataLoaded}
-        onEnded={onAudioEnded}
-      />
+      <audio src={audio} ref={audioRef} onEnded={onAudioEnded} />
       <button onClick={handleTogglePlay} className='audio-bubble__button'>
         <svg viewBox='0 0 200 200' className='audio-bubble__progress'>
           <circle

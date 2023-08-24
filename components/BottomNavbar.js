@@ -68,7 +68,7 @@ const BottomNavbar = () => {
   if (!meditationReady || !writingReady || !enteredTheAnkyverse) return;
 
   return (
-    <nav className='w-full md:w-96 flex-none bottom-0 fixed pt-3 pb-5 bg-white flex space-x-4 justify-between px-8'>
+    <nav className='w-full md:w-96 flex-none  pt-3 pb-5 bg-white flex space-x-4 justify-between px-8'>
       <Link passHref href='/'>
         <Image width={36} height={36} src='/icons/home.svg' />
       </Link>

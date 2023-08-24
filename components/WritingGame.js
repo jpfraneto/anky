@@ -127,8 +127,8 @@ const WritingGame = ({
         }}
         placeholder='Your answer here...'
         value={text}
-        className={`flex-grow p-2 bg-black ${
-          text.length > 0 ? 'h-full' : 'h-24'
+        className={` p-2 bg-black ${
+          text.length > 0 ? 'h-64' : 'h-64'
         } rounded-xl text-white border overflow-y-auto`} // Updated this line
         onChange={handleTextChange}
       />
