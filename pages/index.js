@@ -77,21 +77,26 @@ export default function Home() {
 
   if (meditationReady && !writingReady) {
     return (
-      <div className='h-screen'>
-        <WritingGame
-          fullDisplay={true}
-          text={text}
-          setText={setText}
-          btnTwoText='Force'
-          onSubmit={() => {
-            setAnswers(x => [...x, text]);
-            setText('');
-            setWritingReady(true);
-          }}
-          onDiscard={() => alert('Discard')}
-          prompt='How do you cultivate a connection with the universe or a higher power?'
-          messageForUser='You made it, once again. Congratulations, dear friend. This is all of what this game is about.'
-        />
+      <div className='h-full'>
+        <small className='absolute top-0 left-0 right-0 text-center text-sm text-gray-500'>
+          sojourn 1 - wink 15 - claridium
+        </small>
+        <div className='pt-24 h-full'>
+          <WritingGame
+            fullDisplay={true}
+            text={text}
+            setText={setText}
+            btnTwoText='Force'
+            onSubmit={() => {
+              setAnswers(x => [...x, text]);
+              setText('');
+              setWritingReady(true);
+            }}
+            onDiscard={() => alert('Discard')}
+            prompt='How do you cultivate a connection with the universe or a higher power?'
+            messageForUser='You made it, once again. Congratulations, dear friend. This is all of what this game is about.'
+          />
+        </div>
       </div>
     );
   }
@@ -101,7 +106,7 @@ export default function Home() {
       <div className='h-full p-4'>
         {authenticated ? (
           <div>
-            <p className='text-sm mt-20'>
+            <p className='text-xl mt-20'>
               Do you want to store your writing forever associated with your
               Anky?
             </p>
@@ -122,7 +127,7 @@ export default function Home() {
           </div>
         ) : (
           <div>
-            <p className='text-sm mt-20'>
+            <p className='text-xl mt-20'>
               Would you like to create an account for storing your writings
               anonymously every day?
             </p>

@@ -204,7 +204,7 @@ function MyApp({ Component, pageProps }) {
         appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID}
         onSuccess={handleLogin}
         config={{
-          loginMethods: ['sms'],
+          loginMethods: ['email'],
           appearance: {
             theme: 'light',
             accentColor: '#676FFF',

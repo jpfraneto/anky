@@ -1,12 +1,31 @@
 import React, { useState, useRef, useEffect, use } from 'react';
 import classNames from 'classnames';
+import Spinner from './Spinner';
 
 const CircularPlayer = ({ image, audio, setMeditationReady }) => {
   const [active, setActive] = useState(false);
   const [strokeDashoffset, setStrokeDashoffset] = useState(null);
   const [timeLeft, setTimeLeft] = useState(0);
+  const [loadingAudio, setLoadingAudio] = useState(true);
+  const [audioSrc, setAudioSrc] = useState(audio);
   const audioRef = useRef(null);
   const progressRef = useRef(null);
+
+  useEffect(() => {
+    setAudioSrc(audio);
+  }, [audio]);
+
+  const checkAudioDuration = () => {
+    if (audioRef.current && audioRef.current.readyState > 0) {
+      // If the audio's metadata or more is available, set the duration.
+      setTimeLeft(Math.floor(audioRef.current.duration));
+      setLoadingAudio(false);
+    }
+  };
+
+  useEffect(() => {
+    checkAudioDuration();
+  }, [audioSrc]);
 
   useEffect(() => {
     if (active && timeLeft > 0) {
@@ -22,6 +41,7 @@ const CircularPlayer = ({ image, audio, setMeditationReady }) => {
   let progressLoop = null;
 
   const onAudioMetadataLoaded = () => {
+    console.log('iINSIODEIDNEKAGJCKJSAn the audio metadata function');
     setTimeLeft(Math.floor(audioRef.current.duration));
   };
 
@@ -73,7 +93,7 @@ const CircularPlayer = ({ image, audio, setMeditationReady }) => {
         src={audio}
         ref={audioRef}
         onEnded={onAudioEnded}
-        onLoadedMetadata={onAudioMetadataLoaded}
+        onLoadedMetadata={checkAudioDuration}
       />
       <button onClick={handleTogglePlay} className='audio-bubble__button'>
         <svg viewBox='0 0 200 200' className='audio-bubble__progress'>
@@ -109,9 +129,16 @@ const CircularPlayer = ({ image, audio, setMeditationReady }) => {
           </svg>
         )}
       </button>
+
       <div className='text-4xl mt-16'>
-        {Math.floor(timeLeft / 60)}:{timeLeft % 60 < 10 ? '0' : ''}
-        {timeLeft % 60}
+        {loadingAudio ? (
+          <Spinner />
+        ) : (
+          <span>
+            {Math.floor(timeLeft / 60)}:{timeLeft % 60 < 10 ? '0' : ''}
+            {timeLeft % 60}
+          </span>
+        )}
       </div>
     </figure>
   );

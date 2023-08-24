@@ -102,7 +102,12 @@ const WritingGame = ({
           : 'my-4'
       } flex flex-col w-full h-full rounded-xl`}
     >
-      <div className='text-thewhite w-full h-8 flex justify-between items-center'>
+      {(fullDisplay || text.length > 0) && (
+        <div className='w-full text-2xl flex-none  pt-6 pb-2 px-2'>
+          {prompt}
+        </div>
+      )}
+      <div className='text-thewhite w-full h-8 flex rounded-xl overflow-hidden justify-between items-center'>
         <div className='h-full w-full bg-black'>
           <div
             className='h-full'
@@ -113,11 +118,6 @@ const WritingGame = ({
           ></div>
         </div>
       </div>
-      {(fullDisplay || text.length > 0) && (
-        <div className='w-full text-sm flex-none bg-black py-2 px-2'>
-          {prompt}
-        </div>
-      )}
       <textarea
         ref={textareaRef}
         disabled={finished}
@@ -127,26 +127,26 @@ const WritingGame = ({
         }}
         placeholder='Your answer here...'
         value={text}
-        className={` p-2 bg-black ${
+        className={` p-2  bg-black ${
           text.length > 0 ? 'h-64' : 'h-64'
         } rounded-xl text-white border overflow-y-auto`} // Updated this line
         onChange={handleTextChange}
       />
       {(fullDisplay || text.length) > 0 && isDone && (
         <div
-          className='h-8 flex-none'
-          style={{ display: 'flex', justifyContent: 'space-between' }}
+          className='h-8 mt-2 flex-none'
+          style={{ display: 'flex', justifyContent: 'space-around' }}
         >
           <button
-            className='bg-green-700'
-            style={{ width: '50%' }}
+            className='bg-green-700 rounded-xl'
+            style={{ width: '45%' }}
             onClick={onSubmit}
           >
             {btnOneText}
           </button>
           <button
-            className='bg-red-700'
-            style={{ width: '50%' }}
+            className='bg-red-700 rounded-xl'
+            style={{ width: '45%' }}
             onClick={onDiscard}
           >
             {btnTwoText}
