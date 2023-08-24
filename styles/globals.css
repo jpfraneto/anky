@@ -126,7 +126,7 @@ a {
   transform: rotate(-90deg);
 }
 .audio-bubble__progress circle {
-  stroke: #294fc3;
+  stroke: #cfd72f;
   stroke-dasharray: 608;
 }
 .audio-bubble:not(.audio-bubble--active) .audio-bubble__progress {

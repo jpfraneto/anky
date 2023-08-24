@@ -4,18 +4,22 @@ import CircularPlayer from './CircularPlayer';
 import Button from './Button';
 
 const MeditationComponent = () => {
-  const audioRef = useRef();
-
   const { meditationReady, setMeditationReady } = usePWA();
   const [isPlaying, setIsPlaying] = useState(false);
   const [timeLeft, setTimeLeft] = useState(null);
   const [isStarted, setIsStarted] = useState(false);
+  const [dontHaveTime, setDontHaveTime] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
+  const dontHaveTimeFunction = () => {
+    if (dontHaveTime) return setMeditationReady(true);
+    setDontHaveTime(true);
+  };
+
   return (
-    <div className='h-full'>
-      <div className='w-full h-full flex justify-center items-center text-center'>
-        <div className='flex flex-col'>
+    <div className='pt-48'>
+      <div className='w-full flex justify-center items-center text-center'>
+        <div className='flex h-fit flex-col'>
           <div className='w-full flex justify-center'>
             <CircularPlayer
               setMeditationReady={setMeditationReady}
@@ -25,9 +29,11 @@ const MeditationComponent = () => {
           </div>
           <div className='mt-12'>
             <Button
-              buttonAction={setMeditationReady}
-              buttonText="I don't have time for this"
-              buttonColor='bg-purple-600'
+              buttonAction={dontHaveTimeFunction}
+              buttonText={
+                dontHaveTime ? 'Are you sure?' : `I don't have time for this`
+              }
+              buttonColor={dontHaveTime ? 'bg-purple-700' : `bg-purple-600`}
             />
           </div>
         </div>

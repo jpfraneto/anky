@@ -4,8 +4,7 @@ import classNames from 'classnames';
 const CircularPlayer = ({ image, audio, setMeditationReady }) => {
   const [active, setActive] = useState(false);
   const [strokeDashoffset, setStrokeDashoffset] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(null);
+  const [timeLeft, setTimeLeft] = useState(0);
   const audioRef = useRef(null);
   const progressRef = useRef(null);
 
@@ -19,26 +18,22 @@ const CircularPlayer = ({ image, audio, setMeditationReady }) => {
     }
   }, [active, timeLeft]);
 
-  useEffect(() => {
-    if (audioRef && audioRef.current) {
-      console.log('in here', audioRef.current.duration);
-      duration = audioRef.current.duration;
-      setTimeLeft(Math.floor(Math.floor(audioRef.current.duration)));
-      setLoading(false);
-    }
-  }, []);
-
-  let duration = null;
   let pathLength = null;
   let progressLoop = null;
 
+  const onAudioMetadataLoaded = () => {
+    setTimeLeft(Math.floor(audioRef.current.duration));
+  };
+
   const onAudioEnded = () => {
     setActive(false);
+    cancelAnimationFrame(progressLoop);
   };
 
   const updateProgressBar = () => {
     if (!audioRef.current) return;
     const currentTime = audioRef.current.currentTime;
+    const duration = audioRef.current.duration;
     const percentage = currentTime / duration;
     const offset = percentage * pathLength;
     setStrokeDashoffset(pathLength - offset);
@@ -61,7 +56,7 @@ const CircularPlayer = ({ image, audio, setMeditationReady }) => {
       cancelAnimationFrame(progressLoop);
       audioRef.current.pause();
     } else {
-      if (!duration || !pathLength) {
+      if (!pathLength) {
         startAnimation();
       }
       audioRef.current.play();
@@ -74,7 +69,12 @@ const CircularPlayer = ({ image, audio, setMeditationReady }) => {
     <figure
       className={classNames('audio-bubble', { 'audio-bubble--active': active })}
     >
-      <audio src={audio} ref={audioRef} onEnded={onAudioEnded} />
+      <audio
+        src={audio}
+        ref={audioRef}
+        onEnded={onAudioEnded}
+        onLoadedMetadata={onAudioMetadataLoaded}
+      />
       <button onClick={handleTogglePlay} className='audio-bubble__button'>
         <svg viewBox='0 0 200 200' className='audio-bubble__progress'>
           <circle
