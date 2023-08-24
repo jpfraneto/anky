@@ -6,7 +6,15 @@ import { usePWA } from '../context/pwaContext';
 
 const Navbar = () => {
   const router = useRouter();
-  const { isAnkyReady, setIsAnkyReady, isAnkyLoading } = usePWA();
+  const {
+    isAnkyReady,
+    setIsAnkyReady,
+    isAnkyLoading,
+    meditationReady,
+    setMeditationReady,
+    writingReady,
+    setWritingReady,
+  } = usePWA();
   const { login, user, authenticated, logout } = usePrivy();
 
   return (
@@ -61,6 +69,8 @@ const Navbar = () => {
           >
             Logout
           </button>
+          <button onClick={() => setMeditationReady(true)}>a</button>
+          <button onClick={() => setWritingReady(true)}>b</button>
         </div>
       ) : (
         // If the user is not authenticated, show a login button

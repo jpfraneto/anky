@@ -8,6 +8,12 @@ const PWAContext = createContext({
   setAnkyImages: () => {},
   isAnkyLoading: false,
   setIsAnkyLoading: () => {},
+  meditationReady: true,
+  setMeditationReady: () => {},
+  writingReady: true,
+  setWritingReady: () => {},
+  enteredTheAnkyverse: true,
+  setEnteredTheAnkyverse: () => {},
 });
 
 export const usePWA = () => {
@@ -18,6 +24,9 @@ export const PWAProvider = ({ children }) => {
   const [isAnkyReady, setIsAnkyReady] = useState(false);
   const [ankyImages, setAnkyImages] = useState([]);
   const [isAnkyLoading, setIsAnkyLoading] = useState(false);
+  const [meditationReady, setMeditationReady] = useState(false);
+  const [writingReady, setWritingReady] = useState(false);
+  const [enteredTheAnkyverse, setEnteredTheAnkyverse] = useState(false);
 
   return (
     <PWAContext.Provider
@@ -28,6 +37,12 @@ export const PWAProvider = ({ children }) => {
         setAnkyImages,
         isAnkyLoading,
         setIsAnkyLoading,
+        meditationReady,
+        setMeditationReady,
+        writingReady,
+        setWritingReady,
+        enteredTheAnkyverse,
+        setEnteredTheAnkyverse,
       }}
     >
       {children}

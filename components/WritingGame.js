@@ -9,6 +9,7 @@ const WritingGame = ({
   setText,
   btnTwoText = 'Discard',
   messageForUser,
+  fullDisplay = false,
 }) => {
   const [timeLeft, setTimeLeft] = useState(3);
   const [isWriting, setIsWriting] = useState(false);
@@ -37,11 +38,13 @@ const WritingGame = ({
   return (
     <div
       className={`${
-        text.length > 0 ? 'h-1/2 z-50 absolute top-0 left-0' : 'my-4'
+        fullDisplay || text.length > 0
+          ? 'h-1/2 z-50 absolute top-0 left-0'
+          : 'my-4'
       } flex flex-col w-full rounded-xl`}
     >
-      {text.length > 0 && (
-        <div className='w-full text-sm flex-none bg-black py-1 px-2'>
+      {(fullDisplay || text.length > 0) && (
+        <div className='w-full text-sm flex-none bg-black py-2 px-2'>
           {prompt}
         </div>
       )}
@@ -60,7 +63,7 @@ const WritingGame = ({
           setText(e.target.value);
         }}
       />
-      {text.length > 0 && (
+      {(fullDisplay || text.length) > 0 && (
         <div
           className='h-8 flex-none'
           style={{ display: 'flex', justifyContent: 'space-between' }}

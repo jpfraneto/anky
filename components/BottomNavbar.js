@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePWA } from '../context/pwaContext';
 
 const BottomNavbar = () => {
+  const { meditationReady, writingReady } = usePWA();
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
 
   useEffect(() => {
@@ -51,6 +53,8 @@ const BottomNavbar = () => {
       });
     }
   };
+  
+  if (!meditationReady && !writingReady) return;
 
   return (
     <nav className='w-full md:w-96 flex-none bottom-0 fixed pt-3 pb-5 bg-white flex space-x-4 justify-between px-8'>

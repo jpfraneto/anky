@@ -17,8 +17,15 @@ const handleLogin = user => {
 };
 
 function MyApp({ Component, pageProps }) {
-  const { isAnkyReady, setAnkyImages, setIsAnkyReady, setIsAnkyLoading } =
-    usePWA();
+  const {
+    isAnkyReady,
+    setAnkyImages,
+    setIsAnkyReady,
+    setIsAnkyLoading,
+    writingReady,
+    meditationReady,
+    setMeditationReady,
+  } = usePWA();
   useEffect(() => {
     console.log('THIS USE EFFECT IS RUNNING');
     const handleServiceWorkerMessage = event => {
@@ -208,11 +215,11 @@ function MyApp({ Component, pageProps }) {
       >
         <PWAProvider>
           <div className='flex flex-col h-screen'>
-            <Navbar />
+            {!writingReady && !meditationReady && <Navbar />}
             <div className='overflow-y-scroll flex-grow border border-white'>
               <Component {...pageProps} />
             </div>
-            <BottomNavbar />
+            {!writingReady && !meditationReady && <BottomNavbar />}
           </div>
         </PWAProvider>
       </PrivyProvider>

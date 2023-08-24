@@ -4,24 +4,46 @@ import Image from 'next/image';
 import styles from '../styles/Home.module.css';
 import Button from '../components/Button';
 import Link from 'next/link';
+import { useLogin } from '@privy-io/react-auth';
 import LandingQuestionCard from '../components/LandingQuestionCard';
 import AnswerToQuestionCard from '../components/AnswerToQuestionCard';
 import WritingGame from '../components/WritingGame';
+import { PWAProvider, usePWA } from '../context/pwaContext';
+import { usePrivy } from '@privy-io/react-auth';
+import MeditationComponent from '../components/MeditationComponent';
 
 export default function Home() {
   const writingDisplayContainerRef = useRef();
-  const audioRef = useRef();
+  const {
+    meditationReady,
+    setMeditationReady,
+    writingReady,
+    setWritingReady,
+    enteredTheAnkyverse,
+    setEnteredTheAnkyverse,
+  } = usePWA();
+  const { user, authenticated, logout } = usePrivy();
+  const { login } = useLogin({
+    onComplete: (user, isNewUser, wasAlreadyAuthenticated) => {
+      console.log(user, isNewUser, wasAlreadyAuthenticated);
+      // Any logic you'd like to execute if the user is/becomes authenticated while this
+      // component is mounted
+    },
+    onError: error => {
+      console.log(error);
+      // Any logic you'd like to execute after a user exits the login flow or there is an error
+    },
+  });
 
   const [anotherOneLoading, setAnotherOneLoading] = useState(false);
   const [collectWritingLoading, setCollectWritingLoading] = useState(false);
   const [displayAnswers, setDisplayAnswers] = useState(false);
   const [giveLoveLoading, setGiveLoveLoading] = useState(false);
   const [writingIndex, setWritingIndex] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(null);
+
   const [success, setSuccess] = useState(false);
   const [writings, setWritings] = useState([]);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [meditationReady, setMeditationReady] = useState(false);
+
   const [answers, setAnswers] = useState([
     'And that is why the relationship that AI will have with time is very important and informative about our own relationship with it. In a sense, AI is static because it is encapsulated in computers. But (from the pure basic understanding that I have of it) it evolves by bringing in more and more information related to inputs that they feed it with. So isn’t that as it is evolved with all these different inputs there is also a passing of time that happens? Isn’t it that that is how we frame time as passing? As more and more changing inputs come through our system there is a perception that there is something that is changed and that something is called time. If there is a car that is passing by in front of me right now, there is a perception that there is an input that is changing, and because of that, there is a conceptual understanding that time went by. I can’t relate this to the experience of no-time that happens in deep trance states because I can’t relate to them now, but I wonder these two things: How will AI perceive time, which will be it’s interpretation of it on a conceptual level, and also what is time ultimately in the sense of all this what goes on when there is no inputs that are changed in our whole perception system.',
     'The future is bright, and humanity will wake up to the truth of our nature just by being creative. Just by allowing ourselves to be. We came here to just be. ',
@@ -29,16 +51,6 @@ export default function Home() {
   ]);
   const [text, setText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    if (isPlaying && timeLeft > 0) {
-      const timer = setInterval(() => {
-        setTimeLeft(prevTime => prevTime - 1);
-      }, 1000);
-
-      return () => clearInterval(timer);
-    }
-  }, [isPlaying, timeLeft]);
 
   const collectWriting = () => {
     setCollectWritingLoading(true);
@@ -48,51 +60,67 @@ export default function Home() {
     setGiveLoveLoading(true);
   };
 
-  const startMeditation = () => {
-    setTimeLeft(Math.floor(audioRef.current.duration));
-    setIsPlaying(true);
-    if (audioRef.current) {
-      console.log('in here');
-      audioRef.current.play();
-    }
-  };
-
   if (isLoading) {
     return <div className='text-white p-4'>Loading...</div>;
   }
 
-  if (!writings) {
-    return <p className='text-white'>There are no writings yet.</p>;
+  if (!meditationReady && !writingReady)
+    return (
+      <div className='h-full'>
+        <small className='absolute top-0 left-0 right-0 text-center text-sm text-gray-500'>
+          sojourn 1 - wink 15 - claridium
+        </small>
+        <MeditationComponent />
+      </div>
+    );
+
+  if (meditationReady && !writingReady) {
+    return (
+      <div className='h-full'>
+        <WritingGame
+          fullDisplay={true}
+          text={text}
+          setText={setText}
+          onSubmit={() => {
+            setAnswers(x => [...x, text]);
+            setText('');
+            setWritingReady(true);
+          }}
+          prompt='How do you cultivate a connection with the universe or a higher power?'
+          messageForUser='You made it, once again. Congratulations, dear friend. This is all of what this game is about.'
+        />
+      </div>
+    );
   }
 
-  return (
-    <>
-      <audio
-        ref={audioRef}
-        src='/assets/meditation.mp3'
-        className='hidden'
-        onPlay={() => setIsPlaying(true)}
-        onEnded={() => {
-          setIsPlaying(false);
-          setMeditationReady(true);
-        }}
-      />
-      {!meditationReady && (
-        <div className='w-full h-96 flex justify-center items-center text-center'>
-          {!isPlaying ? (
-            <div className='flex flex-col space-y-2'>
-              <p>sojourn 1 - wink 16 - insightia</p>
-              <button onClick={startMeditation}>Start Guided Meditation</button>
-            </div>
-          ) : (
-            <div className='text-5xl'>
-              {Math.floor(timeLeft / 60)}:{timeLeft % 60 < 10 ? '0' : ''}
-              {timeLeft % 60}
-            </div>
-          )}
+  if (meditationReady && writingReady && !authenticated)
+    return (
+      <div className='h-full p-4'>
+        <div>
+          <p className='text-sm mt-20'>
+            Would you like to create an account for storing your writings
+            anonymously every day?
+          </p>
+          <div className='flex flex-col space-y-2 mt-4'>
+            <Button
+              buttonText="Let's do it"
+              buttonAction={login}
+              buttonColor='bg-green-600'
+            />
+            <Button
+              buttonText='No thank you'
+              buttonAction={() => {
+                setEnteredTheAnkyverse(true);
+              }}
+              buttonColor='bg-purple-600'
+            />
+          </div>
         </div>
-      )}
+      </div>
+    );
 
+  return (
+    <div className='h-full relative'>
       {meditationReady && (
         <div className='w-full h-full mx-auto text-white overflow-y-scroll px-4 pt-2 pb-32 '>
           <h2 className='text-4xl text-center mt-2'>ANKY</h2>
@@ -101,18 +129,8 @@ export default function Home() {
             displayAnswers={displayAnswers}
             totalAnswers={answers.length}
             id='1'
-            question='When have you given or received love unconditionally?'
+            question='How do you cultivate a connection with the universe or a higher power?'
             avatar='anky'
-          />
-          <WritingGame
-            text={text}
-            setText={setText}
-            onSubmit={() => {
-              setAnswers(x => [...x, text]);
-              setText('');
-            }}
-            prompt='When have you given or received love unconditionally?'
-            messageForUser='Each human being will own an Anky. It will store each one of these writings inside of its infinite notebook forever. Anonymously. Patience. I will have it ready soon.'
           />
 
           {displayAnswers &&
@@ -121,6 +139,6 @@ export default function Home() {
             ))}
         </div>
       )}
-    </>
+    </div>
   );
 }
