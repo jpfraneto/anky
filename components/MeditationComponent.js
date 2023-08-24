@@ -36,7 +36,7 @@ const MeditationComponent = () => {
     <div className='h-full'>
       <audio
         ref={audioRef}
-        src='/assets/meditation.mp3'
+        src='/assets/meditation15.mp3'
         className='hidden'
         onPlay={() => setIsPlaying(true)}
         onEnded={() => {
