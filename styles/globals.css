@@ -54,6 +54,105 @@ a {
   left: 56px;
   animation: lds-ellipsis3 0.6s infinite;
 }
+
+.player {
+  background: #d13741 url(http://frontendfreecode.com/img/red-bg.jpg) fixed
+    center/cover;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.player__title {
+  font-size: 2em;
+  color: white;
+  margin-bottom: 7.5rem;
+}
+.player__wave {
+  position: absolute;
+  top: calc(50% + 3.75rem);
+  left: 0;
+  transform: translateY(-50%);
+}
+.player__items {
+  max-width: 73.75rem;
+  width: 80%;
+  aspect-ratio: 1/1;
+  display: flex;
+  justify-content: space-between;
+}
+.audio-bubble {
+  width: 15%;
+  margin: 0;
+  min-width: 8rem;
+}
+.audio-bubble--active .audio-bubble__button {
+  transform: scale(2);
+}
+.audio-bubble__button {
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  background: black;
+  aspect-ratio: 1/1;
+  cursor: pointer;
+  outline: 0;
+  border: 1px solid #ab2e36;
+  border-radius: 50%;
+  padding: 0;
+
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+.audio-bubble__image {
+  border-radius: 50%;
+  transition: opacity 0.4s ease;
+}
+.audio-bubble:not(.audio-bubble--active):hover .audio-bubble__image {
+  opacity: 0.75;
+}
+.audio-bubble__meta {
+  color: white;
+  text-align: center;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.audio-bubble--active .audio-bubble__meta {
+  transform: translateY(4.5rem);
+}
+.audio-bubble__progress {
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  width: calc(100% + 6px);
+  transform: rotate(-90deg);
+}
+.audio-bubble__progress circle {
+  stroke: #fad258;
+  stroke-dasharray: 608;
+}
+.audio-bubble:not(.audio-bubble--active) .audio-bubble__progress {
+  opacity: 0;
+}
+.audio-bubble__play,
+.audio-bubble__pause {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.audio-bubble__play {
+  width: 17.5%;
+}
+.audio-bubble__pause {
+  width: 12%;
+}
+.audio-bubble__title {
+  font-weight: bold;
+  margin-bottom: 0.375rem;
+}
+.audio-bubble__subtitle {
+  font-size: 0.875em;
+}
+
 @keyframes lds-ellipsis1 {
   0% {
     transform: scale(0);
