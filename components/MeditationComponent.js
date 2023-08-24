@@ -16,10 +16,6 @@ const MeditationComponent = () => {
     <div className='h-full'>
       <div className='w-full h-full flex justify-center items-center text-center'>
         <div className='flex flex-col'>
-          {/* This button is for testing purposes only */}
-          <button onClick={() => setMeditationReady(true)}>
-            meditation ready
-          </button>
           <div className='w-full flex justify-center'>
             <CircularPlayer
               setMeditationReady={setMeditationReady}

@@ -105,18 +105,20 @@ export default function Home() {
               Do you want to store your writing forever associated with your
               Anky?
             </p>
-            <Button
-              buttonText='Store Writing'
-              buttonAction={handleWritingSaving}
-              buttonColor='bg-green-600'
-            />
-            <Button
-              buttonText='No thank you'
-              buttonAction={() => {
-                setEnteredTheAnkyverse(true);
-              }}
-              buttonColor='bg-purple-600'
-            />
+            <div className='flex flex-col space-y-2'>
+              <Button
+                buttonText='Store Writing'
+                buttonAction={handleWritingSaving}
+                buttonColor='bg-green-600'
+              />
+              <Button
+                buttonText='No thank you'
+                buttonAction={() => {
+                  setEnteredTheAnkyverse(true);
+                }}
+                buttonColor='bg-purple-600'
+              />
+            </div>
           </div>
         ) : (
           <div>
