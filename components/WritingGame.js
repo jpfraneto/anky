@@ -100,7 +100,7 @@ const WritingGame = ({
         fullDisplay || text.length > 0
           ? 'h-1/2 z-50 absolute top-0 left-0'
           : 'my-4'
-      } flex flex-col w-full rounded-xl`}
+      } flex flex-col w-full h-full rounded-xl`}
     >
       <div className='text-thewhite w-full h-8 flex justify-between items-center'>
         <div className='h-full w-full bg-black'>
