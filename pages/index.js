@@ -69,7 +69,7 @@ export default function Home() {
     return (
       <div className='h-full relative'>
         <small className='absolute top-0 left-0 right-0 text-center text-sm text-gray-500'>
-          sojourn 1 - wink 15 - claridium
+          sojourn 1 - wink 16 - poiesis
         </small>
         <MeditationComponent />
       </div>
@@ -79,7 +79,7 @@ export default function Home() {
     return (
       <div className='h-full'>
         <small className='absolute top-0 left-0 right-0 text-center text-sm text-gray-500'>
-          sojourn 1 - wink 15 - claridium
+          sojourn 1 - wink 16 - poiesis
         </small>
         <div className='pt-24 h-full'>
           <WritingGame
@@ -93,7 +93,7 @@ export default function Home() {
               setWritingReady(true);
             }}
             onDiscard={() => alert('Discard')}
-            prompt='How do you cultivate a connection with the universe or a higher power?'
+            prompt='How has your capacity for expressing yourself creatively evolved over time?'
             messageForUser='You made it, once again. Congratulations, dear friend. This is all of what this game is about.'
           />
         </div>

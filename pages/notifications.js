@@ -73,7 +73,7 @@ const Notifications = () => {
       {notificationsEnabled && (
         <div>
           <p className='mt-48 text-center'>
-            I&apos;ll be as simple as I can with this.
+            I&apos;ll be as simple as I can with this!
           </p>
         </div>
       )}
