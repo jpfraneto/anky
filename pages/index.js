@@ -159,7 +159,7 @@ export default function Home() {
           displayAnswers={displayAnswers}
           totalAnswers={answers.length}
           id='1'
-          question='How do you cultivate a connection with the universe or a higher power?'
+          question='How has your capacity for expressing yourself creatively evolved over time?'
           avatar='anky'
         />
 
