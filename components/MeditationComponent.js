@@ -17,7 +17,7 @@ const MeditationComponent = () => {
   };
 
   return (
-    <div className='pt-64'>
+    <div className='pt-96'>
       <div className='w-full flex justify-center items-center text-center'>
         <div className='flex h-fit flex-col'>
           <div className='w-full flex justify-center'>
@@ -27,7 +27,7 @@ const MeditationComponent = () => {
               audio='/assets/meditation17.mp3'
             />
           </div>
-          <div className='mt-12'>
+          <div className='mt-6'>
             <Button
               buttonAction={dontHaveTimeFunction}
               buttonText={
