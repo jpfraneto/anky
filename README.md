@@ -2,13 +2,13 @@
 
 tl;dr: this repo is the pwa of anky. one of the infinite branches of expression of an interpretation of the underlying truth of all religions.
 
-![Anky is you](https://github.com/jpfraneto/anky/tree/main/public/images/background.png?raw=true)
+![Anky is you](https://github.com/jpfraneto/anky/blob/main/public/images/background.png?raw=true)
 
 This is the core belief behind Anky, a brand that seeks to push the boundaries of storytelling and the use of technology as a tool for helping you embody your uniqueness.
 
 Each Anky inside the collection has its own and unique story, belonging to one of the 8 worlds that conform the Ankyverse: Primordia, Emblazion, Chryseos, Eleasis, Voxlumis, Insightia, Claridium and Poiesis.
 
-![Anky is you](https://github.com/jpfraneto/anky/tree/main/public/images/ankyverse.png?raw=true)
+![Anky is you](https://github.com/jpfraneto/anky/blob/main/public/images/ankyverse.png?raw=true)
 
 Anky is designed to guide its community on a path to self-realization and personal growth. Each one of these 8 kingdoms represents a different aspect of your existence:
 
