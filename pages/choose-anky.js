@@ -14,7 +14,7 @@ const ChooseAnky = () => {
   if (ankyImages.length === 0)
     return (
       <>
-        <p>You are not allowed here yet.</p>
+        <p>You are not allowed herehello yet.</p>
         <button onClick={() => console.log(ankyImages)}>console</button>
       </>
     );
