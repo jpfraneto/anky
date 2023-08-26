@@ -46,29 +46,18 @@ function MyApp({ Component, pageProps }) {
         setAnkyImages(event.data.images);
       }
     };
-
-    navigator.serviceWorker.addEventListener(
-      'message',
-      handleServiceWorkerMessage
-    );
-    return () => {
-      navigator.serviceWorker.removeEventListener(
+    if ('serviceWorker' in navigator && navigator.serviceWorker) {
+      navigator.serviceWorker.addEventListener(
         'message',
         handleServiceWorkerMessage
       );
-    };
-  }, []);
-
-  useEffect(() => {
-    // Asking for permission once the user starts the journey in the app
-    Notification.requestPermission().then(permission => {
-      if (permission === 'granted') {
-        console.log('Notification permission granted.');
-        subscribeToPushManager();
-      } else {
-        console.error('Unable to get permission to notify.');
-      }
-    });
+      return () => {
+        navigator.serviceWorker.removeEventListener(
+          'message',
+          handleServiceWorkerMessage
+        );
+      };
+    }
   }, []);
 
   const subscribeToPushManager = () => {
