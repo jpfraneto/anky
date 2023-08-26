@@ -40,7 +40,7 @@ self.addEventListener('message', event => {
           console.log('the upscaled images are: ', upscaledAnkyImages);
 
           self.registration.showNotification('Anky Avatar Ready!', {
-            body: 'Your Anky: ${characterName} is ready to be chosen.',
+            body: `Your Anky: ${characterName} is ready to be chosen.`,
           });
           self.clients.matchAll().then(clients => {
             clients.forEach(client =>
@@ -63,34 +63,34 @@ self.addEventListener('message', event => {
   }
 });
 
-self.addEventListener('activate', async event => {
-  try {
-    console.log('inside the activate here.');
-    const registration = await navigator.serviceWorker.ready;
-    const subscription = await registration.pushManager.subscribe({
-      userVisibleOnly: true,
-      applicationServerKey:
-        'BCKze16TV0lPlvhx4wTRKGNAgOCGnkEvG3WyW84zoiVPdQAHLMVxbmesEFyK3a9INd8yaC3KXxa2RdRv-Dl9FwI',
-    });
-    console.log('Subscription:', subscription);
+// self.addEventListener('activate', async event => {
+//   try {
+//     console.log('inside the activate here.');
+//     const registration = await navigator.serviceWorker.ready;
+//     const subscription = await registration.pushManager.subscribe({
+//       userVisibleOnly: true,
+//       applicationServerKey:
+//         'BCKze16TV0lPlvhx4wTRKGNAgOCGnkEvG3WyW84zoiVPdQAHLMVxbmesEFyK3a9INd8yaC3KXxa2RdRv-Dl9FwI',
+//     });
+//     console.log('Subscription:', subscription);
 
-    const response = await fetch(`http://localhost:3000/subscribe`, {
-      method: 'POST',
-      body: JSON.stringify(subscription),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+//     const response = await fetch(`http://pwa.anky.lat/subscribe`, {
+//       method: 'POST',
+//       body: JSON.stringify(subscription),
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//     });
 
-    if (!response.ok) {
-      throw new Error('Failed to subscribe the user');
-    }
-    const data = await response.json();
-    console.log('Successfully subscribed the user:', data);
-  } catch (error) {
-    console.error('Error subscribing the user:', error);
-  }
-});
+//     if (!response.ok) {
+//       throw new Error('Failed to subscribe the user');
+//     }
+//     const data = await response.json();
+//     console.log('Successfully subscribed the user:', data);
+//   } catch (error) {
+//     console.error('Error subscribing the user:', error);
+//   }
+// });
 
 self.addEventListener('push', event => {
   console.log('IN HERE, A NOT WILL BE SENT:', event.data);
