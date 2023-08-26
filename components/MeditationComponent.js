@@ -17,14 +17,14 @@ const MeditationComponent = () => {
   };
 
   return (
-    <div className='pt-48'>
+    <div className='pt-64'>
       <div className='w-full flex justify-center items-center text-center'>
         <div className='flex h-fit flex-col'>
           <div className='w-full flex justify-center'>
             <CircularPlayer
               setMeditationReady={setMeditationReady}
               image='/ankys/elmasmejor.png'
-              audio='/assets/meditation16.mp3'
+              audio='/assets/meditation17.mp3'
             />
           </div>
           <div className='mt-12'>

@@ -69,7 +69,7 @@ export default function Home() {
     return (
       <div className='h-full relative'>
         <small className='absolute top-0 left-0 right-0 text-center text-sm text-gray-500'>
-          sojourn 1 - wink 16 - poiesis
+          sojourn 1 - wink 17 - primordia
         </small>
         <MeditationComponent />
       </div>
@@ -79,7 +79,7 @@ export default function Home() {
     return (
       <div className='h-full'>
         <small className='absolute top-0 left-0 right-0 text-center text-sm text-gray-500'>
-          sojourn 1 - wink 16 - poiesis
+          sojourn 1 - wink 17 - primordia
         </small>
         <div className='pt-24 h-full'>
           <WritingGame
@@ -93,7 +93,7 @@ export default function Home() {
               setWritingReady(true);
             }}
             onDiscard={() => alert('Discard')}
-            prompt='How has your capacity for expressing yourself creatively evolved over time?'
+            prompt='How do your childhood survival instincts still impact you today?'
             messageForUser='You made it, once again. Congratulations, dear friend. This is all of what this game is about.'
           />
         </div>
@@ -159,7 +159,7 @@ export default function Home() {
           displayAnswers={displayAnswers}
           totalAnswers={answers.length}
           id='1'
-          question='How has your capacity for expressing yourself creatively evolved over time?'
+          question='How do your childhood survival instincts still impact you today?'
           avatar='anky'
         />
 
