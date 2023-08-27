@@ -15,6 +15,7 @@ const righteous = Righteous({ subsets: ['latin'], weight: ['400'] });
 const DesktopApp = dynamic(() => import('../components/DesktopApp'));
 
 function MyApp({ Component, pageProps }) {
+  console.log('before the app even runs');
   const {
     isAnkyReady,
     setAnkyImages,
