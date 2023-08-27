@@ -30,30 +30,31 @@ function MyApp({ Component, pageProps }) {
     if (window.innerWidth > 768) {
       setIsDesktop(true);
     }
+    console.log('Right before the setloading');
     setLoading(false);
   }, []);
 
   useEffect(() => {
     console.log('THIS USE EFFECT IS RUNNING');
-    const handleServiceWorkerMessage = event => {
-      if (event.data && event.data.type === 'ANKY_LOADING') {
-        console.log('listening to the anky loading event');
-        setIsAnkyLoading(true);
-      }
-      if (event.data && event.data.type === 'ANKY_READY') {
-        console.log('listening to the anky ready event');
-        setIsAnkyReady(true);
-        setIsAnkyLoading(false);
-      }
-      if (event.data && event.data.type === 'ANKY_IMAGES_READY') {
-        console.log(
-          'listening to the anky images event on the app',
-          event.data.images
-        );
-        setAnkyImages(event.data.images);
-      }
-    };
     if ('serviceWorker' in navigator && navigator.serviceWorker) {
+      const handleServiceWorkerMessage = event => {
+        if (event.data && event.data.type === 'ANKY_LOADING') {
+          console.log('listening to the anky loading event');
+          setIsAnkyLoading(true);
+        }
+        if (event.data && event.data.type === 'ANKY_READY') {
+          console.log('listening to the anky ready event');
+          setIsAnkyReady(true);
+          setIsAnkyLoading(false);
+        }
+        if (event.data && event.data.type === 'ANKY_IMAGES_READY') {
+          console.log(
+            'listening to the anky images event on the app',
+            event.data.images
+          );
+          setAnkyImages(event.data.images);
+        }
+      };
       navigator.serviceWorker.addEventListener(
         'message',
         handleServiceWorkerMessage
@@ -161,17 +162,7 @@ function MyApp({ Component, pageProps }) {
         }}
       >
         <PWAProvider>
-          {isDesktop ? (
-            <DesktopApp />
-          ) : (
-            <div>
-              {writingReady && meditationReady && <Navbar />}
-              <div className={`overflow-y-scroll flex-grow border-white`}>
-                <Component {...pageProps} />
-              </div>
-              {writingReady && meditationReady && <BottomNavbar />}
-            </div>
-          )}
+          {isDesktop ? <DesktopApp /> : <p>acá está el problema</p>}
         </PWAProvider>
       </PrivyProvider>
     </main>
