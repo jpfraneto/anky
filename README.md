@@ -2,6 +2,10 @@
 
 tl;dr: this repo is the pwa of anky. one of the infinite branches of expression of an interpretation of the underlying truth of all religions.
 
+-- important ---
+there is nothing that is set on stone in the development of this project. actually, the opposite of that is true. everything that i do is dynamic, and the thing that i want the most in the world is to give up the full responsibility of it so that we can deliberate how it progresses in comunity. the comunity that i'm building around this is represented by the ownership of the [anky genesis nft](https://mint.anky.lat), and the idea is that eventually all of the 8888 holders will be able to push code into all the repositories that encompass anky. i need to organize this thing. i need to frame it in a way that is understandable for the world. and i need help even with that. and i'm open to change directions if needed. i just know that i don't know.
+--- thank you for being here ---
+
 ![Anky is you](https://github.com/jpfraneto/anky/blob/main/public/images/background.png?raw=true)
 
 This is the core belief behind Anky, a brand that seeks to push the boundaries of storytelling and the use of technology as a tool for helping you embody your uniqueness.

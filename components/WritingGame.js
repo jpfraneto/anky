@@ -132,6 +132,9 @@ const WritingGame = ({
         } rounded-xl text-white border overflow-y-auto`} // Updated this line
         onChange={handleTextChange}
       />
+      <div className='w-full flex justify-center'>
+        <p className='text-2xl py-2'>{time}</p>
+      </div>
       {(fullDisplay || text.length) > 0 && isDone && (
         <div
           className='h-8 mt-2 flex-none'
