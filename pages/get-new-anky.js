@@ -189,7 +189,8 @@ const GetNewAnky = () => {
                 TELL ME WHO YOU ARE
               </p>
               <p className='mb-2 text-sm text-center'>
-                I will create a new Anky for you based on what you wrote.
+                I will create a new Anky for you based on what you wrote. A cool
+                one.
               </p>
               <WritingGame
                 text={text}
