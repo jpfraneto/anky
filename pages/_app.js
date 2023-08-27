@@ -1,4 +1,5 @@
 import '../styles/globals.css';
+import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 import { Righteous } from 'next/font/google';
 import { PrivyProvider, useWallets } from '@privy-io/react-auth';
@@ -11,6 +12,7 @@ import Navbar from '../components/Navbar';
 import { PWAProvider, usePWA } from '../context/pwaContext';
 
 const righteous = Righteous({ subsets: ['latin'], weight: ['400'] });
+const DesktopApp = dynamic(() => import('../components/DesktopApp'));
 
 const handleLogin = user => {
   console.log(`User ${user.id} logged in!`);
@@ -26,6 +28,15 @@ function MyApp({ Component, pageProps }) {
     meditationReady,
     setMeditationReady,
   } = usePWA();
+  const [isDesktop, setIsDesktop] = useState(false);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    if (window.innerWidth > 768) {
+      setIsDesktop(true);
+    }
+    setLoading(false);
+  }, []);
+
   useEffect(() => {
     console.log('THIS USE EFFECT IS RUNNING');
     const handleServiceWorkerMessage = event => {
@@ -99,18 +110,10 @@ function MyApp({ Component, pageProps }) {
     return outputArray;
   }
 
+  if (loading) return <p>Loading...</p>;
+
   return (
-    <main
-      className={`${righteous.className} h-[calc(100dvh)] fixed text-white w-full md:w-96 mx-auto bg-cover bg-center`}
-      style={{
-        boxSizing: 'border-box',
-        backgroundImage:
-          "linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/images/pwa.png')",
-        backgroundPosition: 'center center',
-        backgroundSize: 'cover',
-        backgroundRepeat: 'no-repeat',
-      }}
-    >
+    <main className={`${righteous.className}`}>
       <Head>
         <title>Anky</title>
         <meta name='description' content='Anky is you' />
@@ -203,13 +206,27 @@ function MyApp({ Component, pageProps }) {
         }}
       >
         <PWAProvider>
-          <div className='flex flex-col h-full relative'>
-            {writingReady && meditationReady && <Navbar />}
-            <div className={`overflow-y-scroll flex-grow border-white`}>
-              <Component {...pageProps} />
+          {isDesktop ? (
+            <DesktopApp />
+          ) : (
+            <div
+              className='h-[calc(100dvh)] fixed text-white w-full mx-auto bg-cover bg-center flex flex-col '
+              style={{
+                boxSizing: 'border-box',
+                backgroundImage:
+                  "linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/images/pwa.png')",
+                backgroundPosition: 'center center',
+                backgroundSize: 'cover',
+                backgroundRepeat: 'no-repeat',
+              }}
+            >
+              {writingReady && meditationReady && <Navbar />}
+              <div className={`overflow-y-scroll flex-grow border-white`}>
+                <Component {...pageProps} />
+              </div>
+              {writingReady && meditationReady && <BottomNavbar />}
             </div>
-            {writingReady && meditationReady && <BottomNavbar />}
-          </div>
+          )}
         </PWAProvider>
       </PrivyProvider>
     </main>
