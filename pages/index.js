@@ -12,11 +12,14 @@ import { PWAProvider, usePWA } from '../context/pwaContext';
 import { usePrivy } from '@privy-io/react-auth';
 import MeditationComponent from '../components/MeditationComponent';
 
-export default function Home({
-  setMeditationReady,
-  setWritingReady,
-  setEnteredTheAnkyverse,
-}) {
+export default function Home() {
+  const {
+    meditationReady,
+    writingReady,
+    setWritingReady,
+    enteredTheAnkyverse,
+    setEnteredTheAnkyverse,
+  } = usePWA();
   const { user, authenticated, logout } = usePrivy();
 
   const [collectWritingLoading, setCollectWritingLoading] = useState(false);
