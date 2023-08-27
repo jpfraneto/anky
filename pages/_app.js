@@ -164,20 +164,10 @@ function MyApp({ Component, pageProps }) {
           {isDesktop ? (
             <DesktopApp />
           ) : (
-            <div
-              className='h-[calc(100dvh)] fixed text-white w-full mx-auto bg-cover bg-center flex flex-col '
-              style={{
-                boxSizing: 'border-box',
-                backgroundImage:
-                  "linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/images/pwa.png')",
-                backgroundPosition: 'center center',
-                backgroundSize: 'cover',
-                backgroundRepeat: 'no-repeat',
-              }}
-            >
+            <div>
               {writingReady && meditationReady && <Navbar />}
               <div className={`overflow-y-scroll flex-grow border-white`}>
-                <p>Instead of the component</p>
+                <Component {...pageProps} />
               </div>
               {writingReady && meditationReady && <BottomNavbar />}
             </div>
