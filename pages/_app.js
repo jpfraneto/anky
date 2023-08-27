@@ -161,8 +161,7 @@ function MyApp({ Component, pageProps }) {
         }}
       >
         <PWAProvider>
-          <p className='text-white'>inside the pwa provider</p>
-          {/* {isDesktop ? (
+          {isDesktop ? (
             <DesktopApp />
           ) : (
             <div
@@ -178,11 +177,12 @@ function MyApp({ Component, pageProps }) {
             >
               {writingReady && meditationReady && <Navbar />}
               <div className={`overflow-y-scroll flex-grow border-white`}>
-                <Component {...pageProps} />
+                <p className='text-white'>Instead of the component</p>
+                {/* <Component {...pageProps} /> */}
               </div>
               {writingReady && meditationReady && <BottomNavbar />}
             </div>
-          )} */}
+          )}
         </PWAProvider>
       </PrivyProvider>
     </main>
