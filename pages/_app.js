@@ -67,7 +67,7 @@ function MyApp({ Component, pageProps }) {
     }
   }, []);
 
-  if (true) return <p>Loading...</p>;
+  if (loading) return <p>Loading...</p>;
 
   return (
     <main className={`${righteous.className}`}>
@@ -128,7 +128,6 @@ function MyApp({ Component, pageProps }) {
           rel='stylesheet'
           href='https://fonts.googleapis.com/css?family=Righteous:300,400,500'
         />
-
         <meta name='twitter:card' content='summary' />
         <meta name='twitter:url' content='https://anky.lat' />
         <meta name='twitter:title' content='Anky' />
@@ -161,7 +160,8 @@ function MyApp({ Component, pageProps }) {
           },
         }}
       >
-        <PWAProvider>
+        <p className='text-white'>aloja</p>
+        {/* <PWAProvider>
           {isDesktop ? (
             <DesktopApp />
           ) : (
@@ -183,7 +183,7 @@ function MyApp({ Component, pageProps }) {
               {writingReady && meditationReady && <BottomNavbar />}
             </div>
           )}
-        </PWAProvider>
+        </PWAProvider> */}
       </PrivyProvider>
     </main>
   );

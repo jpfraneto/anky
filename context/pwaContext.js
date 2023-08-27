@@ -1,4 +1,3 @@
-// context/pwaContext.js
 import { createContext, useContext, useState } from 'react';
 
 const PWAContext = createContext({
