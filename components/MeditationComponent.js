@@ -27,7 +27,7 @@ const MeditationComponent = () => {
               audio='/assets/meditation18.mp3'
             />
           </div>
-          <div className='mt-6'>
+          <div className='mt-6 w-fit mx-auto'>
             <Button
               buttonAction={dontHaveTimeFunction}
               buttonText={

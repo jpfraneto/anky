@@ -41,6 +41,7 @@ export default function Home() {
   const [giveLoveLoading, setGiveLoveLoading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [writingIndex, setWritingIndex] = useState(0);
+  const [showWritingMessage, setShowWritingMessage] = useState(false);
 
   const [success, setSuccess] = useState(false);
   const [writings, setWritings] = useState([]);
@@ -65,11 +66,15 @@ export default function Home() {
     setEnteredTheAnkyverse(true);
   };
 
+  const showSaveWritingMessage = () => {
+    setShowWritingMessage(true);
+  };
+
   if (!meditationReady && !writingReady)
     return (
       <div className='h-full relative'>
         <small className='absolute top-0 left-0 right-0 text-center text-sm text-gray-500'>
-          sojourn 1 - wink 17 - primordia
+          sojourn 1 - wink 18 - emblazion
         </small>
         <MeditationComponent />
       </div>
@@ -79,21 +84,20 @@ export default function Home() {
     return (
       <div className='h-full'>
         <small className='absolute top-0 left-0 right-0 text-center text-sm text-gray-500'>
-          sojourn 1 - wink 17 - primordia
+          sojourn 1 - wink 18 - emblazion
         </small>
         <div className='pt-24 h-full'>
           <WritingGame
             fullDisplay={true}
             text={text}
             setText={setText}
-            btnTwoText='Force'
+            btnTwoText='Discard & start again'
             onSubmit={() => {
               setAnswers(x => [...x, text]);
               setText('');
               setWritingReady(true);
             }}
-            onDiscard={() => alert('Discard')}
-            prompt='How do your childhood survival instincts still impact you today?'
+            prompt='How does your emotional and passionate energy drive your relationships?'
             messageForUser='You made it, once again. Congratulations, dear friend. This is all of what this game is about.'
           />
         </div>
@@ -110,20 +114,50 @@ export default function Home() {
               Do you want to store your writing forever associated with your
               Anky?
             </p>
-            <div className='flex flex-col space-y-2'>
+            <div className='flex mt-2 '>
               <Button
-                buttonText='Store Writing'
-                buttonAction={handleWritingSaving}
+                buttonText='Save Writing'
+                buttonAction={showSaveWritingMessage}
                 buttonColor='bg-green-600'
               />
               <Button
                 buttonText='No thank you'
                 buttonAction={() => {
+                  alert(
+                    'Im working on the functionality that will make you want to have pressed the other button'
+                  );
                   setEnteredTheAnkyverse(true);
                 }}
                 buttonColor='bg-purple-600'
               />
             </div>
+            {showWritingMessage && (
+              <div className='mt-2 flex flex-col w-full px-2'>
+                <p>I&apos;m working on this.</p>
+                <p>
+                  The mission is that as soon as you have your account, you have
+                  an ERC6551 NFT in your wallet: your Anky.
+                </p>
+                <p>
+                  This NFT will be the notebook keeper of all of your writings.
+                  Every day.
+                </p>
+                <p>
+                  Eventually, when you die, you will be able to setup a system
+                  for this NFT to be transfered to your loved ones. So that they
+                  can read what you wrote when you came here to open your heart.
+                </p>
+                <p>
+                  I need your feedback. Please help me make this place as cool
+                  as possible
+                </p>
+                <Button
+                  buttonAction={() => setEnteredTheAnkyverse(true)}
+                  buttonColor='bg-purple-600'
+                  buttonText='Enter the Ankyverse'
+                />
+              </div>
+            )}
           </div>
         ) : (
           <div>
@@ -152,14 +186,13 @@ export default function Home() {
 
   return (
     <div className='h-full relative'>
-      <h2 className='text-center text-xl '>anky</h2>
       <div className='w-full mx-auto text-white overflow-y-scroll px-4 pt-2 pb-32 '>
         <LandingQuestionCard
           setDisplayAnswers={setDisplayAnswers}
           displayAnswers={displayAnswers}
           totalAnswers={answers.length}
           id='1'
-          question='How do your childhood survival instincts still impact you today?'
+          question='How does your emotional and passionate energy drive your relationships?'
           avatar='anky'
         />
 

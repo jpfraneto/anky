@@ -94,6 +94,20 @@ const WritingGame = ({
     };
   }
 
+  const startNewRun = () => {
+    setTime(0);
+    setText('');
+    setFinished(false);
+    setIsDone(false);
+    setLifeBarLength(100);
+  };
+
+  const copyToClipboard = async () => {
+    await navigator.clipboard.writeText(text);
+    alert('Your writing is on the clipboard');
+    startNewRun();
+  };
+
   return (
     <div
       className={`${
@@ -125,7 +139,7 @@ const WritingGame = ({
           width: '100%',
           fontSize: '16px',
         }}
-        placeholder='Your answer here...'
+        placeholder='Write as if the world was going to end here...'
         value={text}
         className={` p-2  bg-black ${
           text.length > 0 ? 'h-64' : 'h-64'
@@ -150,7 +164,7 @@ const WritingGame = ({
           <button
             className='bg-red-700 rounded-xl'
             style={{ width: '45%' }}
-            onClick={onDiscard}
+            onClick={copyToClipboard}
           >
             {btnTwoText}
           </button>
