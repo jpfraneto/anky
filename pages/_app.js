@@ -177,8 +177,7 @@ function MyApp({ Component, pageProps }) {
             >
               {writingReady && meditationReady && <Navbar />}
               <div className={`overflow-y-scroll flex-grow border-white`}>
-                <p className='text-white'>Instead of the component</p>
-                {/* <Component {...pageProps} /> */}
+                <p>Instead of the component</p>
               </div>
               {writingReady && meditationReady && <BottomNavbar />}
             </div>
