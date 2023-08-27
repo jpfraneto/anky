@@ -100,6 +100,11 @@ export default function Home() {
             prompt='How does your emotional and passionate energy drive your relationships?'
             messageForUser='You made it, once again. Congratulations, dear friend. This is all of what this game is about.'
           />
+          <Button
+            buttonAction={() => setWritingReady(true)}
+            buttonText='Skip Writing'
+            buttonColor='bg-purple-600'
+          />
         </div>
       </div>
     );
