@@ -160,9 +160,9 @@ function MyApp({ Component, pageProps }) {
           },
         }}
       >
-        <p className='text-white'>aloja</p>
-        {/* <PWAProvider>
-          {isDesktop ? (
+        <PWAProvider>
+          <p className='text-white'>inside the pwa provider</p>
+          {/* {isDesktop ? (
             <DesktopApp />
           ) : (
             <div
@@ -182,8 +182,8 @@ function MyApp({ Component, pageProps }) {
               </div>
               {writingReady && meditationReady && <BottomNavbar />}
             </div>
-          )}
-        </PWAProvider> */}
+          )} */}
+        </PWAProvider>
       </PrivyProvider>
     </main>
   );
