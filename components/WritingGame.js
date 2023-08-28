@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
+import Button from './Button';
+import { usePWA } from '../context/pwaContext';
 
 const WritingGame = ({
   onSubmit,
   placeholder = '',
   prompt,
-  btnOneText = 'Save my writing',
+  btnOneText = 'Save my writing anon',
   text,
   setText,
   btnTwoText = 'Discard',
@@ -12,9 +14,11 @@ const WritingGame = ({
   messageForUser,
   fullDisplay = false,
 }) => {
+  const { setWritingReady, setEnteredTheAnkyverse } = usePWA();
   const [timeLeft, setTimeLeft] = useState(3);
   const [isActive, setIsActive] = useState(false);
   const [time, setTime] = useState(0);
+  const [skippedBtn, setSkippedBtn] = useState(false);
   const [isDone, setIsDone] = useState(false);
   const [isWriting, setIsWriting] = useState(false);
   const [lastKeystroke, setLastKeystroke] = useState(Date.now());
@@ -149,6 +153,17 @@ const WritingGame = ({
       <div className='w-full flex justify-center'>
         <p className='text-2xl py-2'>{time}</p>
       </div>
+      <Button
+        buttonText={skippedBtn ? `Are you sure?` : `Skip`}
+        buttonColor={skippedBtn ? `bg-red-600` : 'bg-purple-600'}
+        buttonAction={() => {
+          if (skippedBtn) {
+            setEnteredTheAnkyverse(true);
+            return setWritingReady(true);
+          }
+          setSkippedBtn(true);
+        }}
+      />
       {(fullDisplay || text.length) > 0 && isDone && (
         <div
           className='h-8 mt-2 flex-none'

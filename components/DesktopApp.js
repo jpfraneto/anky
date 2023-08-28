@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import DesktopWritingGame from './DesktopWritingGame';
+import { usePrivy } from '@privy-io/react-auth';
 
 const DesktopApp = () => {
   const [lifeBarLength, setLifeBarLength] = useState(0);
@@ -17,6 +18,7 @@ const DesktopApp = () => {
           ></div>
         </div>
       </div>
+
       <DesktopWritingGame
         ankyverseDate='sojourn 1 - wink 19 - chryseos'
         userPrompt='What aspects of your life would you like to transform, and why?'

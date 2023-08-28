@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 const AnswerToQuestionCard = ({ answer, index }) => {
+  console.log('the answer is: ', answer);
   const [opened, setOpened] = useState(false);
   return (
     <div
@@ -17,7 +18,7 @@ const AnswerToQuestionCard = ({ answer, index }) => {
 
       <div className=' w-full text-sm py-2 pr-2'>
         <p>
-          {answer.slice(0, `${opened ? answer.length : '50'}`)}
+          {answer.text.slice(0, `${opened ? answer.text.length : '50'}`)}
           {!opened && '...'}
         </p>
       </div>

@@ -26,16 +26,36 @@ export default function Home() {
   const [displayAnswers, setDisplayAnswers] = useState(false);
   const [giveLoveLoading, setGiveLoveLoading] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [writings, setWritings] = useState([]);
   const [showWritingMessage, setShowWritingMessage] = useState(false);
 
-  const [answers, setAnswers] = useState([
-    'And that is why the relationship that AI will have with time is very important and informative about our own relationship with it. In a sense, AI is static because it is encapsulated in computers. But (from the pure basic understanding that I have of it) it evolves by bringing in more and more information related to inputs that they feed it with. So isn’t that as it is evolved with all these different inputs there is also a passing of time that happens? Isn’t it that that is how we frame time as passing? As more and more changing inputs come through our system there is a perception that there is something that is changed and that something is called time. If there is a car that is passing by in front of me right now, there is a perception that there is an input that is changing, and because of that, there is a conceptual understanding that time went by. I can’t relate this to the experience of no-time that happens in deep trance states because I can’t relate to them now, but I wonder these two things: How will AI perceive time, which will be it’s interpretation of it on a conceptual level, and also what is time ultimately in the sense of all this what goes on when there is no inputs that are changed in our whole perception system.',
-    'But yesterda That IS a valid way of spending his time as we were singing her happy birthday. It IS the way that makes more sense to him, in that moment, and that is why he is doing it. Who am I to judge that? Who am I to blame? No one. It doesn’t matter. If I find more value just by being a witness and enjoying it without the meditation of technology, it is perfect like that. Just do it. But make sure you respect the way on which other people decide to do things also. This was a big eye opener yesterday, because now I realize how much I have judged other people because of doing something like this. And what is the use of it? Why do I even care? I can only control my own life experience, the things that I do, what I care about, and caring about what other person decides to do in a particular moment doesn’t help at all. It is just noise. And I want to break free of that noise. I want to integrate it fully, and move towards the rest of my life without it. It ends up being a burden. And I don’t want that burden on top of myself. I just want to be able to enjoy every second of my experience as a human being, to be present with what is, and if I’m there judging him because he is recording, or even worse, telling him to stop, I’m just being the asshole that I have been for a big part of my life.',
-  ]);
+  const [answers, setAnswers] = useState();
   const [text, setText] = useState('');
+
+  useEffect(() => {
+    const getWritingsOfToday = async () => {
+      console.log('on the way to get the writings of today');
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/writings`
+      );
+      const writings = await response.json();
+      console.log('the wriings are: ', writings);
+      setWritings(writings);
+    };
+    getWritingsOfToday();
+  }, []);
 
   const showSaveWritingMessage = () => {
     setShowWritingMessage(true);
+  };
+
+  const saveWritingAnon = async () => {
+    try {
+      await saveTextAnon(text);
+      setWritings(x => [...x, text]);
+      setText('');
+      setWritingReady(true);
+    } catch (error) {}
   };
 
   if (!meditationReady && !writingReady)
@@ -60,11 +80,7 @@ export default function Home() {
             text={text}
             setText={setText}
             btnTwoText='Discard & start again'
-            onSubmit={() => {
-              setAnswers(x => [...x, text]);
-              setText('');
-              setWritingReady(true);
-            }}
+            onSubmit={saveWritingAnon}
             prompt='What aspects of your life would you like to transform, and why?'
             messageForUser='You made it, once again. Congratulations, dear friend. This is all of what this game is about.'
           />
@@ -78,6 +94,10 @@ export default function Home() {
       <div className='h-full p-4'>
         {authenticated ? (
           <div>
+            <p>
+              Your writing was saved anonymously. What you see here is just an
+              experimental feature / ux exploration.
+            </p>
             <p className='text-xl mt-20'>
               Do you want to store your writing forever associated with your
               Anky?
@@ -158,15 +178,15 @@ export default function Home() {
         <LandingQuestionCard
           setDisplayAnswers={setDisplayAnswers}
           displayAnswers={displayAnswers}
-          totalAnswers={answers.length}
+          totalAnswers={writings.length}
           id='1'
           question='How does your emotional and passionate energy drive your relationships?'
           avatar='anky'
         />
 
         {displayAnswers &&
-          answers.map((answer, i) => (
-            <AnswerToQuestionCard answer={answer} key={i} index={i} />
+          writings.map((writing, i) => (
+            <AnswerToQuestionCard answer={writing} key={i} index={i} />
           ))}
       </div>
     </div>

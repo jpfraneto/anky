@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Righteous, Dancing_Script } from 'next/font/google';
 import Button from './Button';
 import Image from 'next/image';
+import { saveTextAnon } from '../lib/backend';
 import LoggedInUser from './LoggedInUser';
 import { useRouter } from 'next/router';
 
@@ -33,6 +34,8 @@ const DesktopWritingGame = ({
   const [savingRound, setSavingRound] = useState(false);
   const [moreThanMinRun, setMoreThanMinRound] = useState(null);
   const [chosenUpscaledImage, setChosenUpscaledImage] = useState('');
+  const [savingTextAnon, setSavingTextAnon] = useState(false);
+  const [savedText, setSavedText] = useState(false);
 
   const [generatedImages, setGeneratedImages] = useState('');
   const [loadingAnkyResponse, setLoadingAnkyResponse] = useState(false);
@@ -148,6 +151,12 @@ const DesktopWritingGame = ({
   const pasteText = async () => {
     await navigator.clipboard.writeText(text);
     setCopyText('Copied.');
+  };
+
+  const sendTextToBackend = async () => {
+    setSavingTextAnon(true);
+    await saveTextAnon(text);
+    setSavedText(true);
   };
 
   if (errorProblem)
@@ -341,6 +350,17 @@ const DesktopWritingGame = ({
                         )}
                       </div>
                     </div>
+                  )}
+                  {savedText ? (
+                    <p>Your text was saved anon</p>
+                  ) : (
+                    <Button
+                      buttonAction={sendTextToBackend}
+                      buttonText={
+                        savingTextAnon ? `Saving...` : `Save text anon`
+                      }
+                      buttonColor='bg-green-600'
+                    />
                   )}
                 </div>
               ) : (
