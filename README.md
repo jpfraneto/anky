@@ -2,6 +2,8 @@
 
 tl;dr: this repo is the pwa of anky. one of the infinite branches of expression of an interpretation of the underlying truth of all religions.
 
+The mission: To build practical tools that help humans discover who they are. No matter the language. The color. The social status. We all have an underlying thread that connects us - being human - and Anky is here to celebrate that.
+
 -- important ---
 
 there is nothing that is set on stone in the development of this project. actually, the opposite of that is true. everything that i do is dynamic, and the thing that i want the most in the world is to give up the full responsibility of it so that we can deliberate how it progresses in comunity. the comunity that i'm building around this is represented by the ownership of the [anky genesis nft](https://mint.anky.lat), and the idea is that eventually all of the 8888 holders will be able to push code into all the repositories that encompass anky. i need to organize this thing. i need to frame it in a way that is understandable for the world. i need help.
@@ -58,4 +60,4 @@ Anky is a meme. A way of framing the world. An interface to explain the human jo
 
 ## I need help telling this story.
 
-I don't know how. All of what happens here is dynamic.
+I don't know how.
