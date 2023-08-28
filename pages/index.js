@@ -9,6 +9,7 @@ import LandingQuestionCard from '../components/LandingQuestionCard';
 import AnswerToQuestionCard from '../components/AnswerToQuestionCard';
 import WritingGame from '../components/WritingGame';
 import { PWAProvider, usePWA } from '../context/pwaContext';
+import { saveTextAnon } from '../lib/backend';
 import { usePrivy } from '@privy-io/react-auth';
 import MeditationComponent from '../components/MeditationComponent';
 
@@ -51,11 +52,14 @@ export default function Home() {
 
   const saveWritingAnon = async () => {
     try {
+      alert('This will be saved anon');
       await saveTextAnon(text);
       setWritings(x => [...x, text]);
       setText('');
       setWritingReady(true);
-    } catch (error) {}
+    } catch (error) {
+      console.log('there was an error');
+    }
   };
 
   if (!meditationReady && !writingReady)

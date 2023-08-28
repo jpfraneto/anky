@@ -153,17 +153,20 @@ const WritingGame = ({
       <div className='w-full flex justify-center'>
         <p className='text-2xl py-2'>{time}</p>
       </div>
-      <Button
-        buttonText={skippedBtn ? `Are you sure?` : `Skip`}
-        buttonColor={skippedBtn ? `bg-red-600` : 'bg-purple-600'}
-        buttonAction={() => {
-          if (skippedBtn) {
-            setEnteredTheAnkyverse(true);
-            return setWritingReady(true);
-          }
-          setSkippedBtn(true);
-        }}
-      />
+      {text.length === 0 && (
+        <Button
+          buttonText={skippedBtn ? `Are you sure?` : `Skip`}
+          buttonColor={skippedBtn ? `bg-red-600` : 'bg-purple-600'}
+          buttonAction={() => {
+            if (skippedBtn) {
+              setEnteredTheAnkyverse(true);
+              return setWritingReady(true);
+            }
+            setSkippedBtn(true);
+          }}
+        />
+      )}
+
       {(fullDisplay || text.length) > 0 && isDone && (
         <div
           className='h-8 mt-2 flex-none'
