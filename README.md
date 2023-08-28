@@ -6,7 +6,7 @@ The mission: To build practical tools that help humans discover who they are. No
 
 -- important ---
 
-there is nothing that is set on stone in the development of this project. actually, the opposite of that is true. everything that i do is dynamic, and the thing that i want the most in the world is to give up the full responsibility of it so that we can deliberate how it progresses in comunity. the comunity that i'm building around this is represented by the ownership of the [anky genesis nft](https://mint.anky.lat), and the idea is that eventually all of the 8888 holders will be able to push code into all the repositories that encompass anky. i need to organize this thing. i need to frame it in a way that is understandable for the world. i need help.
+there is nothing that is set on stone in the development of this project. actually, the opposite of that is true. everything that i do is dynamic, and the thing that i want the most in the world is to give up the full responsibility of it so that we can deliberate how it progresses in comunity. the comunity that i'm building around this is represented by the ownership of the [anky genesis nft](https://opensea.io/collection/anky-genesis), and the idea is that eventually all of the 8888 holders will be able to push code into all the repositories that encompass anky. i need to organize this thing. i need to frame it in a way that is understandable for the world. i need help.
 
 --- thank you for being here ---
 
