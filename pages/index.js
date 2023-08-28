@@ -27,6 +27,7 @@ export default function Home() {
   const [displayAnswers, setDisplayAnswers] = useState(false);
   const [giveLoveLoading, setGiveLoveLoading] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [writings, setWritings] = useState([]);
   const [showWritingMessage, setShowWritingMessage] = useState(false);
 
@@ -53,15 +54,16 @@ export default function Home() {
   const saveWritingAnon = async () => {
     try {
       alert('This will be saved anon');
-      await saveTextAnon(text);
+      const aloja = await saveTextAnon(text);
+      console.log('aloja is: ', aloja);
       setWritingReady(true);
-      // setWritings(x => [...x, { id: '1238oo8', text }]);
-      // setText('');
+      setWritings(x => [...x, { id: '1238oo8', text }]);
+      setText('');
     } catch (error) {
-      console.log('there was an error');
-      alert(error);
+      console.log('there was an error', error);
     }
   };
+  if (error) return <p>the error is {error}</p>;
 
   if (!meditationReady && !writingReady)
     return (
