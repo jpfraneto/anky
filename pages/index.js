@@ -54,7 +54,7 @@ export default function Home() {
     try {
       alert('This will be saved anon');
       await saveTextAnon(text);
-      setWritings(x => [...x, text]);
+      setWritings(x => [...x, { id: '1238oo8', text }]);
       setText('');
       setWritingReady(true);
     } catch (error) {
