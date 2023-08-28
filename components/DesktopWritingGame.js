@@ -136,6 +136,7 @@ const DesktopWritingGame = ({
     setSavedToDb(false);
     setIsDone(false);
     setFinished(false);
+    setSavedText(false);
   };
 
   const handleTextChange = event => {

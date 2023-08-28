@@ -54,11 +54,12 @@ export default function Home() {
     try {
       alert('This will be saved anon');
       await saveTextAnon(text);
+      setWritingReady(true);
       setWritings(x => [...x, { id: '1238oo8', text }]);
       setText('');
-      setWritingReady(true);
     } catch (error) {
       console.log('there was an error');
+      alert(error);
     }
   };
 
@@ -99,8 +100,9 @@ export default function Home() {
         {authenticated ? (
           <div>
             <p>
-              Your writing was saved anonymously. What you see here is just an
-              experimental feature / ux exploration.
+              Your writing was already saved anonymously on a centralized. What
+              you see here is just an experimental feature / ux exploration to
+              change that.
             </p>
             <p className='text-xl mt-20'>
               Do you want to store your writing forever associated with your
