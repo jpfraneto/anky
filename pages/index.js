@@ -55,10 +55,11 @@ export default function Home() {
     try {
       alert('This will be saved anon');
       const aloja = await saveTextAnon(text);
+      alert('after it');
       console.log('aloja is: ', aloja);
-      setWritingReady(true);
-      setWritings(x => [...x, { id: '1238oo8', text }]);
-      setText('');
+      // setWritingReady(true);
+      // setWritings(x => [...x, { id: '1238oo8', text }]);
+      // setText('');
     } catch (error) {
       console.log('there was an error', error);
     }
