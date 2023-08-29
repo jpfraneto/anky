@@ -53,16 +53,20 @@ export default function Home() {
 
   const saveWritingAnon = async () => {
     try {
-      // alert('This will be saved anon');
-      // const aloja = await saveTextAnon(text);
-      // alert('after it');
-      // console.log('aloja is: ', aloja);
-      // setText('');
-      // setWritings(x => [...x, { id: '1238oo8', text }]);
-      setWritingReady(true);
+      alert('This will be saved anon');
+      const aloja = await saveTextAnon(text);
+      alert('after it');
+      console.log('aloja is: ', aloja);
+      setText('');
+      setWritings(x => [...x, { id: '1238oo8', text }]);
+      aloja();
     } catch (error) {
       console.log('there was an error', error);
     }
+  };
+
+  const aloja = () => {
+    setWritingReady(true);
   };
   if (error) return <p>the error is {error}</p>;
 
