@@ -20,8 +20,8 @@ const DesktopApp = () => {
       </div>
 
       <DesktopWritingGame
-        ankyverseDate='sojourn 1 - wink 19 - chryseos'
-        userPrompt='What aspects of your life would you like to transform, and why?'
+        ankyverseDate='sojourn 1 - wink 20 - eleasis'
+        userPrompt='How do you balance giving and receiving love in your relationships?'
         setLifeBarLength={setLifeBarLength}
       />
     </div>
