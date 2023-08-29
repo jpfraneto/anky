@@ -4,6 +4,7 @@ import Image from 'next/image';
 import styles from '../styles/Home.module.css';
 import Button from '../components/Button';
 import Link from 'next/link';
+import { getAnkyverseDay, getAnkyverseQuestion } from '../lib/ankyverse';
 import { useLogin } from '@privy-io/react-auth';
 import LandingQuestionCard from '../components/LandingQuestionCard';
 import AnswerToQuestionCard from '../components/AnswerToQuestionCard';
@@ -30,9 +31,10 @@ export default function Home() {
   const [error, setError] = useState(null);
   const [writings, setWritings] = useState([]);
   const [showWritingMessage, setShowWritingMessage] = useState(false);
-
   const [answers, setAnswers] = useState();
   const [text, setText] = useState('');
+  const ankyverseToday = getAnkyverseDay(new Date());
+  const ankyverseQuestion = getAnkyverseQuestion(ankyverseToday.wink);
 
   useEffect(() => {
     const getWritingsOfToday = async () => {
@@ -53,27 +55,21 @@ export default function Home() {
 
   const saveWritingAnon = async () => {
     try {
-      alert('This will be saved anon');
       const aloja = await saveTextAnon(text);
-      alert('after it');
-      console.log('aloja is: ', aloja);
       setText('');
       setWritings(x => [...x, { id: '1238oo8', text }]);
-      alojaFunction();
     } catch (error) {
       console.log('there was an error', error);
     }
-  };
-
-  const alojaFunction = () => {
-    setWritingReady(true);
   };
 
   if (!meditationReady && !writingReady)
     return (
       <div className='h-full relative'>
         <small className='absolute top-0 left-0 right-0 text-center text-sm text-gray-500'>
-          sojourn 1 - wink 20 - eleasis
+          {`sojourn ${ankyverseToday.currentSojourn} - wink ${
+            ankyverseToday.wink
+          } - ${ankyverseToday.currentKingdom.toLowerCase()}`}
         </small>
         <MeditationComponent />
       </div>
@@ -83,7 +79,9 @@ export default function Home() {
     return (
       <div className='h-full'>
         <small className='absolute top-0 left-0 right-0 text-center text-sm text-gray-500'>
-          sojourn 1 - wink 20 - eleasis
+          {`sojourn ${ankyverseToday.currentSojourn} - wink ${
+            ankyverseToday.wink
+          } - ${ankyverseToday.currentKingdom.toLowerCase()}`}
         </small>
         <div className='pt-24 h-full'>
           <WritingGame
@@ -92,7 +90,7 @@ export default function Home() {
             setText={setText}
             btnTwoText='Discard & start again'
             onSubmit={saveWritingAnon}
-            prompt='How do you balance giving and receiving love in your relationships?'
+            prompt={ankyverseQuestion}
             messageForUser='You made it, once again. Congratulations, dear friend. This is all of what this game is about.'
           />
         </div>
@@ -192,7 +190,7 @@ export default function Home() {
           displayAnswers={displayAnswers}
           totalAnswers={writings.length}
           id='1'
-          question='How do you balance giving and receiving love in your relationships?'
+          question={ankyverseQuestion}
           avatar='anky'
         />
 

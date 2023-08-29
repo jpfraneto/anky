@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import DesktopWritingGame from './DesktopWritingGame';
 import { usePrivy } from '@privy-io/react-auth';
+import { getAnkyverseDay, getAnkyverseQuestion } from '../lib/ankyverse';
 
 const DesktopApp = () => {
   const [lifeBarLength, setLifeBarLength] = useState(0);
-
+  const ankyverseToday = getAnkyverseDay(new Date());
+  const ankyverseQuestion = getAnkyverseQuestion(ankyverseToday.wink);
   return (
     <div className='text-center text-white'>
       <div className='text-white w-full h-8 flex justify-between items-center px-2'>
@@ -20,8 +22,10 @@ const DesktopApp = () => {
       </div>
 
       <DesktopWritingGame
-        ankyverseDate='sojourn 1 - wink 20 - eleasis'
-        userPrompt='How do you balance giving and receiving love in your relationships?'
+        ankyverseDate={`sojourn ${ankyverseToday.currentSojourn} - wink ${
+          ankyverseToday.wink
+        } - ${ankyverseToday.currentKingdom.toLowerCase()}`}
+        userPrompt={ankyverseQuestion}
         setLifeBarLength={setLifeBarLength}
       />
     </div>
