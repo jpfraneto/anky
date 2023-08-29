@@ -59,16 +59,15 @@ export default function Home() {
       console.log('aloja is: ', aloja);
       setText('');
       setWritings(x => [...x, { id: '1238oo8', text }]);
-      aloja();
+      alojaFunction();
     } catch (error) {
       console.log('there was an error', error);
     }
   };
 
-  const aloja = () => {
+  const alojaFunction = () => {
     setWritingReady(true);
   };
-  if (error) return <p>the error is {error}</p>;
 
   if (!meditationReady && !writingReady)
     return (
