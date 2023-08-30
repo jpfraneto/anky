@@ -326,12 +326,17 @@ const DesktopWritingGame = ({
                           <p
                             className={`${righteous.className} mb-2 font-bold`}
                           >
-                            You can now login anonymously to store your writings
-                            forever.
+                            I&apos;m working on giving you the ability to store
+                            your writings forever.
+                          </p>
+                          <p
+                            className={`${righteous.className} mb-2 font-bold`}
+                          >
+                            For now, you can store it anonymously.
                           </p>
                         </div>
                       )}
-                      <div className='flex flex-col md:flex-row justify-center '>
+                      <div className='flex flex-col  md:flex-row justify-center '>
                         <Button
                           buttonColor='bg-yellow-500'
                           buttonAction={pasteText}
@@ -362,7 +367,7 @@ const DesktopWritingGame = ({
                       buttonText={
                         savingTextAnon ? `Saving...` : `Save text anon`
                       }
-                      buttonColor='bg-green-600'
+                      buttonColor='bg-green-600 mt-2'
                     />
                   )}
                 </div>

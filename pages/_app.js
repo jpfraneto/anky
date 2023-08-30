@@ -190,7 +190,8 @@ function MyApp({ Component, pageProps }) {
         }}
       >
         <PrivyWagmiConnector wagmiChainsConfig={chains}>
-          <PWAProvider>
+          <p className='text-white'>Is this being displayed?</p>
+          {/* <PWAProvider>
             {isDesktop ? (
               <DesktopApp />
             ) : (
@@ -212,7 +213,7 @@ function MyApp({ Component, pageProps }) {
                 {writingReady && meditationReady && <BottomNavbar />}
               </div>
             )}
-          </PWAProvider>
+          </PWAProvider> */}
         </PrivyWagmiConnector>
       </PrivyProvider>
     </main>
