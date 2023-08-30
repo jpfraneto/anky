@@ -16,7 +16,6 @@ const PWAContext = createContext({
 });
 
 export const usePWA = () => {
-  console.log('inside the usepwa function');
   return useContext(PWAContext);
 };
 

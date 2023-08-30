@@ -33,7 +33,7 @@ const MeditationComponent = () => {
               buttonText={
                 dontHaveTime ? 'Are you sure?' : `I don't have time for this`
               }
-              buttonColor={dontHaveTime ? 'bg-purple-700' : `bg-purple-600`}
+              buttonColor={dontHaveTime ? 'bg-red-600' : `bg-purple-600`}
             />
           </div>
         </div>

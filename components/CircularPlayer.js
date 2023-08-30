@@ -46,6 +46,7 @@ const CircularPlayer = ({ image, audio, setMeditationReady }) => {
   };
 
   const onAudioEnded = () => {
+    setMeditationReady(true);
     setActive(false);
     cancelAnimationFrame(progressLoop);
   };

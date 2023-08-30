@@ -18,11 +18,10 @@ export default function Home() {
   const {
     meditationReady,
     writingReady,
-    setWritingReady,
     enteredTheAnkyverse,
     setEnteredTheAnkyverse,
   } = usePWA();
-  const { user, authenticated, logout } = usePrivy();
+  const { user, authenticated, login, logout } = usePrivy();
 
   const [collectWritingLoading, setCollectWritingLoading] = useState(false);
   const [displayAnswers, setDisplayAnswers] = useState(false);
@@ -74,6 +73,7 @@ export default function Home() {
         <MeditationComponent />
       </div>
     );
+  console.log('the writing ready is: 0', writingReady);
 
   if (meditationReady && !writingReady) {
     return (

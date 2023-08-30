@@ -176,8 +176,9 @@ const WritingGame = ({
             className='bg-green-700 rounded-xl'
             style={{ width: '45%' }}
             onClick={() => {
-              onSubmit();
+              alert('here!');
               setWritingReady(true);
+              onSubmit();
             }}
           >
             {btnOneText}
