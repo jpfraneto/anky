@@ -51,6 +51,7 @@ function MyApp({ Component, pageProps }) {
   console.log('in here', meditationReady, writingReady);
   const [isDesktop, setIsDesktop] = useState(false);
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     if (window.innerWidth > 768) {
       setIsDesktop(true);

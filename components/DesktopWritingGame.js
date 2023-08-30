@@ -373,7 +373,7 @@ const DesktopWritingGame = ({
                 </div>
               ) : (
                 <p
-                  className={`${righteous.className} z-40 text-fuchsia-500 text-2xl shadow-lg shadow-yellow-200 font-bold`}
+                  className={`${righteous.className} z-40 text-fuchsia-500 text-2xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] font-bold`}
                 >
                   {userPrompt}
                 </p>
