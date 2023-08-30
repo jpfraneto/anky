@@ -186,7 +186,9 @@ const WritingGame = ({
           <button
             className='bg-red-700 rounded-xl'
             style={{ width: '45%' }}
-            onClick={copyToClipboard}
+            onClick={() => {
+              copyToClipboard();
+            }}
           >
             {btnTwoText}
           </button>

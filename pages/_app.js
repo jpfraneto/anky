@@ -206,13 +206,13 @@ function MyApp({ Component, pageProps }) {
                   backgroundRepeat: 'no-repeat',
                 }}
               >
-                {writingReady && meditationReady && enteredTheAnyverse && (
+                {writingReady && meditationReady && enteredTheAnkyverse && (
                   <Navbar />
                 )}
                 <div className={`overflow-y-scroll flex-grow border-white`}>
                   <Component {...pageProps} />
                 </div>
-                {writingReady && meditationReady && enteredTheAnyverse && (
+                {writingReady && meditationReady && enteredTheAnkyverse && (
                   <BottomNavbar />
                 )}
               </div>
