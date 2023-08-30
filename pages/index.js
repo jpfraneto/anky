@@ -54,7 +54,7 @@ export default function Home() {
 
   const saveWritingAnon = async () => {
     try {
-      const aloja = await saveTextAnon(text);
+      const aloja = await saveTextAnon(text, ankyverseQuestion);
       setText('');
       setWritings(x => [...x, { id: '1238oo8', text }]);
     } catch (error) {

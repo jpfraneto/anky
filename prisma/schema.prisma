@@ -1,104 +1,42 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider          = "postgresql"
-  url               = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
+model Day {
+  id        Int       @id @default(autoincrement())
+  sojourn   Int
+  wink      Int
+  prompt    String
+  kingdom   String
+  writings  Writing[] // Relationship field
 
-model User {
-  id            Int            @id @default(autoincrement())
-  username      String         @unique
-  email         String         @unique
-  avatarUrl     String?
-  password      String
-  writings      Writing[]
-  comments      Comment[]
-  reactions     Reaction[]
-  notifications Notification[] @relation("NotificationToUser")
-  triggered     Notification[] @relation("TriggeredByToUser")
-}
-
-
-model Question {
-  id      Int       @id @default(autoincrement())
-  title   String
-  content String
-  date    DateTime  @default(now())
-  writings Writing[]
+  @@unique([sojourn, wink])
 }
 
 model Writing {
-  id         Int        @id @default(autoincrement())
-  content    String
-  createdAt  DateTime   @default(now())
+  id         Int    @id @default(autoincrement())
+  bundlrURL  String
+  day        Day    @relation(fields: [dayId], references: [id])
+  dayId      Int
+  user       User?  @relation(fields: [userId], references: [id])
   userId     Int
-  user       User       @relation(fields: [userId], references: [id])
-  questionId Int
-  question   Question   @relation(fields: [questionId], references: [id])
-  comments   Comment[]
-  reactions  Reaction[]
-  notifications Notification[]
 }
 
-model Comment {
-  id        Int       @id @default(autoincrement())
-  content   String
-  createdAt DateTime  @default(now())
-  userId    Int
-  user      User      @relation(fields: [userId], references: [id])
-  writingId Int
-  writing   Writing   @relation(fields: [writingId], references: [id])
-  reactionId Int
-  reactions   Reaction[]
-  notifications Notification[]
+model User {
+  id            Int            @id @default(autoincrement())
+  walletAddress String         @unique
+  writings      Writing[]      // Relationship field
+  subscriptions Subscription[] // Relationship field
 }
 
-enum ReactionType {
-  LIKE
-  RETWEET
-  QUOTERETWEET
-  // ... If there is another reaction, add it here
+model Subscription {
+  id      Int    @id @default(autoincrement())
+  subInfo Json   // Subscription details in JSON format
+  user    User   @relation(fields: [userId], references: [id])
+  userId  Int
 }
-
-model Reaction {
-  id        Int          @id @default(autoincrement())
-  type      ReactionType
-  createdAt DateTime     @default(now())
-  userId    Int
-  user      User         @relation(fields: [userId], references: [id])
-  writingId Int?
-  writing   Writing?     @relation(fields: [writingId], references: [id])
-  commentId Int?
-  comment   Comment?     @relation(fields: [commentId], references: [id])
-}
-
-enum NotificationType {
-  LIKE
-  RETWEET
-  QUOTERETWEET
-  COMMENT
-  NEW_FOLLOWER
-  // ... If there is another notification, add it here.
-}
-
-model Notification {
-  id            Int             @id @default(autoincrement())
-  type          NotificationType
-  createdAt     DateTime        @default(now())
-  userId        Int
-  user          User            @relation("NotificationToUser", fields: [userId], references: [id])
-  triggeredById Int
-  triggeredBy   User            @relation("TriggeredByToUser", fields: [triggeredById], references: [id])
-  writingId     Int?
-  writing       Writing?        @relation(fields: [writingId], references: [id])
-  commentId     Int?
-  comment       Comment?        @relation(fields: [commentId], references: [id])
-  seen          Boolean         @default(false)
-}
-

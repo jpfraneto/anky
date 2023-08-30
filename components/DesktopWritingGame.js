@@ -157,7 +157,7 @@ const DesktopWritingGame = ({
   const sendTextToBackend = async () => {
     setSavingTextAnon(true);
     console.log('going to save the text anon');
-    const responseee = await saveTextAnon(text);
+    const responseee = await saveTextAnon(text, userPrompt);
     console.log('ERAL', responseee);
     setSavedText(true);
   };
