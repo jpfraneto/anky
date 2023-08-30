@@ -3,6 +3,12 @@ import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 import { Righteous } from 'next/font/google';
 import { PrivyProvider, useWallets } from '@privy-io/react-auth';
+import { PrivyWagmiConnector } from '@privy-io/wagmi-connector';
+import { baseGoerli } from '@wagmi/chains';
+import { configureChains, createConfig } from 'wagmi';
+import { publicProvider } from 'wagmi/providers/public';
+import { alchemyProvider } from 'wagmi/providers/alchemy';
+import { InjectedConnector } from 'wagmi/connectors/injected';
 import BottomNavbar from '../components/BottomNavbar';
 import Head from 'next/head';
 import Button from '../components/Button';
@@ -11,8 +17,24 @@ import Link from 'next/link';
 import Navbar from '../components/Navbar';
 import { PWAProvider, usePWA } from '../context/pwaContext';
 
+const { chains, publicClient } = configureChains(
+  [baseGoerli],
+  [alchemyProvider({ apiKey: process.env.ALCHEMY_API_KEY }), publicProvider()]
+);
+
+const config = createConfig({
+  autoConnect: true,
+  connectors: [new InjectedConnector({ chains })],
+  publicClient,
+});
+
 const righteous = Righteous({ subsets: ['latin'], weight: ['400'] });
 const DesktopApp = dynamic(() => import('../components/DesktopApp'));
+
+const handleLogin = user => {
+  console.log('inside the handlelogin function', user);
+  console.log(`User ${user.id} logged in!`);
+};
 
 function MyApp({ Component, pageProps }) {
   console.log('before the app even runs');
@@ -153,39 +175,45 @@ function MyApp({ Component, pageProps }) {
 
       <PrivyProvider
         appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID}
+        onSuccess={handleLogin}
         config={{
           loginMethods: ['email'],
           appearance: {
-            theme: 'light',
-            accentColor: '#676FFF',
+            theme: 'dark',
+            accentColor: '#364CAC',
             logo: '',
             showWalletLoginFirst: true,
           },
+          embeddedWallets: {
+            createOnLogin: 'all-users',
+          },
         }}
       >
-        <PWAProvider>
-          {isDesktop ? (
-            <DesktopApp />
-          ) : (
-            <div
-              className='h-[calc(100dvh)] fixed text-white w-full mx-auto bg-cover bg-center flex flex-col '
-              style={{
-                boxSizing: 'border-box',
-                backgroundImage:
-                  "linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/images/pwa.png')",
-                backgroundPosition: 'center center',
-                backgroundSize: 'cover',
-                backgroundRepeat: 'no-repeat',
-              }}
-            >
-              {writingReady && meditationReady && <Navbar />}
-              <div className={`overflow-y-scroll flex-grow border-white`}>
-                <Component {...pageProps} />
+        <PrivyWagmiConnector wagmiChainsConfig={chains}>
+          <PWAProvider>
+            {isDesktop ? (
+              <DesktopApp />
+            ) : (
+              <div
+                className='h-[calc(100dvh)] fixed text-white w-full mx-auto bg-cover bg-center flex flex-col '
+                style={{
+                  boxSizing: 'border-box',
+                  backgroundImage:
+                    "linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/images/pwa.png')",
+                  backgroundPosition: 'center center',
+                  backgroundSize: 'cover',
+                  backgroundRepeat: 'no-repeat',
+                }}
+              >
+                {writingReady && meditationReady && <Navbar />}
+                <div className={`overflow-y-scroll flex-grow border-white`}>
+                  <Component {...pageProps} />
+                </div>
+                {writingReady && meditationReady && <BottomNavbar />}
               </div>
-              {writingReady && meditationReady && <BottomNavbar />}
-            </div>
-          )}
-        </PWAProvider>
+            )}
+          </PWAProvider>
+        </PrivyWagmiConnector>
       </PrivyProvider>
     </main>
   );

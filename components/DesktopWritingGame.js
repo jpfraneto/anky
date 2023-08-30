@@ -156,7 +156,9 @@ const DesktopWritingGame = ({
 
   const sendTextToBackend = async () => {
     setSavingTextAnon(true);
-    await saveTextAnon(text);
+    console.log('going to save the text anon');
+    const responseee = await saveTextAnon(text);
+    console.log('ERAL', responseee);
     setSavedText(true);
   };
 
@@ -366,7 +368,7 @@ const DesktopWritingGame = ({
                 </div>
               ) : (
                 <p
-                  className={`${righteous.className} z-40 text-fuchsia-500 font-bold`}
+                  className={`${righteous.className} z-40 text-fuchsia-500 text-2xl shadow-lg shadow-yellow-200 font-bold`}
                 >
                   {userPrompt}
                 </p>
