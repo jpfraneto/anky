@@ -73,7 +73,6 @@ export default function Home() {
         <MeditationComponent />
       </div>
     );
-  console.log('the writing ready is: 0', writingReady);
 
   if (meditationReady && !writingReady) {
     return (

@@ -44,6 +44,7 @@ function MyApp({ Component, pageProps }) {
     setIsAnkyReady,
     setIsAnkyLoading,
     writingReady,
+    enteredTheAnkyverse,
     meditationReady,
     setMeditationReady,
   } = usePWA();
@@ -205,11 +206,15 @@ function MyApp({ Component, pageProps }) {
                   backgroundRepeat: 'no-repeat',
                 }}
               >
-                {writingReady && meditationReady && <Navbar />}
+                {writingReady && meditationReady && enteredTheAnyverse && (
+                  <Navbar />
+                )}
                 <div className={`overflow-y-scroll flex-grow border-white`}>
                   <Component {...pageProps} />
                 </div>
-                {writingReady && meditationReady && <BottomNavbar />}
+                {writingReady && meditationReady && enteredTheAnyverse && (
+                  <BottomNavbar />
+                )}
               </div>
             )}
           </PWAProvider>
