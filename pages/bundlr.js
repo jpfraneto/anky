@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const bundlr = () => {
+const Bundlr = () => {
   const [pubKey, setPubKey] = useState(null);
   const getPubKey = async () => {
     const pubKeyRes = await (
@@ -39,4 +39,4 @@ const bundlr = () => {
   return <div></div>;
 };
 
-export default bundlr;
+export default Bundlr;
