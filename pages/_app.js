@@ -49,7 +49,6 @@ function MyApp({ Component, pageProps }) {
     setMeditationReady,
   } = usePWA();
   console.log('in here', meditationReady, writingReady);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     console.log('THIS USE EFFECT IS RUNNING');
@@ -84,8 +83,6 @@ function MyApp({ Component, pageProps }) {
       };
     }
   }, []);
-
-  if (loading) return <p>Loading...</p>;
 
   return (
     <main className={`${righteous.className}`}>
