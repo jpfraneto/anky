@@ -56,6 +56,7 @@ const DesktopWritingGame = ({
   const [errorProblem, setErrorProblem] = useState(false);
   const [failureMessage, setFailureMessage] = useState('');
   const [secondLoading, setSecondLoading] = useState(false);
+  const [mintingFirstAnky, setMintingFirstAnky] = useState(false);
   const [thirdLoading, setThirdLoading] = useState(false);
   const [copyText, setCopyText] = useState('Copy my writing');
   const [metadata, setMetadata] = useState(null);
@@ -160,6 +161,25 @@ const DesktopWritingGame = ({
     const responseee = await saveTextAnon(text, userPrompt);
     console.log('ERAL', responseee);
     setSavedText(true);
+  };
+
+  const mintFirstAnky = async () => {
+    console.log('the user is: ', user);
+    if (!user.wallet) return alert('The user doesnt have a wallet');
+    setMintingFirstAnky(true);
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/airdrop`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          wallet: user.wallet,
+        }),
+      }
+    );
+    const data = await response.json();
   };
 
   if (errorProblem)
@@ -370,6 +390,13 @@ const DesktopWritingGame = ({
                       buttonColor='bg-green-600 mt-2'
                     />
                   )}
+                  <Button
+                    buttonAction={mintFirstAnky}
+                    buttonText={
+                      mintingFirstAnky ? `Minting...` : `Mint First Anky`
+                    }
+                    buttonColor='bg-green-600 mt-2'
+                  />
                 </div>
               ) : (
                 <p

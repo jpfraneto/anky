@@ -12,15 +12,37 @@ const Testing = () => {
   const changeChain = async () => {
     console.log('in here');
     if (wallet) {
-      await wallet.switchChain(8453);
+      await wallet.switchChain(84531);
       setBaseActive(true);
       setUserWallet(wallet);
-      console.log('the chain was changed');
+      console.log('the chain was changed', wallet);
     }
   };
   useEffect(() => {
     changeChain();
   }, [wallet]);
+
+  const airdropCall = async () => {
+    try {
+      console.log('sending the call to the airdrop route', userWallet.address);
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/airdrop`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            wallet: userWallet.address,
+          }),
+        }
+      );
+      const data = await response.json();
+      console.log('the response data is: ', data);
+    } catch (error) {
+      console.log('The airdrop was not successful', error);
+    }
+  };
 
   if (!ready) return null;
 
@@ -31,8 +53,9 @@ const Testing = () => {
 
   return (
     <div>
-      <h2>Active Wallet {activeWallet?.address}</h2>
-      <ul>
+      <h2>Active Wallet </h2>
+      <button onClick={airdropCall}>airdrop</button>
+      {/* <ul>
         {wallets.map(wallet => (
           <li key={wallet.address}>
             <button onClick={() => setActiveWallet(wallet)}>
@@ -40,7 +63,7 @@ const Testing = () => {
             </button>
           </li>
         ))}
-      </ul>
+      </ul> */}
     </div>
   );
 };
