@@ -49,16 +49,7 @@ function MyApp({ Component, pageProps }) {
     setMeditationReady,
   } = usePWA();
   console.log('in here', meditationReady, writingReady);
-  const [isDesktop, setIsDesktop] = useState(false);
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (window.innerWidth > 768) {
-      setIsDesktop(true);
-    }
-    console.log('Right before the setloading');
-    setLoading(false);
-  }, []);
 
   useEffect(() => {
     console.log('THIS USE EFFECT IS RUNNING');
@@ -193,31 +184,27 @@ function MyApp({ Component, pageProps }) {
       >
         <PrivyWagmiConnector wagmiChainsConfig={chains}>
           <PWAProvider>
-            {isDesktop ? (
-              <DesktopApp />
-            ) : (
-              <div
-                className='h-[calc(100dvh)] fixed text-white w-full mx-auto bg-cover bg-center flex flex-col '
-                style={{
-                  boxSizing: 'border-box',
-                  backgroundImage:
-                    "linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/images/pwa.png')",
-                  backgroundPosition: 'center center',
-                  backgroundSize: 'cover',
-                  backgroundRepeat: 'no-repeat',
-                }}
-              >
-                {writingReady && meditationReady && enteredTheAnkyverse && (
-                  <Navbar />
-                )}
-                <div className={`overflow-y-scroll flex-grow border-white`}>
-                  <Component {...pageProps} />
-                </div>
-                {writingReady && meditationReady && enteredTheAnkyverse && (
-                  <BottomNavbar />
-                )}
+            <div
+              className='h-[calc(100dvh)] fixed text-white w-full mx-auto bg-cover bg-center flex flex-col '
+              style={{
+                boxSizing: 'border-box',
+                backgroundImage:
+                  "linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/images/pwa.png')",
+                backgroundPosition: 'center center',
+                backgroundSize: 'cover',
+                backgroundRepeat: 'no-repeat',
+              }}
+            >
+              {writingReady && meditationReady && enteredTheAnkyverse && (
+                <Navbar />
+              )}
+              <div className={`overflow-y-scroll flex-grow border-white`}>
+                <Component {...pageProps} />
               </div>
-            )}
+              {writingReady && meditationReady && enteredTheAnkyverse && (
+                <BottomNavbar />
+              )}
+            </div>
           </PWAProvider>
         </PrivyWagmiConnector>
       </PrivyProvider>
