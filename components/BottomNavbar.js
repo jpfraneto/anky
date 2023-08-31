@@ -69,7 +69,7 @@ const BottomNavbar = () => {
 
   return (
     <nav className='w-full md:w-96 flex-none  pt-3 pb-5 bg-transparent flex space-x-4 justify-between px-8'>
-      <Link passHref href='/'>
+      <span onClick={() => alert('this will open the notebooks options')}>
         <Image
           width={58}
           height={58}
@@ -77,7 +77,7 @@ const BottomNavbar = () => {
           className='hover:border-white hover:border'
           passHref
         />
-      </Link>
+      </span>
       <Link passHref href='/new-question'>
         <Image width={36} height={36} src='/icons/plus.svg' />
       </Link>

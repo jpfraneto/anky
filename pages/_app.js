@@ -181,7 +181,7 @@ function MyApp({ Component, pageProps }) {
         <PrivyWagmiConnector wagmiChainsConfig={chains}>
           <PWAProvider>
             <div
-              className='h-[calc(100dvh)] fixed text-white md:w-96 left-1/2 -translate-x-1/2  bg-cover bg-center justify-center flex flex-col '
+              className='h-[calc(100dvh)] fixed text-white md:w-96 md:left-1/2 md:-translate-x-1/2  bg-cover bg-center justify-center flex flex-col '
               style={{
                 boxSizing: 'border-box',
                 backgroundImage:

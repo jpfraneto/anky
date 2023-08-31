@@ -12,7 +12,7 @@ const WritingGame = ({
   btnTwoText = 'Discard',
   onDiscard,
   messageForUser,
-  fullDisplay = false,
+  fullDisplay = true,
 }) => {
   const { setWritingReady, setEnteredTheAnkyverse } = usePWA();
   const [timeLeft, setTimeLeft] = useState(3);
@@ -116,7 +116,7 @@ const WritingGame = ({
     <div
       className={`${
         fullDisplay || text.length > 0
-          ? 'h-1/2 z-50 absolute -translate-x-1/2 mt-10 top-0 left-1/2'
+          ? 'h-1/2 z-50 px-2 md:-translate-x-1/2 w-full md:mt-10 top-0 md:left-1/2'
           : 'my-4'
       } flex flex-col w-full md:w-96 md:mx-auto  h-full rounded-xl`}
     >
@@ -143,7 +143,7 @@ const WritingGame = ({
           width: '100%',
           fontSize: '16px',
         }}
-        placeholder='Write as if the world was going to end here...'
+        placeholder='Write as if the world was going to end...'
         value={text}
         className={` p-2  bg-black ${
           text.length > 0 ? 'h-64' : 'h-64'

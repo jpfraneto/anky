@@ -76,7 +76,7 @@ export default function Home() {
 
   if (meditationReady && !writingReady) {
     return (
-      <div className='h-full'>
+      <div className='h-full w-full'>
         <small className='absolute top-0 left-0 right-0 text-center text-sm text-gray-500'>
           {`sojourn ${ankyverseToday.currentSojourn} - wink ${
             ankyverseToday.wink
