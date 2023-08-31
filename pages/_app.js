@@ -37,7 +37,6 @@ const handleLogin = user => {
 };
 
 function MyApp({ Component, pageProps }) {
-  console.log('before the app even runs');
   const {
     isAnkyReady,
     setAnkyImages,
@@ -48,7 +47,6 @@ function MyApp({ Component, pageProps }) {
     meditationReady,
     setMeditationReady,
   } = usePWA();
-  console.log('in here', meditationReady, writingReady);
 
   useEffect(() => {
     console.log('THIS USE EFFECT IS RUNNING');
@@ -161,6 +159,7 @@ function MyApp({ Component, pageProps }) {
           property='og:image'
           content='https://anky.lat/images/touch/homescreen144.png'
         />
+        <script src='/main.js' defer></script>
       </Head>
 
       <PrivyProvider
@@ -182,7 +181,7 @@ function MyApp({ Component, pageProps }) {
         <PrivyWagmiConnector wagmiChainsConfig={chains}>
           <PWAProvider>
             <div
-              className='h-[calc(100dvh)] fixed text-white w-full mx-auto bg-cover bg-center flex flex-col '
+              className='h-[calc(100dvh)] fixed text-white md:w-96 left-1/2 -translate-x-1/2  bg-cover bg-center justify-center flex flex-col '
               style={{
                 boxSizing: 'border-box',
                 backgroundImage:

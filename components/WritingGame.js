@@ -116,9 +116,9 @@ const WritingGame = ({
     <div
       className={`${
         fullDisplay || text.length > 0
-          ? 'h-1/2 z-50 absolute top-0 left-0'
+          ? 'h-1/2 z-50 absolute -translate-x-1/2 mt-10 top-0 left-1/2'
           : 'my-4'
-      } flex flex-col w-full h-full rounded-xl`}
+      } flex flex-col w-full md:w-96 md:mx-auto  h-full rounded-xl`}
     >
       {(fullDisplay || text.length > 0) && (
         <div className='w-full text-2xl flex-none  pt-6 pb-2 px-2'>
@@ -156,7 +156,11 @@ const WritingGame = ({
       {text.length === 0 && (
         <Button
           buttonText={skippedBtn ? `Are you sure?` : `Skip`}
-          buttonColor={skippedBtn ? `bg-red-600` : 'bg-purple-600'}
+          buttonColor={
+            skippedBtn
+              ? `bg-red-600  absolute bottom-0 left-1/2 -translate-x-1/2 bottom-20`
+              : 'bg-purple-600  absolute left-1/2 -translate-x-1/2 bottom-20 '
+          }
           buttonAction={() => {
             if (skippedBtn) {
               setEnteredTheAnkyverse(true);

@@ -17,7 +17,7 @@ const MeditationComponent = () => {
   };
 
   return (
-    <div className='pt-96'>
+    <div className='pt-96 md:pt-64'>
       <div className='w-full flex justify-center items-center text-center'>
         <div className='flex h-fit flex-col'>
           <div className='w-full flex justify-center'>

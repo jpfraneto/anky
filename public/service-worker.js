@@ -1,7 +1,11 @@
 'use strict';
 
 // const apiRoute = "http://localhost:3000"
-const apiRoute = 'https://api.anky.lat';
+// Replace your const apiRoute line with this
+const apiRoute =
+  self.location.hostname === 'localhost'
+    ? 'http://localhost:3000'
+    : 'https://api.anky.lat';
 
 self.addEventListener('install', event => {
   console.log('inside the install');
@@ -58,39 +62,18 @@ self.addEventListener('message', event => {
         }
       } catch (error) {
         console.error('Error fetching image:', error);
+        self.clients.matchAll().then(clients => {
+          clients.forEach(client => {
+            client.postMessage({
+              type: 'FETCH_ERROR',
+              error: 'Failed to fetch image',
+            });
+          });
+        });
       }
     }, 60 * 1000); // every minute
   }
 });
-
-// self.addEventListener('activate', async event => {
-//   try {
-//     console.log('inside the activate here.');
-//     const registration = await navigator.serviceWorker.ready;
-//     const subscription = await registration.pushManager.subscribe({
-//       userVisibleOnly: true,
-//       applicationServerKey:
-//         'BCKze16TV0lPlvhx4wTRKGNAgOCGnkEvG3WyW84zoiVPdQAHLMVxbmesEFyK3a9INd8yaC3KXxa2RdRv-Dl9FwI',
-//     });
-//     console.log('Subscription:', subscription);
-
-//     const response = await fetch(`http://pwa.anky.lat/subscribe`, {
-//       method: 'POST',
-//       body: JSON.stringify(subscription),
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//     });
-
-//     if (!response.ok) {
-//       throw new Error('Failed to subscribe the user');
-//     }
-//     const data = await response.json();
-//     console.log('Successfully subscribed the user:', data);
-//   } catch (error) {
-//     console.error('Error subscribing the user:', error);
-//   }
-// });
 
 self.addEventListener('push', event => {
   console.log('IN HERE, A NOT WILL BE SENT:', event.data);
@@ -119,6 +102,28 @@ self.addEventListener('notificationclick', event => {
           client.focus();
         }
       }
+    })
+  );
+});
+
+// Add this to the top of your existing service-worker.js
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open('my-cache').then(cache => {
+      return cache.addAll([
+        '/',
+        '/index.html',
+        '/css/style.css',
+        '/js/script.js',
+      ]);
+    })
+  );
+});
+
+self.addEventListener('fetch', event => {
+  event.respondWith(
+    caches.match(event.request).then(response => {
+      return response || fetch(event.request);
     })
   );
 });

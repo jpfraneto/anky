@@ -82,7 +82,7 @@ export default function Home() {
             ankyverseToday.wink
           } - ${ankyverseToday.currentKingdom.toLowerCase()}`}
         </small>
-        <div className='pt-24 h-full'>
+        <div className='pt-24 h-full w-full'>
           <WritingGame
             fullDisplay={true}
             text={text}
@@ -158,7 +158,7 @@ export default function Home() {
           </div>
         ) : (
           <div>
-            <p className='text-xl mt-20'>
+            <p className='text-xl text-center mt-20'>
               Would you like to create an account for storing your writings
               anonymously every day?
             </p>

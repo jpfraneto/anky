@@ -20,7 +20,6 @@ export const usePWA = () => {
 };
 
 export const PWAProvider = ({ children }) => {
-  console.log('inside the pwa provider');
   const [isAnkyReady, setIsAnkyReady] = useState(false);
   const [ankyImages, setAnkyImages] = useState([]);
   const [isAnkyLoading, setIsAnkyLoading] = useState(false);
