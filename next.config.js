@@ -1,9 +1,6 @@
 const runtimeCaching = require('next-pwa/cache');
 
 const withPWA = require('next-pwa')({
-  fallbacks: {
-    document: '/pages/_offline.js',
-  },
   dest: 'public',
   register: true,
   skipWaiting: true,
