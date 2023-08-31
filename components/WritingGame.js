@@ -116,7 +116,7 @@ const WritingGame = ({
     <div
       className={`${
         fullDisplay || text.length > 0
-          ? 'h-1/2 z-50 px-2 md:-translate-x-1/2 w-full md:mt-10 top-0 md:left-1/2'
+          ? 'h-1/2 z-50 px-2 w-full md:mt-10 top-0 md:left-1/2'
           : 'my-4'
       } flex flex-col w-full md:w-96 md:mx-auto  h-full rounded-xl`}
     >

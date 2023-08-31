@@ -102,11 +102,6 @@ export default function Home() {
       <div className='h-full p-4'>
         {authenticated ? (
           <div>
-            <p>
-              Your writing was already saved anonymously on a centralized. What
-              you see here is just an experimental feature / ux exploration to
-              change that.
-            </p>
             <p className='text-xl mt-20'>
               Do you want to store your writing forever associated with your
               Anky?
