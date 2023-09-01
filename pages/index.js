@@ -18,6 +18,7 @@ export default function Home() {
   const {
     meditationReady,
     writingReady,
+    setWritingReady,
     enteredTheAnkyverse,
     setEnteredTheAnkyverse,
   } = usePWA();
@@ -84,24 +85,22 @@ export default function Home() {
             ankyverseToday.wink
           } - ${ankyverseToday.currentKingdom.toLowerCase()}`}
         </small>
-        <div className='pt-24 h-full w-full'>
-          <WritingGame
-            fullDisplay={true}
-            text={text}
-            setText={setText}
-            btnTwoText='Discard & start again'
-            onSubmit={saveWritingAnon}
-            prompt={ankyverseQuestion}
-            messageForUser='You made it, once again. Congratulations, dear friend. This is all of what this game is about.'
-          />
-        </div>
+        <WritingGame
+          fullDisplay={true}
+          text={text}
+          setText={setText}
+          btnTwoText='Discard & start again'
+          onSubmit={saveWritingAnon}
+          prompt={ankyverseQuestion}
+          messageForUser='You made it, once again. Congratulations, dear friend. This is all of what this game is about.'
+        />
         {!text && (
           <Button
             buttonText={skippedBtn ? `Are you sure?` : `Skip`}
             buttonColor={
               skippedBtn
-                ? `bg-red-600 absolute bottom-20 left-1/2 -translate-x-1/2`
-                : 'bg-purple-600 absolute bottom-20 left-1/2 -translate-x-1/2'
+                ? `z-40 bg-red-600 absolute bottom-20 left-1/2 -translate-x-1/2`
+                : 'z-40 bg-purple-600 absolute bottom-20 left-1/2 -translate-x-1/2'
             }
             buttonAction={() => {
               if (skippedBtn) {
