@@ -28,6 +28,7 @@ export default function Home() {
   const [giveLoveLoading, setGiveLoveLoading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [skippedBtn, setSkippedBtn] = useState(false);
   const [writings, setWritings] = useState([]);
   const [showWritingMessage, setShowWritingMessage] = useState(false);
   const [answers, setAnswers] = useState();
@@ -94,6 +95,23 @@ export default function Home() {
             messageForUser='You made it, once again. Congratulations, dear friend. This is all of what this game is about.'
           />
         </div>
+        {!text && (
+          <Button
+            buttonText={skippedBtn ? `Are you sure?` : `Skip`}
+            buttonColor={
+              skippedBtn
+                ? `bg-red-600 absolute bottom-20 left-1/2 -translate-x-1/2`
+                : 'bg-purple-600 absolute bottom-20 left-1/2 -translate-x-1/2'
+            }
+            buttonAction={() => {
+              if (skippedBtn) {
+                setEnteredTheAnkyverse(true);
+                return setWritingReady(true);
+              }
+              setSkippedBtn(true);
+            }}
+          />
+        )}
       </div>
     );
   }

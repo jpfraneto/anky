@@ -18,7 +18,6 @@ const WritingGame = ({
   const [timeLeft, setTimeLeft] = useState(3);
   const [isActive, setIsActive] = useState(false);
   const [time, setTime] = useState(0);
-  const [skippedBtn, setSkippedBtn] = useState(false);
   const [isDone, setIsDone] = useState(false);
   const [isWriting, setIsWriting] = useState(false);
   const [lastKeystroke, setLastKeystroke] = useState(Date.now());
@@ -116,12 +115,12 @@ const WritingGame = ({
     <div
       className={`${
         fullDisplay || text.length > 0
-          ? 'h-1/2 z-50 px-2 w-full md:mt-10 top-0 md:left-1/2'
+          ? 'h-1/2 z-50 px-2 absolute md:-translate-x-1/2 w-full md:mt-10 top-10 md:left-1/2'
           : 'my-4'
       } flex flex-col w-full md:w-96 md:mx-auto  h-full rounded-xl`}
     >
       {(fullDisplay || text.length > 0) && (
-        <div className='w-full text-2xl flex-none  pt-6 pb-2 px-2'>
+        <div className=' w-full text-2xl flex-none  pt-6 pb-2 px-2'>
           {prompt}
         </div>
       )}
@@ -153,24 +152,6 @@ const WritingGame = ({
       <div className='w-full flex justify-center'>
         <p className='text-2xl py-2'>{time}</p>
       </div>
-      {text.length === 0 && (
-        <Button
-          buttonText={skippedBtn ? `Are you sure?` : `Skip`}
-          buttonColor={
-            skippedBtn
-              ? `bg-red-600  absolute bottom-0 left-1/2 -translate-x-1/2 bottom-20`
-              : 'bg-purple-600  absolute left-1/2 -translate-x-1/2 bottom-20 '
-          }
-          buttonAction={() => {
-            if (skippedBtn) {
-              setEnteredTheAnkyverse(true);
-              return setWritingReady(true);
-            }
-            setSkippedBtn(true);
-          }}
-        />
-      )}
-
       {(fullDisplay || text.length) > 0 && isDone && (
         <div
           className='h-8 mt-2 flex-none'
