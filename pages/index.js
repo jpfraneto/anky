@@ -54,6 +54,7 @@ export default function Home() {
 
   const saveWritingAnon = async () => {
     try {
+      await navigator.clipboard.writeText(text);
       const aloja = await saveTextAnon(text, ankyverseQuestion);
       setText('');
       setWritings(x => [...x, { id: '1238oo8', text }]);
@@ -103,8 +104,10 @@ export default function Home() {
         {authenticated ? (
           <div>
             <p className='text-xl mt-20'>
-              Do you want to store your writing forever associated with your
-              Anky?
+              FYI, your writing was copied to the clipboard.
+            </p>
+            <p className='text-xl mt-20'>
+              Do you want to store it forever associated with your Anky?
             </p>
             <div className='flex mt-2 '>
               <Button
