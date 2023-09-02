@@ -24,7 +24,7 @@ const MeditationComponent = () => {
             <CircularPlayer
               setMeditationReady={setMeditationReady}
               image='/ankys/elmasmejor.png'
-              audio='/assets/meditation23.mp3'
+              audio='/assets/meditation24.mp3'
             />
           </div>
           <div className='absolute left-1/2 -translate-x-1/2 bottom-20 w-fit mx-auto'>

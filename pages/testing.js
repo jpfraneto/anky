@@ -81,7 +81,18 @@ const Testing = () => {
 
   const callTba = async () => {
     try {
-    } catch (error) {}
+      console.log(
+        'sending the call to the fetch the tba account route',
+        userWallet.address
+      );
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/blockchain/getTBA/${userWallet.address}`
+      );
+      const data = await response.json();
+      console.log('the response data is: ', data);
+    } catch (error) {
+      console.log('The airdrop was not successful', error);
+    }
   };
 
   if (!ready) return null;
