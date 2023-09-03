@@ -99,8 +99,8 @@ export default function Home() {
             buttonText={skippedBtn ? `Are you sure?` : `Skip`}
             buttonColor={
               skippedBtn
-                ? `z-40 bg-red-600 absolute bottom-20 left-1/2 -translate-x-1/2`
-                : 'z-40 bg-purple-600 absolute bottom-20 left-1/2 -translate-x-1/2'
+                ? `z-40 bg-red-600 absolute bottom-8 left-1/2 -translate-x-1/2`
+                : 'z-40 bg-purple-600 absolute bottom-8 left-1/2 -translate-x-1/2'
             }
             buttonAction={() => {
               if (skippedBtn) {

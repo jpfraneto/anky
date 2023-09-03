@@ -5,6 +5,7 @@ import { Dancing_Script } from 'next/font/google';
 import Spinner from '../components/Spinner';
 import WritingGame from '../components/WritingGame';
 import { useRouter } from 'next/router';
+import { getAnkyFromWriting } from '../lib/backend';
 
 const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['400'] });
 
@@ -23,26 +24,13 @@ const GetNewAnky = () => {
 
     try {
       setAnkyFetched(true);
-      console.log(
-        'THe image is gonna be fetched',
-        process.env.NEXT_PUBLIC_SERVER_URL
-      );
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/get-anky-image`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            text: text,
-          }),
-        }
-      );
-      const data = await response.json();
+      console.log('inside here, sending the text');
+      const newAnky = await getAnkyFromWriting(text);
+      console.log('The new anky is: ', newAnky);
       // Add data.character to service worker and fetch for the image every minute.
       const { imagineApiId, characterName, characterBackstory } =
-        data.character;
+        newAnky.newAnky.anky;
+      console.log('IN HERE, ', imagineApiId, characterName, characterBackstory);
       if (imagineApiId) {
         if (
           'serviceWorker' in navigator &&
@@ -66,6 +54,8 @@ const GetNewAnky = () => {
   const handleEnableNotifications = async () => {
     // Check for service worker
     setNotificationsLoading(true);
+    setNotificationsLoading(false);
+    setNotificationsResponse(true);
     if ('serviceWorker' in navigator && 'PushManager' in window) {
       try {
         // Register your Service Worker if you haven't done that already

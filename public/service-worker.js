@@ -29,7 +29,9 @@ self.addEventListener('message', event => {
         self.registration.showNotification('Fetching for your anky', {
           body: 'We are looking for your anky on the backend',
         });
-        const response = await fetch(`${apiRoute}/check-image/${imagineApiId}`);
+        const response = await fetch(
+          `${apiRoute}/ai/check-image/${imagineApiId}`
+        );
         const data = await response.json();
         console.log('After this, the data is: ', data);
         if (data.status === 'completed') {
