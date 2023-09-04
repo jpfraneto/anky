@@ -22,11 +22,6 @@ const configureChainsConfig = configureChains([baseGoerli], [publicProvider()]);
 const righteous = Righteous({ subsets: ['latin'], weight: ['400'] });
 const DesktopApp = dynamic(() => import('../components/DesktopApp'));
 
-const handleLogin = user => {
-  console.log('inside the handlelogin function', user);
-  console.log(`User ${user.id} logged in!`);
-};
-
 function MyApp({ Component, pageProps }) {
   const {
     isAnkyReady,
@@ -82,6 +77,24 @@ function MyApp({ Component, pageProps }) {
       };
     }
   }, []);
+
+  const handleLogin = async user => {
+    console.log('the user is, airdropppp', user);
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/blockchain/airdrop`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          wallet: user.wallet.address,
+        }),
+      }
+    );
+    const data = await response.json();
+    console.log('The data iheeres: ', data);
+  };
 
   if (loading) return <p>Loading...</p>;
 
@@ -169,6 +182,9 @@ function MyApp({ Component, pageProps }) {
         appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID}
         onSuccess={handleLogin}
         config={{
+          embeddedWallets: {
+            noPromptOnSignature: true,
+          },
           loginMethods: ['email'],
           appearance: {
             theme: 'dark',

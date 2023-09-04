@@ -16,7 +16,6 @@ const Testing = () => {
   const [userWallet, setUserWallet] = useState(null);
   const [baseActive, setBaseActive] = useState(false);
   const wallets = useWallets();
-  console.log('the wallets are: ', wallets);
   const { wallet: activeWallet, setActiveWallet } = usePrivyWagmi();
   const wallet = wallets.wallets[0];
   const changeChain = async () => {

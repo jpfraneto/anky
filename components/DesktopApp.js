@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import DesktopWritingGame from './DesktopWritingGame';
 import { usePrivy } from '@privy-io/react-auth';
 import { getAnkyverseDay, getAnkyverseQuestion } from '../lib/ankyverse';
+import { createTBA } from '../lib/backend';
 
 const DesktopApp = () => {
+  const { logout, login, user, authenticated } = usePrivy();
   const [lifeBarLength, setLifeBarLength] = useState(0);
   const ankyverseToday = getAnkyverseDay(new Date());
   const ankyverseQuestion = getAnkyverseQuestion(ankyverseToday.wink);
@@ -19,6 +21,16 @@ const DesktopApp = () => {
             }}
           ></div>
         </div>
+        {user && (
+          <button onClick={() => createTBA(user.wallet.address)}>
+            Create TBA
+          </button>
+        )}
+        {authenticated ? (
+          <button onClick={logout}>Logout</button>
+        ) : (
+          <button onClick={login}>Login</button>
+        )}
       </div>
 
       <DesktopWritingGame

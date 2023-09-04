@@ -285,6 +285,7 @@ const DesktopWritingGame = ({
                     <>
                       <LoggedInUser
                         text={text}
+                        prompt={userPrompt}
                         startNewRun={startNewRun}
                         copyWriting={copyToClipboard}
                       />
