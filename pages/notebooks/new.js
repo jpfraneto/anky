@@ -89,7 +89,7 @@ function CreateNotebook() {
             placeholder='Supply (max notebooks)'
             required
           />
-          <button type='submit'>Create Notebook</button>
+          <button type='submit'>Create Notebook Template</button>
         </form>
       ) : (
         <button onClick={login}>Login with Privy</button>

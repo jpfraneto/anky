@@ -176,7 +176,6 @@ function MyApp({ Component, pageProps }) {
           content='https://anky.lat/images/touch/homescreen144.png'
         />
         <script src='/main.js' defer></script>
-        <script src='https://w.soundcloud.com/player/api.js'></script>
       </Head>
 
       <PrivyProvider
