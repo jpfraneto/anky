@@ -3,9 +3,11 @@ import DesktopWritingGame from './DesktopWritingGame';
 import { usePrivy } from '@privy-io/react-auth';
 import { getAnkyverseDay, getAnkyverseQuestion } from '../lib/ankyverse';
 import { createTBA } from '../lib/backend';
+import { usePWA } from '../context/pwaContext';
 
 const DesktopApp = () => {
   const { logout, login, user, authenticated } = usePrivy();
+  const { musicPlaying, setMusicPlaying } = usePWA();
   const [lifeBarLength, setLifeBarLength] = useState(0);
   const ankyverseToday = getAnkyverseDay(new Date());
   const ankyverseQuestion = getAnkyverseQuestion(ankyverseToday.wink);
@@ -21,6 +23,11 @@ const DesktopApp = () => {
             }}
           ></div>
         </div>
+
+        <p onClick={() => setMusicPlaying(x => !x)}>
+          {musicPlaying ? 'pause' : 'play'}
+        </p>
+
         {user && (
           <button onClick={() => createTBA(user.wallet.address)}>
             Create TBA

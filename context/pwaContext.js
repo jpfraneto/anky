@@ -13,6 +13,8 @@ const PWAContext = createContext({
   setWritingReady: () => {},
   enteredTheAnkyverse: true,
   setEnteredTheAnkyverse: () => {},
+  musicPlaying: true,
+  setMusicPlaying: () => {},
 });
 
 export const usePWA = () => {
@@ -26,6 +28,7 @@ export const PWAProvider = ({ children }) => {
   const [meditationReady, setMeditationReady] = useState(false);
   const [writingReady, setWritingReady] = useState(false);
   const [enteredTheAnkyverse, setEnteredTheAnkyverse] = useState(false);
+  const [musicPlaying, setMusicPlaying] = useState(false);
 
   return (
     <PWAContext.Provider
@@ -42,6 +45,8 @@ export const PWAProvider = ({ children }) => {
         setWritingReady,
         enteredTheAnkyverse,
         setEnteredTheAnkyverse,
+        musicPlaying,
+        setMusicPlaying,
       }}
     >
       {children}

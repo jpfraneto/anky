@@ -5,8 +5,10 @@ import Image from 'next/image';
 import { saveTextAnon } from '../lib/backend';
 import LoggedInUser from './LoggedInUser';
 import { useRouter } from 'next/router';
+import ReactPlayer from 'react-player/soundcloud';
 
 import { usePrivy } from '@privy-io/react-auth';
+import { usePWA } from '../context/pwaContext';
 
 function sleep(ms) {
   return new Promise(resolve => {
@@ -24,8 +26,9 @@ const DesktopWritingGame = ({
   ankyverseDate,
 }) => {
   const { login, authenticated, user } = usePrivy();
+  const { musicPlaying, setMusicPlaying } = usePWA();
   const audioRef = useRef();
-
+  const [wantMusic, setWantMusic] = useState(false);
   const [text, setText] = useState('');
   const [time, setTime] = useState(0);
   const [upscaledUrls, setUpscaledUrls] = useState([]);
@@ -240,8 +243,21 @@ const DesktopWritingGame = ({
               >
                 (This website is optimized for desktop)
               </small>
+              <div className='flex space-x-2 justify-center'>
+                <p>Do you want music?</p>{' '}
+                <input
+                  type='checkbox'
+                  onChange={() => setMusicPlaying(x => !x)}
+                />
+              </div>
             </div>
           )}
+          <ReactPlayer
+            playing={musicPlaying}
+            width={0}
+            height={0}
+            url='https://soundcloud.com/beyondcollectiveberlin/beyondwithleni'
+          />
 
           <textarea
             ref={textareaRef}
