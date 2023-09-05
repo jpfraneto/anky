@@ -45,7 +45,7 @@ const LoggedInUser = ({ startNewRun, text, prompt }) => {
   };
 
   return (
-    <div className='z-50 bg-black p-4 rounded-xl'>
+    <div className='z-50 overflow-y-scroll bg-black p-4 rounded-xl'>
       {feedback ? (
         <div className='flex flex-col space-y-2 h-2/3 overflow-y-scroll'>
           {feedback.split('\n').map((x, i) => {

@@ -20,7 +20,6 @@ const dancingScript = Dancing_Script({ weight: '400', subsets: ['latin'] });
 const DesktopWritingGame = ({
   userPrompt,
   setLifeBarLength,
-
   setLoadButtons,
   ankyverseDate,
 }) => {
