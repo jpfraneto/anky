@@ -87,7 +87,7 @@ function CreateNotebook({ userAnky, provider, signer }) {
   if (!userAnky?.wallet) return <p>please setup first</p>;
 
   return (
-    <div className=' min-h-screen text-gray-600 flex items-center justify-center'>
+    <div className='mt-8 text-gray-600 flex items-center justify-center'>
       {userAnky?.wallet?.address ? (
         <form
           className='bg-white p-6 rounded shadow-md space-y-4'

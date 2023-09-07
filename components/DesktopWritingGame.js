@@ -24,6 +24,7 @@ const DesktopWritingGame = ({
   setLoadButtons,
   ankyverseDate,
 }) => {
+  const { setMusicPlaying } = usePWA();
   const { login, authenticated, user } = usePrivy();
   const audioRef = useRef();
   const [text, setText] = useState('');

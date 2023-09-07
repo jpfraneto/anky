@@ -14,41 +14,47 @@ const NotebooksPage = () => {
 
   const [displayCreateNotebook, setDisplayCreateNotebook] = useState(false);
   let tokenboundClient;
-  const address = userAnky.wallet.address;
-  const tokenId = userAnky.ankyIndex;
+  if (userAnky) {
+  }
+  let address, tokenId;
   let provider;
   let signer;
   console.log('the user anky is: 0', userAnky);
 
   useEffect(() => {
     const setup = async () => {
-      provider = await userAnky.wallet.getEthersProvider();
-      signer = await provider.getSigner();
-      tokenboundClient = new TokenboundClient({ signer, chainId: 84531 });
-      const account = await tokenboundClient.getAccount({
-        tokenContract: '0x4C890Ef00257df4fC311137b584f1B2be6fbAf62',
-        tokenId: tokenId,
-      });
-      console.log('the account is:', account);
+      if (userAnky.wallet && userAnky.ankyIndex) {
+        address = userAnky?.wallet?.address;
+        tokenId = userAnky?.ankyIndex;
+        provider = await userAnky?.wallet?.getEthersProvider();
+        signer = await provider.getSigner();
+        console.log('the token id is:', tokenId);
+        tokenboundClient = new TokenboundClient({ signer, chainId: 84531 });
+        const account = await tokenboundClient.getAccount({
+          tokenContract: '0x4C890Ef00257df4fC311137b584f1B2be6fbAf62',
+          tokenId: tokenId,
+        });
+        console.log('the account is:', account);
 
-      const preparedExecuteCall = await tokenboundClient.prepareExecuteCall({
-        account: account,
-        to: account,
-        value: 0n,
-        data: '',
-      });
+        const preparedExecuteCall = await tokenboundClient.prepareExecuteCall({
+          account: account,
+          to: account,
+          value: 0n,
+          data: '',
+        });
 
-      const preparedAccount = await tokenboundClient.prepareCreateAccount({
-        tokenContract: '0x4C890Ef00257df4fC311137b584f1B2be6fbAf62',
-        tokenId: tokenId,
-      });
+        const preparedAccount = await tokenboundClient.prepareCreateAccount({
+          tokenContract: '0x4C890Ef00257df4fC311137b584f1B2be6fbAf62',
+          tokenId: tokenId,
+        });
 
-      console.log('getAccount', account);
-      console.log('prepareExecuteCall', preparedExecuteCall);
-      console.log('preparedAccount', preparedAccount);
+        console.log('getAccount', account);
+        console.log('prepareExecuteCall', preparedExecuteCall);
+        console.log('preparedAccount', preparedAccount);
+      }
     };
     setup();
-  }, []);
+  }, [userAnky]);
 
   const createAccount = useCallback(async () => {
     if (!tokenboundClient || !address) return;
@@ -69,12 +75,7 @@ const NotebooksPage = () => {
     });
   }, [tokenboundClient]);
 
-  if (!ready) return null;
-
-  if (!userAnky.wallet) {
-    // Use Privy login instead of wagmi's connect
-    return <Link href='/explore'>setup</Link>;
-  }
+  if (!userAnky?.wallet?.address && !userAnky.ankyIndex) return <p>Loading</p>;
 
   return (
     <div>

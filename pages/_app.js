@@ -33,7 +33,6 @@ function MyApp({ Component, pageProps }) {
     enteredTheAnkyverse,
     meditationReady,
     setMeditationReady,
-    musicPlaying,
   } = usePWA();
   const [isDesktop, setIsDesktop] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -47,7 +46,6 @@ function MyApp({ Component, pageProps }) {
   }, []);
 
   useEffect(() => {
-    console.log('THIS USE EFFECT IS RUNNING');
     if ('serviceWorker' in navigator && navigator.serviceWorker) {
       const handleServiceWorkerMessage = event => {
         if (event.data && event.data.type === 'ANKY_LOADING') {
@@ -99,7 +97,6 @@ function MyApp({ Component, pageProps }) {
   };
 
   if (loading) return <p>Loading...</p>;
-  console.log('music plahing is:', musicPlaying);
   return (
     <main className={`${righteous.className}`}>
       <Head>
@@ -201,12 +198,6 @@ function MyApp({ Component, pageProps }) {
       >
         <PrivyWagmiConnector wagmiChainsConfig={configureChainsConfig}>
           <PWAProvider>
-            <ReactPlayer
-              playing={musicPlaying}
-              width={0}
-              height={0}
-              url='https://soundcloud.com/beyondcollectiveberlin/beyondwithleni'
-            />
             {isDesktop ? (
               <DesktopApp />
             ) : (
