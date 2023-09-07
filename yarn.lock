@@ -1235,6 +1235,13 @@
     "@tanstack/query-core" "4.33.0"
     "use-sync-external-store" "^1.2.0"
 
+"@tokenbound/sdk@^0.3.5":
+  "integrity" "sha512-THgeAkY+l/OpUdWsAh/HyP5x9X0pLIyLCSuNPMmmDRUwuSoBC3J65/bZWffX4CXXUXr92IzHrw0PM+Jy7nUBKQ=="
+  "resolved" "https://registry.npmjs.org/@tokenbound/sdk/-/sdk-0.3.5.tgz"
+  "version" "0.3.5"
+  dependencies:
+    "viem" "^1.5.4"
+
 "@types/bn.js@^5.1.1":
   "integrity" "sha512-qNrYbZqMx0uJAfKnKclPh+dTwK33KfLHYqtyODwd5HnXOjnkhc4qgn3BrK6RWyGZm5+sIFE7Q7Vz6QQtJB7w7g=="
   "resolved" "https://registry.npmjs.org/@types/bn.js/-/bn.js-5.1.1.tgz"
@@ -5638,7 +5645,7 @@
     "proxy-compare" "2.5.1"
     "use-sync-external-store" "1.2.0"
 
-"viem@^1.0.0", "viem@>=0.3.35":
+"viem@^1.0.0", "viem@^1.5.4", "viem@>=0.3.35":
   "integrity" "sha512-YSRmS6ck2pVQZLDTwpNb04c8dN74uxMgDlj2jAixbCokP1e1th2ly8j+EQVRdwq0mFAW4Pdmx8/KNIICtkQLuA=="
   "resolved" "https://registry.npmjs.org/viem/-/viem-1.9.0.tgz"
   "version" "1.9.0"

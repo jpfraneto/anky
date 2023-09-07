@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { usePrivyWagmi } from '@privy-io/react-auth';
+import { usePrivyWagmi } from '@privy-io/wagmi-connector';
 import notebookContractABI from '../../lib/notebookABI.json';
 
-const NOTEBOOK_CONTRACT_ADDRESS = 'Your_Notebook_Contract_Address_Here';
+const NOTEBOOK_CONTRACT_ADDRESS = '0x042d06eEF2849Ea30A4d15a68B7E27B8695160ce';
 
 function DisplayNotebooks() {
   const { wallet: activeWallet } = usePrivyWagmi();

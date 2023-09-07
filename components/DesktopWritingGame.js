@@ -5,7 +5,6 @@ import Image from 'next/image';
 import { saveTextAnon } from '../lib/backend';
 import LoggedInUser from './LoggedInUser';
 import { useRouter } from 'next/router';
-import ReactPlayer from 'react-player/soundcloud';
 
 import { usePrivy } from '@privy-io/react-auth';
 import { usePWA } from '../context/pwaContext';
@@ -26,9 +25,7 @@ const DesktopWritingGame = ({
   ankyverseDate,
 }) => {
   const { login, authenticated, user } = usePrivy();
-  const { musicPlaying, setMusicPlaying } = usePWA();
   const audioRef = useRef();
-  const [wantMusic, setWantMusic] = useState(false);
   const [text, setText] = useState('');
   const [time, setTime] = useState(0);
   const [upscaledUrls, setUpscaledUrls] = useState([]);
@@ -51,7 +48,6 @@ const DesktopWritingGame = ({
 
   const [gettingAnkyverseCharacter, setGettingAnkyverseCharacter] =
     useState(false);
-  const [musicOn, setMusicOn] = useState(false);
   const [savedToDb, setSavedToDb] = useState(false);
   const [lastKeystroke, setLastKeystroke] = useState(Date.now());
   const [finished, setFinished] = useState(false);
@@ -59,7 +55,7 @@ const DesktopWritingGame = ({
   const [failureMessage, setFailureMessage] = useState('');
   const [secondLoading, setSecondLoading] = useState(false);
   const [thirdLoading, setThirdLoading] = useState(false);
-  const [copyText, setCopyText] = useState('Copy my writing');
+  const [copyText, setCopyText] = useState('copy my writing');
   const [metadata, setMetadata] = useState(null);
   const [writingSaved, setWritingSaved] = useState(false);
   const [writingSavingLoading, setWritingSavingLoading] = useState(false);
@@ -125,7 +121,7 @@ const DesktopWritingGame = ({
 
   const copyToClipboard = async () => {
     await navigator.clipboard.writeText(text);
-    alert('Your writing is on the clipboard');
+    setCopyText('copied');
   };
 
   const startNewRun = () => {
@@ -153,7 +149,7 @@ const DesktopWritingGame = ({
 
   const pasteText = async () => {
     await navigator.clipboard.writeText(text);
-    setCopyText('Copied.');
+    setCopyText('copied.');
   };
 
   const sendTextToBackend = async () => {
@@ -190,18 +186,7 @@ const DesktopWritingGame = ({
     );
 
   return (
-    <div
-      className={`${righteous.className} text-black relative  flex flex-col items-center  w-full bg-cover bg-center`}
-      style={{
-        boxSizing: 'border-box',
-        height: 'calc(100vh - 33px)',
-        backgroundImage:
-          "linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/images/mintbg.jpg')",
-        backgroundPosition: 'center center',
-        backgroundSize: 'cover',
-        backgroundRepeat: 'no-repeat',
-      }}
-    >
+    <>
       <audio ref={audioRef}>
         <source src='/sounds/bell.mp3' />
       </audio>
@@ -221,22 +206,11 @@ const DesktopWritingGame = ({
               >
                 {userPrompt}
               </p>
-              <p className={`${righteous.className} mb-2 font-bold`}>
-                Feel the prompt. Read it with intention. Answer with the heart.
-              </p>
-
-              <p className={`${righteous.className} mb-2 font-bold`}>
-                Write what comes. Your truth, without judgements.
-              </p>
-
-              <p className={`${righteous.className} mb-2 font-bold`}>
-                If you stop writing for 3 seconds, you lose.
-              </p>
 
               <small
                 className={`${righteous.className} hidden text-center md:flex md:justify-center mb-2 font-bold`}
               >
-                (This won&apos;t be stored anywhere)
+                (this won&apos;t be stored anywhere, yet. im working on that)
               </small>
               <small
                 className={`${righteous.className} md:hidden mb-2 font-bold`}
@@ -252,12 +226,6 @@ const DesktopWritingGame = ({
               </div>
             </div>
           )}
-          <ReactPlayer
-            playing={musicPlaying}
-            width={0}
-            height={0}
-            url='https://soundcloud.com/beyondcollectiveberlin/beyondwithleni'
-          />
 
           <textarea
             ref={textareaRef}
@@ -295,97 +263,30 @@ const DesktopWritingGame = ({
               </div>
 
               {finished ? (
-                <div className=' bg-black p-3 rounded-xl z-50 '>
-                  {authenticated ? (
-                    <>
-                      <LoggedInUser
-                        text={text}
-                        prompt={userPrompt}
-                        startNewRun={startNewRun}
-                        copyWriting={copyToClipboard}
-                      />
-                    </>
-                  ) : (
-                    <div>
-                      {time <= 3 ? (
-                        <div>
-                          <p
-                            className={`${righteous.className} mb-2 font-bold`}
-                          >
-                            You lost. You have to keep writing, no matter what.
-                          </p>
-                          <p
-                            className={`${righteous.className} mb-2 font-bold`}
-                          >
-                            This game is designed to bring you into a meditative
-                            state.
-                          </p>
-                          <p
-                            className={`${righteous.className} mb-2 font-bold`}
-                          >
-                            Just relax and let your being come forth through
-                            your words.
-                          </p>
-                          <p
-                            className={`${righteous.className} mb-2 font-bold`}
-                          >
-                            Min score to qualify is 30 seconds.
-                          </p>
-                        </div>
-                      ) : (
-                        <div>
-                          <p
-                            className={`${righteous.className} mb-2 font-bold`}
-                          >
-                            Great job.
-                          </p>
-                          <p
-                            className={`${righteous.className} mb-2 font-bold`}
-                          >
-                            I&apos;m working on giving you the ability to store
-                            your writings forever.
-                          </p>
-                          <p
-                            className={`${righteous.className} mb-2 font-bold`}
-                          >
-                            For now, you can store it anonymously.
-                          </p>
-                        </div>
-                      )}
-                      <div className='flex flex-col  md:flex-row justify-center '>
-                        <Button
-                          buttonColor='bg-yellow-500'
-                          buttonAction={pasteText}
-                          buttonText={copyText}
-                        />
-
-                        {time > 3 ? (
-                          <Button
-                            buttonAction={login}
-                            buttonText='Create account / login'
-                            buttonColor='bg-purple-600'
-                          />
-                        ) : (
-                          <Button
-                            buttonAction={startNewRun}
-                            buttonText='Start again'
-                            buttonColor='bg-green-600'
-                          />
-                        )}
-                      </div>
-                    </div>
-                  )}
-                  {savedText ? (
-                    <p>Your text was saved anon</p>
-                  ) : (
-                    <Button
-                      buttonAction={sendTextToBackend}
-                      buttonText={
-                        savingTextAnon ? `Saving...` : `Save text anon`
-                      }
-                      buttonColor='bg-green-600 mt-2'
-                    />
-                  )}
+                <div className='z-50'>
+                  <p className={`${righteous.className} mb-2 font-bold`}>
+                    great job.
+                  </p>
+                  <p className={`${righteous.className} mb-2 font-bold`}>
+                    i&apos;m working on giving you the ability to store your
+                    writings forever.
+                  </p>
+                  <p className={`${righteous.className} mb-2 font-bold`}>
+                    on the blockchain, associated with a blue character like
+                    this one
+                  </p>
+                  <div className='w-64 h-64 mt-4 mx-auto relative rounded-xl overflow-hidden'>
+                    <Image src='/ankys/3.png' fill alt='anky' />
+                  </div>
+                  <p className={`${righteous.className} mb-2 font-bold`}>
+                    for now, you can just copy what you wrote. keep it for
+                    yourself. it is a gift
+                  </p>
+                  <Button
+                    buttonAction={pasteText}
+                    buttonColor='bg-purple-600'
+                    buttonText={copyText}
+                  />
                 </div>
               ) : (
                 <p
@@ -398,7 +299,7 @@ const DesktopWritingGame = ({
           )}
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

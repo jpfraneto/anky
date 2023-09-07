@@ -10,6 +10,7 @@ import { publicProvider } from 'wagmi/providers/public';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 import BottomNavbar from '../components/BottomNavbar';
+import ReactPlayer from 'react-player/soundcloud';
 import Head from 'next/head';
 import Button from '../components/Button';
 import Image from 'next/image';
@@ -32,6 +33,7 @@ function MyApp({ Component, pageProps }) {
     enteredTheAnkyverse,
     meditationReady,
     setMeditationReady,
+    musicPlaying,
   } = usePWA();
   const [isDesktop, setIsDesktop] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -97,7 +99,7 @@ function MyApp({ Component, pageProps }) {
   };
 
   if (loading) return <p>Loading...</p>;
-
+  console.log('music plahing is:', musicPlaying);
   return (
     <main className={`${righteous.className}`}>
       <Head>
@@ -199,6 +201,12 @@ function MyApp({ Component, pageProps }) {
       >
         <PrivyWagmiConnector wagmiChainsConfig={configureChainsConfig}>
           <PWAProvider>
+            <ReactPlayer
+              playing={musicPlaying}
+              width={0}
+              height={0}
+              url='https://soundcloud.com/beyondcollectiveberlin/beyondwithleni'
+            />
             {isDesktop ? (
               <DesktopApp />
             ) : (
