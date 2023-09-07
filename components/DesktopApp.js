@@ -70,7 +70,10 @@ const DesktopApp = () => {
 
   async function airdropCall() {
     try {
-      console.log('sending the call to the airdrop route', userWallet.address);
+      console.log(
+        'sending the call to the airdrop route',
+        userAnky.wallet.address
+      );
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/blockchain/airdrop`,
         {
@@ -79,7 +82,7 @@ const DesktopApp = () => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            wallet: userWallet.address,
+            wallet: userAnky.wallet.address,
           }),
         }
       );
@@ -97,10 +100,10 @@ const DesktopApp = () => {
     try {
       console.log(
         'sending the call to the fetch the tba account route',
-        userWallet.address
+        userAnky.wallet.address
       );
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/blockchain/getTBA/${userWallet.address}`
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/blockchain/getTBA/${userAnky.wallet.address}`
       );
       const data = await response.json();
       console.log('the response data is: ', data);
