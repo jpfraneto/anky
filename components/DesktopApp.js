@@ -131,12 +131,6 @@ const DesktopApp = () => {
           ></div>
         </div>
         <div className='flex space-x-2'>
-          <button onClick={() => console.log(userAppInformation)}>
-            console
-          </button>
-          <Link className='hover:text-purple-600' href='/'>
-            landing
-          </Link>
           <Link className='hover:text-purple-600' href='/notebooks'>
             notebooks
           </Link>
