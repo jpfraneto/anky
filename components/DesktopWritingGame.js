@@ -29,6 +29,7 @@ const DesktopWritingGame = ({
   const audioRef = useRef();
   const [text, setText] = useState('');
   const [time, setTime] = useState(0);
+  userPrompt = 'why are you building?';
   const [upscaledUrls, setUpscaledUrls] = useState([]);
   const [isActive, setIsActive] = useState(false);
   const [savingRound, setSavingRound] = useState(false);
