@@ -36,18 +36,21 @@ function CreateNotebook({ userAnky }) {
       //     tbaAddress: userAnky.tbaAddress,
       //   }
       // );
+      let provider = await userAnky.wallet.getEthersProvider();
+      let signer = await provider.getSigner();
+      console.log('in here, the provider and signer are', provider, signer);
       const metadataURI =
         'https://arweave.net/1qOQOByDpkeiEtI77LyfZAvuln4dzwW12YQxqgSNQwQ';
       console.log('the metadata uri is: ', metadataURI);
       console.log('the user wallet is: ', userWallet);
 
-      if (userAnky.wallet && userAnky.signer) {
+      if (userAnky.wallet && signer) {
         // The thing here is that I'm trying to send this transaction from the wallet of the user, not from the erc6551 token.
 
         const notebookContract = new ethers.Contract(
           NOTEBOOK_CONTRACT_ADDRESS,
           notebookContractABI,
-          userAnky.signer
+          signer
         );
 
         const hardcodedPrice = ethers.utils.parseEther('0.001');
