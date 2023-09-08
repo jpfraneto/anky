@@ -8,7 +8,6 @@ import { createTBA } from '../lib/backend';
 import notebookContractABI from '../lib/notebookABI.json';
 
 function CreateNotebook({ userAnky }) {
-  const { wallets } = useWallets();
   const [loadingNotebookCreation, setLoadingNotebookCreation] = useState(false);
   const [title, setTitle] = useState('the process of being');
   const [description, setDescription] = useState('96 days of exploration');
@@ -17,40 +16,28 @@ function CreateNotebook({ userAnky }) {
   const [price, setPrice] = useState(0.001);
   const [supply, setSupply] = useState(88);
 
+  const { wallets } = useWallets();
   console.log('the wallets are: ', wallets);
+
   const thisWallet = wallets[0];
 
   async function handleSubmit(event) {
     setLoadingNotebookCreation(true);
     event.preventDefault();
-
     const NOTEBOOK_CONTRACT_ADDRESS =
       '0xA84EC30EEe5578d9eE737e730111B857a0e8BA11';
 
     try {
-      // const response = await axios.post(
-      //   `${process.env.NEXT_PUBLIC_SERVER_URL}/notebooks`,
-      //   {
-      //     title,
-      //     description,
-      //     numPages,
-      //     price,
-      //     supply,
-      //     ownerAddress: userAnky.wallet.address,
-      //     tbaAddress: userAnky.tbaAddress,
-      //   }
-      // );
-
-      console.log('the user anky is after: ', userAnky);
+      console.log('the user anky is after: ', thisWallet);
       let provider = await thisWallet.getEthersProvider();
       let signer = await provider.getSigner();
       console.log('in here, the provider and signer are', provider, signer);
       const metadataURI =
         'https://arweave.net/1qOQOByDpkeiEtI77LyfZAvuln4dzwW12YQxqgSNQwQ';
       console.log('the metadata uri is: ', metadataURI);
-      console.log('the user wallet is: ', userWallet);
+      console.log('the user wallet is: ', thisWallet);
 
-      if (userAnky.wallet && signer) {
+      if (thisWallet && signer) {
         // The thing here is that I'm trying to send this transaction from the wallet of the user, not from the erc6551 token.
 
         const notebookContract = new ethers.Contract(
