@@ -21,7 +21,7 @@ function CreateNotebook({ userAnky }) {
     event.preventDefault();
 
     const NOTEBOOK_CONTRACT_ADDRESS =
-      '0xA84EC30EEe5578d9eE737e730111B857a0e8BA11';
+      '0x662cfd89ef9F98AE171648c2805e7c58A86A6F31';
 
     try {
       // const response = await axios.post(
