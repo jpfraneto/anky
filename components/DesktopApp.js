@@ -43,6 +43,7 @@ const DesktopApp = () => {
       if (!userAppInformation?.wallet?.chainId.includes('84531'))
         await changeChain();
       // I won't call the aidrop call because it is called when the user logs in.
+      console.log('in here', userAppInformation);
       if (!userAppInformation?.ankyIndex) await airdropCall();
       if (!userAppInformation?.tbaAddress) await callTba();
 

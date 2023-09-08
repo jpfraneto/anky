@@ -21,7 +21,7 @@ function CreateNotebook({ userAnky }) {
     event.preventDefault();
 
     const NOTEBOOK_CONTRACT_ADDRESS =
-      '0x662cfd89ef9F98AE171648c2805e7c58A86A6F31';
+      '0xA84EC30EEe5578d9eE737e730111B857a0e8BA11';
 
     try {
       // const response = await axios.post(
@@ -52,10 +52,8 @@ function CreateNotebook({ userAnky }) {
 
         const hardcodedPrice = ethers.utils.parseEther('0.001');
 
-        if (ethers.utils.parseEther(price.toString()).lt(hardcodedPrice)) {
-          console.error(
-            'Insufficient fee sent. You must send at least 0.001 ETH.'
-          );
+        if (!ethers.utils.parseEther(price.toString()).eq(hardcodedPrice)) {
+          console.error('Incorrect fee sent. You must send exactly 0.001 ETH.');
           return;
         }
 
