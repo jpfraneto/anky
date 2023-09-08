@@ -29,11 +29,8 @@ const DesktopApp = () => {
       await wallet.switchChain(84531);
       setUserWallet(wallet);
       console.log('the chain was changed', wallet);
-      let provider = await wallet?.getEthersProvider();
-      let signer = await provider.getSigner();
-      console.log('the signer is: ', signer);
       setUserAppInformation(x => {
-        return { ...x, wallet, signer };
+        return { ...x, wallet: wallet };
       });
     }
   };
