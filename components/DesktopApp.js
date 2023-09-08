@@ -16,37 +16,40 @@ const ankyverseQuestion = getAnkyverseQuestion(ankyverseToday.wink);
 
 const DesktopApp = () => {
   const { login, ready, authenticated, logout } = usePrivy();
-  const { userAnky, setUserAnky } = usePWA();
+  const { userAppInformation, setUserAppInformation } = usePWA();
   const router = useRouter();
-  const { musicPlaying, setMusicPlaying } = usePWA();
   const [lifeBarLength, setLifeBarLength] = useState(0);
   const [loading, setLoading] = useState(true);
   const [userWallet, setUserWallet] = useState(null);
-  const [baseActive, setBaseActive] = useState(false);
 
   const wallets = useWallets();
   const wallet = wallets.wallets[0];
   const changeChain = async () => {
-    console.log('in here');
     if (wallet) {
       await wallet.switchChain(84531);
       setUserWallet(wallet);
       console.log('the chain was changed', wallet);
-      setUserAnky(x => {
-        return { ...x, wallet };
+      let provider = await wallet?.getEthersProvider();
+      let signer = await provider.getSigner();
+      console.log('the signer is: ', signer);
+      setUserAppInformation(x => {
+        return { ...x, wallet, signer };
       });
     }
   };
 
   useEffect(() => {
     const setup = async () => {
-      await changeChain();
-      await airdropCall();
-      await callTba();
+      if (!userAppInformation?.wallet?.chainId.includes('84531'))
+        await changeChain();
+      // I won't call the aidrop call because it is called when the user logs in.
+      if (!userAppInformation?.ankyIndex) await airdropCall();
+      if (!userAppInformation?.tbaAddress) await callTba();
+
       setLoading(false);
     };
     setup();
-  }, [wallet]);
+  }, [wallet, userAppInformation.wallet]);
 
   function getComponentForRoute(route) {
     switch (route) {
@@ -72,7 +75,7 @@ const DesktopApp = () => {
     try {
       console.log(
         'sending the call to the airdrop route',
-        userAnky.wallet.address
+        userAppInformation.wallet.address
       );
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/blockchain/airdrop`,
@@ -82,13 +85,13 @@ const DesktopApp = () => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            wallet: userAnky.wallet.address,
+            wallet: userAppInformation.wallet.address,
           }),
         }
       );
       const data = await response.json();
       console.log('in here, the data is: ', data);
-      setUserAnky(x => {
+      setUserAppInformation(x => {
         return { ...x, tokenUri: data.tokenUri, ankyIndex: data.userAnkyIndex };
       });
     } catch (error) {
@@ -100,14 +103,14 @@ const DesktopApp = () => {
     try {
       console.log(
         'sending the call to the fetch the tba account route',
-        userAnky.wallet.address
+        userAppInformation.wallet.address
       );
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/blockchain/getTBA/${userAnky.wallet.address}`
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/blockchain/getTBA/${userAppInformation.wallet.address}`
       );
       const data = await response.json();
       console.log('the response data is: ', data);
-      setUserAnky(x => {
+      setUserAppInformation(x => {
         return { ...x, tbaAddress: data.ankyTba };
       });
     } catch (error) {
@@ -130,6 +133,9 @@ const DesktopApp = () => {
           ></div>
         </div>
         <div className='flex space-x-2'>
+          <button onClick={() => console.log(userAppInformation)}>
+            console
+          </button>
           <Link className='hover:text-purple-600' href='/'>
             landing
           </Link>

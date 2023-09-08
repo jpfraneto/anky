@@ -7,7 +7,7 @@ import { useContractRead } from 'wagmi';
 import { createTBA } from '../lib/backend';
 import notebookContractABI from '../lib/notebookABI.json';
 
-function CreateNotebook({ userAnky, provider, signer }) {
+function CreateNotebook({ userAnky }) {
   const [loadingNotebookCreation, setLoadingNotebookCreation] = useState(false);
   const [title, setTitle] = useState('the process of being');
   const [description, setDescription] = useState('96 days of exploration');
@@ -19,8 +19,9 @@ function CreateNotebook({ userAnky, provider, signer }) {
   async function handleSubmit(event) {
     setLoadingNotebookCreation(true);
     event.preventDefault();
+
     const NOTEBOOK_CONTRACT_ADDRESS =
-      '0xf8B1a05287434F82272BD4Ae3616E3E19b159E13';
+      '0xA84EC30EEe5578d9eE737e730111B857a0e8BA11';
 
     try {
       // const response = await axios.post(
@@ -31,23 +32,22 @@ function CreateNotebook({ userAnky, provider, signer }) {
       //     numPages,
       //     price,
       //     supply,
+      //     ownerAddress: userAnky.wallet.address,
+      //     tbaAddress: userAnky.tbaAddress,
       //   }
       // );
-
-      // const metadataURI = response.data.metadataURI;
       const metadataURI =
         'https://arweave.net/1qOQOByDpkeiEtI77LyfZAvuln4dzwW12YQxqgSNQwQ';
       console.log('the metadata uri is: ', metadataURI);
       console.log('the user wallet is: ', userWallet);
-      const tbaAddress = await createTBA(userWallet.address);
-      console.log('The tba address is: ', tbaAddress);
-      if (userWallet && authenticated) {
+
+      if (userAnky.wallet && userAnky.signer) {
         // The thing here is that I'm trying to send this transaction from the wallet of the user, not from the erc6551 token.
 
         const notebookContract = new ethers.Contract(
           NOTEBOOK_CONTRACT_ADDRESS,
           notebookContractABI,
-          signer
+          userAnky.signer
         );
 
         const hardcodedPrice = ethers.utils.parseEther('0.001');
@@ -63,6 +63,8 @@ function CreateNotebook({ userAnky, provider, signer }) {
         // Call the contract's method and send the transaction
         const transactionResponse =
           await notebookContract.createNotebookTemplate(
+            userAnky.wallet.address,
+            userAnky.tbaAddress,
             metadataURI,
             numPages,
             supply,
@@ -87,12 +89,14 @@ function CreateNotebook({ userAnky, provider, signer }) {
   if (!userAnky?.wallet) return <p>please setup first</p>;
 
   return (
-    <div className='mt-8 text-gray-600 flex items-center justify-center'>
+    <div className='my-8 text-gray-600 flex items-center justify-center'>
       {userAnky?.wallet?.address ? (
         <form
           className='bg-white p-6 rounded shadow-md space-y-4'
           onSubmit={handleSubmit}
         >
+          <h2 className='text-black text-xl'>New Notebook Template</h2>
+
           <div>
             <input
               className='border p-2 w-full rounded'

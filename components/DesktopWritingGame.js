@@ -218,13 +218,13 @@ const DesktopWritingGame = ({
               >
                 (This website is optimized for desktop)
               </small>
-              <div className='flex space-x-2 justify-center'>
+              {/* <div className='flex space-x-2 justify-center'>
                 <p>Do you want music?</p>{' '}
                 <input
                   type='checkbox'
                   onChange={() => setMusicPlaying(x => !x)}
                 />
-              </div>
+              </div> */}
             </div>
           )}
 
@@ -239,7 +239,7 @@ const DesktopWritingGame = ({
               transition: 'top 1s, bottom 1s, left 1s, right 1s', // smooth transition over 1 second
             }}
             className={`${dancingScript.className} ${text && 'absolute'} ${
-              text ? 'md:aspect-video md:flex w-full h-full' : 'w-3/5 h-64'
+              text ? 'md:aspect-video md:flex w-full h-full' : ' w-3/5 h-64'
             } p-4 text-white ${
               time > 2 && 'opacity-80'
             } placeholder-white  text-2xl border border-white rounded-md  bg-opacity-10 bg-black`}
@@ -264,7 +264,7 @@ const DesktopWritingGame = ({
               </div>
 
               {finished ? (
-                <div className='z-50'>
+                <div className='p-4 bg-black drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]  z-50'>
                   <p className={`${righteous.className} mb-2 font-bold`}>
                     great job.
                   </p>
@@ -276,7 +276,7 @@ const DesktopWritingGame = ({
                     on the blockchain, associated with a blue character like
                     this one
                   </p>
-                  <div className='w-64 h-64 mt-4 mx-auto relative rounded-xl overflow-hidden'>
+                  <div className='w-64 h-64 my-4 mx-auto relative rounded-xl overflow-hidden'>
                     <Image src='/ankys/3.png' fill alt='anky' />
                   </div>
                   <p className={`${righteous.className} mb-2 font-bold`}>

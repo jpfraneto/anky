@@ -93,8 +93,27 @@ function MyApp({ Component, pageProps }) {
       }
     );
     const data = await response.json();
-    console.log('The data iheeres: ', data);
+    console.log('The data after the airdrop function is: ', data);
   };
+
+  async function callTba() {
+    try {
+      console.log(
+        'sending the call to the fetch the tba account route',
+        userAnky.wallet.address
+      );
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/blockchain/getTBA/${userAppInformation.wallet.address}`
+      );
+      const data = await response.json();
+      console.log('the response data is: ', data);
+      setUserAppInformation(x => {
+        return { ...x, tbaAddress: data.ankyTba };
+      });
+    } catch (error) {
+      console.log('The airdrop was not successful', error);
+    }
+  }
 
   if (loading) return <p>Loading...</p>;
   return (

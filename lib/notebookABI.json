@@ -68,7 +68,7 @@
       {
         "indexed": true,
         "internalType": "address",
-        "name": "creator",
+        "name": "ankyTba",
         "type": "address"
       },
       {
@@ -241,6 +241,8 @@
   },
   {
     "inputs": [
+      { "internalType": "address", "name": "ankyOwner", "type": "address" },
+      { "internalType": "address", "name": "ankyTba", "type": "address" },
       { "internalType": "string", "name": "metadataURI", "type": "string" },
       { "internalType": "uint256", "name": "numPages", "type": "uint256" },
       { "internalType": "uint256", "name": "supply", "type": "uint256" }
@@ -283,6 +285,8 @@
   },
   {
     "inputs": [
+      { "internalType": "address", "name": "minterUser", "type": "address" },
+      { "internalType": "address", "name": "ankyTba", "type": "address" },
       { "internalType": "uint256", "name": "templateId", "type": "uint256" },
       { "internalType": "uint256", "name": "amount", "type": "uint256" }
     ],
@@ -305,6 +309,7 @@
     "name": "notebookTemplates",
     "outputs": [
       { "internalType": "address", "name": "creator", "type": "address" },
+      { "internalType": "address", "name": "ankyTba", "type": "address" },
       { "internalType": "string", "name": "metadataURI", "type": "string" },
       { "internalType": "uint256", "name": "numPages", "type": "uint256" },
       { "internalType": "uint256", "name": "price", "type": "uint256" },

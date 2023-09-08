@@ -15,8 +15,8 @@ const PWAContext = createContext({
   setEnteredTheAnkyverse: () => {},
   musicPlaying: false,
   setMusicPlaying: () => {},
-  userAnky: {},
-  setUserAnky: () => {},
+  userAppInformation: {},
+  setUserAppInformation: () => {},
 });
 
 export const usePWA = () => {
@@ -26,12 +26,12 @@ export const usePWA = () => {
 export const PWAProvider = ({ children }) => {
   const [isAnkyReady, setIsAnkyReady] = useState(false);
   const [ankyImages, setAnkyImages] = useState([]);
-  const [userAnky, setUserAnky] = useState({});
   const [isAnkyLoading, setIsAnkyLoading] = useState(false);
   const [meditationReady, setMeditationReady] = useState(false);
   const [writingReady, setWritingReady] = useState(false);
   const [enteredTheAnkyverse, setEnteredTheAnkyverse] = useState(false);
   const [musicPlaying, setMusicPlaying] = useState(false);
+  const [userAppInformation, setUserAppInformation] = useState({});
 
   return (
     <PWAContext.Provider
@@ -50,8 +50,8 @@ export const PWAProvider = ({ children }) => {
         setEnteredTheAnkyverse,
         musicPlaying,
         setMusicPlaying,
-        userAnky,
-        setUserAnky,
+        userAppInformation,
+        setUserAppInformation,
       }}
     >
       {children}
