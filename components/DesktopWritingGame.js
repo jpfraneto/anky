@@ -284,11 +284,18 @@ const DesktopWritingGame = ({
                     for now, you can just copy what you wrote. keep it for
                     yourself. it is a gift
                   </p>
-                  <Button
-                    buttonAction={pasteText}
-                    buttonColor='bg-purple-600'
-                    buttonText={copyText}
-                  />
+                  <div className='flex space-x-2'>
+                    <Button
+                      buttonAction={pasteText}
+                      buttonColor='bg-purple-600'
+                      buttonText={copyText}
+                    />
+                    <Button
+                      buttonAction={startNewRun}
+                      buttonColor='bg-green-600 '
+                      buttonText='Start Again'
+                    />
+                  </div>
                 </div>
               ) : (
                 <p

@@ -19,14 +19,23 @@ const NotebooksPage = () => {
   return (
     <div>
       <div className='bg-red-200 p-2'>
-        <p>
-          Your embedded wallet address is: {userAppInformation?.wallet?.address}
-        </p>
-        <p>The index of your anky is: {userAppInformation?.ankyIndex}</p>
-        <p>
-          The address of the Token Bound Account associated with your anky is:{' '}
-          {userAppInformation?.tbaAddress}
-        </p>
+        {userAppInformation?.wallet?.address && (
+          <p>
+            Your embedded wallet address is:{' '}
+            {userAppInformation?.wallet?.address}
+          </p>
+        )}
+
+        {userAppInformation?.ankyIndex && (
+          <p>The index of your anky is: {userAppInformation?.ankyIndex}</p>
+        )}
+        {userAppInformation?.tbaAddress && (
+          <p>
+            The address of the Token Bound Account associated with your anky is:{' '}
+            {userAppInformation?.tbaAddress}
+          </p>
+        )}
+
         <div className='w-48 mt-4 mx-auto'>
           <Button
             buttonAction={() => {
