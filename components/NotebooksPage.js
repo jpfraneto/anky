@@ -15,7 +15,20 @@ const NotebooksPage = () => {
 
   const [displayCreateNotebook, setDisplayCreateNotebook] = useState(false);
 
-  if (!userAppInformation) return <p>loading</p>;
+  if (!userAppInformation)
+    return (
+      <div className='text-white'>
+        <p>If you want to understand how this will work...</p>
+        <p>Help me code it!</p>
+        <a
+          href='https://www.githubg.com/ankylat/smart_contracts'
+          target='_blank'
+        >
+          https://www.githubg.com/ankylat/smart_contracts
+        </a>
+      </div>
+    );
+
   return (
     <div>
       <div className='bg-red-200 p-2'>
