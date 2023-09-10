@@ -213,7 +213,10 @@ function MyApp({ Component, pageProps }) {
                   backgroundRepeat: 'no-repeat',
                 }}
               >
-                {writingReady && meditationReady && enteredTheAnkyverse && (
+                <p>this app only works on desktop</p>
+                <p>we need you to write with your 10 fingers</p>
+
+                {/* {writingReady && meditationReady && enteredTheAnkyverse && (
                   <Navbar />
                 )}
                 <div className={`overflow-y-scroll flex-grow border-white`}>
@@ -221,7 +224,7 @@ function MyApp({ Component, pageProps }) {
                 </div>
                 {writingReady && meditationReady && enteredTheAnkyverse && (
                   <BottomNavbar />
-                )}
+                )} */}
               </div>
             )}
           </PWAProvider>
