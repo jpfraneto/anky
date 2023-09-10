@@ -75,6 +75,10 @@ const DesktopApp = () => {
         'sending the call to the airdrop route',
         userAppInformation.wallet.address
       );
+      console.log(
+        'The call is being sent to:',
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/blockchain/airdrop`
+      );
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/blockchain/airdrop`,
         {
