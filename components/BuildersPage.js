@@ -7,7 +7,7 @@ import buildersABI from '../lib/buildersABI.json';
 import { processFetchedTemplate } from '../lib/notebooks.js';
 
 const BUILDERS_NOTEBOOKS_CONTRACT_ADDRESS =
-  '0x39D1ADCdDC01C48F4FDF085AE7D97532d4556A57';
+  '0x232Ab8BBE993ee8DB19a7165858B7A9edDcddD87';
 
 const dancingScript = Dancing_Script({ weight: '400', subsets: ['latin'] });
 
@@ -50,7 +50,7 @@ function BuildersPage() {
 
   const changeDisplayedPage = () => {};
 
-  if (!thisWallet) return <p>Please login first.</p>;
+  if (!thisWallet) return <p className='text-white'>Please login first.</p>;
 
   if (writings.length === 0)
     return (

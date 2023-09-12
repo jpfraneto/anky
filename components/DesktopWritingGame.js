@@ -35,6 +35,7 @@ const DesktopWritingGame = ({
   const audioRef = useRef();
   const [text, setText] = useState('');
   const [time, setTime] = useState(0);
+  const [preparing, setPreparing] = useState(true);
   const [saveText, setSaveText] = useState('save anon');
   const [upscaledUrls, setUpscaledUrls] = useState([]);
   const [isActive, setIsActive] = useState(false);
@@ -185,7 +186,7 @@ const DesktopWritingGame = ({
 
   const callSmartContract = async arweaveLink => {
     const BUILDERS_NOTEBOOKS_CONTRACT_ADDRESS =
-      '0x39D1ADCdDC01C48F4FDF085AE7D97532d4556A57';
+      '0x232Ab8BBE993ee8DB19a7165858B7A9edDcddD87';
     try {
       let provider = await userAppInformation.wallet.getEthersProvider();
       let signer = await provider.getSigner();
