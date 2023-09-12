@@ -65,7 +65,7 @@ function BuildersPage() {
 
   return (
     <div className='flex text-white space-x-2  flex-col'>
-      <h2 className='text-white text-xl mt-2'>100 builders notebook</h2>
+      <h2 className='text-white text-xl mt-2'>alphi notebook</h2>
       <div className=' flex flex-col text-black'>
         <Notebook text={writings[displayedPage]} />;
         <div className='flex w-full mb-2 overflow-x-scroll'>
