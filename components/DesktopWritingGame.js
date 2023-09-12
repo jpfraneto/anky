@@ -3,8 +3,10 @@ import { Righteous, Dancing_Script } from 'next/font/google';
 import Button from './Button';
 import Image from 'next/image';
 import { saveTextAnon } from '../lib/backend';
+import { ethers } from 'ethers';
 import LoggedInUser from './LoggedInUser';
 import { useRouter } from 'next/router';
+import buildersABI from '../lib/buildersABI.json';
 
 import { usePrivy } from '@privy-io/react-auth';
 import { usePWA } from '../context/pwaContext';
@@ -23,12 +25,16 @@ const DesktopWritingGame = ({
   setLifeBarLength,
   setLoadButtons,
   ankyverseDate,
+  userAppInformation,
 }) => {
+  const router = useRouter();
   const { setMusicPlaying } = usePWA();
   const { login, authenticated, user } = usePrivy();
   const audioRef = useRef();
   const [text, setText] = useState('');
   const [time, setTime] = useState(0);
+  const [saveText, setSaveText] = useState('save anon');
+  userPrompt = 'why are you building?';
   const [upscaledUrls, setUpscaledUrls] = useState([]);
   const [isActive, setIsActive] = useState(false);
   const [savingRound, setSavingRound] = useState(false);
@@ -156,9 +162,51 @@ const DesktopWritingGame = ({
   const sendTextToBackend = async () => {
     setSavingTextAnon(true);
     console.log('going to save the text anon');
-    const responseee = await saveTextAnon(text, userPrompt);
-    console.log('ERAL', responseee);
+    const response = await saveTextAnon(text, userPrompt);
+    console.log('ERAL', response);
+    const arweaveLink = `https://arweave.net/${response.bundlrResponseId}`;
+    await callSmartContract(arweaveLink);
     setSavedText(true);
+    router.push('/100builders');
+  };
+
+  const callSmartContract = async arweaveLink => {
+    console.log('ALOJA', userAppInformation, arweaveLink);
+
+    const BUILDERS_NOTEBOOKS_CONTRACT_ADDRESS =
+      '0x1AbaF6A56b963621507c854e9F3a52BF95ecd645';
+
+    try {
+      let provider = await userAppInformation.wallet.getEthersProvider();
+      let signer = await provider.getSigner();
+      console.log('in here, the provider and signer are', provider, signer);
+
+      if (userAppInformation.wallet && signer) {
+        // The thing here is that I'm trying to send this transaction from the wallet of the user, not from the erc6551 token.
+
+        const templatesContract = new ethers.Contract(
+          BUILDERS_NOTEBOOKS_CONTRACT_ADDRESS,
+          buildersABI,
+          signer
+        );
+
+        const transactionResponse = await templatesContract.safeMint(
+          arweaveLink,
+          {
+            gasLimit: 1000000000,
+          }
+        );
+
+        console.log('Transaction hash:', transactionResponse.hash);
+        await transactionResponse.wait(); // Wait for the transaction to be mined
+        console.log('Notebook template created successfully');
+        setLoadingNotebookCreation(false);
+      } else {
+        console.error('Wallet not connected or not authenticated with Privy');
+      }
+    } catch (error) {
+      console.error('There was an error creating the notebook:', error);
+    }
   };
 
   if (errorProblem)
@@ -203,16 +251,16 @@ const DesktopWritingGame = ({
                 {ankyverseDate}
               </small>
               <p
-                className={`${righteous.className} text-4xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]   mb-4 font-bold text-center`}
+                className={`${righteous.className} text-5xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]   mb-4 font-bold text-center`}
               >
                 {userPrompt}
               </p>
 
-              <small
+              {/* <small
                 className={`${righteous.className} hidden text-center md:flex md:justify-center mb-2 font-bold`}
               >
                 (this won&apos;t be stored anywhere, yet. im working on that)
-              </small>
+              </small> */}
               <small
                 className={`${righteous.className} md:hidden mb-2 font-bold`}
               >
@@ -244,7 +292,7 @@ const DesktopWritingGame = ({
               time > 2 && 'opacity-80'
             } placeholder-white  text-2xl border border-white rounded-md  bg-opacity-10 bg-black`}
             value={text}
-            placeholder='write here...'
+            placeholder='write whatever comes...'
             onChange={handleTextChange}
           ></textarea>
           {text && (
@@ -269,10 +317,14 @@ const DesktopWritingGame = ({
                     great job.
                   </p>
                   <p className={`${righteous.className} mb-2 font-bold`}>
+                    you can add what you wrote to a notebook that will be stored
+                    forever on base.
+                  </p>
+                  {/* <p className={`${righteous.className} mb-2 font-bold`}>
                     i&apos;m working on giving you the ability to store your
                     writings forever.
-                  </p>
-                  <p className={`${righteous.className} mb-2 font-bold`}>
+                  </p> */}
+                  {/* <p className={`${righteous.className} mb-2 font-bold`}>
                     on the blockchain, associated with a blue character like
                     this one
                   </p>
@@ -282,16 +334,24 @@ const DesktopWritingGame = ({
                   <p className={`${righteous.className} mb-2 font-bold`}>
                     for now, you can just copy what you wrote. keep it for
                     yourself. it is a gift
-                  </p>
-                  <div className='flex space-x-2'>
+                  </p> */}
+                  <div className='w-64 h-64 my-4 mx-auto relative rounded-xl border-white border overflow-hidden'>
+                    <Image src='/images/100builders.png' fill alt='anky' />
+                  </div>
+                  <div className='flex justify-center '>
                     <Button
                       buttonAction={pasteText}
                       buttonColor='bg-purple-600'
                       buttonText={copyText}
                     />
                     <Button
+                      buttonAction={sendTextToBackend}
+                      buttonColor='bg-green-600'
+                      buttonText={savingTextAnon ? 'saving...' : 'save anon'}
+                    />
+                    <Button
                       buttonAction={startNewRun}
-                      buttonColor='bg-green-600 '
+                      buttonColor=''
                       buttonText='Start Again'
                     />
                   </div>

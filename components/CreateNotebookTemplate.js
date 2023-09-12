@@ -5,9 +5,9 @@ import { usePrivy, useWallets } from '@privy-io/react-auth';
 import { usePrivyWagmi } from '@privy-io/wagmi-connector';
 import { useContractRead } from 'wagmi';
 import { createTBA } from '../lib/backend';
-import notebookContractABI from '../lib/notebookABI.json';
+import templatesContractABI from '../lib/templatesABI.json';
 
-function CreateNotebook({ userAnky }) {
+function CreateNotebookTemplate({ userAnky }) {
   const [loadingNotebookCreation, setLoadingNotebookCreation] = useState(false);
   const [title, setTitle] = useState('the process of being');
   const [description, setDescription] = useState('96 days of exploration');
@@ -24,8 +24,8 @@ function CreateNotebook({ userAnky }) {
   async function handleSubmit(event) {
     setLoadingNotebookCreation(true);
     event.preventDefault();
-    const NOTEBOOK_CONTRACT_ADDRESS =
-      '0xA84EC30EEe5578d9eE737e730111B857a0e8BA11';
+    const TEMPLATES_CONTRACT_ADDRESS =
+      '0xc52698D6C745C516FAba2115f1B453E14e5503a1';
 
     try {
       console.log('the user anky is after: ', thisWallet);
@@ -40,33 +40,28 @@ function CreateNotebook({ userAnky }) {
       if (thisWallet && signer) {
         // The thing here is that I'm trying to send this transaction from the wallet of the user, not from the erc6551 token.
 
-        const notebookContract = new ethers.Contract(
-          NOTEBOOK_CONTRACT_ADDRESS,
-          notebookContractABI,
+        const templatesContract = new ethers.Contract(
+          TEMPLATES_CONTRACT_ADDRESS,
+          templatesContractABI,
           signer
         );
 
-        const hardcodedPrice = ethers.utils.parseEther('0.001');
-
-        if (!ethers.utils.parseEther(price.toString()).eq(hardcodedPrice)) {
-          console.error('Incorrect fee sent. You must send exactly 0.001 ETH.');
-          return;
-        }
-
-        console.log('the notebook contract is: ', notebookContract);
+        const userEnteredPriceInWei = ethers.utils.parseEther(price.toString());
         // Call the contract's method and send the transaction
-        const transactionResponse =
-          await notebookContract.createNotebookTemplate(
-            userAnky.wallet.address,
-            userAnky.tbaAddress,
-            metadataURI,
-            numPages,
-            supply,
-            {
-              value: hardcodedPrice,
-              gasLimit: 1000000000, // This is a high ballpark figure. Adjust based on your contract's needs.
-            }
-          );
+        const transactionResponse = await templatesContract.createTemplate(
+          userEnteredPriceInWei,
+          [
+            'Describe the moment you found out you were going to be a mother.',
+            "What are some challenges and joys you've faced as a mother?",
+            'How has motherhood changed your perspective on life?',
+            'Write a letter to your child, sharing hopes, dreams, and guidance.',
+          ],
+          metadataURI,
+          supply,
+          {
+            gasLimit: 1000000000,
+          }
+        );
 
         console.log('Transaction hash:', transactionResponse.hash);
         await transactionResponse.wait(); // Wait for the transaction to be mined
@@ -165,4 +160,4 @@ function CreateNotebook({ userAnky }) {
   );
 }
 
-export default CreateNotebook;
+export default CreateNotebookTemplate;

@@ -1,8 +1,12 @@
 [
   {
     "inputs": [
-      { "internalType": "address", "name": "_ankyAirdrop", "type": "address" },
-      { "internalType": "address", "name": "_ankyTemplates", "type": "address" }
+      { "internalType": "address", "name": "_registry", "type": "address" },
+      {
+        "internalType": "address",
+        "name": "_implementation",
+        "type": "address"
+      }
     ],
     "stateMutability": "nonpayable",
     "type": "constructor"
@@ -61,25 +65,32 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": true,
+        "indexed": false,
         "internalType": "uint256",
-        "name": "instanceId",
+        "name": "_fromTokenId",
         "type": "uint256"
       },
       {
-        "indexed": true,
-        "internalType": "address",
-        "name": "owner",
-        "type": "address"
-      },
-      {
-        "indexed": true,
+        "indexed": false,
         "internalType": "uint256",
-        "name": "templateId",
+        "name": "_toTokenId",
         "type": "uint256"
       }
     ],
-    "name": "NotebookMinted",
+    "name": "BatchMetadataUpdate",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_tokenId",
+        "type": "uint256"
+      }
+    ],
+    "name": "MetadataUpdate",
     "type": "event"
   },
   {
@@ -106,36 +117,24 @@
     "inputs": [
       {
         "indexed": true,
-        "internalType": "uint256",
-        "name": "notebookId",
-        "type": "uint256"
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "tbaAddress",
+        "type": "address"
       },
       {
         "indexed": true,
         "internalType": "uint256",
-        "name": "pageNumber",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "prompt",
-        "type": "string"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "arweaveURL",
-        "type": "string"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "timestamp",
+        "name": "tokenId",
         "type": "uint256"
       }
     ],
-    "name": "PageWritten",
+    "name": "TBACreated",
     "type": "event"
   },
   {
@@ -165,34 +164,16 @@
   },
   {
     "inputs": [],
-    "name": "ankyAirdrop",
-    "outputs": [
-      { "internalType": "contract IAnkyAirdrop", "name": "", "type": "address" }
-    ],
+    "name": "_implementationAddress",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
-    "inputs": [
-      { "internalType": "address", "name": "", "type": "address" },
-      { "internalType": "uint256", "name": "", "type": "uint256" }
-    ],
-    "name": "ankyTbaToOwnedNotebooks",
+    "inputs": [{ "internalType": "address", "name": "to", "type": "address" }],
+    "name": "airdropNft",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "ankyTemplates",
-    "outputs": [
-      {
-        "internalType": "contract AnkyTemplates",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -216,6 +197,15 @@
   },
   {
     "inputs": [
+      { "internalType": "address", "name": "userWallet", "type": "address" }
+    ],
+    "name": "createTBAforUsersAnky",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
       { "internalType": "uint256", "name": "tokenId", "type": "uint256" }
     ],
     "name": "getApproved",
@@ -225,52 +215,28 @@
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "notebookId", "type": "uint256" }
+      { "internalType": "uint256", "name": "tokenId", "type": "uint256" }
     ],
-    "name": "getFullNotebook",
-    "outputs": [
-      { "internalType": "uint256", "name": "templateId", "type": "uint256" },
-      {
-        "components": [
-          { "internalType": "string", "name": "arweaveCID", "type": "string" },
-          { "internalType": "uint256", "name": "timestamp", "type": "uint256" }
-        ],
-        "internalType": "struct AnkyNotebooks.UserPageContent[]",
-        "name": "pages",
-        "type": "tuple[]"
-      }
-    ],
+    "name": "getTBA",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "user", "type": "address" }
+      { "internalType": "uint256", "name": "tokenId", "type": "uint256" }
     ],
-    "name": "getOwnedNotebooks",
-    "outputs": [
-      { "internalType": "uint256[]", "name": "", "type": "uint256[]" }
-    ],
+    "name": "getTokenURI",
+    "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "notebookId", "type": "uint256" },
-      { "internalType": "uint256", "name": "pageNumber", "type": "uint256" }
+      { "internalType": "address", "name": "userWallet", "type": "address" }
     ],
-    "name": "getPageContent",
-    "outputs": [
-      {
-        "components": [
-          { "internalType": "string", "name": "arweaveCID", "type": "string" },
-          { "internalType": "uint256", "name": "timestamp", "type": "uint256" }
-        ],
-        "internalType": "struct AnkyNotebooks.UserPageContent",
-        "name": "",
-        "type": "tuple"
-      }
-    ],
+    "name": "getUsersAnkyAddress",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
     "stateMutability": "view",
     "type": "function"
   },
@@ -285,59 +251,9 @@
     "type": "function"
   },
   {
-    "inputs": [
-      { "internalType": "uint256", "name": "notebookId", "type": "uint256" }
-    ],
-    "name": "isVirgin",
-    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "address", "name": "to", "type": "address" },
-      { "internalType": "uint256", "name": "templateId", "type": "uint256" },
-      { "internalType": "uint256", "name": "amount", "type": "uint256" }
-    ],
-    "name": "mintNotebook",
-    "outputs": [],
-    "stateMutability": "payable",
-    "type": "function"
-  },
-  {
     "inputs": [],
     "name": "name",
     "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "name": "notebookInstances",
-    "outputs": [
-      { "internalType": "uint256", "name": "templateId", "type": "uint256" },
-      { "internalType": "bool", "name": "isVirgin", "type": "bool" }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "name": "notebookLastPageWritten",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "uint256", "name": "", "type": "uint256" },
-      { "internalType": "uint256", "name": "", "type": "uint256" }
-    ],
-    "name": "notebookPages",
-    "outputs": [
-      { "internalType": "string", "name": "arweaveCID", "type": "string" },
-      { "internalType": "uint256", "name": "timestamp", "type": "uint256" }
-    ],
     "stateMutability": "view",
     "type": "function"
   },
@@ -354,6 +270,26 @@
     ],
     "name": "ownerOf",
     "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "name": "ownerToTBA",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "registry",
+    "outputs": [
+      {
+        "internalType": "contract IERC6551Registry",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
@@ -393,6 +329,16 @@
       { "internalType": "bool", "name": "approved", "type": "bool" }
     ],
     "name": "setApprovalForAll",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "tokenId", "type": "uint256" },
+      { "internalType": "string", "name": "newUri", "type": "string" }
+    ],
+    "name": "setTokenURI",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -464,17 +410,6 @@
       { "internalType": "address", "name": "newOwner", "type": "address" }
     ],
     "name": "transferOwnership",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "uint256", "name": "notebookId", "type": "uint256" },
-      { "internalType": "uint256", "name": "pageNumber", "type": "uint256" },
-      { "internalType": "string", "name": "arweaveCID", "type": "string" }
-    ],
-    "name": "writePage",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

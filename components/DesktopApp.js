@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import DesktopWritingGame from './DesktopWritingGame';
-import ExplorePage from './ExplorePage';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
 import { Righteous, Dancing_Script } from 'next/font/google';
 import { getAnkyverseDay, getAnkyverseQuestion } from '../lib/ankyverse';
@@ -9,6 +8,8 @@ import { usePWA } from '../context/pwaContext';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import NotebooksPage from './NotebooksPage';
+import TemplatesPage from './TemplatesPage';
+import BuildersPage from './BuildersPage';
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 const ankyverseToday = getAnkyverseDay(new Date());
@@ -53,8 +54,11 @@ const DesktopApp = () => {
     switch (route) {
       case '/notebooks':
         return <NotebooksPage />;
-      case '/explore':
-        return <ExplorePage />;
+      case '/notebooks/templates':
+        return <TemplatesPage />;
+      case '/100builders':
+        console.log('IN HERE!');
+        return <BuildersPage />;
 
       default:
         return (
@@ -63,6 +67,7 @@ const DesktopApp = () => {
               ankyverseToday.wink
             } - ${ankyverseToday.currentKingdom.toLowerCase()}`}
             userPrompt={ankyverseQuestion}
+            userAppInformation={userAppInformation}
             setLifeBarLength={setLifeBarLength}
           />
         );
@@ -125,6 +130,12 @@ const DesktopApp = () => {
   return (
     <div className='text-center text-white'>
       <div className='text-white w-full h-8 flex justify-between items-center px-2'>
+        <div
+          className='hover:text-red-300 hover:cursor-pointer px-2 active:text-red-400'
+          onClick={() => router.push('/')}
+        >
+          anky
+        </div>
         <div className='h-full w-full'>
           <div
             className='h-full opacity-50'

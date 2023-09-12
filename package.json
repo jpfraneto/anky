@@ -10,6 +10,7 @@
     "postinstall": "prisma generate"
   },
   "dependencies": {
+    "@bundlr-network/client": "^0.11.17",
     "@prisma/client": "^5.1.1",
     "@privy-io/react-auth": "^1.37.0",
     "@privy-io/wagmi-connector": "^0.1.3",
