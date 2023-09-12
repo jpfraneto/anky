@@ -27,7 +27,7 @@ const DesktopWritingGame = ({
   ankyverseDate,
   userAppInformation,
 }) => {
-  userPrompt = 'what does alphi mean in your life?';
+  userPrompt = 'what does alphi mean for you?';
 
   const router = useRouter();
   const { setMusicPlaying, setIsAnkyLoading } = usePWA();
@@ -330,6 +330,9 @@ const DesktopWritingGame = ({
 
               {finished ? (
                 <div className='p-4 bg-black drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]  z-50'>
+                  <div className='w-64 h-64 my-4 mx-auto relative rounded-xl border-white border overflow-hidden'>
+                    <Image src='/images/alphi.jpeg' fill alt='alphi' />
+                  </div>
                   <p
                     className={`${righteous.className} mb-2 text-xl font-bold`}
                   >
@@ -338,8 +341,8 @@ const DesktopWritingGame = ({
                   <p
                     className={`${righteous.className} mb-2 text-xl font-bold`}
                   >
-                    you can add what you wrote to a notebook that will be stored
-                    forever on base.
+                    you can add what you wrote to a special notebook that will
+                    be stored forever on the blockchain.
                   </p>
                   {/* <p className={`${righteous.className} mb-2 font-bold`}>
                     i&apos;m working on giving you the ability to store your
@@ -356,9 +359,7 @@ const DesktopWritingGame = ({
                     for now, you can just copy what you wrote. keep it for
                     yourself. it is a gift
                   </p> */}
-                  <div className='w-64 h-64 my-4 mx-auto relative rounded-xl border-white border overflow-hidden'>
-                    <Image src='/images/100builders.png' fill alt='anky' />
-                  </div>
+
                   <div className='flex justify-center '>
                     <Button
                       buttonAction={pasteText}
