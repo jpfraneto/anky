@@ -17,7 +17,7 @@ const ankyverseQuestion = getAnkyverseQuestion(ankyverseToday.wink);
 
 const DesktopApp = () => {
   const { login, ready, authenticated, logout } = usePrivy();
-  const { userAppInformation, setUserAppInformation } = usePWA();
+  const { userAppInformation, setUserAppInformation, isAnkyLoading } = usePWA();
   const router = useRouter();
   const [lifeBarLength, setLifeBarLength] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -146,9 +146,12 @@ const DesktopApp = () => {
           ></div>
         </div>
         <div className='flex space-x-2'>
-          <Link className='hover:text-purple-600' href='/notebooks'>
-            notebooks
-          </Link>
+          {isAnkyLoading && (
+            <Link className='hover:text-purple-600' href='/notebooks'>
+              wtf?
+            </Link>
+          )}
+
           {authenticated ? (
             <button className='hover:text-purple-600' onClick={logout}>
               logout

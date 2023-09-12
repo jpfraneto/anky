@@ -187,3 +187,53 @@ a {
     background: white;
   }
 }
+
+#notebook-paper {
+  width: 400px;
+  height: 600px;
+  padding-left: 33px;
+  padding-right: 10px;
+  background: linear-gradient(to bottom, white 29px, #00b0d7 1px);
+  margin: 10px auto 0px;
+  padding-bottom: 10px;
+  background-size: 100% 30px;
+  position: relative;
+  line-height: 30px;
+  overflow-y: scroll;
+  border-radius: 5px;
+  -webkit-box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2),
+    0px 0px 6px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2),
+    0px 0px 6px rgba(0, 0, 0, 0.2);
+  -ms-box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2), 0px 0px 6px rgba(0, 0, 0, 0.2);
+  -o-box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2), 0px 0px 6px rgba(0, 0, 0, 0.2);
+  box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2), 0px 0px 6px rgba(0, 0, 0, 0.2);
+  &:before {
+    content: '';
+    display: block;
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 30px;
+    height: 100%;
+    width: 1px;
+    background: #db4034;
+  }
+  header {
+    height: 150px;
+    width: 100%;
+    background: white;
+    position: absolute;
+    top: 0;
+    left: 0;
+    h1 {
+      font-size: 60px;
+      line-height: 60px;
+      padding: 127px 20px 0 160px;
+    }
+  }
+}
+
+.aloja p {
+  margin-top: 20px;
+}

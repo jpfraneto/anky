@@ -27,14 +27,15 @@ const DesktopWritingGame = ({
   ankyverseDate,
   userAppInformation,
 }) => {
+  userPrompt = 'why are you on web3?';
+
   const router = useRouter();
-  const { setMusicPlaying } = usePWA();
+  const { setMusicPlaying, setIsAnkyLoading } = usePWA();
   const { login, authenticated, user } = usePrivy();
   const audioRef = useRef();
   const [text, setText] = useState('');
   const [time, setTime] = useState(0);
   const [saveText, setSaveText] = useState('save anon');
-  userPrompt = 'why are you building?';
   const [upscaledUrls, setUpscaledUrls] = useState([]);
   const [isActive, setIsActive] = useState(false);
   const [savingRound, setSavingRound] = useState(false);
@@ -161,25 +162,25 @@ const DesktopWritingGame = ({
 
   const sendTextToBackend = async () => {
     setSavingTextAnon(true);
-    console.log('going to save the text anon');
-    const response = await saveTextAnon(text, userPrompt);
-    console.log('ERAL', response);
-    const arweaveLink = `https://arweave.net/${response.bundlrResponseId}`;
-    await callSmartContract(arweaveLink);
-    setSavedText(true);
-    router.push('/100builders');
+    try {
+      const response = await saveTextAnon(text, userPrompt);
+      console.log('the response is: ', response);
+      const arweaveLink = `https://arweave.net/${response.bundlrResponseId}`;
+      await callSmartContract(arweaveLink);
+      setSavedText(true);
+      setIsAnkyLoading(true);
+      router.push('/100builders');
+    } catch (error) {
+      alert('There was an error fetching the api route. Contact jp asap.');
+    }
   };
 
   const callSmartContract = async arweaveLink => {
-    console.log('ALOJA', userAppInformation, arweaveLink);
-
     const BUILDERS_NOTEBOOKS_CONTRACT_ADDRESS =
-      '0x1AbaF6A56b963621507c854e9F3a52BF95ecd645';
-
+      '0x39D1ADCdDC01C48F4FDF085AE7D97532d4556A57';
     try {
       let provider = await userAppInformation.wallet.getEthersProvider();
       let signer = await provider.getSigner();
-      console.log('in here, the provider and signer are', provider, signer);
 
       if (userAppInformation.wallet && signer) {
         // The thing here is that I'm trying to send this transaction from the wallet of the user, not from the erc6551 token.
@@ -192,12 +193,12 @@ const DesktopWritingGame = ({
 
         const transactionResponse = await templatesContract.safeMint(
           arweaveLink,
+          userAppInformation.tbaAddress,
           {
             gasLimit: 1000000000,
           }
         );
 
-        console.log('Transaction hash:', transactionResponse.hash);
         await transactionResponse.wait(); // Wait for the transaction to be mined
         console.log('Notebook template created successfully');
         setLoadingNotebookCreation(false);
@@ -341,24 +342,26 @@ const DesktopWritingGame = ({
                   <div className='flex justify-center '>
                     <Button
                       buttonAction={pasteText}
-                      buttonColor='bg-purple-600'
+                      buttonColor='bg-purple-600 text-black'
                       buttonText={copyText}
                     />
                     <Button
                       buttonAction={sendTextToBackend}
-                      buttonColor='bg-green-600'
+                      buttonColor='bg-green-600 text-black'
                       buttonText={savingTextAnon ? 'saving...' : 'save anon'}
                     />
                     <Button
                       buttonAction={startNewRun}
-                      buttonColor=''
+                      buttonColor='bg-cyan-200 text-black'
                       buttonText='Start Again'
                     />
                   </div>
                 </div>
               ) : (
                 <p
-                  className={`${righteous.className} z-40 text-fuchsia-500 text-2xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] font-bold`}
+                  className={`${righteous.className}  ${
+                    time < 3 && 'hidden'
+                  } z-40 text-fuchsia-500 text-2xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] font-bold`}
                 >
                   {userPrompt}
                 </p>
