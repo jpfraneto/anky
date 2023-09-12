@@ -9,6 +9,7 @@ const BUILDERS_NOTEBOOKS_CONTRACT_ADDRESS =
 
 function BuildersPage() {
   const [writings, setWritings] = useState([]);
+  const [displayedPage, setDisplayedPage] = useState(0);
   const [provider, setProvider] = useState(null);
   const { wallets } = useWallets();
 
@@ -47,13 +48,29 @@ function BuildersPage() {
     fetchWritings();
   }, [thisWallet]);
 
+  const changeDisplayedPage = () => {};
+
   if (!writings) return <p>There are no writings</p>;
 
   return (
-    <div className='flex text-white space-x-2'>
-      {writings.map((writing, index) => (
-        <p>{writing}</p>
-      ))}
+    <div className='flex text-white space-x-2  flex-col'>
+      <div className='w-96 mx-auto h-48 p-2 bg-slate-400 '>
+        {writings[displayedPage]}
+      </div>
+      <div className=' flex '>
+        {writings.map((x, i) => {
+          return (
+            <div
+              className={`p-2 m-2 w-8 h-8 hover:cursor-pointer rounded-xl ${
+                displayedPage === i ? 'bg-green-600' : 'bg-slate-200'
+              } flex justify-center items-center`}
+              onClick={() => setDisplayedPage(i)}
+            >
+              {i}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
