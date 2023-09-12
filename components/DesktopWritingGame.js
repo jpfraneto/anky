@@ -190,6 +190,8 @@ const DesktopWritingGame = ({
       let provider = await userAppInformation.wallet.getEthersProvider();
       let signer = await provider.getSigner();
 
+      console.log('the user app information is: ', userAppInformation);
+
       if (userAppInformation.wallet && signer) {
         // The thing here is that I'm trying to send this transaction from the wallet of the user, not from the erc6551 token.
 
