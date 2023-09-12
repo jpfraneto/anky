@@ -202,9 +202,14 @@ const DesktopWritingGame = ({
           signer
         );
 
+        let addressForMinting = userAppInformation.wallet.address;
+        if (typeof userAppInformation.tbaAddress === 'string') {
+          addressForMinting = userAppInformation.tbaAddress;
+        }
+
         const transactionResponse = await templatesContract.safeMint(
           arweaveLink,
-          userAppInformation.tbaAddress,
+          addressForMinting,
           {
             gasLimit: 1000000000,
           }
