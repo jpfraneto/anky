@@ -7,7 +7,7 @@ import buildersABI from '../lib/buildersABI.json';
 import { processFetchedTemplate } from '../lib/notebooks.js';
 
 const BUILDERS_NOTEBOOKS_CONTRACT_ADDRESS =
-  '0x1AbaF6A56b963621507c854e9F3a52BF95ecd645';
+  '0x39D1ADCdDC01C48F4FDF085AE7D97532d4556A57';
 
 const dancingScript = Dancing_Script({ weight: '400', subsets: ['latin'] });
 
@@ -32,10 +32,9 @@ function BuildersPage() {
         buildersABI,
         signer
       );
-      const writingsCount = await writingsContract.getTotalWritings();
-      const fetchedWritings = [];
 
       const allWritings = await writingsContract.getAllWritings();
+      console.log('all the writings are: ', allWritings);
       const writingsContent = await Promise.all(
         allWritings.map(async url => {
           const response = await fetch(url);
@@ -88,7 +87,6 @@ function BuildersPage() {
 }
 
 const Notebook = ({ text }) => {
-  console.log('the text is: ', text);
   return (
     <div
       id='notebook-paper'

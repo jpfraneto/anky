@@ -161,15 +161,23 @@ const DesktopWritingGame = ({
   };
 
   const sendTextToBackend = async () => {
+    if (!authenticated) {
+      alert('You need to login');
+      return login();
+    }
     setSavingTextAnon(true);
     try {
       const response = await saveTextAnon(text, userPrompt);
       console.log('the response is: ', response);
-      const arweaveLink = `https://arweave.net/${response.bundlrResponseId}`;
-      await callSmartContract(arweaveLink);
-      setSavedText(true);
-      setIsAnkyLoading(true);
-      router.push('/100builders');
+      if (response.bundlrResponseId) {
+        const arweaveLink = `https://arweave.net/${response.bundlrResponseId}`;
+        await callSmartContract(arweaveLink);
+        setSavedText(true);
+        setIsAnkyLoading(true);
+        router.push('/100builders');
+      } else {
+        alert('There was an error, contact jp asap.');
+      }
     } catch (error) {
       alert('There was an error fetching the api route. Contact jp asap.');
     }
@@ -348,12 +356,12 @@ const DesktopWritingGame = ({
                     <Button
                       buttonAction={sendTextToBackend}
                       buttonColor='bg-green-600 text-black'
-                      buttonText={savingTextAnon ? 'saving...' : 'save anon'}
+                      buttonText={savingTextAnon ? 'saving...' : 'save text'}
                     />
                     <Button
                       buttonAction={startNewRun}
                       buttonColor='bg-cyan-200 text-black'
-                      buttonText='Start Again'
+                      buttonText='start again'
                     />
                   </div>
                 </div>

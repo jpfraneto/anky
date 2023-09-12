@@ -193,7 +193,10 @@
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "string", "name": "url", "type": "string" }],
+    "inputs": [
+      { "internalType": "string", "name": "url", "type": "string" },
+      { "internalType": "address", "name": "to", "type": "address" }
+    ],
     "name": "safeMint",
     "outputs": [],
     "stateMutability": "nonpayable",
