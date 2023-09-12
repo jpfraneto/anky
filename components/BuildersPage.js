@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 import Spinner from './Spinner';
+import Button from './Button';
 import { Dancing_Script } from 'next/font/google';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
 import buildersABI from '../lib/buildersABI.json';
 import { processFetchedTemplate } from '../lib/notebooks.js';
+import { useRouter } from 'next/router';
 
 const BUILDERS_NOTEBOOKS_CONTRACT_ADDRESS =
   '0x232Ab8BBE993ee8DB19a7165858B7A9edDcddD87';
@@ -12,6 +14,7 @@ const BUILDERS_NOTEBOOKS_CONTRACT_ADDRESS =
 const dancingScript = Dancing_Script({ weight: '400', subsets: ['latin'] });
 
 function BuildersPage() {
+  const router = useRouter();
   const [writings, setWritings] = useState([]);
   const [displayedPage, setDisplayedPage] = useState(0);
   const [provider, setProvider] = useState(null);
@@ -34,7 +37,7 @@ function BuildersPage() {
       );
 
       const allWritings = await writingsContract.getAllWritings();
-      console.log('all the writings are: ', allWritings);
+      setDisplayedPage(allWritings.length - 1);
       const writingsContent = await Promise.all(
         allWritings.map(async url => {
           const response = await fetch(url);
@@ -65,7 +68,7 @@ function BuildersPage() {
       <h2 className='text-white'>100 builders notebook</h2>
       <div className=' flex flex-col text-black'>
         <Notebook text={writings[displayedPage]} />;
-        <div className='flex w-full overflow-x-scroll'>
+        <div className='flex w-full mb-2 overflow-x-scroll'>
           {writings.map((x, i) => {
             {
               return (
@@ -82,6 +85,11 @@ function BuildersPage() {
             }
           })}
         </div>
+        <Button
+          buttonAction={() => router.push('/')}
+          buttonColor='bg-green-600'
+          buttonText='write notebook'
+        />
       </div>
     </div>
   );
