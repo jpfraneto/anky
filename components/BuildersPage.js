@@ -61,6 +61,7 @@ function BuildersPage() {
         {writings.map((x, i) => {
           return (
             <div
+              key={i}
               className={`p-2 m-2 w-8 h-8 hover:cursor-pointer rounded-xl ${
                 displayedPage === i ? 'bg-green-600' : 'bg-slate-200'
               } flex justify-center items-center`}
