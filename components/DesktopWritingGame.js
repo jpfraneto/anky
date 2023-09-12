@@ -186,7 +186,7 @@ const DesktopWritingGame = ({
 
   const callSmartContract = async arweaveLink => {
     const BUILDERS_NOTEBOOKS_CONTRACT_ADDRESS =
-      '0x232Ab8BBE993ee8DB19a7165858B7A9edDcddD87';
+      '0xA06742b4018aec4602C3296D3CAcF0159F5234E8';
     try {
       let provider = await userAppInformation.wallet.getEthersProvider();
       let signer = await provider.getSigner();
@@ -330,10 +330,14 @@ const DesktopWritingGame = ({
 
               {finished ? (
                 <div className='p-4 bg-black drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]  z-50'>
-                  <p className={`${righteous.className} mb-2 font-bold`}>
+                  <p
+                    className={`${righteous.className} mb-2 text-xl font-bold`}
+                  >
                     great job.
                   </p>
-                  <p className={`${righteous.className} mb-2 font-bold`}>
+                  <p
+                    className={`${righteous.className} mb-2 text-xl font-bold`}
+                  >
                     you can add what you wrote to a notebook that will be stored
                     forever on base.
                   </p>

@@ -9,7 +9,7 @@ import { processFetchedTemplate } from '../lib/notebooks.js';
 import { useRouter } from 'next/router';
 
 const BUILDERS_NOTEBOOKS_CONTRACT_ADDRESS =
-  '0x232Ab8BBE993ee8DB19a7165858B7A9edDcddD87';
+  '0xA06742b4018aec4602C3296D3CAcF0159F5234E8';
 
 const dancingScript = Dancing_Script({ weight: '400', subsets: ['latin'] });
 
@@ -65,7 +65,7 @@ function BuildersPage() {
 
   return (
     <div className='flex text-white space-x-2  flex-col'>
-      <h2 className='text-white'>100 builders notebook</h2>
+      <h2 className='text-white text-xl mt-2'>100 builders notebook</h2>
       <div className=' flex flex-col text-black'>
         <Notebook text={writings[displayedPage]} />;
         <div className='flex w-full mb-2 overflow-x-scroll'>
