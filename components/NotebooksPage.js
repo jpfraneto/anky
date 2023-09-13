@@ -75,6 +75,7 @@ const NotebooksPage = () => {
 
       <h2 className='mt-24'>The mission is to make crypto invisible.</h2>
       <h2>To build something that the world has not seen before.</h2>
+      <Link href='/templates'>templates</Link>
       {/* <h2 className='text-white'>Templates</h2>
       <div>
         <TemplatesList />
