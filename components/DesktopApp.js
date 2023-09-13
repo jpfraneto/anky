@@ -8,6 +8,7 @@ import { usePWA } from '../context/pwaContext';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import NotebooksPage from './NotebooksPage';
+import NewTemplatePage from './NewTemplatePage';
 import TemplatesPage from './TemplatesPage';
 import BuildersPage from './BuildersPage';
 
@@ -56,6 +57,8 @@ const DesktopApp = () => {
         return <NotebooksPage />;
       case '/notebooks/templates':
         return <TemplatesPage />;
+      case '/templates/new':
+        return <NewTemplatePage userAnky={userAppInformation} />;
       case '/100builders':
         console.log('IN HERE!');
         return <BuildersPage />;
@@ -164,7 +167,7 @@ const DesktopApp = () => {
         </div>
       </div>
       <div
-        className={`${righteous.className} text-black relative  flex flex-col items-center  w-full bg-cover bg-center`}
+        className={`${righteous.className} text-black relative overflow-y-scroll flex flex-col items-center  w-full bg-cover bg-center`}
         style={{
           boxSizing: 'border-box',
           height: 'calc(100vh - 33px)',

@@ -21,6 +21,7 @@ const NotebooksPage = () => {
         <p>If you want to understand how this will work...</p>
         <p>Help me code it!</p>
         <a
+          rel='noopener noreferrer'
           href='https://www.githubg.com/ankylat/smart_contracts'
           target='_blank'
         >
@@ -39,7 +40,14 @@ const NotebooksPage = () => {
       </p>
       <small>
         (if you don&apos;t believe me, it&apos;s address is{' '}
-        {userAppInformation.wallet?.address})
+        <a
+          target='_blank'
+          rel='noopener noreferrer'
+          href={`https://goerli.basescan.org/address/${userAppInformation.wallet?.address}`}
+        >
+          {userAppInformation.wallet?.address}
+        </a>
+        )
       </small>
       <p className='text-xl '>
         2. You were airdropped some eth and an NFT into that wallet. Your anky.
@@ -49,7 +57,14 @@ const NotebooksPage = () => {
       </p>
       <small>
         (this means that it behaves as if it was a wallet - it&apos;s address is{' '}
-        {userAppInformation.tbaAddress})
+        <a
+          target='_blank'
+          rel='noopener noreferrer'
+          href={`https://goerli.basescan.org/address/${userAppInformation.tbaAddress}`}
+        >
+          {userAppInformation.tbaAddress}
+        </a>
+        )
       </small>
       <p className='text-xl '>
         4. Your writing was added to the 100 Builders Notebook.
