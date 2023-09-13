@@ -56,7 +56,7 @@ const DesktopApp = () => {
     switch (route) {
       case '/notebooks':
         return <NotebooksPage />;
-      case '/notebooks/templates':
+      case '/templates':
         return <TemplatesPage />;
       case '/templates/new':
         return <NewTemplatePage userAnky={userAppInformation} />;

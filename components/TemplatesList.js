@@ -4,16 +4,47 @@ import { usePrivy, useWallets } from '@privy-io/react-auth';
 import AnkyTemplatesAbi from '../lib/templatesABI.json';
 import NotebooksAbi from '../lib/notebookABI.json'; // Assuming you have this
 import { processFetchedTemplate } from '../lib/notebooks.js';
+import { useRouter } from 'next/router';
+import Button from './Button';
 
-const TEMPLATES_CONTRACT_ADDRESS = '0xc52698D6C745C516FAba2115f1B453E14e5503a1';
-const NOTEBOOKS_CONTRACT_ADDRESS = '0x131eFd7EE39806D72dA8f051D89E306049692354';
+function loadExampleToState(example) {
+  setTitle(example.title);
+  setDescription(example.description);
+  setPrice(example.price);
+  setPrompts(example.prompts);
+}
+
+const EXAMPLE_NOTEBOOKS = [
+  {
+    title: 'Journey of Self',
+    description:
+      'Dive deep into the realms of self-awareness and understanding. Let this notebook guide you on a voyage of introspection and self-discovery.',
+    price: 0.01,
+    prompts: [
+      'What does self-awareness mean to you?',
+      'Describe a moment when you felt most connected to yourself.',
+      'How has your perception of self changed over the years?',
+      // ... Add more prompts as needed
+    ],
+  },
+  // ... 9 more example notebook objects
+];
 
 function TemplatesList() {
+  const router = useRouter();
   const [templates, setTemplates] = useState([]);
   const [provider, setProvider] = useState(null);
+  const [displayInfo, setDisplayInfo] = useState(false);
   const { wallets } = useWallets();
 
   const thisWallet = wallets[0];
+
+  const setExampleNotebook = notebook => {
+    setTitle(notebook.title);
+    setDescription(notebook.description);
+    setPrice(notebook.price);
+    setPrompts(notebook.prompts);
+  };
 
   useEffect(() => {
     async function fetchTemplates() {
@@ -24,7 +55,7 @@ function TemplatesList() {
       let signer = await fetchedProvider.getSigner();
 
       const templatesContract = new ethers.Contract(
-        TEMPLATES_CONTRACT_ADDRESS,
+        process.env.NEXT_PUBLIC_TEMPLATES_CONTRACT_ADDRESS,
         AnkyTemplatesAbi,
         signer
       );
@@ -48,15 +79,40 @@ function TemplatesList() {
   if (!templates) return <p>There are no templates</p>;
 
   return (
-    <div className='flex space-x-2'>
-      {templates.map((template, index) => (
-        <TemplateItem
-          key={index}
-          template={template}
-          provider={provider}
-          thisWallet={thisWallet}
-        />
-      ))}
+    <div className='flex flex-col'>
+      
+      <div className='flex space-x-2'>
+        {templates.map((template, index) => (
+          <TemplateItem
+            key={index}
+            template={template}
+            provider={provider}
+            thisWallet={thisWallet}
+          />
+        ))}
+      </div>
+      <div className='mt-4 flex flex-col w-96'>
+        <div className='flex justify-around'>
+          <Button
+            buttonText='Add new template'
+            buttonColor='bg-green-600'
+            buttonAction={() => router.push('/templates/new')}
+          />
+          <Button
+            buttonText='?'
+            buttonAction={() => setDisplayInfo(x => !x)}
+            buttonColor={`${displayInfo ? 'bg-purple-600' : 'bg-purple-400'}`}
+          />
+        </div>
+        {displayInfo && (
+          <div className='text-white mt-2 text-sm'>
+            <p>a template is the blueprint</p>
+            <p>that others will follow</p>
+            <p>to have you guide them through the unknown</p>
+            <p>with the power of your prompts</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -67,7 +123,7 @@ function TemplateItem({ template, provider, thisWallet }) {
 
     const signer = await provider.getSigner();
     const notebooksContract = new ethers.Contract(
-      NOTEBOOKS_CONTRACT_ADDRESS,
+      process.env.NEXT_PUBLIC_NOTEBOOKS_CONTRACT,
       NotebooksAbi,
       signer
     );

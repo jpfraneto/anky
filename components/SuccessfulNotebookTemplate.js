@@ -22,21 +22,23 @@ const SuccessfulNotebookTemplate = ({ template }) => {
         />
       </div>
       {linkCopied && (
-        <small className='text-red-600 text-sm'>
-          the link is on your clipboard
-        </small>
+        <>
+          <small className='text-red-600 text-sm'>
+            the link is on your clipboard
+          </small>
+          <p className='mt-2'>
+            I&apos;m working on the functionality for making all of this more
+            interactive.
+          </p>
+          <p>All feedback is gold.</p>
+          <p>Thank you.</p>
+          <div className='bg-purple-600 px-4 py-2 rounded-xl mt-4 mx-auto w-48 border-black border hover:opacity-70'>
+            <Link href={`/template/${template.createdTemplateId}`}>
+              Visit Template
+            </Link>
+          </div>
+        </>
       )}
-      <p className='mt-2'>
-        I&apos;m working on the functionality for making all of this more
-        interactive.
-      </p>
-      <p>All feedback is gold.</p>
-      <p>Thank you.</p>
-      <div className='bg-purple-600 px-4 py-2 rounded-xl mt-4 mx-auto w-48 border-black border hover:opacity-70'>
-        <Link href={`/template/${template.createdTemplateId}`}>
-          Visit Template
-        </Link>
-      </div>
     </div>
   );
 };

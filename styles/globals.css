@@ -237,3 +237,75 @@ a {
 .aloja p {
   margin-top: 20px;
 }
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* Base button style */
+.button {
+  padding: 15px 20px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.button:hover {
+  transform: scale(1.05);
+}
+
+.button:nth-child(1) {
+  background-color: #ffd700;
+  color: #2c2c2c;
+}
+
+.button:nth-child(2) {
+  background-color: #98fb98;
+  color: #006400;
+}
+
+.button:nth-child(3) {
+  background-color: #ffb6c1;
+  color: #8b0000;
+}
+
+.button:nth-child(4) {
+  background-color: #00bfff;
+  color: #1c1c1c;
+}
+
+.button:nth-child(5) {
+  background-color: #ff6347;
+  color: #ffffff;
+}
+
+.button:nth-child(6) {
+  background-color: #9400d3;
+  color: #ffffff;
+}
+
+.button:nth-child(7) {
+  background-color: #ffa07a;
+  color: #4b0082;
+}
+
+.button:nth-child(8) {
+  background-color: #3cb371;
+  color: #228b22;
+}
+
+.button:nth-child(9) {
+  background-color: #ff4500;
+  color: #ffffff;
+}
+
+.button:nth-child(10) {
+  background-color: #4682b4;
+  color: #ffffff;
+}

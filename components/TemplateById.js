@@ -19,7 +19,7 @@ function TemplatePage({ userAnky }) {
   }, [id]);
 
   async function fetchTemplateData(templateId) {
-    if (!userAnky) return;
+    if (!userAnky && !userAnky.wallet) return;
     let provider = await userAnky.wallet.getEthersProvider();
     let signer = await provider.getSigner();
 

@@ -7,10 +7,8 @@ import { PrivyWagmiConnector } from '@privy-io/wagmi-connector';
 import { baseGoerli } from '@wagmi/chains';
 import { configureChains, createConfig } from 'wagmi';
 import { publicProvider } from 'wagmi/providers/public';
-import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 import BottomNavbar from '../components/BottomNavbar';
-import ReactPlayer from 'react-player/soundcloud';
 import Head from 'next/head';
 import Button from '../components/Button';
 import Image from 'next/image';
@@ -34,6 +32,7 @@ function MyApp({ Component, pageProps }) {
     meditationReady,
     setMeditationReady,
   } = usePWA();
+
   const [isDesktop, setIsDesktop] = useState(false);
   const [loading, setLoading] = useState(true);
 

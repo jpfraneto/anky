@@ -8,7 +8,131 @@ import { createTBA } from '../lib/backend';
 import Button from './Button';
 import templatesContractABI from '../lib/templatesABI.json';
 import Spinner from './Spinner';
+import SampleButton from './SampleButton';
 import SuccessfulNotebookTemplate from './SuccessfulNotebookTemplate';
+
+const EXAMPLE_NOTEBOOKS = [
+  {
+    title: 'Journey of Self',
+    description:
+      'Delve deep into your soul, discover the intricacies of your essence, and pen down the whims of your spirit.',
+    price: 0.01,
+    prompts: [
+      "What does 'self' mean to you?",
+      'Recall a time when you felt most alive.',
+      'Describe a moment of self-discovery.',
+      'What are your core values?',
+    ],
+  },
+  {
+    title: 'Dreams & Aspirations',
+    description:
+      'Capture your loftiest dreams, aspirations, and hopes for the future. Carve a path of intention and drive.',
+    price: 0.015,
+    prompts: [
+      "What's a dream you've never told anyone?",
+      'Where do you see yourself in 10 years?',
+      'What steps can you take today towards your dream?',
+      'Who or what inspires you the most?',
+    ],
+  },
+  {
+    title: 'Childhood Nostalgia',
+    description:
+      'Revisit the days of unbridled joy, curious wonder, and innocent adventures. Embrace the child within you.',
+    price: 0.012,
+    prompts: [
+      "What's your fondest childhood memory?",
+      'Which toy or game was your favorite?',
+      'Describe a typical day in your childhood.',
+      'Who was your childhood hero?',
+    ],
+  },
+  {
+    title: "Nature's Whispers",
+    description:
+      'Nature speaks in hushed tones and mighty roars. Capture its essence, beauty, and lessons it imparts.',
+    price: 0.014,
+    prompts: [
+      'Describe your favorite place in nature.',
+      'How does nature inspire you?',
+      'Write about a time you felt one with nature.',
+      'What lessons has nature taught you?',
+    ],
+  },
+  {
+    title: 'Love & Relationships',
+    description:
+      'Dive into the complexities of human connections. Explore the love you give, receive, and everything in between.',
+    price: 0.02,
+    prompts: [
+      'Describe your first crush.',
+      'What does love mean to you?',
+      'Write a letter to someone you miss.',
+      'What qualities do you value in a partner?',
+    ],
+  },
+  {
+    title: 'Mystical Musings',
+    description:
+      'Venture into the world of the unknown. Explore magic, fantasies, and the mysteries that beckon your spirit.',
+    price: 0.017,
+    prompts: [
+      'If you had a magical power, what would it be?',
+      'Describe a dream that felt too real.',
+      "Write about a mystical place you'd like to visit.",
+      'Which mythological creature do you resonate with?',
+    ],
+  },
+  {
+    title: 'Galactic Explorations',
+    description:
+      'Embark on a cosmic journey. Traverse galaxies, meet aliens, and unravel the secrets of the universe.',
+    price: 0.018,
+    prompts: [
+      'If you could visit any planet, which would it be?',
+      "Write a message you'd send to extraterrestrial life.",
+      'Describe the Earth from a spaceship.',
+      'What mysteries of the universe do you want answers to?',
+    ],
+  },
+  {
+    title: 'Culinary Chronicles',
+    description:
+      'Embark on a gastronomic journey. Relish flavors, explore recipes, and pen down your foodie adventures.',
+    price: 0.016,
+    prompts: [
+      'Describe your favorite meal.',
+      'Which cuisine do you want to explore?',
+      'Write about a memorable meal shared with loved ones.',
+      'If you were a dish, what would you be?',
+    ],
+  },
+  {
+    title: 'Musical Memories',
+    description:
+      "Dance to life's rhythm. Chronicle your favorite tunes, concerts, and the melodies that move your soul.",
+    price: 0.013,
+    prompts: [
+      "What's the first song that made you cry?",
+      'Describe a concert that changed your life.',
+      'Which song lyrics resonate with your current feelings?',
+      'If your life was a song, what would its title be?',
+    ],
+  },
+  {
+    title: 'Historical Hues',
+    description:
+      'Time travel through history. Chronicle tales of yesteryears, epochs gone by, and moments that shaped the world.',
+    price: 0.015,
+    prompts: [
+      'If you could meet any historical figure, who would it be?',
+      'Describe a past era you wish you lived in.',
+      'Write about an unsung hero of history.',
+      'Which historical event do you wish you witnessed?',
+    ],
+  },
+];
 
 function CreateNotebookTemplate({ userAnky }) {
   const { login } = usePrivy();
@@ -55,7 +179,7 @@ function CreateNotebookTemplate({ userAnky }) {
         // The thing here is that I'm trying to send this transaction from the wallet of the user, not from the erc6551 token.
 
         const templatesContract = new ethers.Contract(
-          NEXT_PUBLIC_TEMPLATES_CONTRACT_ADDRESS,
+          process.env.NEXT_PUBLIC_TEMPLATES_CONTRACT_ADDRESS,
           templatesContractABI,
           signer
         );
@@ -107,6 +231,9 @@ function CreateNotebookTemplate({ userAnky }) {
 
   function handleSubmit(event) {
     event.preventDefault();
+    if (price < 0) return alert('Add a valid price'); // What does valid mean?
+    if (supply <= 0)
+      return alert('Please add a valid amount of notebooks to mint');
     setIsModalOpen(true); // Simply open the modal on initial submit
   }
 
@@ -147,6 +274,13 @@ function CreateNotebookTemplate({ userAnky }) {
         </button>
       </div>
     ));
+  };
+
+  const setExampleNotebook = notebook => {
+    setTitle(notebook.title);
+    setDescription(notebook.description);
+    setPrice(notebook.price);
+    setPrompts(notebook.prompts);
   };
 
   async function uploadImageToBackend() {
@@ -199,11 +333,11 @@ function CreateNotebookTemplate({ userAnky }) {
                   </>
                 ) : (
                   <>
-                    <h3 className=''>
+                    <h3 className='text-sm'>
                       You are about to create a notebook template:
                     </h3>
-                    <p className='text-2xl'> {title}</p>
-                    <p>{description}</p>
+                    <p className='text-3xl my-1'> {title}</p>
+                    <p className='italic'>{description}</p>
                     <div className='text-left mt-4 mb-4'>
                       <p className='text-gray-800'>Prompts:</p>
                       <ol>
@@ -222,6 +356,10 @@ function CreateNotebookTemplate({ userAnky }) {
                       The people that mint this notebook will be invited to
                       write on it, answering each one of the prompts that you
                       created.
+                    </p>
+                    <p className='mt-2'>
+                      What they will write in there will be forever stored on
+                      the blockchain.
                     </p>
                     <div className='flex left-0 right-0 bottom-5 absolute'>
                       <Button
@@ -259,10 +397,23 @@ function CreateNotebookTemplate({ userAnky }) {
     <div className='my-4 md:w-2/3 text-gray-600 flex items-center justify-center'>
       {userAnky?.wallet?.address ? (
         <form
-          className='bg-white w-full p-6  px-8 rounded shadow-md space-y-4'
+          className='bg-white w-full flex flex-col p-6  px-8 rounded shadow-md space-y-4'
           onSubmit={handleSubmit}
         >
-          <h2 className='text-black text-xl'>New Notebook Template</h2>
+          <h2 className='text-black text-2xl'>New Notebook Template</h2>
+
+          <div className='my-4 md:w-full text-gray-600 flex flex-col items-center justify-center'>
+            <h3>EXAMPLES</h3>
+            <div className=' flex flex-wrap justify-start'>
+              {EXAMPLE_NOTEBOOKS.map((notebook, idx) => (
+                <SampleButton
+                  key={idx}
+                  notebook={notebook}
+                  setExampleNotebook={setExampleNotebook}
+                />
+              ))}
+            </div>
+          </div>
 
           <div>
             <p className='text-left text-sm text-gray-500 mt-1'>Title</p>
@@ -294,7 +445,7 @@ function CreateNotebookTemplate({ userAnky }) {
 
           <button
             type='button'
-            className='bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-full mt-2'
+            className='bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-fit mt-2 mr-auto'
             onClick={handleAddPrompt}
           >
             Add Prompt
@@ -303,7 +454,7 @@ function CreateNotebookTemplate({ userAnky }) {
           <div>
             <p className='text-left text-sm text-gray-500 mt-1'>
               Price (in eth - how much will a user pay for minting an instance
-              of this notebook?)
+              of this notebook? - you will get 20% of each transaction)
             </p>
             <input
               className='border p-2 w-full rounded'
@@ -322,6 +473,7 @@ function CreateNotebookTemplate({ userAnky }) {
               className='border p-2 w-full rounded'
               type='number'
               value={supply}
+              min={0}
               onChange={e => setSupply(e.target.value)}
               required
             />
@@ -340,7 +492,7 @@ function CreateNotebookTemplate({ userAnky }) {
           </div> */}
 
           <button
-            className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full mt-4'
+            className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-fit mt-4'
             type='submit'
           >
             {loadingNotebookCreation

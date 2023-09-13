@@ -27,7 +27,7 @@ const DesktopWritingGame = ({
   ankyverseDate,
   userAppInformation,
 }) => {
-  userPrompt = 'what does self transformation mean to you?';
+  userPrompt = 'tell me who you are';
 
   const router = useRouter();
   const { setMusicPlaying, setIsAnkyLoading } = usePWA();
@@ -309,7 +309,7 @@ const DesktopWritingGame = ({
               time > 2 && 'opacity-80'
             } placeholder-white  text-2xl border border-white rounded-md  bg-opacity-10 bg-black`}
             value={text}
-            placeholder='write whatever comes...'
+            placeholder='write as if you wanted to know the truth...'
             onChange={handleTextChange}
           ></textarea>
           {text && (

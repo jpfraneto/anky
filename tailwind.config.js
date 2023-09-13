@@ -9,7 +9,27 @@ module.exports = {
     './src/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
-    extend: {},
+    extend: {
+      keyframes: {
+        shrink: {
+          '0%': { transform: 'scale(1)' },
+          '100%': { transform: 'scale(0)' },
+        },
+        grow: {
+          '0%': { transform: 'scale(0)' },
+          '100%': { transform: 'scale(1)' },
+        },
+        fadeOut: {
+          '0%': { opacity: 1 },
+          '100%': { opacity: 0 },
+        },
+      },
+      animation: {
+        shrink: 'shrink 0.1s forwards',
+        grow: 'grow 0.1s forwards',
+        fadeOut: 'fadeOut 0.1s forwards',
+      },
+    },
   },
   plugins: [],
 };
