@@ -362,11 +362,6 @@ const DesktopWritingGame = ({
 
                   <div className='flex justify-center '>
                     <Button
-                      buttonAction={pasteText}
-                      buttonColor='bg-purple-600 text-black'
-                      buttonText={copyText}
-                    />
-                    <Button
                       buttonAction={sendTextToBackend}
                       buttonColor='bg-green-600 text-black'
                       buttonText={savingTextAnon ? 'saving...' : 'save text'}
