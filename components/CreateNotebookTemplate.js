@@ -5,16 +5,22 @@ import { usePrivy, useWallets } from '@privy-io/react-auth';
 import { usePrivyWagmi } from '@privy-io/wagmi-connector';
 import { useContractRead } from 'wagmi';
 import { createTBA } from '../lib/backend';
+import Button from './Button';
 import templatesContractABI from '../lib/templatesABI.json';
+import Spinner from './Spinner';
+import SuccessfulNotebookTemplate from './SuccessfulNotebookTemplate';
 
 function CreateNotebookTemplate({ userAnky }) {
   const { login } = usePrivy();
   const [loadingNotebookCreation, setLoadingNotebookCreation] = useState(false);
+  const [templateCreationError, setTemplateCreationError] = useState(false);
+  const [success, setSuccess] = useState(false);
   const [title, setTitle] = useState('the process of being');
   const [description, setDescription] = useState('96 days of exploration');
   const [numPages, setNumPages] = useState(4);
+  const [createdTemplateId, setCreatedTemplateId] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [imageFile, setImageFile] = useState(null);
+  // const [imageFile, setImageFile] = useState(null);
   const [prompts, setPrompts] = useState([
     'Describe the moment you found out you were going to be a mother.',
     "What are some challenges and joys you've faced as a mother?",
@@ -33,8 +39,6 @@ function CreateNotebookTemplate({ userAnky }) {
   async function finalSubmit() {
     setLoadingNotebookCreation(true);
     event.preventDefault();
-    const TEMPLATES_CONTRACT_ADDRESS =
-      '0xc52698D6C745C516FAba2115f1B453E14e5503a1';
 
     try {
       console.log('the user anky is after: ', thisWallet);
@@ -51,7 +55,7 @@ function CreateNotebookTemplate({ userAnky }) {
         // The thing here is that I'm trying to send this transaction from the wallet of the user, not from the erc6551 token.
 
         const templatesContract = new ethers.Contract(
-          TEMPLATES_CONTRACT_ADDRESS,
+          NEXT_PUBLIC_TEMPLATES_CONTRACT_ADDRESS,
           templatesContractABI,
           signer
         );
@@ -73,22 +77,36 @@ function CreateNotebookTemplate({ userAnky }) {
           }
         );
 
-        console.log('Transaction hash:', transactionResponse.hash);
-        await transactionResponse.wait(); // Wait for the transaction to be mined
-        console.log('Notebook template created successfully');
-        setLoadingNotebookCreation(false);
+        const transactionReceipt = await transactionResponse.wait(); // Wait for the transaction to be mined
+        console.log(
+          'Notebook template created successfully',
+          transactionResponse
+        );
+        const templateCreatedEvent =
+          templatesContract.filters.TemplateCreated();
+        const event = transactionReceipt.events?.find(
+          e => e.event === 'TemplateCreated'
+        ); // Find the event in the logs
+        if (event) {
+          const templateId = event.args[0]; // Based on the order in your emit statement
+          console.log('Template ID:', templateId.toNumber());
+          setCreatedTemplateId(templateId.toNumber());
+          setSuccess(true);
+          setLoadingNotebookCreation(false);
+        } else {
+          setTemplateCreationError(true);
+        }
       } else {
         console.error('Wallet not connected or not authenticated with Privy');
       }
     } catch (error) {
+      setTemplateCreationError(true);
       console.error('There was an error creating the notebook:', error);
     }
-    setIsModalOpen(false); // Close the modal at the end
   }
 
   function handleSubmit(event) {
     event.preventDefault();
-    alert('submit!');
     setIsModalOpen(true); // Simply open the modal on initial submit
   }
 
@@ -147,37 +165,80 @@ function CreateNotebookTemplate({ userAnky }) {
   function renderModal() {
     return (
       isModalOpen && (
-        <div className='fixed top-0 left-0 w-full h-full flex items-center justify-center z-50'>
-          <div className='bg-white rounded p-6 w-2/3'>
-            <h3>Review your Notebook Template</h3>
-            <p>
-              <strong>Title:</strong> {title}
-            </p>
-            <p>
-              <strong>Description:</strong> {description}
-            </p>
-            <ul>
-              {prompts.map((prompt, idx) => (
-                <li key={idx}>{prompt}</li>
-              ))}
-            </ul>
-            <p>
-              <strong>Price:</strong> {price} ETH
-            </p>
-            <p>
-              <strong>Supply:</strong> {supply}
-            </p>
-            {imageFile && (
-              <img
-                src={URL.createObjectURL(imageFile)}
-                alt='Notebook cover'
-                className='mt-4 mb-4'
+        <div className='fixed top-0 left-0 bg-black w-full h-full flex items-center justify-center z-50'>
+          <div className='bg-purple-300 overflow-y-scroll text-black rounded relative p-6 w-2/3 h-2/3'>
+            {success ? (
+              <SuccessfulNotebookTemplate
+                template={{ title, prompts, createdTemplateId }}
               />
+            ) : (
+              <>
+                {loadingNotebookCreation ? (
+                  <>
+                    {!templateCreationError ? (
+                      <div>
+                        <p>The notebook is being created...</p>
+                        <Spinner />
+                      </div>
+                    ) : (
+                      <div>
+                        <p>There was an error creating the notebook</p>
+                        <div className='mx-auto w-48 mt-4'>
+                          <Button
+                            buttonColor='bg-purple-500'
+                            buttonText='Try again'
+                            buttonAction={() => {
+                              setTemplateCreationError(false);
+                              setIsModalOpen(false);
+                              setLoadingNotebookCreation(false);
+                            }}
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <h3 className=''>
+                      You are about to create a notebook template:
+                    </h3>
+                    <p className='text-2xl'> {title}</p>
+                    <p>{description}</p>
+                    <div className='text-left mt-4 mb-4'>
+                      <p className='text-gray-800'>Prompts:</p>
+                      <ol>
+                        {prompts.map((prompt, idx) => (
+                          <li key={idx}>
+                            {idx + 1}. {prompt}
+                          </li>
+                        ))}
+                      </ol>
+                    </div>
+                    <p>
+                      <strong>Minting Price:</strong> {price} ETH | Supply:{' '}
+                      {supply}
+                    </p>
+                    <p className='mt-2'>
+                      The people that mint this notebook will be invited to
+                      write on it, answering each one of the prompts that you
+                      created.
+                    </p>
+                    <div className='flex left-0 right-0 bottom-5 absolute'>
+                      <Button
+                        buttonAction={() => setIsModalOpen(false)}
+                        buttonColor='bg-red-600'
+                        buttonText='Cancel'
+                      />
+                      <Button
+                        buttonAction={finalSubmit}
+                        buttonColor='bg-green-600'
+                        buttonText='Confirm and Create'
+                      />
+                    </div>
+                  </>
+                )}
+              </>
             )}
-            <div className='flex justify-between'>
-              <button onClick={() => setIsModalOpen(false)}>Cancel</button>
-              <button onClick={finalSubmit}>Confirm and Create</button>
-            </div>
           </div>
         </div>
       )
@@ -265,7 +326,7 @@ function CreateNotebookTemplate({ userAnky }) {
               required
             />
           </div>
-          <div>
+          {/* <div>
             <p className='text-left text-sm text-gray-500 mt-1'>
               Notebook Cover
             </p>
@@ -276,7 +337,7 @@ function CreateNotebookTemplate({ userAnky }) {
               className='border p-2 w-full rounded'
               required
             />
-          </div>
+          </div> */}
 
           <button
             className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full mt-4'
@@ -295,6 +356,7 @@ function CreateNotebookTemplate({ userAnky }) {
           Login with Privy
         </button>
       )}
+      {renderModal()}
     </div>
   );
 }

@@ -27,7 +27,7 @@ const DesktopWritingGame = ({
   ankyverseDate,
   userAppInformation,
 }) => {
-  userPrompt = 'what does alphi mean for you?';
+  userPrompt = 'what does self transformation mean to you?';
 
   const router = useRouter();
   const { setMusicPlaying, setIsAnkyLoading } = usePWA();

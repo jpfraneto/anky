@@ -11,6 +11,7 @@ import NotebooksPage from './NotebooksPage';
 import NewTemplatePage from './NewTemplatePage';
 import TemplatesPage from './TemplatesPage';
 import BuildersPage from './BuildersPage';
+import TemplatePage from './TemplateById';
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 const ankyverseToday = getAnkyverseDay(new Date());
@@ -59,6 +60,8 @@ const DesktopApp = () => {
         return <TemplatesPage />;
       case '/templates/new':
         return <NewTemplatePage userAnky={userAppInformation} />;
+      case `/template/${route.split('/').pop()}`: // Extracts the template id from the route
+        return <TemplatePage userAnky={userAppInformation} />;
       case '/100builders':
         console.log('IN HERE!');
         return <BuildersPage />;
