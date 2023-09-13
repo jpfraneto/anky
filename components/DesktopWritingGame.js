@@ -27,8 +27,6 @@ const DesktopWritingGame = ({
   ankyverseDate,
   userAppInformation,
 }) => {
-  userPrompt = 'tell me who you are';
-
   const router = useRouter();
   const { setMusicPlaying, setIsAnkyLoading } = usePWA();
   const { login, authenticated, user } = usePrivy();
