@@ -93,7 +93,7 @@ function TemplatePage({ userAnky }) {
           </h2>
           <ol className='text-left  mb-4'>
             {templateData.prompts.map((x, i) => (
-              <li>
+              <li key={i}>
                 {i + 1}. {x}
               </li>
             ))}
