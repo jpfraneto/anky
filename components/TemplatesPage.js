@@ -8,7 +8,6 @@ const TemplatesPage = () => {
   const thisWallet = wallets[0];
   return (
     <div>
-      <h2 className='text-white text-center'>Templates</h2>
       <TemplatesList />
     </div>
   );

@@ -6,6 +6,7 @@ import NotebooksAbi from '../lib/notebookABI.json'; // Assuming you have this
 import { processFetchedTemplate } from '../lib/notebooks.js';
 import { useRouter } from 'next/router';
 import Button from './Button';
+import Spinner from './Spinner';
 
 function loadExampleToState(example) {
   setTitle(example.title);
@@ -33,6 +34,7 @@ const EXAMPLE_NOTEBOOKS = [
 function TemplatesList() {
   const router = useRouter();
   const [templates, setTemplates] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [provider, setProvider] = useState(null);
   const [displayInfo, setDisplayInfo] = useState(false);
   const { wallets } = useWallets();
@@ -73,15 +75,24 @@ function TemplatesList() {
         }
       }
       setTemplates(fetchedTemplates);
+      setLoading(false);
     }
 
     fetchTemplates();
   }, [thisWallet]);
 
   if (!templates) return <p>There are no templates</p>;
+  if (loading)
+    return (
+      <div>
+        <Spinner />
+        <p className='text-white'>Loading the templates...</p>
+      </div>
+    );
 
   return (
     <div className='flex flex-col'>
+      <h2 className='text-white text-center'>Templates</h2>
       <div className='flex space-x-2'>
         {templates.map((template, index) => (
           <TemplateItem
@@ -92,8 +103,8 @@ function TemplatesList() {
           />
         ))}
       </div>
-      <div className='mt-4 flex flex-col w-96'>
-        <div className='flex justify-around'>
+      <div className='mt-4 flex flex-col w-64 mx-auto'>
+        <div className='flex justify-center'>
           <Button
             buttonText='Add new template'
             buttonColor='bg-green-600'
@@ -167,12 +178,16 @@ function TemplateItem({ template, provider, thisWallet }) {
   };
 
   return (
-    <div className='text-white bg-green-300 p-2'>
-      <h2>{template.name || 'Name'}</h2>
-      <p>
-        {template.mintedCount}/{template.supply}
-      </p>
-      <button onClick={handleMint}>Mint</button>
+    <div className='text-white flex flex-col p-2 m-2 border border-white rounded bg-black opacity-70'>
+      <h2 className='italic'>{template.name || 'undefined'}</h2>
+      <p>{Math.floor(10 * Math.random())} notebooks minted</p>
+      <p>{template.supply} templates remaining</p>
+
+      <Button
+        buttonAction={handleMint}
+        buttonColor='bg-green-600'
+        buttonText='Mint'
+      />
     </div>
   );
 }
