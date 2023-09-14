@@ -15,11 +15,12 @@ function TemplatePage({ userAnky }) {
   const { id } = router.query;
 
   useEffect(() => {
-    if (id) fetchTemplateData(id);
-  }, [id]);
+    if (id && userAnky) fetchTemplateData(id);
+  }, [id, userAnky]);
 
   async function fetchTemplateData(templateId) {
     if (!userAnky && !userAnky.wallet) return;
+    console.log(' in here, ', userAnky);
     let provider = await userAnky.wallet.getEthersProvider();
     let signer = await provider.getSigner();
 
@@ -37,35 +38,52 @@ function TemplatePage({ userAnky }) {
   }
 
   async function handleMint() {
-    if (!userAnky) return alert('You need to login first');
-    let provider = await userAnky.wallet.getEthersProvider();
-    let signer = await provider.getSigner();
+    try {
+      if (!userAnky) return alert('You need to login first');
 
-    const notebooksContract = new ethers.Contract(
-      process.env.NEXT_PUBLIC_NOTEBOOKS_CONTRACT,
-      notebookContractABI,
-      signer
-    );
-    // Define parameters for the mint function. Replace with actual values where needed.
-    const amount = 1; // Adjust based on user input or your application's requirements.
-    const priceInWei = ethers.utils.parseEther(templateData.price);
-    console.log('the notebooks contract is: ', notebooksContract);
-    const transactionParameters = [
-      userAnky.wallet.address,
-      Number(id),
-      amount,
-      { value: priceInWei },
-    ];
+      let provider = await userAnky.wallet.getEthersProvider();
+      let signer = await provider.getSigner();
 
-    console.log(transactionParameters);
-    const transaction = await notebooksContract.mintNotebook(
-      transactionParameters
-    );
-    const transactionResponse = await transaction.wait();
-    console.log('the transcation response is: ', transactionResponse);
+      const notebooksContract = new ethers.Contract(
+        process.env.NEXT_PUBLIC_NOTEBOOKS_CONTRACT,
+        notebookContractABI,
+        signer
+      );
 
-    console.log('Mint successful!');
-    // Here, you can also implement any post-mint logic you want. For instance, navigating the user to another page, etc.
+      const amount = 1;
+      const priceInWei = ethers.utils.parseEther(templateData.price);
+
+      console.log('HEREEE', userAnky.wallet.address);
+
+      const transaction = await notebooksContract.mintNotebook(
+        userAnky.wallet.address,
+        Number(id),
+        amount,
+        { value: priceInWei }
+      );
+
+      const transactionResponse = await transaction.wait();
+      console.log('The transaction response is: ', transactionResponse);
+      const mintedEvents = transactionResponse.events.filter(
+        event => event.event === 'NotebookMinted'
+      );
+      const notebookIds = mintedEvents.map(event => event.args.instanceId);
+      console.log(notebookIds);
+      console.log('mint of the notebook was successful');
+
+      const transferredEvents = transactionResponse.events.filter(
+        event => event.event === 'FundsTransferred'
+      );
+      const transferredAmounts = transferredEvents.map(
+        event => event.args.amount
+      );
+      console.log(transferredAmounts);
+
+      // Implement post-mint logic if needed
+    } catch (error) {
+      console.error('Error during minting: ', error.message);
+      alert('Error during minting: ' + error.message);
+    }
   }
 
   if (!userAnky)
@@ -74,6 +92,7 @@ function TemplatePage({ userAnky }) {
         <p>Please login first</p>
       </div>
     );
+
   if (loading) return <Spinner />;
 
   return (

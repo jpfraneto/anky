@@ -51,7 +51,7 @@ function TemplatesList() {
       if (!thisWallet) return;
 
       let fetchedProvider = await thisWallet.getEthersProvider();
-      setProvider(fetchedProvider); // Setting the provider to the state
+      setProvider(fetchedProvider);
       let signer = await fetchedProvider.getSigner();
 
       const templatesContract = new ethers.Contract(
@@ -65,8 +65,10 @@ function TemplatesList() {
 
       for (let i = 0; i < templateCount; i++) {
         const template = await templatesContract.getTemplate(i);
-        if (template && template[4].gt(0)) {
+
+        if (template) {
           const formattedTemplate = await processFetchedTemplate(template);
+          console.log('The formatter template is: ', formattedTemplate);
           fetchedTemplates.push(formattedTemplate);
         }
       }
@@ -80,7 +82,6 @@ function TemplatesList() {
 
   return (
     <div className='flex flex-col'>
-      
       <div className='flex space-x-2'>
         {templates.map((template, index) => (
           <TemplateItem

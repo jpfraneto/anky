@@ -168,8 +168,27 @@ function CreateNotebookTemplate({ userAnky }) {
       console.log('the user anky is after: ', thisWallet);
       let provider = await thisWallet.getEthersProvider();
       let signer = await provider.getSigner();
-      console.log('in here, the provider and signer are', provider, signer);
-      // const metadataURI = await uploadImageToBackend();
+
+      const serverResponse = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/notebooks`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            title: title,
+            description: description,
+            prompts: prompts,
+          }),
+        }
+      );
+      console.log(
+        'The server response after creating the Anky is: ',
+        serverResponse
+      );
+      const metadataURI2 = await serverResponse.json();
+      console.log('The metadata uri 2 is: ', metadataURI2);
       const metadataURI =
         'https://arweave.net/1qOQOByDpkeiEtI77LyfZAvuln4dzwW12YQxqgSNQwQ';
       console.log('the metadata uri is: ', metadataURI);
@@ -188,12 +207,7 @@ function CreateNotebookTemplate({ userAnky }) {
         // Call the contract's method and send the transaction
         const transactionResponse = await templatesContract.createTemplate(
           userEnteredPriceInWei,
-          [
-            'Describe the moment you found out you were going to be a mother.',
-            "What are some challenges and joys you've faced as a mother?",
-            'How has motherhood changed your perspective on life?',
-            'Write a letter to your child, sharing hopes, dreams, and guidance.',
-          ],
+          prompts,
           metadataURI,
           supply,
           {
@@ -282,19 +296,6 @@ function CreateNotebookTemplate({ userAnky }) {
     setPrice(notebook.price);
     setPrompts(notebook.prompts);
   };
-
-  async function uploadImageToBackend() {
-    const formData = new FormData();
-    formData.append('image', imageFile);
-
-    const response = await axios.post('/your-backend-endpoint', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-
-    return response.data.arweaveLink; // Assuming the backend returns the link under this key
-  }
 
   function renderModal() {
     return (

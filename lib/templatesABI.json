@@ -264,6 +264,11 @@
     "outputs": [
       {
         "components": [
+          {
+            "internalType": "uint256",
+            "name": "templateId",
+            "type": "uint256"
+          },
           { "internalType": "address", "name": "creator", "type": "address" },
           { "internalType": "string", "name": "metadataURI", "type": "string" },
           { "internalType": "uint256", "name": "price", "type": "uint256" },
@@ -285,6 +290,26 @@
     ],
     "name": "getTemplatePrompt",
     "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "templateId", "type": "uint256" }
+    ],
+    "name": "getTemplateSupply",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "creator", "type": "address" }
+    ],
+    "name": "getTemplatesByCreator",
+    "outputs": [
+      { "internalType": "uint256[]", "name": "", "type": "uint256[]" }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
@@ -389,20 +414,24 @@
   },
   {
     "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "name": "templateSupply",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "name": "templates",
     "outputs": [
+      { "internalType": "uint256", "name": "templateId", "type": "uint256" },
       { "internalType": "address", "name": "creator", "type": "address" },
       { "internalType": "string", "name": "metadataURI", "type": "string" },
       { "internalType": "uint256", "name": "price", "type": "uint256" },
       { "internalType": "uint256", "name": "supply", "type": "uint256" }
     ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "", "type": "address" },
+      { "internalType": "uint256", "name": "", "type": "uint256" }
+    ],
+    "name": "templatesByCreator",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
   },

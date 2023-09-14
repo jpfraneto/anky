@@ -86,9 +86,9 @@ function BuildersPage() {
           })}
         </div>
         <Button
-          buttonAction={() => router.push('/')}
+          buttonAction={() => router.push('/templates')}
           buttonColor='bg-green-600'
-          buttonText='write notebook'
+          buttonText='add notebook template'
         />
       </div>
     </div>

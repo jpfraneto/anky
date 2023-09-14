@@ -14,6 +14,7 @@ const NotebooksPage = () => {
   const { userAppInformation } = usePWA();
 
   const [displayCreateNotebook, setDisplayCreateNotebook] = useState(false);
+  console.log('the user app information is: ', userAppInformation);
 
   if (!userAppInformation)
     return (

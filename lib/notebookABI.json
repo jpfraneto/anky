@@ -229,7 +229,6 @@
     ],
     "name": "getFullNotebook",
     "outputs": [
-      { "internalType": "uint256", "name": "templateId", "type": "uint256" },
       {
         "components": [
           { "internalType": "string", "name": "arweaveCID", "type": "string" },
@@ -270,6 +269,17 @@
         "name": "",
         "type": "tuple"
       }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "user", "type": "address" }
+    ],
+    "name": "getUserVirginNotebooks",
+    "outputs": [
+      { "internalType": "uint256[]", "name": "", "type": "uint256[]" }
     ],
     "stateMutability": "view",
     "type": "function"
@@ -325,19 +335,6 @@
     "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "name": "notebookLastPageWritten",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "uint256", "name": "", "type": "uint256" },
-      { "internalType": "uint256", "name": "", "type": "uint256" }
-    ],
-    "name": "notebookPages",
-    "outputs": [
-      { "internalType": "string", "name": "arweaveCID", "type": "string" },
-      { "internalType": "uint256", "name": "timestamp", "type": "uint256" }
-    ],
     "stateMutability": "view",
     "type": "function"
   },
