@@ -12,6 +12,10 @@ import NewTemplatePage from './NewTemplatePage';
 import TemplatesPage from './TemplatesPage';
 import BuildersPage from './BuildersPage';
 import TemplatePage from './TemplateById';
+import UserPage from './UserPage';
+import EulogiasListPage from './eulogias/EulogiasListPage';
+import EulogiasNewPage from '../pages/eulogias/new';
+import IndividualEulogiaDisplayPage from './eulogias/IndividualEulogiaDisplayPage';
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 const ankyverseToday = getAnkyverseDay(new Date());
@@ -63,8 +67,15 @@ const DesktopApp = () => {
       case `/template/${route.split('/').pop()}`: // Extracts the template id from the route
         return <TemplatePage userAnky={userAppInformation} />;
       case '/100builders':
-        console.log('IN HERE!');
         return <BuildersPage />;
+      case '/user':
+        return <UserPage />;
+      case '/eulogias':
+        return <EulogiasListPage />;
+      case '/eulogias/new':
+        return <EulogiasNewPage />;
+      case `/eulogias/${route.split('/').pop()}`:
+        return <IndividualEulogiaDisplayPage />;
 
       default:
         return (

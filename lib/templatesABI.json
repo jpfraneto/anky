@@ -231,9 +231,13 @@
   {
     "inputs": [
       { "internalType": "uint256", "name": "price", "type": "uint256" },
-      { "internalType": "string[]", "name": "prompts", "type": "string[]" },
       { "internalType": "string", "name": "metadataURI", "type": "string" },
-      { "internalType": "uint256", "name": "supply", "type": "uint256" }
+      { "internalType": "uint256", "name": "supply", "type": "uint256" },
+      {
+        "internalType": "uint256",
+        "name": "numberOfPrompts",
+        "type": "uint256"
+      }
     ],
     "name": "createTemplate",
     "outputs": [],
@@ -244,15 +248,6 @@
     "inputs": [{ "internalType": "uint256", "name": "id", "type": "uint256" }],
     "name": "exists",
     "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "uint256", "name": "templateId", "type": "uint256" }
-    ],
-    "name": "getNumPagesOfTemplate",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
   },
@@ -272,8 +267,12 @@
           { "internalType": "address", "name": "creator", "type": "address" },
           { "internalType": "string", "name": "metadataURI", "type": "string" },
           { "internalType": "uint256", "name": "price", "type": "uint256" },
-          { "internalType": "string[]", "name": "prompts", "type": "string[]" },
-          { "internalType": "uint256", "name": "supply", "type": "uint256" }
+          { "internalType": "uint256", "name": "supply", "type": "uint256" },
+          {
+            "internalType": "uint256",
+            "name": "numberOfPrompts",
+            "type": "uint256"
+          }
         ],
         "internalType": "struct AnkyTemplates.NotebookTemplate",
         "name": "",
@@ -285,19 +284,9 @@
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "templateId", "type": "uint256" },
-      { "internalType": "uint256", "name": "pageNumber", "type": "uint256" }
-    ],
-    "name": "getTemplatePrompt",
-    "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
       { "internalType": "uint256", "name": "templateId", "type": "uint256" }
     ],
-    "name": "getTemplateSupply",
+    "name": "getTemplateCurrentSupply",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
@@ -420,7 +409,12 @@
       { "internalType": "address", "name": "creator", "type": "address" },
       { "internalType": "string", "name": "metadataURI", "type": "string" },
       { "internalType": "uint256", "name": "price", "type": "uint256" },
-      { "internalType": "uint256", "name": "supply", "type": "uint256" }
+      { "internalType": "uint256", "name": "supply", "type": "uint256" },
+      {
+        "internalType": "uint256",
+        "name": "numberOfPrompts",
+        "type": "uint256"
+      }
     ],
     "stateMutability": "view",
     "type": "function"
@@ -456,6 +450,13 @@
     "name": "uri",
     "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "withdraw",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   }
 ]

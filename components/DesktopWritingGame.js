@@ -132,6 +132,7 @@ const DesktopWritingGame = ({
   };
 
   const startNewRun = () => {
+    copyToClipboard();
     audioRef.current.pause();
     setCopyText('Copy my writing');
     setTime(0);
@@ -328,7 +329,7 @@ const DesktopWritingGame = ({
 
               {finished ? (
                 <div className='p-4 bg-black drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]  z-50'>
-                  <p>sponsored by:</p>
+                  <p>supported by:</p>
                   <div className='w-48 h-48 my-4 mx-auto relative rounded-xl border-white border overflow-hidden'>
                     <Image src='/images/alphi.jpeg' fill alt='alphi' />
                   </div>

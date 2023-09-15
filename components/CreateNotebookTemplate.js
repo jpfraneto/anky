@@ -189,8 +189,8 @@ function CreateNotebookTemplate({ userAnky }) {
         'The server response after creating the Anky is: ',
         serverResponse
       );
-      const metadataURI = await serverResponse.json();
-      console.log('The metadata uri 2 is: ', metadataURI);
+      const metadataCID = await serverResponse.json();
+      console.log('The metadata uri 2 is: ', metadataCID);
 
       console.log('the user wallet is: ', thisWallet);
 
@@ -205,12 +205,12 @@ function CreateNotebookTemplate({ userAnky }) {
 
         const userEnteredPriceInWei = ethers.utils.parseEther(price.toString());
         // Call the contract's method and send the transaction
-        console.log('before the create template', metadataURI);
+        console.log('before the create template', metadataCID);
         const transactionResponse = await templatesContract.createTemplate(
           userEnteredPriceInWei,
-          prompts,
-          metadataURI.metadataURI,
+          metadataCID.metadataCID,
           supply,
+          prompts.length,
           {
             gasLimit: 1000000000,
           }

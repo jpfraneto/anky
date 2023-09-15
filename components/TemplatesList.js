@@ -130,6 +130,7 @@ function TemplatesList() {
 }
 
 function TemplateItem({ template, provider, thisWallet }) {
+  const router = useRouter();
   const handleMint = async () => {
     if (!thisWallet || !provider) return;
 
@@ -181,7 +182,7 @@ function TemplateItem({ template, provider, thisWallet }) {
     <div className='text-white w-48 flex flex-col p-2 m-2 border border-white rounded bg-black opacity-70'>
       <h2 className='italic'>{template.metadata?.title || 'undefined'}</h2>
       <p>{template.metadata?.prompts?.length || 'undefined'} prompts</p>
-      <p>{Math.floor(10 * Math.random())} notebooks minted</p>
+      <p>{template.metadata.supply - template.supply} notebooks minted</p>
       <p>{template.supply} templates remaining</p>
 
       <Button
