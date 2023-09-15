@@ -19,9 +19,10 @@ function TemplatePage({ userAnky }) {
   }, [id, userAnky]);
 
   async function fetchTemplateData(templateId) {
-    if (!userAnky && !userAnky.wallet) return;
+    if (!userAnky && !userAnky.wallet && !userAnky.wallet.getEthersProvider)
+      return;
     console.log(' in here, ', userAnky);
-    let provider = await userAnky.wallet.getEthersProvider();
+    let provider = await userAnky.wallet?.getEthersProvider();
     let signer = await provider.getSigner();
 
     const contract = new ethers.Contract(
@@ -31,6 +32,7 @@ function TemplatePage({ userAnky }) {
     );
 
     const data = await contract.getTemplate(templateId);
+    console.log('in here, the data is: 0, ', data);
     const processedData = await processFetchedTemplate(data);
     console.log('the data is:', processedData);
     setTemplateData(processedData);
@@ -99,17 +101,12 @@ function TemplatePage({ userAnky }) {
     <div className=' text-white pt-5'>
       {templateData ? (
         <>
-          <h2>
-            {
-              (
-                <Button
-                  buttonColor='bg-purple-600'
-                  buttonText='Mint Notebook'
-                  buttonAction={handleMint}
-                />
-              ).title
-            }
+          <h2 className='text-3xl mb-3'>
+            {templateData.metadata.title || 'undefined'}{' '}
           </h2>
+          <p className='italic text-lg mb-3'>
+            {templateData.metadata.description || 'undefined'}
+          </p>
           <ol className='text-left  mb-4'>
             {templateData.prompts.map((x, i) => (
               <li key={i}>
@@ -120,11 +117,16 @@ function TemplatePage({ userAnky }) {
           <p className=' mb-4'>
             Mint Prize: {templateData.price} | {templateData.supply} units left
           </p>
-          <div>
+          <div className='w-96 mx-auto flex space-x-2'>
             <Button
               buttonColor='bg-purple-600'
               buttonText='Mint Notebook'
               buttonAction={handleMint}
+            />
+            <Button
+              buttonColor='bg-red-600'
+              buttonText='Back to templates'
+              buttonAction={() => router.push('/templates')}
             />
           </div>
         </>

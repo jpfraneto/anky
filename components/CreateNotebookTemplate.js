@@ -180,6 +180,8 @@ function CreateNotebookTemplate({ userAnky }) {
             title: title,
             description: description,
             prompts: prompts,
+            supply: supply,
+            price: price,
           }),
         }
       );
@@ -187,11 +189,9 @@ function CreateNotebookTemplate({ userAnky }) {
         'The server response after creating the Anky is: ',
         serverResponse
       );
-      const metadataURI2 = await serverResponse.json();
-      console.log('The metadata uri 2 is: ', metadataURI2);
-      const metadataURI =
-        'https://arweave.net/1qOQOByDpkeiEtI77LyfZAvuln4dzwW12YQxqgSNQwQ';
-      console.log('the metadata uri is: ', metadataURI);
+      const metadataURI = await serverResponse.json();
+      console.log('The metadata uri 2 is: ', metadataURI);
+
       console.log('the user wallet is: ', thisWallet);
 
       if (thisWallet && signer) {
@@ -205,10 +205,11 @@ function CreateNotebookTemplate({ userAnky }) {
 
         const userEnteredPriceInWei = ethers.utils.parseEther(price.toString());
         // Call the contract's method and send the transaction
+        console.log('before the create template', metadataURI);
         const transactionResponse = await templatesContract.createTemplate(
           userEnteredPriceInWei,
           prompts,
-          metadataURI,
+          metadataURI.metadataURI,
           supply,
           {
             gasLimit: 1000000000,

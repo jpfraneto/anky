@@ -93,7 +93,7 @@ function TemplatesList() {
   return (
     <div className='flex flex-col'>
       <h2 className='text-white text-center'>Templates</h2>
-      <div className='flex space-x-2'>
+      <div className='flex flex-wrap '>
         {templates.map((template, index) => (
           <TemplateItem
             key={index}
@@ -178,15 +178,16 @@ function TemplateItem({ template, provider, thisWallet }) {
   };
 
   return (
-    <div className='text-white flex flex-col p-2 m-2 border border-white rounded bg-black opacity-70'>
-      <h2 className='italic'>{template.name || 'undefined'}</h2>
+    <div className='text-white w-48 flex flex-col p-2 m-2 border border-white rounded bg-black opacity-70'>
+      <h2 className='italic'>{template.metadata?.title || 'undefined'}</h2>
+      <p>{template.metadata?.prompts?.length || 'undefined'} prompts</p>
       <p>{Math.floor(10 * Math.random())} notebooks minted</p>
       <p>{template.supply} templates remaining</p>
 
       <Button
-        buttonAction={handleMint}
+        buttonAction={() => router.push(`/template/${template.templateId}`)}
         buttonColor='bg-green-600'
-        buttonText='Mint'
+        buttonText='Visit'
       />
     </div>
   );
