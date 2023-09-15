@@ -179,17 +179,18 @@ function TemplateItem({ template, provider, thisWallet }) {
   };
 
   return (
-    <div className='text-white w-48 flex flex-col p-2 m-2 border border-white rounded bg-black opacity-70'>
+    <div className='text-white w-48 flex flex-col p-2 m-2 border border-white rounded bg-black '>
       <h2 className='italic'>{template.metadata?.title || 'undefined'}</h2>
       <p>{template.metadata?.prompts?.length || 'undefined'} prompts</p>
-      <p>{template.metadata.supply - template.supply} notebooks minted</p>
+      <p>{template.metadata.supply - template.supply} notebook(s) minted</p>
       <p>{template.supply} templates remaining</p>
-
-      <Button
-        buttonAction={() => router.push(`/template/${template.templateId}`)}
-        buttonColor='bg-green-600'
-        buttonText='Visit'
-      />
+      <div className='mt-2'>
+        <Button
+          buttonAction={() => router.push(`/template/${template.templateId}`)}
+          buttonColor='bg-green-600'
+          buttonText='Visit'
+        />
+      </div>
     </div>
   );
 }

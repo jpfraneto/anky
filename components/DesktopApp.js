@@ -14,8 +14,9 @@ import BuildersPage from './BuildersPage';
 import TemplatePage from './TemplateById';
 import UserPage from './UserPage';
 import EulogiasListPage from './eulogias/EulogiasListPage';
-import EulogiasNewPage from '../pages/eulogias/new';
+import NewEulogiaPage from './eulogias/NewEulogiaPage';
 import IndividualEulogiaDisplayPage from './eulogias/IndividualEulogiaDisplayPage';
+import IndividualNotebookPage from './notebook/IndividualNotebookPage';
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 const ankyverseToday = getAnkyverseDay(new Date());
@@ -73,9 +74,11 @@ const DesktopApp = () => {
       case '/eulogias':
         return <EulogiasListPage />;
       case '/eulogias/new':
-        return <EulogiasNewPage />;
+        return <NewEulogiaPage userAnky={userAppInformation} />;
       case `/eulogias/${route.split('/').pop()}`:
         return <IndividualEulogiaDisplayPage />;
+      case `/notebook/${route.split('/').pop()}`:
+        return <IndividualNotebookPage />;
 
       default:
         return (

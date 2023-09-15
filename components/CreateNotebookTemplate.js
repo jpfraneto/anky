@@ -313,7 +313,9 @@ function CreateNotebookTemplate({ userAnky }) {
                   <>
                     {!templateCreationError ? (
                       <div>
-                        <p>The notebook is being created...</p>
+                        <p>
+                          The template for this notebook is being created...
+                        </p>
                         <Spinner />
                       </div>
                     ) : (
@@ -350,7 +352,7 @@ function CreateNotebookTemplate({ userAnky }) {
                         ))}
                       </ol>
                     </div>
-                    <p>
+                    <p className='bg-purple-500 p-2 rounded-xl border border-black w-fit mx-auto'>
                       <strong>Minting Price:</strong> {price} ETH | Supply:{' '}
                       {supply}
                     </p>
@@ -396,16 +398,16 @@ function CreateNotebookTemplate({ userAnky }) {
     );
 
   return (
-    <div className='my-4 md:w-2/3 text-gray-600 flex items-center justify-center'>
+    <div className='my-4 md:w-2/3 text-gray-200 flex items-center justify-center'>
       {userAnky?.wallet?.address ? (
         <form
-          className='bg-white w-full flex flex-col p-6  px-8 rounded shadow-md space-y-4'
+          className='bg-black w-full flex flex-col p-6  px-8 rounded shadow-md space-y-4'
           onSubmit={handleSubmit}
         >
-          <h2 className='text-black text-2xl'>New Notebook Template</h2>
+          <h2 className='text-gray-200 text-2xl'>New Notebook Template</h2>
 
-          <div className='my-4 md:w-full text-gray-600 flex flex-col items-center justify-center'>
-            <h3>EXAMPLES</h3>
+          <div className='my-4 md:w-full text-gray-800 flex flex-col items-center justify-center'>
+            <h3 className='text-gray-500'>EXAMPLES</h3>
             <div className=' flex flex-wrap justify-start'>
               {EXAMPLE_NOTEBOOKS.map((notebook, idx) => (
                 <SampleButton
@@ -421,7 +423,7 @@ function CreateNotebookTemplate({ userAnky }) {
             <p className='text-left text-sm text-gray-500 mt-1'>Title</p>
 
             <input
-              className='border p-2 w-full rounded'
+              className='border p-2 w-full rounded text-gray-500'
               value={title}
               onChange={e => setTitle(e.target.value)}
               required
@@ -432,7 +434,7 @@ function CreateNotebookTemplate({ userAnky }) {
             <p className='text-left text-sm text-gray-500 mt-1'>Description</p>
 
             <textarea
-              className='border p-2 w-full rounded'
+              className='border p-2 w-full rounded text-gray-500'
               value={description}
               onChange={e => setDescription(e.target.value)}
               required
@@ -443,7 +445,7 @@ function CreateNotebookTemplate({ userAnky }) {
             Notebook Prompts
           </p>
 
-          <div className='space-y-2 mt-0'>{renderPrompts()}</div>
+          <div className='space-y-2 mt-0 text-gray-500'>{renderPrompts()}</div>
 
           <button
             type='button'
@@ -459,7 +461,7 @@ function CreateNotebookTemplate({ userAnky }) {
               of this notebook? - you will get 20% of each transaction)
             </p>
             <input
-              className='border p-2 w-full rounded'
+              className='border p-2 w-full rounded text-gray-500'
               type='number'
               value={price}
               onChange={e => setPrice(e.target.value)}
@@ -472,7 +474,7 @@ function CreateNotebookTemplate({ userAnky }) {
               Supply (max notebooks that will be available for mint)
             </p>
             <input
-              className='border p-2 w-full rounded'
+              className='border p-2 w-full rounded text-gray-500'
               type='number'
               value={supply}
               min={0}

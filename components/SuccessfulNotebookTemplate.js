@@ -17,7 +17,7 @@ const SuccessfulNotebookTemplate = ({ template }) => {
       <div className='mx-auto w-48'>
         <Button
           buttonAction={createSharingLink}
-          buttonText='Copy Link'
+          buttonText='Copy Invite Link'
           buttonColor='bg-purple-500'
         />
       </div>
@@ -32,7 +32,7 @@ const SuccessfulNotebookTemplate = ({ template }) => {
           </p>
           <p>All feedback is gold.</p>
           <p>Thank you.</p>
-          <div className='bg-purple-600 px-4 py-2 rounded-xl mt-4 mx-auto w-48 border-black border hover:opacity-70'>
+          <div className='bg-purple-600 active:translate-x-1 active:translate-y-1 px-4 py-2 rounded-xl mt-4 mx-auto w-48 border-black border hover:opacity-70'>
             <Link href={`/template/${template.createdTemplateId}`}>
               Visit Template
             </Link>

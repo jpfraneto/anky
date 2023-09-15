@@ -11,6 +11,7 @@ function TemplatePage({ userAnky }) {
   console.log('the user anky is: ', userAnky);
   const [templateData, setTemplateData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [mintingNotebook, setMintingNotebook] = useState(false);
   const [mintedNotebookId, setMintedNotebookId] = useState(null);
   const [mintedNotebookSuccess, setMintedNotebookSuccess] = useState(false);
   const router = useRouter();
@@ -48,6 +49,7 @@ function TemplatePage({ userAnky }) {
   }
 
   async function handleMint() {
+    setMintingNotebook(true);
     try {
       if (!userAnky) return alert('You need to login first');
 
@@ -98,10 +100,12 @@ function TemplatePage({ userAnky }) {
       );
       setMintedNotebookId(notebookId);
       setMintedNotebookSuccess(true);
+      setMintingNotebook(false);
       // Implement post-mint logic if needed
     } catch (error) {
+      setMintingNotebook(false);
       console.error('Error during minting: ', error.message);
-      alert('Error during minting: ' + error.message);
+      alert(error.message);
     }
   }
 
@@ -126,13 +130,15 @@ function TemplatePage({ userAnky }) {
               <h2 className='text-3xl mb-3'>
                 {templateData.metadata.title || 'undefined'}
               </h2>
-              <Button
-                buttonColor='bg-purple-600'
-                buttonText='write on it'
-                buttonAction={() =>
-                  router.push(`/notebook/${mintedNotebookId}`)
-                }
-              />
+              <div className='w-fit mx-auto'>
+                <Button
+                  buttonColor='bg-purple-600'
+                  buttonText='write on it'
+                  buttonAction={() =>
+                    router.push(`/notebook/${mintedNotebookId}`)
+                  }
+                />
+              </div>
             </>
           ) : (
             <>
@@ -149,14 +155,20 @@ function TemplatePage({ userAnky }) {
                   </li>
                 ))}
               </ol>
-              <p className=' mb-4'>
-                Mint Prize: {templateData.price} | {templateData.supply} units
-                left
+              <p className='bg-purple-500 p-2 rounded-xl border my-2 border-black w-fit mx-auto'>
+                Mint Price: {templateData.price} eth | {templateData.supply}{' '}
+                units left
               </p>
-              <div className='w-96 mx-auto flex space-x-2'>
+
+              <p>
+                70% of what you pay will go back to your wallet as credits for
+                using here.
+              </p>
+              <p>10% of it will go to who created the template as royalties.</p>
+              <div className='w-96 mx-auto flex space-x-2 mt-2'>
                 <Button
                   buttonColor='bg-purple-600'
-                  buttonText='Mint Notebook'
+                  buttonText={mintingNotebook ? `Minting...` : `Mint Notebook`}
                   buttonAction={handleMint}
                 />
                 <Button
