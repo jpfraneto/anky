@@ -20,6 +20,7 @@ const configureChainsConfig = configureChains([baseGoerli], [publicProvider()]);
 
 const righteous = Righteous({ subsets: ['latin'], weight: ['400'] });
 const DesktopApp = dynamic(() => import('../components/DesktopApp'));
+const MobileApp = dynamic(() => import('../components/MobileApp'));
 
 function MyApp({ Component, pageProps }) {
   const {
@@ -198,34 +199,7 @@ function MyApp({ Component, pageProps }) {
       >
         <PrivyWagmiConnector wagmiChainsConfig={configureChainsConfig}>
           <PWAProvider>
-            {isDesktop ? (
-              <DesktopApp />
-            ) : (
-              <div
-                className='h-[calc(100dvh)] fixed text-white md:w-96 md:left-1/2 md:-translate-x-1/2 w-full bg-cover bg-center justify-center flex flex-col '
-                style={{
-                  boxSizing: 'border-box',
-                  backgroundImage:
-                    "linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/images/pwa.png')",
-                  backgroundPosition: 'center center',
-                  backgroundSize: 'cover',
-                  backgroundRepeat: 'no-repeat',
-                }}
-              >
-                <p>this app only works on desktop</p>
-                <p>we need you to write with your 10 fingers</p>
-
-                {/* {writingReady && meditationReady && enteredTheAnkyverse && (
-                  <Navbar />
-                )}
-                <div className={`overflow-y-scroll flex-grow border-white`}>
-                  <Component {...pageProps} />
-                </div>
-                {writingReady && meditationReady && enteredTheAnkyverse && (
-                  <BottomNavbar />
-                )} */}
-              </div>
-            )}
+            {isDesktop ? <DesktopApp /> : <MobileApp />}
           </PWAProvider>
         </PrivyWagmiConnector>
       </PrivyProvider>
