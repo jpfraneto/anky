@@ -11,17 +11,22 @@ import Spinner from '../Spinner';
 import SampleButton from '../SampleButton';
 import SuccessfulNotebookTemplate from '../SuccessfulNotebookTemplate';
 
+const PRICE_FACTOR = 0.0001;
+
 const NewEulogiaPage = ({ userAnky }) => {
   const { login } = usePrivy();
-  const [loadingNotebookCreation, setLoadingNotebookCreation] = useState(false);
-  const [templateCreationError, setTemplateCreationError] = useState(false);
+  const [loadingEulogiaCreation, setLoadingEulogiaCreation] = useState(false);
+  const [eulogiaCreationError, setEulogiaCreationError] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+  const [title, setTitle] = useState('the monument game');
+  const [description, setDescription] = useState('what do you see?');
   const [password, setPassword] = useState('');
+  const [pages, setPages] = useState(24);
+  const [price, setPrice] = useState((24 * PRICE_FACTOR).toFixed(4));
   const [maxMsgs, setMaxMsgs] = useState(null);
   const [usePassword, setUsePassword] = useState(false);
-  const [image, setImage] = useState(null);
+  const [coverImage, setCoverImage] = useState(null);
+  const [backgroundImage, setBackgroundImage] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userWallet, setUserWallet] = useState(null);
 
@@ -30,38 +35,37 @@ const NewEulogiaPage = ({ userAnky }) => {
 
   const thisWallet = wallets[0];
 
-  const imageChange = event => {
+  const imageChange = (event, f) => {
     const file = event.target.files[0];
     if (file) {
-      setImage(file);
+      f(file);
     }
   };
 
   async function finalSubmit() {
-    setLoadingNotebookCreation(true);
+    setLoadingEulogiaCreation(true);
 
     try {
       console.log('the user anky is after: ', thisWallet);
       let provider = await thisWallet.getEthersProvider();
       let signer = await provider.getSigner();
 
+      const formData = new FormData();
+      formData.append('title', title);
+      formData.append('description', description);
+      formData.append('price', price);
+      formData.append('coverImage', coverImage);
+      formData.append('backgroundImage', backgroundImage);
+
       const serverResponse = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/notebooks/eulogia`,
         {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            title: title,
-            description: description,
-            supply: supply,
-            price: price,
-          }),
+          body: formData,
         }
       );
       console.log(
-        'The server response after creating the Anky is: ',
+        'The server response after publishing the metadata is: ',
         serverResponse
       );
       const metadataCID = await serverResponse.json();
@@ -81,11 +85,11 @@ const NewEulogiaPage = ({ userAnky }) => {
         const userEnteredPriceInWei = ethers.utils.parseEther(price.toString());
         // You may need to set appropriate values for metadataURI, password, and maxMsgs
         const metadataURI = metadataCID.metadataCID;
-        const password = 'somePassword'; // Update with actual password
-        const maxMsgs = 10; // Update with actual max messages
+        const password = 'aloja'; // Update with actual password
+        const maxMsgs = pages; // Update with actual max messages
 
         // Call the contract's method and send the transaction
-        console.log('before the create template', metadataCID);
+        console.log('before the create eulogia', metadataCID);
         const transactionResponse = await eulogiaContract.createEulogia(
           metadataURI,
           password,
@@ -97,29 +101,28 @@ const NewEulogiaPage = ({ userAnky }) => {
 
         const transactionReceipt = await transactionResponse.wait(); // Wait for the transaction to be mined
         console.log(
-          'Notebook template created successfully',
+          'Eulogia template created successfully',
           transactionResponse
         );
-        const templateCreatedEvent =
-          templatesContract.filters.TemplateCreated();
+        const eulogiaCreatedEvent = eulogiaContract.filters.TemplateCreated();
         const event = transactionReceipt.events?.find(
-          e => e.event === 'TemplateCreated'
+          e => e.event === 'EulogiaCreated'
         ); // Find the event in the logs
         if (event) {
-          const templateId = event.args[0]; // Based on the order in your emit statement
-          console.log('Template ID:', templateId.toNumber());
-          setCreatedTemplateId(templateId.toNumber());
+          const eulogiaId = event.args[0]; // Based on the order in your emit statement
+          console.log('Eulogia ID:', eulogiaId.toNumber());
+          setCreatedEulogiaId(eulogiaId.toNumber());
           setSuccess(true);
-          setLoadingNotebookCreation(false);
+          setLoadingEulogiaCreation(false);
         } else {
-          setTemplateCreationError(true);
+          setEulogiaCreationError(true);
         }
       } else {
         console.error('Wallet not connected or not authenticated with Privy');
       }
     } catch (error) {
-      setTemplateCreationError(true);
-      console.error('There was an error creating the notebook:', error);
+      setEulogiaCreationError(true);
+      console.error('There was an error creating the eulogia:', error);
     }
   }
 
@@ -128,83 +131,33 @@ const NewEulogiaPage = ({ userAnky }) => {
     setIsModalOpen(true); // Simply open the modal on initial submit
   }
 
-  const handleAddPrompt = () => {
-    setNumPages(numPages + 1);
-    setPrompts([...prompts, '']);
-  };
-
-  const handleRemovePrompt = index => {
-    setNumPages(numPages - 1);
-    const newPrompts = [...prompts];
-    newPrompts.splice(index, 1);
-    setPrompts(newPrompts);
-  };
-
-  const handlePromptChange = (index, value) => {
-    const newPrompts = [...prompts];
-    newPrompts[index] = value;
-    setPrompts(newPrompts);
-  };
-
-  const renderPrompts = () => {
-    return prompts.map((prompt, index) => (
-      <div key={index} className='relative mt-0'>
-        <p className='absolute -left-6 top-0 mt-2 ml-2'>{index + 1}.</p>
-        <input
-          className='border p-2 w-full rounded'
-          value={prompt}
-          onChange={e => handlePromptChange(index, e.target.value)}
-          required
-        />
-        <button
-          type='button'
-          className='absolute right-0 top-0 mt-2 mr-2 text-red-500'
-          onClick={() => handleRemovePrompt(index)}
-        >
-          Remove
-        </button>
-      </div>
-    ));
-  };
-
-  const setExampleNotebook = notebook => {
-    setTitle(notebook.title);
-    setDescription(notebook.description);
-    setPrice(notebook.price);
-    setPrompts(notebook.prompts);
-  };
-
   function renderModal() {
     return (
       isModalOpen && (
         <div className='fixed top-0 left-0 bg-black w-full h-full flex items-center justify-center z-50'>
-          <div className='bg-purple-300 overflow-y-scroll text-black rounded relative p-6 w-2/3 h-2/3'>
+          <div className='bg-purple-200 overflow-y-scroll text-black rounded relative p-6 w-2/3 h-2/3'>
             {success ? (
-              <SuccessfulNotebookTemplate
-                template={{ title, prompts, createdTemplateId }}
-              />
+              <></>
             ) : (
               <>
-                {loadingNotebookCreation ? (
+                {loadingEulogiaCreation ? (
                   <>
-                    {!templateCreationError ? (
+                    {!eulogiaCreationError ? (
                       <div>
-                        <p>
-                          The template for this notebook is being created...
-                        </p>
+                        <p>The eulogia is being created...</p>
                         <Spinner />
                       </div>
                     ) : (
                       <div>
-                        <p>There was an error creating the notebook</p>
+                        <p>There was an error creating the eulogia</p>
                         <div className='mx-auto w-48 mt-4'>
                           <Button
                             buttonColor='bg-purple-500'
                             buttonText='Try again'
                             buttonAction={() => {
-                              setTemplateCreationError(false);
+                              setEulogiaCreationError(false);
                               setIsModalOpen(false);
-                              setLoadingNotebookCreation(false);
+                              setLoadingEulogiaCreation(false);
                             }}
                           />
                         </div>
@@ -214,33 +167,20 @@ const NewEulogiaPage = ({ userAnky }) => {
                 ) : (
                   <>
                     <h3 className='text-sm'>
-                      You are about to create a notebook template:
+                      You are about to create an eulogia notebook:
                     </h3>
                     <p className='text-3xl my-1'> {title}</p>
                     <p className='italic'>{description}</p>
-                    <div className='text-left mt-4 mb-4'>
-                      <p className='text-gray-800'>Prompts:</p>
-                      <ol>
-                        {prompts.map((prompt, idx) => (
-                          <li key={idx}>
-                            {idx + 1}. {prompt}
-                          </li>
-                        ))}
-                      </ol>
-                    </div>
-                    <p className='bg-purple-500 p-2 rounded-xl border border-black w-fit mx-auto'>
-                      <strong>Minting Price:</strong> {price} ETH | Supply:{' '}
-                      {supply}
+                    <div>{pages} pages for your friends to write</div>
+                    <p>
+                      Each time they come to write there are gas fees that need
+                      to be paid in order to store that data and index it on the
+                      blockchain.
                     </p>
-                    <p className='mt-2'>
-                      The people that mint this notebook will be invited to
-                      write on it, answering each one of the prompts that you
-                      created.
+                    <p>
+                      That is why you need to pay for creating this notebook.
                     </p>
-                    <p className='mt-2'>
-                      What they will write in there will be forever stored on
-                      the blockchain.
-                    </p>
+                    <p>{(pages * PRICE_FACTOR).toFixed(4)} eth</p>
                     <div className='flex left-0 right-0 bottom-5 absolute'>
                       <Button
                         buttonAction={() => setIsModalOpen(false)}
@@ -297,11 +237,30 @@ const NewEulogiaPage = ({ userAnky }) => {
           </div>
 
           <div>
-            <p className='text-left text-sm text-gray-500 mt-1'>Description</p>
-            <textarea
+            <p className='text-left text-sm text-gray-500 mt-1'>
+              Prompt (this will be displayed to those who come and write)
+            </p>
+            <input
+              type='text'
               className='border p-2 w-full rounded text-gray-500'
               value={description}
               onChange={e => setDescription(e.target.value)}
+            />
+          </div>
+
+          <div className='flex flex-col items-start'>
+            <p className='text-left text-sm text-gray-500 my-1'>
+              Number of Pages
+            </p>
+            <input
+              type='number'
+              min={0}
+              className='border p-2 w-36 rounded text-gray-500'
+              value={pages}
+              onChange={e => {
+                setPages(e.target.value);
+                setPrice((0.0001 * e.target.value).toFixed(2));
+              }}
             />
           </div>
 
@@ -317,12 +276,12 @@ const NewEulogiaPage = ({ userAnky }) => {
           </div>
 
           {usePassword && (
-            <div className=''>
-              <p className='text-left text-sm text-gray-500 mt-1'>
+            <div className='flex flex-col items-start'>
+              <p className='text-left text-sm text-gray-500 my-1'>
                 Password (if you forget it you wont be able to write anymore)
               </p>
               <input
-                className='border p-2 w-full rounded text-gray-500'
+                className='border p-2 w-36 rounded text-gray-500'
                 type='password'
                 value={password}
                 onChange={e => setPassword(e.target.value)}
@@ -331,11 +290,26 @@ const NewEulogiaPage = ({ userAnky }) => {
           )}
 
           <div>
-            <p className='text-left text-sm text-gray-500 mt-1'>Upload Image</p>
+            <p className='text-left text-sm text-gray-500 my-1'>
+              Upload Cover Image (this will be the cover of this eulogia
+              notebook)
+            </p>
             <input
               type='file'
               className='border p-2 w-full rounded text-gray-500'
-              onChange={imageChange}
+              onChange={e => imageChange(e, setCoverImage)}
+            />
+          </div>
+
+          <div>
+            <p className='text-left text-sm text-gray-500 my-1'>
+              Upload Background Image (this one will be used as the background
+              when people come and write)
+            </p>
+            <input
+              type='file'
+              className='border p-2 w-full rounded text-gray-500'
+              onChange={e => imageChange(e, setBackgroundImage)}
             />
           </div>
 
