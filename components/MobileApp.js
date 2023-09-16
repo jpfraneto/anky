@@ -62,7 +62,7 @@ const Element = ({ section }) => {
         backgroundRepeat: 'no-repeat',
       }}
     >
-      <p className='text-white text-3xl'>{section.question}</p>
+      <p className='text-white text-2xl'>{section.question}</p>
       {opened && (
         <p
           className='text-white text-sm'
