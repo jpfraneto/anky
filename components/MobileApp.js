@@ -65,7 +65,7 @@ const Element = ({ section }) => {
       <p className='text-white text-3xl'>{section.question}</p>
       {opened && (
         <p
-          className='text-white'
+          className='text-white text-sm'
           dangerouslySetInnerHTML={{ __html: section.oneLiner }}
         ></p>
       )}
