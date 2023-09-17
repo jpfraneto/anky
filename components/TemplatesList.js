@@ -93,6 +93,13 @@ function TemplatesList() {
   return (
     <div className='flex flex-col'>
       <h2 className='text-white text-center'>Templates</h2>
+      <p>
+        A template is a blueprint that other people can mint to write inside it.
+      </p>
+      <p>
+        It is your way of showing them a direction. A path. Of you guiding them
+        into a journey.
+      </p>
       <div className='flex flex-wrap '>
         {templates.map((template, index) => (
           <TemplateItem

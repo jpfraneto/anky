@@ -1,5 +1,11 @@
 [
-  { "inputs": [], "stateMutability": "nonpayable", "type": "constructor" },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "_ankyAirdrop", "type": "address" }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
   {
     "anonymous": false,
     "inputs": [
@@ -55,6 +61,56 @@
     "inputs": [
       {
         "indexed": true,
+        "internalType": "uint256",
+        "name": "eulogiaId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "metadataURI",
+        "type": "string"
+      }
+    ],
+    "name": "EulogiaCreated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "eulogiaId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "writer",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "cid",
+        "type": "string"
+      }
+    ],
+    "name": "MessageAdded",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
         "internalType": "address",
         "name": "previousOwner",
         "type": "address"
@@ -96,6 +152,27 @@
   },
   {
     "inputs": [
+      { "internalType": "uint256", "name": "eulogiaId", "type": "uint256" },
+      { "internalType": "string", "name": "password", "type": "string" },
+      { "internalType": "string", "name": "cid", "type": "string" },
+      { "internalType": "string", "name": "whoWroteIt", "type": "string" }
+    ],
+    "name": "addMessage",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "ankyAirdrop",
+    "outputs": [
+      { "internalType": "contract IAnkyAirdrop", "name": "", "type": "address" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
       { "internalType": "address", "name": "to", "type": "address" },
       { "internalType": "uint256", "name": "tokenId", "type": "uint256" }
     ],
@@ -114,9 +191,61 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "getAllWritings",
-    "outputs": [{ "internalType": "string[]", "name": "", "type": "string[]" }],
+    "inputs": [
+      { "internalType": "string", "name": "metadataURI", "type": "string" },
+      { "internalType": "string", "name": "password", "type": "string" },
+      { "internalType": "uint256", "name": "maxMsgs", "type": "uint256" }
+    ],
+    "name": "createEulogia",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "", "type": "uint256" },
+      { "internalType": "uint256", "name": "", "type": "uint256" }
+    ],
+    "name": "eulogiaMessages",
+    "outputs": [
+      { "internalType": "address", "name": "writer", "type": "address" },
+      { "internalType": "string", "name": "whoWroteIt", "type": "string" },
+      { "internalType": "string", "name": "cid", "type": "string" },
+      { "internalType": "uint256", "name": "timestamp", "type": "uint256" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "name": "eulogias",
+    "outputs": [
+      { "internalType": "string", "name": "metadataURI", "type": "string" },
+      { "internalType": "bytes32", "name": "passwordHash", "type": "bytes32" },
+      { "internalType": "uint256", "name": "messageCount", "type": "uint256" },
+      { "internalType": "uint256", "name": "maxMessages", "type": "uint256" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "eulogiaId", "type": "uint256" }
+    ],
+    "name": "getAllMessages",
+    "outputs": [
+      {
+        "components": [
+          { "internalType": "address", "name": "writer", "type": "address" },
+          { "internalType": "string", "name": "whoWroteIt", "type": "string" },
+          { "internalType": "string", "name": "cid", "type": "string" },
+          { "internalType": "uint256", "name": "timestamp", "type": "uint256" }
+        ],
+        "internalType": "struct AnkyEulogias.Message[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
@@ -130,18 +259,35 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "getTotalWritings",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
-      { "internalType": "uint256", "name": "index", "type": "uint256" }
+      { "internalType": "uint256", "name": "eulogiaId", "type": "uint256" }
     ],
-    "name": "getWriting",
-    "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
+    "name": "getEulogia",
+    "outputs": [
+      {
+        "components": [
+          { "internalType": "string", "name": "metadataURI", "type": "string" },
+          {
+            "internalType": "bytes32",
+            "name": "passwordHash",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "uint256",
+            "name": "messageCount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxMessages",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct AnkyEulogias.Eulogia",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
@@ -156,16 +302,28 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "name",
-    "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
+    "inputs": [
+      { "internalType": "uint256", "name": "eulogiaId", "type": "uint256" },
+      { "internalType": "string", "name": "password", "type": "string" }
+    ],
+    "name": "isValidPassword",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
+    "inputs": [
+      { "internalType": "uint256", "name": "eulogiaId", "type": "uint256" }
+    ],
+    "name": "mintEulogiaToAnky",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
-    "name": "notebookId",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "name": "name",
+    "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
     "stateMutability": "view",
     "type": "function"
   },
@@ -188,16 +346,6 @@
   {
     "inputs": [],
     "name": "renounceOwnership",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "string", "name": "url", "type": "string" },
-      { "internalType": "address", "name": "to", "type": "address" }
-    ],
-    "name": "safeMint",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -253,10 +401,36 @@
   },
   {
     "inputs": [
+      { "internalType": "uint256", "name": "index", "type": "uint256" }
+    ],
+    "name": "tokenByIndex",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "owner", "type": "address" },
+      { "internalType": "uint256", "name": "index", "type": "uint256" }
+    ],
+    "name": "tokenOfOwnerByIndex",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
       { "internalType": "uint256", "name": "tokenId", "type": "uint256" }
     ],
     "name": "tokenURI",
     "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalSupply",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
   },
@@ -278,13 +452,6 @@
     "name": "transferOwnership",
     "outputs": [],
     "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "name": "writings",
-    "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
-    "stateMutability": "view",
     "type": "function"
   }
 ]

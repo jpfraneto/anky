@@ -9,7 +9,7 @@ import Button from '../Button';
 import eulogiaABI from '../../lib/eulogiaABI.json';
 import Spinner from '../Spinner';
 import SampleButton from '../SampleButton';
-import SuccessfulNotebookTemplate from '../SuccessfulNotebookTemplate';
+import SuccessfulEulogiaTemplate from './SuccessfulEulogiaTemplate';
 
 const PRICE_FACTOR = 0.0001;
 
@@ -18,6 +18,7 @@ const NewEulogiaPage = ({ userAnky }) => {
   const [loadingEulogiaCreation, setLoadingEulogiaCreation] = useState(false);
   const [eulogiaCreationError, setEulogiaCreationError] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [createdEulogiaId, setCreatedEulogiaId] = useState(null);
   const [title, setTitle] = useState('the monument game');
   const [description, setDescription] = useState('what do you see?');
   const [password, setPassword] = useState('');
@@ -75,9 +76,12 @@ const NewEulogiaPage = ({ userAnky }) => {
 
       if (thisWallet && signer) {
         // The thing here is that I'm trying to send this transaction from the wallet of the user, not from the erc6551 token.
-
+        console.log(
+          'vwmovamo',
+          process.env.NEXT_PUBLIC_EULOGIAS_CONTRACT_ADDRESS
+        );
         const eulogiaContract = new ethers.Contract(
-          process.env.NEXT_PUBLIC_EULOGIA_CONTRACT_ADDRESS,
+          process.env.NEXT_PUBLIC_EULOGIAS_CONTRACT_ADDRESS,
           eulogiaABI,
           signer
         );
@@ -85,13 +89,12 @@ const NewEulogiaPage = ({ userAnky }) => {
         const userEnteredPriceInWei = ethers.utils.parseEther(price.toString());
         // You may need to set appropriate values for metadataURI, password, and maxMsgs
         const metadataURI = metadataCID.metadataCID;
-        const password = 'aloja'; // Update with actual password
         const maxMsgs = pages; // Update with actual max messages
 
         // Call the contract's method and send the transaction
         console.log('before the create eulogia', metadataCID);
         const transactionResponse = await eulogiaContract.createEulogia(
-          metadataURI,
+          metadataCID.metadataCID,
           password,
           maxMsgs,
           {
@@ -104,7 +107,7 @@ const NewEulogiaPage = ({ userAnky }) => {
           'Eulogia template created successfully',
           transactionResponse
         );
-        const eulogiaCreatedEvent = eulogiaContract.filters.TemplateCreated();
+        const eulogiaCreatedEvent = eulogiaContract.filters.EulogiaCreated();
         const event = transactionReceipt.events?.find(
           e => e.event === 'EulogiaCreated'
         ); // Find the event in the logs
@@ -137,7 +140,12 @@ const NewEulogiaPage = ({ userAnky }) => {
         <div className='fixed top-0 left-0 bg-black w-full h-full flex items-center justify-center z-50'>
           <div className='bg-purple-200 overflow-y-scroll text-black rounded relative p-6 w-2/3 h-2/3'>
             {success ? (
-              <></>
+              <>
+                <p>Congratulations, your Eulogia was created!</p>
+                <SuccessfulEulogiaTemplate
+                  eulogia={{ createdEulogiaId, title, pages }}
+                />
+              </>
             ) : (
               <>
                 {loadingEulogiaCreation ? (

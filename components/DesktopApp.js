@@ -76,7 +76,12 @@ const DesktopApp = () => {
       case '/eulogias/new':
         return <NewEulogiaPage userAnky={userAppInformation} />;
       case `/eulogias/${route.split('/').pop()}`:
-        return <IndividualEulogiaDisplayPage />;
+        return (
+          <IndividualEulogiaDisplayPage
+            setLifeBarLength={setLifeBarLength}
+            lifeBarLength={lifeBarLength}
+          />
+        );
       case `/notebook/${route.split('/').pop()}`:
         return <IndividualNotebookPage />;
 
