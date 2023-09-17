@@ -76,10 +76,7 @@ const NewEulogiaPage = ({ userAnky }) => {
 
       if (thisWallet && signer) {
         // The thing here is that I'm trying to send this transaction from the wallet of the user, not from the erc6551 token.
-        console.log(
-          'vwmovamo',
-          process.env.NEXT_PUBLIC_EULOGIAS_CONTRACT_ADDRESS
-        );
+
         const eulogiaContract = new ethers.Contract(
           process.env.NEXT_PUBLIC_EULOGIAS_CONTRACT_ADDRESS,
           eulogiaABI,

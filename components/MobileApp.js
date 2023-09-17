@@ -11,7 +11,7 @@ const sections = [
     question: 'what?',
     image: 'what.png',
     oneLiner:
-      'an interface to develop practical tools for you to realize who you really are. a network of humans collaborating in awesome open source software here: <a className="text-yellow-600" href="https://www.github.com/ankylat" target="_blank">https://www.github.com/ankylat</a>',
+      'an interface to develop open source practical tools for you to realize who you really are. please contribute here: <a className="text-yellow-600" href="https://www.github.com/ankylat" target="_blank">https://www.github.com/ankylat</a>',
   },
   {
     question: 'when?',
@@ -21,8 +21,7 @@ const sections = [
   {
     question: 'where?',
     image: 'where.png',
-    oneLiner:
-      'on a small store in the city where you live. the coolest store in town.',
+    oneLiner: 'through the internet.',
   },
   {
     question: 'who?',
@@ -32,7 +31,8 @@ const sections = [
   {
     question: 'how?',
     image: 'how.png',
-    oneLiner: 'by showing up. being who you already are. as simple as that.',
+    oneLiner:
+      'by inspiring you with the raw truth that each of us has to offer.',
   },
 ];
 

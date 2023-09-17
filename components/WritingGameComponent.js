@@ -33,12 +33,13 @@ const WritingGameComponent = ({
   onFinish,
   lifeBarLength,
   setLifeBarLength,
+  time,
+  setTime,
 }) => {
   const router = useRouter();
   const { setMusicPlaying, setIsAnkyLoading } = usePWA();
   const { login, authenticated, user } = usePrivy();
   const audioRef = useRef();
-  const [time, setTime] = useState(0);
   const [preparing, setPreparing] = useState(true);
   const [saveText, setSaveText] = useState('save anon');
   const [upscaledUrls, setUpscaledUrls] = useState([]);
