@@ -5,13 +5,17 @@ import { useRouter } from 'next/router';
 import { processFetchedEulogia } from '../../lib/notebooks.js';
 import { ethers } from 'ethers';
 import Button from '../Button';
+import Image from 'next/image';
 import WritingGameComponent from '../WritingGameComponent';
+import Spinner from '../Spinner';
 
 const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
   const router = useRouter();
   const [eulogia, setEulogia] = useState([]);
   const [loading, setLoading] = useState(true);
   const [time, setTime] = useState(0);
+  const [linkCopied, setLinkCopied] = useState(false);
+  const [preloadedBackground, setPreloadedBackground] = useState(null);
   const [whoIsWriting, setWhoIsWriting] = useState('');
   const [loadWritingGame, setLoadWritingGame] = useState(false);
   const [writingGameProps, setWritingGameProps] = useState(null);
@@ -43,6 +47,16 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
         const thisEulogia = await eulogiasContract.getEulogia(eulogiaID);
         const formattedEulogia = await processFetchedEulogia(thisEulogia);
         formattedEulogia.eulogiaID = eulogiaID;
+
+        formattedEulogia.metadata.backgroundImageUrl = `https://ipfs.io/ipfs/${formattedEulogia.metadata.backgroundImageCid}`;
+        formattedEulogia.metadata.coverImageUrl = `https://ipfs.io/ipfs/${formattedEulogia.metadata.coverImageCid}`;
+
+        const response = await fetch(
+          formattedEulogia.metadata.backgroundImageUrl
+        );
+        const imageBlob = await response.blob();
+        const imageUrl = URL.createObjectURL(imageBlob);
+        setPreloadedBackground(imageUrl);
 
         if (formattedEulogia) {
           setEulogia(formattedEulogia);
@@ -163,7 +177,21 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
     setLoadWritingGame(true);
   };
 
-  if (loading) return <p>loading...</p>;
+  const copyEulogiaLink = async () => {
+    console.log('the router is: ', router);
+    await navigator.clipboard.writeText(
+      `https://www.anky.lat/${router.asPath}`
+    );
+    setLinkCopied(true);
+  };
+
+  if (loading)
+    return (
+      <div>
+        <Spinner />
+        <p className='text-white'>loading...</p>
+      </div>
+    );
 
   console.log('The eulogia is: ', eulogia);
 
@@ -173,6 +201,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
         <WritingGameComponent
           {...writingGameProps}
           text={text}
+          preloadedBackground={preloadedBackground}
           setLifeBarLength={setLifeBarLength}
           lifeBarLength={lifeBarLength}
           setText={setText}
@@ -184,30 +213,51 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
   return (
     <div className='text-white'>
       <h2 className='text-4xl my-2'>{eulogia.metadata.title}</h2>
-      <p className='italic text-2xl mb-4'>{eulogia.metadata.description}</p>
+      <p className='italic text-2xl mb-2'>{eulogia.metadata.description}</p>
+      <div className='mb-4'>
+        {eulogia.messageCount} writing of {eulogia.maxMessages}
+      </div>
+      <div className='mx-auto flex justify-center'>
+        <Image
+          src={eulogia.metadata.coverImageUrl}
+          width={444}
+          height={666}
+          alt='Eulogia Cover Image'
+        />
+      </div>
       {wallets.length === 0 ? (
         <p>Please log in to interact with this eulogia.</p>
       ) : userHasWritten ? (
         <div>
-          <p>You have already written in this eulogia.</p>
+          <p className='mt-4'>You have already written in this eulogia.</p>
           {/* <Button
             buttonText='Mint Eulogia'
             buttonColor='bg-purple-500 w-48 mx-auto'
             buttonAction={mintEulogia}
           /> */}
-          {messages.map((msg, index) => (
-            <div
-              className='p-2 bg-purple-200 m-2 rounded-xl text-black'
-              key={index}
-            >
-              <p>{msg.text}</p>
+          <div className='w-96 mx-auto overflow-x-scroll'>
+            {messages.map((msg, index) => (
+              <div
+                className='p-2 w-96 mx-auto bg-purple-200 m-2 rounded-xl text-black'
+                key={index}
+              >
+                <p>{msg.text}</p>
 
-              <h3 className='ml-auto text-right italic'>{msg.whoWroteIt}</h3>
-            </div>
-          ))}
+                <h3 className='ml-auto text-right italic'>{msg.whoWroteIt}</h3>
+              </div>
+            ))}
+          </div>
+
+          <div className='w-48 mx-auto'>
+            <Button
+              buttonText={linkCopied ? `copied` : `share link`}
+              buttonColor='bg-purple-600'
+              buttonAction={copyEulogiaLink}
+            />
+          </div>
         </div>
       ) : (
-        <div>
+        <div className='my-4'>
           <p>You have been invited to write in this eulogia.</p>
           <p>What you will write here will stay forever associated with it.</p>
           <p>Are you ready?</p>

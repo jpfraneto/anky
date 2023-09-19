@@ -62,23 +62,17 @@
       {
         "indexed": true,
         "internalType": "uint256",
-        "name": "eulogiaId",
+        "name": "tokenId",
         "type": "uint256"
       },
       {
         "indexed": true,
         "internalType": "address",
-        "name": "owner",
+        "name": "recipient",
         "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "metadataURI",
-        "type": "string"
       }
     ],
-    "name": "EulogiaCreated",
+    "name": "JournalAirdropped",
     "type": "event"
   },
   {
@@ -87,23 +81,42 @@
       {
         "indexed": true,
         "internalType": "uint256",
-        "name": "eulogiaId",
+        "name": "tokenId",
         "type": "uint256"
       },
       {
         "indexed": true,
         "internalType": "address",
-        "name": "writer",
+        "name": "owner",
         "type": "address"
+      }
+    ],
+    "name": "JournalMinted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
       },
       {
         "indexed": false,
         "internalType": "string",
         "name": "cid",
         "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
       }
     ],
-    "name": "MessageAdded",
+    "name": "JournalWritten",
     "type": "event"
   },
   {
@@ -151,12 +164,8 @@
     "type": "event"
   },
   {
-    "inputs": [
-      { "internalType": "uint256", "name": "eulogiaId", "type": "uint256" },
-      { "internalType": "string", "name": "cid", "type": "string" },
-      { "internalType": "string", "name": "whoWroteIt", "type": "string" }
-    ],
-    "name": "addMessage",
+    "inputs": [],
+    "name": "airdropFirstJournal",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -191,63 +200,6 @@
   },
   {
     "inputs": [
-      { "internalType": "string", "name": "metadataURI", "type": "string" },
-      { "internalType": "uint256", "name": "maxMsgs", "type": "uint256" }
-    ],
-    "name": "createEulogia",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "uint256", "name": "", "type": "uint256" },
-      { "internalType": "uint256", "name": "", "type": "uint256" }
-    ],
-    "name": "eulogiaMessages",
-    "outputs": [
-      { "internalType": "address", "name": "writer", "type": "address" },
-      { "internalType": "string", "name": "whoWroteIt", "type": "string" },
-      { "internalType": "string", "name": "cid", "type": "string" },
-      { "internalType": "uint256", "name": "timestamp", "type": "uint256" }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "name": "eulogias",
-    "outputs": [
-      { "internalType": "string", "name": "metadataURI", "type": "string" },
-      { "internalType": "uint256", "name": "messageCount", "type": "uint256" },
-      { "internalType": "uint256", "name": "maxMessages", "type": "uint256" }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "uint256", "name": "eulogiaId", "type": "uint256" }
-    ],
-    "name": "getAllMessages",
-    "outputs": [
-      {
-        "components": [
-          { "internalType": "address", "name": "writer", "type": "address" },
-          { "internalType": "string", "name": "whoWroteIt", "type": "string" },
-          { "internalType": "string", "name": "cid", "type": "string" },
-          { "internalType": "uint256", "name": "timestamp", "type": "uint256" }
-        ],
-        "internalType": "struct AnkyEulogias.Message[]",
-        "name": "",
-        "type": "tuple[]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
       { "internalType": "uint256", "name": "tokenId", "type": "uint256" }
     ],
     "name": "getApproved",
@@ -257,28 +209,48 @@
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "eulogiaId", "type": "uint256" }
+      { "internalType": "uint256", "name": "tokenId", "type": "uint256" }
     ],
-    "name": "getEulogia",
+    "name": "getJournal",
     "outputs": [
       {
         "components": [
-          { "internalType": "string", "name": "metadataURI", "type": "string" },
           {
-            "internalType": "uint256",
-            "name": "messageCount",
-            "type": "uint256"
+            "internalType": "enum AnkyJournals.JournalType",
+            "name": "journalType",
+            "type": "uint8"
           },
+          { "internalType": "uint8", "name": "pagesLeft", "type": "uint8" },
+          { "internalType": "string", "name": "metadataCID", "type": "string" },
           {
-            "internalType": "uint256",
-            "name": "maxMessages",
-            "type": "uint256"
+            "components": [
+              { "internalType": "string", "name": "cid", "type": "string" },
+              {
+                "internalType": "uint256",
+                "name": "timestamp",
+                "type": "uint256"
+              }
+            ],
+            "internalType": "struct AnkyJournals.JournalEntry[]",
+            "name": "entries",
+            "type": "tuple[]"
           }
         ],
-        "internalType": "struct AnkyEulogias.Eulogia",
+        "internalType": "struct AnkyJournals.Journal",
         "name": "",
         "type": "tuple"
       }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "userAddress", "type": "address" }
+    ],
+    "name": "getUserJournals",
+    "outputs": [
+      { "internalType": "uint256[]", "name": "", "type": "uint256[]" }
     ],
     "stateMutability": "view",
     "type": "function"
@@ -294,12 +266,45 @@
     "type": "function"
   },
   {
-    "inputs": [
-      { "internalType": "uint256", "name": "eulogiaId", "type": "uint256" }
+    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "name": "journals",
+    "outputs": [
+      {
+        "internalType": "enum AnkyJournals.JournalType",
+        "name": "journalType",
+        "type": "uint8"
+      },
+      { "internalType": "uint8", "name": "pagesLeft", "type": "uint8" },
+      { "internalType": "string", "name": "metadataCID", "type": "string" }
     ],
-    "name": "mintEulogiaToAnky",
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "largeJournalPrice",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "mediumJournalPrice",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "enum AnkyJournals.JournalType",
+        "name": "journalType",
+        "type": "uint8"
+      }
+    ],
+    "name": "mintJournal",
     "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "payable",
     "type": "function"
   },
   {
@@ -363,6 +368,24 @@
     "name": "setApprovalForAll",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "_smallPrice", "type": "uint256" },
+      { "internalType": "uint256", "name": "_mediumPrice", "type": "uint256" },
+      { "internalType": "uint256", "name": "_largePrice", "type": "uint256" }
+    ],
+    "name": "setJournalPrices",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "smallJournalPrice",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -432,6 +455,33 @@
       { "internalType": "address", "name": "newOwner", "type": "address" }
     ],
     "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "", "type": "address" },
+      { "internalType": "uint256", "name": "", "type": "uint256" }
+    ],
+    "name": "userJournalIds",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "withdraw",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "tokenId", "type": "uint256" },
+      { "internalType": "string", "name": "cid", "type": "string" }
+    ],
+    "name": "writeJournal",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

@@ -21,11 +21,10 @@ const NewEulogiaPage = ({ userAnky }) => {
   const [createdEulogiaId, setCreatedEulogiaId] = useState(null);
   const [title, setTitle] = useState('the monument game');
   const [description, setDescription] = useState('what do you see?');
-  const [password, setPassword] = useState('');
   const [pages, setPages] = useState(24);
+  const [fileError, setFileError] = useState('');
   const [price, setPrice] = useState((24 * PRICE_FACTOR).toFixed(4));
   const [maxMsgs, setMaxMsgs] = useState(null);
-  const [usePassword, setUsePassword] = useState(false);
   const [coverImage, setCoverImage] = useState(null);
   const [backgroundImage, setBackgroundImage] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -38,8 +37,15 @@ const NewEulogiaPage = ({ userAnky }) => {
 
   const imageChange = (event, f) => {
     const file = event.target.files[0];
+    const maxSizeInBytes = 10 * 1024 * 1024; // 10MB
+
     if (file) {
+      if (file.size > maxSizeInBytes) {
+        setFileError('File size exceeds 10MB limit.');
+        return; // exit out of the function
+      }
       f(file);
+      setFileError(''); // Clear the error if any
     }
   };
 
@@ -56,6 +62,7 @@ const NewEulogiaPage = ({ userAnky }) => {
       formData.append('description', description);
       formData.append('price', price);
       formData.append('coverImage', coverImage);
+      formData.append('maxPages', pages);
       formData.append('backgroundImage', backgroundImage);
 
       const serverResponse = await fetch(
@@ -89,10 +96,8 @@ const NewEulogiaPage = ({ userAnky }) => {
         const maxMsgs = pages; // Update with actual max messages
 
         // Call the contract's method and send the transaction
-        console.log('before the create eulogia', metadataCID);
         const transactionResponse = await eulogiaContract.createEulogia(
-          metadataCID.metadataCID,
-          password,
+          metadataCID.cid,
           maxMsgs,
           {
             gasLimit: 1000000000,
@@ -280,31 +285,6 @@ const NewEulogiaPage = ({ userAnky }) => {
             />
           </div>
 
-          <div className='flex items-center space-x-2'>
-            <input
-              type='checkbox'
-              checked={usePassword}
-              onChange={() => setUsePassword(!usePassword)}
-            />
-            <label className='text-gray-500'>
-              Use password? (the people you invite will need it to write here)
-            </label>
-          </div>
-
-          {usePassword && (
-            <div className='flex flex-col items-start'>
-              <p className='text-left text-sm text-gray-500 my-1'>
-                Password (if you forget it you wont be able to write anymore)
-              </p>
-              <input
-                className='border p-2 w-36 rounded text-gray-500'
-                type='password'
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-              />
-            </div>
-          )}
-
           <div>
             <p className='text-left text-sm text-gray-500 my-1'>
               Upload Cover Image (this will be the cover of this eulogia
@@ -312,6 +292,7 @@ const NewEulogiaPage = ({ userAnky }) => {
             </p>
             <input
               type='file'
+              accept='image/*'
               className='border p-2 w-full rounded text-gray-500'
               onChange={e => imageChange(e, setCoverImage)}
             />
@@ -324,10 +305,12 @@ const NewEulogiaPage = ({ userAnky }) => {
             </p>
             <input
               type='file'
+              accept='image/*'
               className='border p-2 w-full rounded text-gray-500'
               onChange={e => imageChange(e, setBackgroundImage)}
             />
           </div>
+          {fileError && <div className='text-red-500 mt-2'>{fileError}</div>}
 
           <button
             className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full mt-4'
