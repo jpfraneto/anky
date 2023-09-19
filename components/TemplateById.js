@@ -145,9 +145,14 @@ function TemplatePage({ userAnky }) {
               <h2 className='text-3xl mb-3'>
                 {templateData.metadata.title || 'undefined'}{' '}
               </h2>
+
               <p className='italic text-lg mb-3'>
                 {templateData.metadata.description || 'undefined'}
               </p>
+              <small className='text-sm'>
+                this is a template. to write on it, you have to mint it so that
+                it is transformed into a notebook.
+              </small>
               <ol className='text-left  mb-4'>
                 {templateData.metadata.prompts.map((x, i) => (
                   <li key={i}>
@@ -155,7 +160,7 @@ function TemplatePage({ userAnky }) {
                   </li>
                 ))}
               </ol>
-              <p className='bg-purple-500 p-2 rounded-xl border my-2 border-black w-fit mx-auto'>
+              <p className='bg-purple-600 p-2 rounded-xl border my-2 border-black w-fit mx-auto'>
                 Mint Price: {templateData.price} eth | {templateData.supply}{' '}
                 units left
               </p>

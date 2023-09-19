@@ -49,9 +49,27 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
           setLoading(false);
           const allMessages = await eulogiasContract.getAllMessages(eulogiaID);
           console.log('all the messages are: ', allMessages);
-          setMessages(allMessages);
+          const formattedMessages = allMessages.map(messageArray => ({
+            writer: messageArray[0],
+            whoWroteIt: messageArray[1],
+            cid: messageArray[2],
+            timestamp: ethers.utils.formatUnits(messageArray[3], 0),
+          }));
+          console.log('the formatted messages are: ', formattedMessages);
+          // Initiate fetching of content for each message from Arweave
+          const contentPromises = formattedMessages.map(msg =>
+            getContentFromArweave(msg.cid)
+          );
+          const contents = await Promise.all(contentPromises);
 
-          const userMessage = allMessages.find(
+          // Augment the messages with the content fetched
+          formattedMessages.forEach((msg, index) => {
+            msg.text = contents[index];
+          });
+
+          setMessages(formattedMessages);
+
+          const userMessage = formattedMessages.find(
             msg => msg.writer === thisWallet.address
           );
           setUserHasWritten(Boolean(userMessage));
@@ -66,6 +84,21 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
     fetchEulogia();
   }, [thisWallet]);
 
+  async function getContentFromArweave(cid) {
+    try {
+      console.log('inside the get content from arwarave', cid);
+      const response = await fetch(`https://www.arweave.net/${cid}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch data from Arweave');
+      }
+      const textContent = await response.text();
+      return textContent;
+    } catch (error) {
+      console.error('Error fetching content from Arweave:', error);
+      return null;
+    }
+  }
+
   const mintEulogia = async () => {
     let signer = await provider.getSigner();
     const eulogiasContract = new ethers.Contract(
@@ -77,7 +110,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
     alert('Eulogia minted successfully!');
   };
 
-  const onFinish = async () => {
+  const onFinish = async finishText => {
     try {
       // Step 1: Send the text to the backend to be stored on Arweave.
       const response = await fetch(
@@ -85,7 +118,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text: text }),
+          body: JSON.stringify({ text: finishText }),
         }
       );
 
@@ -102,14 +135,14 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
 
       const tx = await eulogiasContract.addMessage(
         eulogia.eulogiaID,
-        'aloja',
+        '1234',
         cid,
         whoIsWriting
-      ); // Replace "YourPasswordHere" and "UserAliasOrName" appropriately.
+      );
       await tx.wait();
 
-      alert('Your writing has been successfully added to the eulogia.');
       setUserHasWritten(true); // Update the state to reflect the user has written.
+      setLoadWritingGame(false);
     } catch (error) {
       console.error('Failed to write to eulogia:', error);
       alert('Failed to write to eulogia. Please try again.');
@@ -127,7 +160,6 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
       onFinish,
     };
     setWritingGameProps(writingGameParameters);
-    console.log('the writing game parameters are :', writingGameParameters);
     setLoadWritingGame(true);
   };
 
@@ -158,15 +190,19 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
       ) : userHasWritten ? (
         <div>
           <p>You have already written in this eulogia.</p>
-          <Button
+          {/* <Button
             buttonText='Mint Eulogia'
             buttonColor='bg-purple-500 w-48 mx-auto'
             buttonAction={mintEulogia}
-          />
+          /> */}
           {messages.map((msg, index) => (
-            <div key={index}>
-              <h3>Message by: {msg.whoWroteIt}</h3>
-              <p>{msg.cid}</p>
+            <div
+              className='p-2 bg-purple-200 m-2 rounded-xl text-black'
+              key={index}
+            >
+              <p>{msg.text}</p>
+
+              <h3 className='ml-auto text-right italic'>{msg.whoWroteIt}</h3>
             </div>
           ))}
         </div>

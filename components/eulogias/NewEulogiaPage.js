@@ -138,7 +138,7 @@ const NewEulogiaPage = ({ userAnky }) => {
           <div className='bg-purple-200 overflow-y-scroll text-black rounded relative p-6 w-2/3 h-2/3'>
             {success ? (
               <>
-                <p>Congratulations, your Eulogia was created!</p>
+                <p>Congratulations!!!</p>
                 <SuccessfulEulogiaTemplate
                   eulogia={{ createdEulogiaId, title, pages }}
                 />
@@ -176,7 +176,9 @@ const NewEulogiaPage = ({ userAnky }) => {
                     </h3>
                     <p className='text-3xl my-1'> {title}</p>
                     <p className='italic'>{description}</p>
-                    <div>{pages} pages for your friends to write</div>
+                    <div>
+                      {pages} pages for {pages} friends to write
+                    </div>
                     <p>
                       Each time they come to write there are gas fees that need
                       to be paid in order to store that data and index it on the
@@ -185,7 +187,16 @@ const NewEulogiaPage = ({ userAnky }) => {
                     <p>
                       That is why you need to pay for creating this notebook.
                     </p>
+                    <p>
+                      So that they can come and write for free. You will have
+                      already paid them.
+                    </p>
+                    <p>It&apos;s cheap, very cheap. But more than cero.</p>
                     <p>{(pages * PRICE_FACTOR).toFixed(4)} eth</p>
+                    <p>
+                      WHERE DOES THIS AMOUNT COME FROM? THIS NEEDS TO BE
+                      PROPERLY ARRANGED.
+                    </p>
                     <div className='flex left-0 right-0 bottom-5 absolute'>
                       <Button
                         buttonAction={() => setIsModalOpen(false)}

@@ -68,7 +68,7 @@ function BuildersPage() {
       <h2 className='text-white text-xl mt-2'>alphi notebook</h2>
       <div className=' flex flex-col text-black'>
         <Notebook text={writings[displayedPage]} />;
-        <div className='flex w-full mb-2 overflow-x-scroll'>
+        <div className='flex w-96 mx-auto mb-2 overflow-x-scroll'>
           {writings.map((x, i) => {
             {
               return (
