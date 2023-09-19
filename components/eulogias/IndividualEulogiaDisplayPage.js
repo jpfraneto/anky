@@ -59,6 +59,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
         setPreloadedBackground(imageUrl);
 
         if (formattedEulogia) {
+          console.log('the formatted eulogia is: ', formattedEulogia);
           setEulogia(formattedEulogia);
           setLoading(false);
           const allMessages = await eulogiasContract.getAllMessages(eulogiaID);
@@ -211,68 +212,73 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
     );
   return (
     <div className='text-white'>
-      <h2 className='text-4xl my-2'>{eulogia.metadata.title}</h2>
-      <p className='italic text-2xl mb-2'>{eulogia.metadata.description}</p>
-      <div className='mb-4'>
-        {eulogia.messageCount} writing of {eulogia.maxMessages}
-      </div>
-      <div className='mx-auto flex overflow-hidden rounded-xl justify-center'>
-        <Image
-          src={eulogia.metadata.coverImageUrl}
-          width={356}
-          height={555}
-          alt='Eulogia Cover Image'
-        />
-      </div>
-      {wallets.length === 0 ? (
-        <p>Please log in to interact with this eulogia.</p>
-      ) : userHasWritten ? (
-        <div>
-          <p className='mt-4'>You already wrote here:</p>
-          {/* <Button
-            buttonText='Mint Eulogia'
-            buttonColor='bg-purple-500 w-48 mx-auto'
-            buttonAction={mintEulogia}
-          /> */}
-          <div className='w-96 mx-auto overflow-x-scroll'>
-            {messages.map((msg, index) => (
-              <div
-                className='p-2 w-96 mx-auto bg-purple-200 m-2 rounded-xl text-black'
-                key={index}
-              >
-                <p>{msg.text}</p>
-
-                <h3 className='ml-auto text-right italic'>{msg.whoWroteIt}</h3>
-              </div>
-            ))}
+      <div className='flex '>
+        <div className='p-2'>
+          <h2 className='text-4xl my-2'>{eulogia.metadata.title}</h2>
+          <p className='italic text-2xl mb-2'>{eulogia.metadata.description}</p>
+          <div className='mb-4'>
+            {eulogia.messageCount} writing of {eulogia.maxMessages}
           </div>
-
-          <div className='w-48 mx-auto'>
-            <Button
-              buttonText={linkCopied ? `copied` : `share link`}
-              buttonColor='bg-purple-600'
-              buttonAction={copyEulogiaLink}
+          <div className='mx-auto flex overflow-hidden rounded-xl justify-center'>
+            <Image
+              src={eulogia.metadata.coverImageUrl}
+              width={356}
+              height={555}
+              alt='Eulogia Cover Image'
             />
           </div>
         </div>
-      ) : (
-        <div className='my-4'>
-          <p>You have been invited to write in this eulogia.</p>
-          <p>What you will write here will stay forever associated with it.</p>
-          <p>Are you ready?</p>
-          <input
-            type='text'
-            className='my-2 p-2 w-full rounded-xl text-black'
-            placeholder='your signature'
-            onChange={e => setWhoIsWriting(e.target.value)}
-          />
-          <Button
-            buttonText={`Write and sign as ${whoIsWriting}`}
-            buttonColor='bg-purple-500 w-48 mx-auto'
-            buttonAction={writeOnEulogia}
-          />
+        <div className='p-2 h-full overflow-y-scroll'>
+          {wallets.length === 0 ? (
+            <p>Please log in to interact with this eulogia.</p>
+          ) : userHasWritten ? (
+            <div>
+              <p className='mt-4'>You already wrote here:</p>
+              <div className='w-96 mx-auto overflow-x-scroll'>
+                {messages.map((msg, index) => (
+                  <div
+                    className='p-2 w-96 mx-auto bg-purple-200 m-2 rounded-xl text-black'
+                    key={index}
+                  >
+                    <p>{msg.text}</p>
+
+                    <h3 className='ml-auto text-right italic'>
+                      {msg.whoWroteIt}
+                    </h3>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className='my-4'>
+              <p>You have been invited to write in this eulogia.</p>
+              <p>
+                What you will write here will stay forever associated with it.
+              </p>
+              <p>Are you ready?</p>
+              <input
+                type='text'
+                className='my-2 p-2 w-full rounded-xl text-black'
+                placeholder='your signature'
+                onChange={e => setWhoIsWriting(e.target.value)}
+              />
+              <Button
+                buttonText={`Write and sign as ${whoIsWriting}`}
+                buttonColor='bg-purple-500 w-48 mx-auto'
+                buttonAction={writeOnEulogia}
+              />
+            </div>
+          )}
         </div>
-      )}
+      </div>
+      <div className='w-64 mx-auto'>
+        <Button
+          buttonText={linkCopied ? `copied` : `share eulogia link`}
+          buttonColor='bg-purple-600 mb-2'
+          buttonAction={copyEulogiaLink}
+        />
+        <p>anyone with the link will be able to write</p>
+      </div>
     </div>
   );
 };

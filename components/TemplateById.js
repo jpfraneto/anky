@@ -153,7 +153,7 @@ function TemplatePage({ userAnky }) {
                 this is a template. to write on it, you have to mint it so that
                 it is transformed into a notebook.
               </small>
-              <ol className='text-left  mb-4'>
+              <ol className='text-left text-black p-4 bg-slate-200 rounded-xl  my-4'>
                 {templateData.metadata.prompts.map((x, i) => (
                   <li key={i}>
                     {i + 1}. {x}
@@ -161,8 +161,7 @@ function TemplatePage({ userAnky }) {
                 ))}
               </ol>
               <p className='bg-purple-600 p-2 rounded-xl border my-2 border-black w-fit mx-auto'>
-                Mint Price: {templateData.price} eth | {templateData.supply}{' '}
-                units left
+                {templateData.supply} templates left
               </p>
 
               <p>
@@ -173,7 +172,11 @@ function TemplatePage({ userAnky }) {
               <div className='w-96 mx-auto flex space-x-2 mt-2'>
                 <Button
                   buttonColor='bg-purple-600'
-                  buttonText={mintingNotebook ? `Minting...` : `Mint Notebook`}
+                  buttonText={
+                    mintingNotebook
+                      ? `Minting...`
+                      : `Mint Notebook ${templateData.price} eth`
+                  }
                   buttonAction={handleMint}
                 />
                 <Button

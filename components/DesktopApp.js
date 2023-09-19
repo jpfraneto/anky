@@ -83,7 +83,12 @@ const DesktopApp = () => {
           />
         );
       case `/notebook/${route.split('/').pop()}`:
-        return <IndividualNotebookPage />;
+        return (
+          <IndividualNotebookPage
+            setLifeBarLength={setLifeBarLength}
+            lifeBarLength={lifeBarLength}
+          />
+        );
 
       default:
         return (

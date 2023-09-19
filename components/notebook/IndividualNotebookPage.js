@@ -1,14 +1,170 @@
-import React from 'react';
-import Link from 'next/link';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
+import { ethers } from 'ethers';
+import Button from '../Button';
+import { processFetchedTemplate } from '../../lib/notebooks.js';
+import templatesContractABI from '../../lib/templatesABI.json';
+import { usePrivy, useWallets } from '@privy-io/react-auth';
+import Image from 'next/image';
 
-const IndividualNotebookPage = () => {
+import WritingGameComponent from '../WritingGameComponent';
+import Spinner from '../Spinner';
+import AnkyNotebooksAbi from '../../lib/notebookABI.json'; // Assuming you have the ABI
+
+const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
+  const router = useRouter();
+  const [notebook, setNotebook] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [time, setTime] = useState(0);
+  const [text, setText] = useState('');
+  const [provider, setProvider] = useState(null);
+  const [notebookTemplate, setNotebookTemplate] = useState(null);
+  const [chosenPrompt, setChosenPrompt] = useState('');
+  const [loadWritingGame, setLoadWritingGame] = useState(false);
+  const [writingGameProps, setWritingGameProps] = useState(null);
+  const [whoIsWriting, setWhoIsWriting] = useState('');
+  const { wallets } = useWallets();
+
+  const thisWallet = wallets[0];
+
+  useEffect(() => {
+    async function fetchNotebook() {
+      try {
+        if (!thisWallet) return;
+        const notebookID = router.query.id;
+
+        let fetchedProvider = await thisWallet.getEthersProvider();
+        setProvider(fetchedProvider);
+        let signer = await fetchedProvider.getSigner();
+        const notebooksContract = new ethers.Contract(
+          process.env.NEXT_PUBLIC_NOTEBOOKS_CONTRACT,
+          AnkyNotebooksAbi,
+          signer
+        );
+
+        const thisNotebook = await notebooksContract.getFullNotebook(
+          notebookID
+        );
+        console.log('the notebook is: ', thisNotebook);
+        const templatesContract = new ethers.Contract(
+          process.env.NEXT_PUBLIC_TEMPLATES_CONTRACT_ADDRESS,
+          templatesContractABI,
+          signer
+        );
+        const templateId = ethers.utils.formatUnits(thisNotebook.templateId, 0);
+        const thisTemplate = await templatesContract.getTemplate(templateId);
+        const formattedTemplate = await processFetchedTemplate(thisTemplate);
+        console.log('the formatted template is: ', formattedTemplate);
+        if (thisNotebook && formattedTemplate) {
+          setNotebook(thisNotebook);
+          setNotebookTemplate(formattedTemplate);
+          setLoading(false);
+        } else {
+          throw Error('No notebook found');
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    fetchNotebook();
+  }, [thisWallet]);
+
+  const writeOnNotebook = async () => {
+    const pagesWritten = notebook.userPages.length;
+    if (pagesWritten >= notebookTemplate.metadata.prompts.length) {
+      alert('All prompts have been written!');
+      return;
+    }
+    const nextPrompt = notebookTemplate.metadata.prompts[pagesWritten];
+    setChosenPrompt(nextPrompt);
+    const writingGameParameters = {
+      notebookType: 'notebook',
+      targetTime: 480,
+      notebookTypeId: notebook.notebookID,
+      backgroundImage: null, // You can modify this if you have an image.
+      prompt: nextPrompt, // You need to fetch and set the correct prompt.
+      musicUrl: 'https://www.youtube.com/watch?v=HcKBDY64UN8',
+      onFinish: updateNotebookWithPage,
+    };
+
+    setWritingGameProps(writingGameParameters);
+    setLoadWritingGame(true);
+  };
+
+  const updateNotebookWithPage = async finishText => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/notebooks/upload-writing`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: finishText }),
+        }
+      );
+
+      const { cid } = await response.json();
+      console.log('in here, the cid is: ', cid);
+      let signer = await provider.getSigner();
+      const notebooksContract = new ethers.Contract(
+        process.env.NEXT_PUBLIC_NOTEBOOKS_CONTRACT,
+        AnkyNotebooksAbi,
+        signer
+      );
+      console.log('the notebooks contract is: ', notebook);
+      const pageNumber = notebook.userPages.length + 1;
+      console.log('the page number is :0', pageNumber);
+      console.log('the notebook is: ', notebook);
+      const notebookID = router.query.id;
+      const tx = await notebooksContract.writePage(notebookID, pageNumber, cid);
+      await tx.wait();
+      console.log('after the response of writing in the notebook');
+      setLoadWritingGame(false);
+    } catch (error) {
+      console.error('Failed to write to notebook:', error);
+    }
+  };
+
+  if (loading)
+    return (
+      <div>
+        <Spinner />
+        <p className='text-white'>loading...</p>
+      </div>
+    );
+
+  if (loadWritingGame)
+    return (
+      <WritingGameComponent
+        {...writingGameProps}
+        text={text}
+        setLifeBarLength={setLifeBarLength}
+        lifeBarLength={lifeBarLength}
+        setText={setText}
+        time={time}
+        setTime={setTime}
+        cancel={() => setLoadWritingGame(false)}
+      />
+    );
+
   return (
     <div className='text-white'>
-      <p>Fetch the notebook</p>
-      <p>check if the user owns it</p>
-      <p>if the user owns it, give her the prompt that comes</p>
-      <p>if the user doesn&apos;t own it, redirect to the template screen</p>
-      <Link href='/templates'>templates</Link>
+      <h2 className='text-4xl my-2'>{notebookTemplate.metadata.title}</h2>{' '}
+      <small className='italic'>{notebookTemplate.metadata.description}</small>
+      <div className='text-left my-4'>
+        {notebookTemplate.metadata.prompts.map((x, i) => {
+          return (
+            <div key={i}>
+              {i + 1}. {x}
+            </div>
+          );
+        })}
+      </div>
+      <Button
+        buttonText={`Write notebook`}
+        buttonColor='bg-purple-500 w-48 mx-auto'
+        buttonAction={writeOnNotebook}
+      />
     </div>
   );
 };

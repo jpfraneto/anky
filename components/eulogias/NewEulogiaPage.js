@@ -180,7 +180,8 @@ const NewEulogiaPage = ({ userAnky }) => {
                       You are about to create an eulogia notebook:
                     </h3>
                     <p className='text-3xl my-1'> {title}</p>
-                    <p className='italic'>{description}</p>
+                    <p className='italic mb-2'>{description}</p>
+                    <p>*************</p>
                     <div>
                       {pages} pages for {pages} friends to write
                     </div>
@@ -198,10 +199,7 @@ const NewEulogiaPage = ({ userAnky }) => {
                     </p>
                     <p>It&apos;s cheap, very cheap. But more than cero.</p>
                     <p>{(pages * PRICE_FACTOR).toFixed(4)} eth</p>
-                    <p>
-                      WHERE DOES THIS AMOUNT COME FROM? THIS NEEDS TO BE
-                      PROPERLY ARRANGED.
-                    </p>
+
                     <div className='flex left-0 right-0 bottom-5 absolute'>
                       <Button
                         buttonAction={() => setIsModalOpen(false)}

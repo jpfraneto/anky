@@ -35,6 +35,7 @@ const WritingGameComponent = ({
   lifeBarLength,
   setLifeBarLength,
   time,
+  cancel,
   setTime,
 }) => {
   const router = useRouter();
@@ -252,6 +253,15 @@ const WritingGameComponent = ({
             placeholder={prompt}
             onChange={handleTextChange}
           ></textarea>
+          {!text && (
+            <div className='w-48 mx-auto'>
+              <Button
+                buttonText='Cancel'
+                buttonColor='bg-red-600'
+                buttonAction={cancel}
+              />
+            </div>
+          )}
           {text && (
             <div
               className={`${
