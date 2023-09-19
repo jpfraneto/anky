@@ -53,6 +53,7 @@ const WritingGameComponent = ({
 
   const [generatedImages, setGeneratedImages] = useState('');
   const [loadingAnkyResponse, setLoadingAnkyResponse] = useState(false);
+  const [loadButtons, setLoadButtons] = useState(false);
 
   const [characterIsReady, setCharacterIsReady] = useState(false);
   const [isDone, setIsDone] = useState(false);
@@ -129,7 +130,7 @@ const WritingGameComponent = ({
     await navigator.clipboard.writeText(text);
     setMoreThanMinRound(true);
     setFailureMessage(`You're done! This run lasted ${time}.}`);
-    if (time > 30) {
+    if (time > 3) {
       setLoadButtons(true);
     }
   };
@@ -199,7 +200,7 @@ const WritingGameComponent = ({
       style={{
         boxSizing: 'border-box',
         height: 'calc(100vh - 33px)',
-        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(${
+        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${
           preloadedBackground || '/images/mintbg.jpg'
         })`,
         backgroundPosition: 'center center',
@@ -282,7 +283,10 @@ const WritingGameComponent = ({
 
                   <div className='flex justify-center '>
                     <Button
-                      buttonAction={() => onFinish(text)}
+                      buttonAction={() => {
+                        setSavingTextAnon(true);
+                        onFinish(text);
+                      }}
                       buttonColor='bg-green-600 text-black'
                       buttonText={savingTextAnon ? 'saving...' : 'save text'}
                     />

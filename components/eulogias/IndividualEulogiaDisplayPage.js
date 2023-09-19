@@ -149,7 +149,6 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
 
       const tx = await eulogiasContract.addMessage(
         eulogia.eulogiaID,
-        '1234',
         cid,
         whoIsWriting
       );
@@ -217,11 +216,11 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
       <div className='mb-4'>
         {eulogia.messageCount} writing of {eulogia.maxMessages}
       </div>
-      <div className='mx-auto flex justify-center'>
+      <div className='mx-auto flex overflow-hidden rounded-xl justify-center'>
         <Image
           src={eulogia.metadata.coverImageUrl}
-          width={444}
-          height={666}
+          width={356}
+          height={555}
           alt='Eulogia Cover Image'
         />
       </div>
@@ -229,7 +228,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
         <p>Please log in to interact with this eulogia.</p>
       ) : userHasWritten ? (
         <div>
-          <p className='mt-4'>You have already written in this eulogia.</p>
+          <p className='mt-4'>You already wrote here:</p>
           {/* <Button
             buttonText='Mint Eulogia'
             buttonColor='bg-purple-500 w-48 mx-auto'
