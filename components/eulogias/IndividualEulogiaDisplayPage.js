@@ -24,7 +24,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
   const [messages, setMessages] = useState([]);
   const [userHasWritten, setUserHasWritten] = useState(false);
   const { wallets } = useWallets();
-
+  console.log('INNHEREEE, THE WALLETS ARE:', wallets);
   const thisWallet = wallets[0];
 
   useEffect(() => {
@@ -228,7 +228,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
             />
           </div>
         </div>
-        <div className='p-2 h-full overflow-y-scroll'>
+        <div className='p-2 h-full overflow-y-scroll my-2'>
           {wallets.length === 0 ? (
             <p>Please log in to interact with this eulogia.</p>
           ) : userHasWritten ? (
@@ -250,7 +250,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
               </div>
             </div>
           ) : (
-            <div className='my-4'>
+            <div className='my-4 h-full'>
               <p>You have been invited to write in this eulogia.</p>
               <p>
                 What you will write here will stay forever associated with it.
