@@ -11,7 +11,7 @@ import Spinner from '../Spinner';
 
 const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
   const router = useRouter();
-  const [eulogia, setEulogia] = useState([]);
+  const [eulogia, setEulogia] = useState(null);
   const [loading, setLoading] = useState(true);
   const [time, setTime] = useState(0);
   const [linkCopied, setLinkCopied] = useState(false);
@@ -43,6 +43,8 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
 
         const eulogiaID = router.query.id;
         const thisEulogia = await eulogiasContract.getEulogia(eulogiaID);
+        console.log('this eulogia is: ', thisEulogia);
+        if (thisEulogia.metadataURI === '') return setLoading(false);
         const formattedEulogia = await processFetchedEulogia(thisEulogia);
         formattedEulogia.eulogiaID = eulogiaID;
 
