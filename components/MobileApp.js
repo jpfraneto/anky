@@ -7,6 +7,7 @@ import { Righteous, Dancing_Script } from 'next/font/google';
 import { getAnkyverseDay, getAnkyverseQuestion } from '../lib/ankyverse';
 import { createTBA, airdropAnky } from '../lib/backend';
 import IndividualEulogiaDisplayPageMobile from './eulogias/IndividualEulogiaDisplayPageMobile.js';
+import NewEulogiaPageMobile from './eulogias/NewEulogiaPageMobile.js';
 
 const sections = [
   {
@@ -132,10 +133,8 @@ const MobileApp = () => {
 
   function getComponentForRoute(route) {
     switch (route) {
-      case '/eulogias':
-        return <EulogiasMobilePage />;
       case '/eulogias/new':
-        return <NewEulogiaMobilePage userAnky={userAppInformation} />;
+        return <NewEulogiaPageMobile userAnky={userAppInformation} />;
       case `/eulogias/${route.split('/').pop()}`:
         console.log('IN THIS ROUTE');
         return (
