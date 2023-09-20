@@ -81,7 +81,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
           formattedMessages.forEach((msg, index) => {
             msg.text = contents[index];
           });
-
+          console.log('the messages are', formattedMessages);
           setMessages(formattedMessages);
 
           const userMessage = formattedMessages.find(
@@ -155,7 +155,14 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
         whoIsWriting
       );
       await tx.wait();
-
+      setMessages(x => [
+        ...x,
+        {
+          writer: thisWallet.address,
+          whoWroteIt: whoIsWriting,
+          text: finishText,
+        },
+      ]);
       setUserHasWritten(true); // Update the state to reflect the user has written.
       setLoadWritingGame(false);
     } catch (error) {
@@ -246,7 +253,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
             <p>Please log in to interact with this eulogia.</p>
           ) : userHasWritten ? (
             <div>
-              <p className='mt-4'>You already wrote here:</p>
+              <p className='mt-4'>You already wrote here.</p>
               <div className='w-96 mx-auto'>
                 {messages.map((msg, index) => (
                   <div
