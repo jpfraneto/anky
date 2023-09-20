@@ -6,8 +6,8 @@ import { processFetchedEulogia } from '../../lib/notebooks.js';
 import { ethers } from 'ethers';
 import Button from '../Button';
 import Image from 'next/image';
-import WritingGameComponent from '../WritingGameComponent';
 import Spinner from '../Spinner';
+import WritingGameComponentMobile from '../WritingGameComponentMobile';
 
 const IndividualEulogiaDisplayPageMobile = ({
   setLifeBarLength,
@@ -220,7 +220,7 @@ const IndividualEulogiaDisplayPageMobile = ({
   if (loadWritingGame)
     return (
       <div className='relative w-screen h-screen'>
-        <WritingGameComponent
+        <WritingGameComponentMobile
           {...writingGameProps}
           text={text}
           preloadedBackground={preloadedBackground}
@@ -233,7 +233,7 @@ const IndividualEulogiaDisplayPageMobile = ({
       </div>
     );
   return (
-    <div className='text-white'>
+    <div className='text-white w-screen'>
       <div className='flex flex-col '>
         <div className='p-4 text-center'>
           <h2 className='text-4xl my-2'>{eulogia.metadata.title}</h2>
@@ -263,10 +263,10 @@ const IndividualEulogiaDisplayPageMobile = ({
           ) : userHasWritten ? (
             <div>
               <p className='mt-2'>You already wrote here.</p>
-              <div className='w-96 mx-auto'>
+              <div className='w-full mx-auto'>
                 {messages.map((msg, index) => (
                   <div
-                    className='p-2 w-96 mx-auto bg-purple-200 m-2 rounded-xl text-black'
+                    className='p-2 w-full mx-auto bg-purple-200 my-2 rounded-xl text-black'
                     key={index}
                   >
                     <p>{msg.text}</p>
@@ -280,44 +280,49 @@ const IndividualEulogiaDisplayPageMobile = ({
             </div>
           ) : (
             <div className='my-2 h-full'>
-              <p>You have been invited to write in this eulogia.</p>
-              <p>
+              <p className='my-2'>
+                You have been invited to write in this eulogia.
+              </p>
+              <p className='my-2'>
                 What you will write here will stay forever associated with it.
               </p>
-              <p>Are you ready?</p>
               <input
                 type='text'
                 className='my-2 p-2 w-full rounded-xl text-black'
-                placeholder='your signature'
+                placeholder='how do you want to sign?'
                 onChange={e => setWhoIsWriting(e.target.value)}
               />
-              <Button
-                buttonText={`Write and sign as ${whoIsWriting}`}
-                buttonColor='bg-purple-500 w-48 mx-auto'
-                buttonAction={writeOnEulogia}
-              />
+              {whoIsWriting && (
+                <Button
+                  buttonText={`Write and sign as ${whoIsWriting}`}
+                  buttonColor='bg-purple-500 w-48 mx-auto'
+                  buttonAction={writeOnEulogia}
+                />
+              )}
             </div>
           )}
         </div>
       </div>
-      <div className='w-full px-3 mx-auto'>
-        <div className='flex'>
-          <Button
-            buttonText='mint eulogia'
-            buttonColor='bg-purple-600 mb-2'
-            buttonAction={mintEulogia}
-          />
-          <Button
-            buttonText={linkCopied ? `copied` : `share eulogia link`}
-            buttonColor='bg-purple-600 mb-2'
-            buttonAction={copyEulogiaLink}
-          />
-        </div>
+      {userHasWritten && (
+        <div className='w-screen px-3'>
+          <div className='flex'>
+            <Button
+              buttonText='mint eulogia'
+              buttonColor='bg-purple-600 mb-2'
+              buttonAction={mintEulogia}
+            />
+            <Button
+              buttonText={linkCopied ? `copied` : `share eulogia link`}
+              buttonColor='bg-purple-600 mb-2'
+              buttonAction={copyEulogiaLink}
+            />
+          </div>
 
-        <p className='text-center'>
-          anyone with the link will be able to write
-        </p>
-      </div>
+          <p className='text-center mb-3'>
+            anyone with the link will be able to write
+          </p>
+        </div>
+      )}
     </div>
   );
 };

@@ -140,10 +140,10 @@ const NewEulogiaPageMobile = ({ userAnky }) => {
     return (
       isModalOpen && (
         <div className='fixed top-0 left-0 bg-black w-full h-full flex items-center justify-center z-50'>
-          <div className='bg-purple-200 overflow-y-scroll text-black rounded relative p-6 w-2/3 h-2/3'>
+          <div className='bg-purple-200 overflow-y-scroll text-black rounded relative p-6 w-4/5 h-4/5'>
             {success ? (
               <>
-                <p>Congratulations!!!</p>
+                <p className='mb-2'> Congratulations!</p>
                 <SuccessfulEulogiaTemplate
                   eulogia={{ createdEulogiaId, title, pages }}
                 />
@@ -182,23 +182,27 @@ const NewEulogiaPageMobile = ({ userAnky }) => {
                     <p className='text-3xl my-1'> {title}</p>
                     <p className='italic mb-2'>{description}</p>
                     <p>*************</p>
-                    <div>
+                    <div className='my-1'>
                       {pages} pages for {pages} friends to write
                     </div>
-                    <p>
+                    <p className='my-1'>
                       Each time they come to write there are gas fees that need
                       to be paid in order to store that data and index it on the
                       blockchain.
                     </p>
-                    <p>
+                    <p className='my-1'>
                       That is why you need to pay for creating this notebook.
                     </p>
-                    <p>
+                    <p className='my-1'>
                       So that they can come and write for free. You will have
                       already paid them.
                     </p>
-                    <p>It&apos;s cheap, very cheap. But more than cero.</p>
-                    <p>{(pages * PRICE_FACTOR).toFixed(4)} eth</p>
+                    <p className='my-1'>
+                      It&apos;s cheap, very cheap. But more than cero.
+                    </p>
+                    <p className='my-1'>
+                      {(pages * PRICE_FACTOR).toFixed(4)} eth
+                    </p>
 
                     <div className='flex left-0 right-0 bottom-5 absolute'>
                       <Button

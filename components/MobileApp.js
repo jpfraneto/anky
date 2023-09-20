@@ -189,10 +189,21 @@ const MobileApp = () => {
   }
 
   return (
-    <div
-      className={`text-black relative overflow-y-scroll flex flex-col items-center h-screen  w-full bg-cover bg-center`}
-    >
-      {getComponentForRoute(router.pathname)}
+    <div className='h-screen w-screen'>
+      <div className='h-8 w-screen'>
+        <div
+          className='h-full opacity-50'
+          style={{
+            width: `${lifeBarLength}%`,
+            backgroundColor: lifeBarLength > 30 ? 'green' : 'red',
+          }}
+        ></div>
+      </div>{' '}
+      <div
+        className={`text-black relative overflow-y-scroll flex flex-col items-center h-full w-full bg-cover bg-center`}
+      >
+        {getComponentForRoute(router.pathname)}
+      </div>
     </div>
   );
 };

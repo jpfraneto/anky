@@ -6,7 +6,7 @@ import { processFetchedEulogia } from '../../lib/notebooks.js';
 import { ethers } from 'ethers';
 import Button from '../Button';
 import Image from 'next/image';
-import WritingGameComponent from '../WritingGameComponent';
+import WritingGameComponentMobile from '../WritingGameComponentMobile';
 import Spinner from '../Spinner';
 
 const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
@@ -217,7 +217,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
   if (loadWritingGame)
     return (
       <div className='relative w-screen h-screen'>
-        <WritingGameComponent
+        <WritingGameComponentMobile
           {...writingGameProps}
           text={text}
           preloadedBackground={preloadedBackground}

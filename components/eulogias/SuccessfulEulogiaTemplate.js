@@ -11,11 +11,11 @@ const SuccessfulEulogiaTemplate = ({ eulogia }) => {
     setLinkCopied(true);
   }
   return (
-    <div>
+    <div className='pt-2'>
       <p>Your eulogia was created successfully:</p>
       <h2 className='text-2xl my-2'>{eulogia.title}</h2>
       <p>{eulogia.pages} people can write here</p>
-      <div className='mx-auto w-48'>
+      <div className='mx-auto w-48 mt-2'>
         <Button
           buttonAction={createSharingLink}
           buttonText='Copy Invite Link'
