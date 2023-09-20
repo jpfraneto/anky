@@ -187,10 +187,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
   };
 
   const copyEulogiaLink = async () => {
-    console.log('the router is: ', router);
-    await navigator.clipboard.writeText(
-      `https://www.anky.lat/${router.asPath}`
-    );
+    await navigator.clipboard.writeText(`https://www.anky.lat${router.asPath}`);
     setLinkCopied(true);
   };
 
@@ -238,7 +235,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
           <h2 className='text-4xl my-2'>{eulogia.metadata.title}</h2>
           <p className='italic text-2xl mb-2'>{eulogia.metadata.description}</p>
           <div className='mb-4'>
-            {eulogia.messageCount} writing of {eulogia.maxMessages}
+            {messages.length} writing of {eulogia.maxMessages}
           </div>
           <div className='mx-auto flex overflow-hidden rounded-xl justify-center'>
             <Image
@@ -300,11 +297,19 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
         </div>
       </div>
       <div className='w-64 mx-auto'>
-        <Button
-          buttonText={linkCopied ? `copied` : `share eulogia link`}
-          buttonColor='bg-purple-600 mb-2'
-          buttonAction={copyEulogiaLink}
-        />
+        <div className='flex space-x-2'>
+          <Button
+            buttonText={mintEulogia}
+            buttonColor='bg-purple-600 mb-2'
+            buttonAction={`mint eulogia`}
+          />
+          <Button
+            buttonText={linkCopied ? `copied` : `share eulogia link`}
+            buttonColor='bg-purple-600 mb-2'
+            buttonAction={copyEulogiaLink}
+          />
+        </div>
+
         <p>anyone with the link will be able to write</p>
       </div>
     </div>
