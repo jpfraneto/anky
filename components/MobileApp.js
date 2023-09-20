@@ -8,6 +8,7 @@ import { getAnkyverseDay, getAnkyverseQuestion } from '../lib/ankyverse';
 import { createTBA, airdropAnky } from '../lib/backend';
 import IndividualEulogiaDisplayPageMobile from './eulogias/IndividualEulogiaDisplayPageMobile.js';
 import NewEulogiaPageMobile from './eulogias/NewEulogiaPageMobile.js';
+import IndividualNotebookPageMobile from './notebook/IndividualNotebookPageMobile.js';
 
 const sections = [
   {
@@ -145,7 +146,7 @@ const MobileApp = () => {
         );
       case `/notebook/${route.split('/').pop()}`:
         return (
-          <IndividualNotebookPage
+          <IndividualNotebookPageMobile
             setLifeBarLength={setLifeBarLength}
             lifeBarLength={lifeBarLength}
           />
