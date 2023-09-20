@@ -10,6 +10,7 @@ import WritingGameComponent from '../WritingGameComponent';
 import Spinner from '../Spinner';
 
 const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
+  const { login } = usePrivy();
   const router = useRouter();
   const [eulogia, setEulogia] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -250,7 +251,14 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
         </div>
         <div className='p-2 h-full overflow-y-scroll my-2'>
           {wallets.length === 0 ? (
-            <p>Please log in to interact with this eulogia.</p>
+            <div>
+              <p>Please log in to interact with this eulogia.</p>
+              <Button
+                buttonAction={login}
+                buttonText='login'
+                buttonColor='bg-purple-600'
+              />
+            </div>
           ) : userHasWritten ? (
             <div>
               <p className='mt-4'>You already wrote here.</p>
