@@ -79,7 +79,6 @@ function MyApp({ Component, pageProps }) {
   }, []);
 
   const handleLogin = async user => {
-    console.log('the user is', user);
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_SERVER_URL}/blockchain/airdrop`,
       {
@@ -93,7 +92,6 @@ function MyApp({ Component, pageProps }) {
       }
     );
     const data = await response.json();
-    console.log('The data after the airdrop function is: ', data);
   };
 
   if (loading) return <p>Loading...</p>;
@@ -193,7 +191,7 @@ function MyApp({ Component, pageProps }) {
             showWalletLoginFirst: true,
           },
           embeddedWallets: {
-            createOnLogin: 'all-users',
+            createOnLogin: 'users-without-wallets',
           },
         }}
       >

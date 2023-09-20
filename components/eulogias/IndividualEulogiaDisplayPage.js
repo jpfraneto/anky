@@ -24,14 +24,13 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
   const [messages, setMessages] = useState([]);
   const [userHasWritten, setUserHasWritten] = useState(false);
   const { wallets } = useWallets();
-  console.log('INNHEREEE, THE WALLETS ARE:', wallets);
   const thisWallet = wallets[0];
 
   useEffect(() => {
     async function fetchEulogia() {
       try {
         if (!thisWallet) return;
-
+        console.log('in hereeeee', thisWallet);
         let fetchedProvider = await thisWallet.getEthersProvider();
         setProvider(fetchedProvider);
         let signer = await fetchedProvider.getSigner();
@@ -42,7 +41,6 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
           signer
         );
 
-        console.log(router);
         const eulogiaID = router.query.id;
         const thisEulogia = await eulogiasContract.getEulogia(eulogiaID);
         const formattedEulogia = await processFetchedEulogia(thisEulogia);
@@ -88,6 +86,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
             msg => msg.writer === thisWallet.address
           );
           setUserHasWritten(Boolean(userMessage));
+          setLoading(false);
         } else {
           throw Error('No eulogia');
         }
@@ -194,6 +193,18 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
     );
 
   console.log('The eulogia is: ', eulogia);
+  if (!eulogia)
+    return (
+      <div className='text-white'>
+        <p>this eulogia doesn&apos;t exist.</p>
+        <p>add it by clicking this button.</p>
+        <Button
+          buttonAction={() => router.push('/eulogias/new')}
+          buttonText='add eulogia'
+          buttonColor='bg-purple-600'
+        />
+      </div>
+    );
 
   if (loadWritingGame)
     return (
@@ -234,7 +245,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
           ) : userHasWritten ? (
             <div>
               <p className='mt-4'>You already wrote here:</p>
-              <div className='w-96 mx-auto overflow-x-scroll'>
+              <div className='w-96 mx-auto'>
                 {messages.map((msg, index) => (
                   <div
                     className='p-2 w-96 mx-auto bg-purple-200 m-2 rounded-xl text-black'
