@@ -1,4 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { usePWA } from '../context/pwaContext';
+import { usePrivy, useWallets } from '@privy-io/react-auth';
+import { Righteous, Dancing_Script } from 'next/font/google';
+import { getAnkyverseDay, getAnkyverseQuestion } from '../lib/ankyverse';
+import { createTBA, airdropAnky } from '../lib/backend';
+import IndividualEulogiaDisplayPageMobile from './eulogias/IndividualEulogiaDisplayPageMobile.js';
 
 const sections = [
   {
@@ -37,11 +45,155 @@ const sections = [
 ];
 
 const MobileApp = () => {
+  const { login, authenticated, user, logout } = usePrivy();
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+  const [lifeBarLength, setLifeBarLength] = useState(0);
+  const { userAppInformation, setUserAppInformation, isAnkyLoading } = usePWA();
+  const [userWallet, setUserWallet] = useState(null);
+
+  const wallets = useWallets();
+  const wallet = wallets.wallets[0];
+  const changeChain = async () => {
+    if (wallet) {
+      await wallet.switchChain(84531);
+      setUserWallet(wallet);
+      console.log('the chain was changed', wallet);
+      setUserAppInformation(x => {
+        return { ...x, wallet: wallet };
+      });
+    }
+  };
+
+  useEffect(() => {
+    const setup = async () => {
+      if (!userAppInformation?.wallet?.chainId.includes('84531'))
+        await changeChain();
+      // I won't call the aidrop call because it is called when the user logs in.
+      console.log('in here', userAppInformation);
+      if (!userAppInformation?.ankyIndex) await airdropCall();
+      if (!userAppInformation?.tbaAddress) await callTba();
+
+      setLoading(false);
+    };
+    setup();
+  }, [wallet, userAppInformation.wallet]);
+
+  async function airdropCall() {
+    try {
+      console.log(
+        'sending the call to the airdrop route',
+        userAppInformation.wallet.address
+      );
+      console.log(
+        'The call is being sent to:',
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/blockchain/airdrop`
+      );
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/blockchain/airdrop`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            wallet: userAppInformation.wallet.address,
+          }),
+        }
+      );
+      const data = await response.json();
+      console.log('in here, the data is: ', data);
+      setUserAppInformation(x => {
+        return { ...x, tokenUri: data.tokenUri, ankyIndex: data.userAnkyIndex };
+      });
+    } catch (error) {
+      console.log('The airdrop was not successful', error);
+    }
+  }
+
+  async function callTba() {
+    try {
+      console.log(
+        'sending the call to the fetch the tba account route',
+        userAppInformation.wallet.address
+      );
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/blockchain/getTBA/${userAppInformation.wallet.address}`
+      );
+      const data = await response.json();
+      console.log('the response data is: ', data);
+      setUserAppInformation(x => {
+        return { ...x, tbaAddress: data.ankyTba };
+      });
+    } catch (error) {
+      console.log('The airdrop was not successful', error);
+    }
+  }
+
+  function getComponentForRoute(route) {
+    switch (route) {
+      case '/eulogias':
+        return <EulogiasMobilePage />;
+      case '/eulogias/new':
+        return <NewEulogiaMobilePage userAnky={userAppInformation} />;
+      case `/eulogias/${route.split('/').pop()}`:
+        console.log('IN THIS ROUTE');
+        return (
+          <IndividualEulogiaDisplayPageMobile
+            setLifeBarLength={setLifeBarLength}
+            lifeBarLength={lifeBarLength}
+          />
+        );
+      case `/notebook/${route.split('/').pop()}`:
+        return (
+          <IndividualNotebookPage
+            setLifeBarLength={setLifeBarLength}
+            lifeBarLength={lifeBarLength}
+          />
+        );
+
+      default:
+        return (
+          <div className='text-white h-screen'>
+            <div className=' p-4 w-full text-2xl flex justify-center items-center bg-black'>
+              <Link href='/templates'>browse templates</Link>
+            </div>
+            <div className=' p-4 w-full text-2xl  flex justify-center items-center bg-red-600'>
+              <Link href='/eulogias'>browse eulogias</Link>
+            </div>
+          </div>
+        );
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className='h-screen w-screen flex justify-center items-center'>
+        <h2 className='text-white text-6xl'>anky</h2>
+      </div>
+    );
+  }
+
+  if (!authenticated) {
+    return (
+      <div className='h-screen'>
+        {sections.map((x, i) => (
+          <Element section={x} key={i} />
+        ))}
+        <div className='h-1/7 p-4 w-full flex justify-center items-center bg-black'>
+          <p onClick={login} className='text-white text-2xl'>
+            login
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className='h-screen'>
-      {sections.map((x, i) => (
-        <Element section={x} key={i} />
-      ))}
+    <div
+      className={`text-black relative overflow-y-scroll flex flex-col items-center h-screen  w-full bg-cover bg-center`}
+    >
+      {getComponentForRoute(router.pathname)}
     </div>
   );
 };
@@ -54,7 +206,7 @@ const Element = ({ section }) => {
   return (
     <div
       onClick={() => setOpened(x => !x)}
-      className='h-1/6 p-4 w-full relative bg-cover'
+      className='h-1/7 p-4 w-full relative bg-cover'
       style={{
         backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/ankys/${section.image}')`,
         backgroundPosition: 'center center',
