@@ -221,7 +221,7 @@ const WritingGameComponent = ({
               }`}
             >
               <p
-                className={`${righteous.className} text-5xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]   mb-4 font-bold text-center`}
+                className={`${righteous.className} text-5xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]   my-4 font-bold text-center`}
               >
                 {prompt}
               </p>
