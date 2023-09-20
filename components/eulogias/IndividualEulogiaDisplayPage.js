@@ -180,6 +180,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
       backgroundImage: eulogia.metadata.backgroundImage || null,
       prompt: eulogia.metadata.description,
       musicUrl: 'https://www.youtube.com/watch?v=HcKBDY64UN8',
+      cancel: () => setLoadWritingGame(false),
       onFinish,
     };
     setWritingGameProps(writingGameParameters);
@@ -299,9 +300,9 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
       <div className='w-64 mx-auto'>
         <div className='flex space-x-2'>
           <Button
-            buttonText={mintEulogia}
+            buttonText='mint eulogia'
             buttonColor='bg-purple-600 mb-2'
-            buttonAction={`mint eulogia`}
+            buttonAction={mintEulogia}
           />
           <Button
             buttonText={linkCopied ? `copied` : `share eulogia link`}
