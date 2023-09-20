@@ -185,7 +185,7 @@ function MyApp({ Component, pageProps }) {
           embeddedWallets: {
             noPromptOnSignature: true,
           },
-          loginMethods: ['email'],
+          loginMethods: ['email', 'wallet'],
           appearance: {
             theme: 'dark',
             accentColor: '#364CAC',

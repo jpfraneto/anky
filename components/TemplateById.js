@@ -14,6 +14,7 @@ function TemplatePage({ userAnky }) {
   const [mintingNotebook, setMintingNotebook] = useState(false);
   const [mintedNotebookId, setMintedNotebookId] = useState(null);
   const [mintedNotebookSuccess, setMintedNotebookSuccess] = useState(false);
+  const [notebookInformation, setNotebookInformation] = useState({});
   const router = useRouter();
   const { id } = router.query;
 
@@ -94,10 +95,8 @@ function TemplatePage({ userAnky }) {
       const notebookId = mintedEvents[0].args.instanceId;
       const creatorAmount = ethers.utils.formatEther(transferredAmounts[0]);
       const userAmount = ethers.utils.formatEther(transferredAmounts[1]);
+      setNotebookInformation({ creatorAmount, userAmount, notebookId });
 
-      alert(
-        `Success! Notebook with ID: ${notebookId} minted. ${creatorAmount} ETH was transferred to the template creator, and ${userAmount} ETH was returned to you.`
-      );
       setMintedNotebookId(notebookId);
       setMintedNotebookSuccess(true);
       setMintingNotebook(false);
@@ -130,6 +129,10 @@ function TemplatePage({ userAnky }) {
               <h2 className='text-3xl mb-3'>
                 {templateData.metadata.title || 'undefined'}
               </h2>
+              <p>
+                {`Success! Notebook with ID: ${notebookInformation.notebookId} minted. ${notebookInformation.creatorAmount} ETH was transferred to the template creator, and
+                ${notebookInformation.userAmount} ETH was returned to you.`}
+              </p>
               <div className='w-fit mx-auto'>
                 <Button
                   buttonColor='bg-purple-600'

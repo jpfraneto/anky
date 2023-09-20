@@ -2,7 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { ethers } from 'ethers';
 import Button from '../Button';
-import { processFetchedTemplate } from '../../lib/notebooks.js';
+import {
+  processFetchedTemplate,
+  fetchArweaveContent,
+} from '../../lib/notebooks.js';
 import templatesContractABI from '../../lib/templatesABI.json';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
 import Image from 'next/image';
@@ -19,8 +22,10 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
   const [text, setText] = useState('');
   const [provider, setProvider] = useState(null);
   const [notebookTemplate, setNotebookTemplate] = useState(null);
+  const [notebookPages, setNotebookPages] = useState([]);
   const [chosenPrompt, setChosenPrompt] = useState('');
   const [loadWritingGame, setLoadWritingGame] = useState(false);
+  const [writingForDisplay, setWritingForDisplay] = useState(null);
   const [writingGameProps, setWritingGameProps] = useState(null);
   const [whoIsWriting, setWhoIsWriting] = useState('');
   const { wallets } = useWallets();
@@ -41,10 +46,12 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
           AnkyNotebooksAbi,
           signer
         );
-
+        console.log('this notebook id is: ', notebookID);
         const thisNotebook = await notebooksContract.getFullNotebook(
           notebookID
         );
+        const fetchedPages = await fetchArweaveContent(thisNotebook.userPages);
+        setNotebookPages(fetchedPages);
         console.log('the notebook is: ', thisNotebook);
         const templatesContract = new ethers.Contract(
           process.env.NEXT_PUBLIC_TEMPLATES_CONTRACT_ADDRESS,
@@ -116,9 +123,18 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
       console.log('the page number is :0', pageNumber);
       console.log('the notebook is: ', notebook);
       const notebookID = router.query.id;
+      console.log('the notebook id is: ', notebookID);
       const tx = await notebooksContract.writePage(notebookID, pageNumber, cid);
       await tx.wait();
       console.log('after the response of writing in the notebook');
+      setNotebookPages(x => [
+        ...x,
+        {
+          text: finishText,
+          pageIndex: notebookPages.length,
+          written: true,
+        },
+      ]);
       setLoadWritingGame(false);
     } catch (error) {
       console.error('Failed to write to notebook:', error);
@@ -154,17 +170,51 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
       <div className='text-left my-4'>
         {notebookTemplate.metadata.prompts.map((x, i) => {
           return (
-            <div key={i}>
-              {i + 1}. {x}
+            <div
+              className={`${
+                notebookPages[i] && notebookPages[i].pageIndex && 'line-through'
+              }`}
+              key={i}
+            >
+              <p
+                onClick={() => {
+                  console.log('in here', writingForDisplay);
+                  if (writingForDisplay?.index === i + 1) {
+                    setWritingForDisplay({}); // Empty it if it's the same index
+                  } else {
+                    console.log('there', notebookPages, i);
+                    setWritingForDisplay(notebookPages[i]);
+                  }
+                }}
+              >
+                {i + 1}. {x}
+              </p>
+              {writingForDisplay?.pageIndex === i + 1 && (
+                <div className='my-2 text-white p-2 bg-purple-600 rounded-xl'>
+                  {writingForDisplay.text}
+                </div>
+              )}
             </div>
           );
         })}
       </div>
-      <Button
-        buttonText={`Write notebook`}
-        buttonColor='bg-purple-500 w-48 mx-auto'
-        buttonAction={writeOnNotebook}
-      />
+      {notebookPages.length === notebookTemplate.metadata.prompts.length ? (
+        <div>
+          <p>Congratulations, you finished writing this notebook</p>
+          <p className='mb-4'>Time to mint another template!</p>
+          <Button
+            buttonText={`Browse templates`}
+            buttonColor='bg-purple-500 w-48 mx-auto'
+            buttonAction={() => router.push('/templates')}
+          />
+        </div>
+      ) : (
+        <Button
+          buttonText={`Answer prompt #${notebookPages.length + 1}`}
+          buttonColor='bg-purple-500 w-48 mx-auto'
+          buttonAction={writeOnNotebook}
+        />
+      )}
     </div>
   );
 };
