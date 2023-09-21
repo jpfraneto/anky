@@ -202,6 +202,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
   };
 
   function renderModal() {
+    console.log(displayModalMessage);
     return (
       isModalOpen && (
         <div className='fixed top-0 left-0 bg-black w-full h-full flex items-center justify-center z-50'>
@@ -222,6 +223,9 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
                 );
               })}
             </div>
+            <p className='absolute right-2 bottom-1 italic '>
+              {displayModalMessage.whoWroteIt}
+            </p>
           </div>
         </div>
       )
@@ -286,16 +290,15 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
           <div className='mb-4'>
             {messages.length} writing of {eulogia.maxMessages}
           </div>
-          <div className='mx-auto flex overflow-hidden rounded-xl justify-center'>
+          <div className='mx-auto relative w-96 h-96 flex overflow-hidden border-white border rounded-xl justify-center'>
             <Image
               src={eulogia.metadata.coverImageUrl}
-              width={356}
-              height={555}
+              fill
               alt='Eulogia Cover Image'
             />
           </div>
         </div>
-        <div className='p-2 h-full overflow-y-scroll my-2'>
+        <div className='p-2 h-full overflow-y-scroll my-0'>
           {wallets.length === 0 ? (
             <div>
               <p>Please log in to interact with this eulogia.</p>
@@ -308,7 +311,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
           ) : userHasWritten ? (
             <div className='w-full'>
               <p>you already wrote here...</p>
-              <div className='w-full flex flex-wrap mx-auto'>
+              <div className='w-full flex justify-center flex-wrap mx-auto'>
                 {messages.map((msg, index) => (
                   <div
                     className='p-2 w-8 flex justify-center items-center cursor-pointer h-8 mx-auto bg-purple-200 m-2 rounded-xl text-black'
@@ -324,7 +327,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
               </div>
             </div>
           ) : (
-            <div className='my-4 h-full'>
+            <div className='my-0 h-full'>
               <p>You have been invited to write in this eulogia.</p>
               <p>
                 What you will write here will stay forever associated with it.
