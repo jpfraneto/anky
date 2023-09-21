@@ -56,7 +56,8 @@ const IndividualEulogiaDisplayPageMobile = ({
         formattedEulogia.metadata.coverImageUrl = `https://ipfs.io/ipfs/${formattedEulogia.metadata.coverImageCid}`;
 
         const response = await fetch(
-          formattedEulogia.metadata.backgroundImageUrl
+          formattedEulogia.metadata.backgroundImageUrl,
+          { credentials: 'include' }
         );
         const imageBlob = await response.blob();
         const imageUrl = URL.createObjectURL(imageBlob);
@@ -138,6 +139,7 @@ const IndividualEulogiaDisplayPageMobile = ({
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
           body: JSON.stringify({ text: finishText }),
         }
       );

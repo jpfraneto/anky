@@ -95,6 +95,7 @@ const MobileApp = () => {
         `${process.env.NEXT_PUBLIC_SERVER_URL}/blockchain/airdrop`,
         {
           method: 'POST',
+          credentials: 'include',
           headers: {
             'Content-Type': 'application/json',
           },

@@ -70,6 +70,7 @@ const NewEulogiaPage = ({ userAnky }) => {
         {
           method: 'POST',
           body: formData,
+          credentials: 'include',
         }
       );
       console.log(

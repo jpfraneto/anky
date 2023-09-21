@@ -70,6 +70,7 @@ const NewEulogiaPageMobile = ({ userAnky }) => {
         {
           method: 'POST',
           body: formData,
+          credentials: 'include',
         }
       );
       console.log(
@@ -185,24 +186,6 @@ const NewEulogiaPageMobile = ({ userAnky }) => {
                     <div className='my-1'>
                       {pages} pages for {pages} friends to write
                     </div>
-                    <p className='my-1'>
-                      Each time they come to write there are gas fees that need
-                      to be paid in order to store that data and index it on the
-                      blockchain.
-                    </p>
-                    <p className='my-1'>
-                      That is why you need to pay for creating this notebook.
-                    </p>
-                    <p className='my-1'>
-                      So that they can come and write for free. You will have
-                      already paid them.
-                    </p>
-                    <p className='my-1'>
-                      It&apos;s cheap, very cheap. But more than cero.
-                    </p>
-                    <p className='my-1'>
-                      {(pages * PRICE_FACTOR).toFixed(4)} eth
-                    </p>
 
                     <div className='flex left-0 right-0 bottom-5 absolute'>
                       <Button
@@ -254,6 +237,7 @@ const NewEulogiaPageMobile = ({ userAnky }) => {
             <input
               className='border p-2 w-full rounded text-gray-500'
               type='text'
+              placeholder='eulogia title'
               value={title}
               onChange={e => setTitle(e.target.value)}
             />
@@ -265,6 +249,7 @@ const NewEulogiaPageMobile = ({ userAnky }) => {
             </p>
             <input
               type='text'
+              placeholder='prompt'
               className='border p-2 w-full rounded text-gray-500'
               value={description}
               onChange={e => setDescription(e.target.value)}
