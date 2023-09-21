@@ -79,9 +79,8 @@ function MyApp({ Component, pageProps }) {
   }, []);
 
   const handleLogin = async user => {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_URL}/blockchain/airdrop`,
-      {
+    try {
+      const fetchOptions = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -89,9 +88,16 @@ function MyApp({ Component, pageProps }) {
         body: JSON.stringify({
           wallet: user.wallet.address,
         }),
-      }
-    );
-    const data = await response.json();
+      };
+      const initialEthTransaction = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/get-initial-eth`,
+        fetchOptions
+      );
+      const ankyAirdropTransaction = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/blockchain/airdrop`,
+        fetchOptions
+      );
+    } catch (error) {}
   };
 
   if (loading) return <p>Loading...</p>;

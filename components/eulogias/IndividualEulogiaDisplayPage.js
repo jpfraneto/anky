@@ -6,7 +6,7 @@ import { processFetchedEulogia } from '../../lib/notebooks.js';
 import { ethers } from 'ethers';
 import Button from '../Button';
 import Image from 'next/image';
-import WritingGameComponentMobile from '../WritingGameComponentMobile';
+import WritingGameComponent from '../WritingGameComponent';
 import Spinner from '../Spinner';
 
 const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
@@ -15,7 +15,9 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
   const [eulogia, setEulogia] = useState(null);
   const [loading, setLoading] = useState(true);
   const [time, setTime] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
+  const [displayModalMessage, setDisplayModalMessage] = useState(null);
   const [preloadedBackground, setPreloadedBackground] = useState(null);
   const [whoIsWriting, setWhoIsWriting] = useState('');
   const [loadWritingGame, setLoadWritingGame] = useState(false);
@@ -199,6 +201,33 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
     setLinkCopied(true);
   };
 
+  function renderModal() {
+    return (
+      isModalOpen && (
+        <div className='fixed top-0 left-0 bg-black w-full h-full flex items-center justify-center z-50'>
+          <div className='bg-purple-200 relative overflow-y-scroll text-black rounded  p-6 w-2/3 h-2/3'>
+            <p
+              onClick={() => setIsModalOpen(false)}
+              className='absolute top-1 cursor-pointer right-2 text-red-600'
+            >
+              close
+            </p>
+
+            <div className='overflow-y-scroll'>
+              {displayModalMessage.text.split('\n').map((x, i) => {
+                return (
+                  <p className='my-2 ' key={i}>
+                    {x}
+                  </p>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )
+    );
+  }
+
   if (!authenticated) {
     return (
       <div className='mt-2 text-white '>
@@ -236,7 +265,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
   if (loadWritingGame)
     return (
       <div className='relative w-screen h-screen'>
-        <WritingGameComponentMobile
+        <WritingGameComponent
           {...writingGameProps}
           text={text}
           preloadedBackground={preloadedBackground}
@@ -250,7 +279,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
     );
   return (
     <div className='text-white'>
-      <div className='flex '>
+      <div className='flex flex-col'>
         <div className='p-2'>
           <h2 className='text-4xl my-2'>{eulogia.metadata.title}</h2>
           <p className='italic text-2xl mb-2'>{eulogia.metadata.description}</p>
@@ -277,19 +306,19 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
               />
             </div>
           ) : userHasWritten ? (
-            <div>
-              <p className='mt-4'>You already wrote here.</p>
-              <div className='w-96 mx-auto'>
+            <div className='w-full'>
+              <p>you already wrote here...</p>
+              <div className='w-full flex flex-wrap mx-auto'>
                 {messages.map((msg, index) => (
                   <div
-                    className='p-2 w-96 mx-auto bg-purple-200 m-2 rounded-xl text-black'
+                    className='p-2 w-8 flex justify-center items-center cursor-pointer h-8 mx-auto bg-purple-200 m-2 rounded-xl text-black'
                     key={index}
+                    onClick={() => {
+                      setIsModalOpen(true);
+                      setDisplayModalMessage(msg);
+                    }}
                   >
-                    <p>{msg.text}</p>
-
-                    <h3 className='ml-auto text-right italic'>
-                      {msg.whoWroteIt}
-                    </h3>
+                    <p>{index}</p>
                   </div>
                 ))}
               </div>
@@ -316,15 +345,15 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
           )}
         </div>
       </div>
-      <div className='w-64 mx-auto'>
+      <div className='w-96 mx-auto'>
         <div className='flex space-x-2'>
-          <Button
+          {/* <Button
             buttonText='mint eulogia'
             buttonColor='bg-purple-600 mb-2'
             buttonAction={mintEulogia}
-          />
+          /> */}
           <Button
-            buttonText={linkCopied ? `copied` : `share eulogia link`}
+            buttonText={linkCopied ? `copied` : `share link`}
             buttonColor='bg-purple-600 mb-2'
             buttonAction={copyEulogiaLink}
           />
@@ -332,6 +361,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
 
         <p>anyone with the link will be able to write</p>
       </div>
+      {renderModal()}
     </div>
   );
 };

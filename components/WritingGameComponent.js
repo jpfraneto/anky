@@ -245,7 +245,7 @@ const WritingGameComponent = ({
               transition: 'top 1s, bottom 1s, left 1s, right 1s', // smooth transition over 1 second
             }}
             className={`${dancingScript.className} ${text && 'absolute'} ${
-              text ? 'md:aspect-video md:flex w-full h-full' : ' w-3/5 h-64'
+              text ? 'md:aspect-video md:flex w-full h-full' : 'w-3/5 h-48'
             } p-4 text-white ${
               time > 2 && 'opacity-80'
             } placeholder-white  text-2xl border border-white rounded-md  bg-opacity-10 bg-black`}
@@ -283,12 +283,12 @@ const WritingGameComponent = ({
                   <p
                     className={`${righteous.className} mb-2 text-xl font-bold`}
                   >
-                    great job.
+                    you are ready.
                   </p>
                   <p
                     className={`${righteous.className} mb-2 text-xl font-bold`}
                   >
-                    you can save what you wrote forever on the blockchain.
+                    do you want to add your writing to this eulogia?
                   </p>
 
                   <div className='flex justify-center '>
