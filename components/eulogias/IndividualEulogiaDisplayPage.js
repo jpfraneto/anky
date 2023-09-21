@@ -10,7 +10,7 @@ import WritingGameComponentMobile from '../WritingGameComponentMobile';
 import Spinner from '../Spinner';
 
 const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
-  const { login } = usePrivy();
+  const { login, authenticated } = usePrivy();
   const router = useRouter();
   const [eulogia, setEulogia] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -117,14 +117,21 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
   }
 
   const mintEulogia = async () => {
-    let signer = await provider.getSigner();
-    const eulogiasContract = new ethers.Contract(
-      process.env.NEXT_PUBLIC_EULOGIAS_CONTRACT_ADDRESS,
-      AnkyEulogiasAbi,
-      signer
-    );
-    await eulogiasContract.mintEulogiaToAnky(eulogia.eulogiaID);
-    alert('Eulogia minted successfully!');
+    try {
+      let signer = await provider.getSigner();
+      const eulogiasContract = new ethers.Contract(
+        process.env.NEXT_PUBLIC_EULOGIAS_CONTRACT_ADDRESS,
+        AnkyEulogiasAbi,
+        signer
+      );
+      await eulogiasContract.mintEulogiaToAnky(eulogia.eulogiaID);
+      alert('Eulogia minted successfully!');
+    } catch (error) {
+      console.error('Error minting eulogia:', error);
+      alert(
+        'Error minting eulogia. Please check the console for more details.'
+      );
+    }
   };
 
   const onFinish = async finishText => {
@@ -192,6 +199,19 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
     setLinkCopied(true);
   };
 
+  if (!authenticated) {
+    return (
+      <div className='mt-2 text-white '>
+        <p className='mb-3'>please login first</p>
+        <Button
+          buttonAction={login}
+          buttonText='login'
+          buttonColor='bg-purple-600'
+        />
+      </div>
+    );
+  }
+
   if (loading)
     return (
       <div>
@@ -200,7 +220,6 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
       </div>
     );
 
-  console.log('The eulogia is: ', eulogia);
   if (!eulogia)
     return (
       <div className='text-white'>

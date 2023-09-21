@@ -188,7 +188,6 @@ function MyApp({ Component, pageProps }) {
             theme: 'dark',
             accentColor: '#364CAC',
             logo: '',
-            showWalletLoginFirst: true,
           },
           embeddedWallets: {
             createOnLogin: 'users-without-wallets',
