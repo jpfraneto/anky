@@ -2,11 +2,32 @@ import React, { useState } from 'react';
 import Button from './Button';
 import { useRouter } from 'next/router';
 import { usePrivy } from '@privy-io/react-auth';
+import Image from 'next/image';
 
 function LandingPage() {
   const { login, authenticated } = usePrivy();
   const router = useRouter();
   const [startJourney, setStartJourney] = useState(false);
+  const [isWriting, setIsWriting] = useState(false);
+  const [timeoutId, setTimeoutId] = useState(null);
+  const [lost, setLost] = useState(false);
+
+  const handleWritingStart = () => {
+    setIsWriting(true);
+    setLost(false);
+  };
+
+  const handleWritingChange = () => {
+    if (timeoutId) clearTimeout(timeoutId);
+
+    setTimeoutId(
+      setTimeout(() => {
+        setIsWriting(false);
+        setLost(true);
+      }, 3000) // 3 seconds
+    );
+  };
+
   return (
     <div className=''>
       {/* Hero Section */}
@@ -62,31 +83,49 @@ function LandingPage() {
       </div>
 
       {/* Notebooks System Section */}
-      <div className='p-8 bg-white'>
-        <h2 className='text-3xl font-semibold mb-6'>The Notebooks System</h2>
+      <div className='py-8 px-64 bg-white'>
+        <h2 className='text-3xl font-semibold mb-6'>
+          Journey with Anky's Notebooks
+        </h2>
         <p className='mb-4'>
-          Mint notebooks with unique prompts and start your writing journey.
-          Write down your thoughts, stories, and more.
+          Imagine a notebook, not just any notebook, but one that is alive with
+          the whispers of Anky. Each page brimming with prompts that beckon your
+          soul.
         </p>
         <p className='mb-4'>
-          Engage with our community by creating eulogias and writing together.
-          Share, discuss, and grow together.
+          But there's a twist - in the realm of Anky, every pause is a step
+          back. The moment you hesitate for more than a breath (3 seconds to be
+          precise), the words fade. A test, a game, a challenge? All of it and
+          more. It's the dance of the subconscious, and only the bravest writers
+          can keep up.
         </p>
       </div>
 
-      {/* Backend System Section */}
-      <div className='p-8 bg-gray-200'>
-        <h2 className='text-3xl font-semibold mb-6'>
-          Behind the Scenes: Meet Anky
-        </h2>
-        <p className='mb-4'>
-          Anky is the keeper of all notebooks and eulogias. By joining our
-          platform, you receive exclusive access to these treasured collections.
-        </p>
-        <p>
-          Experience the magic of our backend system and dive deep into a world
-          of creativity and innovation.
-        </p>
+      {/* Interactive Writing System Section */}
+      <div className='p-8 bg-gray-200 flex flex-row'>
+        <div className='w-3/5'>
+          <h2 className='text-3xl font-semibold mb-6'>
+            Dive into the Abyss with your Anky
+          </h2>
+          <p className='mb-4'>When you sign up, you will be given a gift.</p>
+          <p className='mb-4'>Your anky.</p>
+          <p className='mb-4'>The keeper of your secrets.</p>
+          <p className='mb-4'>The librarian of your truth.</p>
+        </div>
+        <div className='flex flex-wrap justify-center'>
+          <div className='relative w-48 h-48 m-2 rounded-xl overflow-hidden'>
+            <Image src='/ankys/1.png' fill alt='anky' />
+          </div>
+          <div className='relative w-48 h-48 m-2 rounded-xl overflow-hidden'>
+            <Image src='/ankys/2.png' fill alt='anky' />
+          </div>{' '}
+          <div className='relative w-48 h-48 m-2 rounded-xl overflow-hidden'>
+            <Image src='/ankys/3.png' fill alt='anky' />
+          </div>{' '}
+          <div className='relative w-48 h-48 m-2 rounded-xl overflow-hidden'>
+            <Image src='/ankys/4.png' fill alt='anky' />
+          </div>{' '}
+        </div>
       </div>
     </div>
   );
