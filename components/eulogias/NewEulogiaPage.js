@@ -70,7 +70,7 @@ const NewEulogiaPage = ({ userAnky }) => {
       formData.append('price', price);
       formData.append('coverImage', coverImage);
       formData.append('maxPages', pages);
-      formData.append('backgroundImage', backgroundImage);
+      // formData.append('backgroundImage', backgroundImage);
 
       const serverResponse = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/notebooks/eulogia`,
@@ -299,7 +299,7 @@ const NewEulogiaPage = ({ userAnky }) => {
             />
           </div>
 
-          <div>
+          {/* <div>
             <p className='text-left text-sm text-gray-500 my-1'>
               Upload Background Image (this one will be used as the background
               when people come and write)
@@ -310,7 +310,7 @@ const NewEulogiaPage = ({ userAnky }) => {
               className='border p-2 w-full rounded text-gray-500'
               onChange={e => imageChange(e, setBackgroundImage)}
             />
-          </div>
+          </div> */}
           {fileError && <div className='text-red-500 mt-2'>{fileError}</div>}
 
           <button
