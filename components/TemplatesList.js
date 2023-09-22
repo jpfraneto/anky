@@ -109,14 +109,17 @@ function TemplatesList() {
           />
         ))}
       </div>
-      <div className='mt-4 flex flex-col w-64 mx-auto'>
-        <div className='flex justify-center'>
-          <Button
-            buttonText='Add new notebook'
-            buttonColor='bg-green-600'
-            buttonAction={() => router.push('/templates/new')}
-          />
-        </div>
+      <div className='flex mt-8 justify-center'>
+        <Button
+          buttonText='Add new notebook'
+          buttonColor='bg-green-600'
+          buttonAction={() => router.push('/templates/new')}
+        />
+        <Button
+          buttonText='Add eulogia'
+          buttonColor='bg-purple-600'
+          buttonAction={() => router.push('/eulogias/new')}
+        />
       </div>
     </div>
   );
