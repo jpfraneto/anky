@@ -22,6 +22,7 @@ const NewEulogiaPage = ({ userAnky }) => {
   const [title, setTitle] = useState('the monument game');
   const [description, setDescription] = useState('what do you see?');
   const [pages, setPages] = useState(24);
+  const [loading, setLoading] = useState(true);
   const [fileError, setFileError] = useState('');
   const [price, setPrice] = useState((24 * PRICE_FACTOR).toFixed(4));
   const [maxMsgs, setMaxMsgs] = useState(null);
@@ -34,6 +35,12 @@ const NewEulogiaPage = ({ userAnky }) => {
   console.log('the wallets are: ', wallets);
 
   const thisWallet = wallets[0];
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 888);
+  }, []);
 
   const imageChange = (event, f) => {
     const file = event.target.files[0];
@@ -206,6 +213,15 @@ const NewEulogiaPage = ({ userAnky }) => {
           </div>
         </div>
       )
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className='text-white'>
+        <Spinner />
+        <p>loading...</p>
+      </div>
     );
   }
 

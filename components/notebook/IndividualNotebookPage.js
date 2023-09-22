@@ -78,7 +78,9 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
   }, [thisWallet]);
 
   const writeOnNotebook = async () => {
-    const pagesWritten = notebook.userPages.length;
+    console.log('in here, the notebook pages are: ', notebookPages);
+    const pagesWritten = notebookPages.length;
+    console.log('the pages written are:', pagesWritten);
     if (pagesWritten >= notebookTemplate.metadata.prompts.length) {
       alert('All prompts have been written!');
       return;
@@ -101,6 +103,7 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
 
   const updateNotebookWithPage = async finishText => {
     try {
+      console.log('inside the update notebook with page function');
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/notebooks/upload-writing`,
         {
@@ -119,7 +122,8 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
         signer
       );
       console.log('the notebooks contract is: ', notebook);
-      const pageNumber = notebook.userPages.length + 1;
+      console.log('the pages number is: ', notebookPages);
+      const pageNumber = notebookPages.length + 1;
       console.log('the page number is :0', pageNumber);
       console.log('the notebook is: ', notebook);
       const notebookID = router.query.id;
@@ -170,19 +174,17 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
       <div className='text-left my-4'>
         {notebookTemplate.metadata.prompts.map((x, i) => {
           return (
-            <div
-              className={`${
-                notebookPages[i] && notebookPages[i].pageIndex && 'line-through'
-              }`}
-              key={i}
-            >
+            <div key={i}>
               <p
+                className={`${
+                  notebookPages[i] &&
+                  notebookPages[i].pageIndex &&
+                  'line-through'
+                }`}
                 onClick={() => {
-                  console.log('in here', writingForDisplay);
                   if (writingForDisplay?.index === i + 1) {
                     setWritingForDisplay({}); // Empty it if it's the same index
                   } else {
-                    console.log('there', notebookPages, i);
                     setWritingForDisplay(notebookPages[i]);
                   }
                 }}
@@ -211,7 +213,7 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
       ) : (
         <Button
           buttonText={`Answer prompt #${notebookPages.length + 1}`}
-          buttonColor='bg-purple-500 w-48 mx-auto'
+          buttonColor='bg-purple-500 w-48 mx-auto mb-3'
           buttonAction={writeOnNotebook}
         />
       )}

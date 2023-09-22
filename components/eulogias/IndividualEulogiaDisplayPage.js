@@ -338,6 +338,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
                 type='text'
                 className='my-2 p-2 w-full rounded-xl text-black'
                 placeholder='your signature'
+                value={whoIsWriting}
                 onChange={e => setWhoIsWriting(e.target.value)}
               />
               <Button
@@ -358,7 +359,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
           /> */}
           <Button
             buttonText={linkCopied ? `copied` : `share link`}
-            buttonColor='bg-purple-600 mb-2'
+            buttonColor='bg-green-600 mb-2'
             buttonAction={copyEulogiaLink}
           />
         </div>

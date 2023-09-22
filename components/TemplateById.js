@@ -117,6 +117,8 @@ function TemplatePage({ userAnky }) {
 
   if (loading) return <Spinner />;
 
+  console.log('notebook information', notebookInformation);
+
   return (
     <div className=' text-white pt-5'>
       {templateData ? (
@@ -129,11 +131,17 @@ function TemplatePage({ userAnky }) {
               <h2 className='text-3xl mb-3'>
                 {templateData.metadata.title || 'undefined'}
               </h2>
+
               <p>
-                {`Success! Notebook with ID: ${notebookInformation.notebookId} minted. ${notebookInformation.creatorAmount} ETH was transferred to the template creator, and
-                ${notebookInformation.userAmount} ETH was returned to you.`}
+                The notebooks id is:{' '}
+                {ethers.utils.formatUnits(notebookInformation.notebookId, 0)}
               </p>
-              <div className='w-fit mx-auto'>
+              <p>
+                {notebookInformation.creatorAmount} ETH was transferred to the
+                template creator.
+              </p>
+              <p>{notebookInformation.userAmount} ETH was returned to you.</p>
+              <div className='w-fit mx-auto mt-2'>
                 <Button
                   buttonColor='bg-purple-600'
                   buttonText='write on it'
@@ -164,7 +172,7 @@ function TemplatePage({ userAnky }) {
                 ))}
               </ol>
               <p className='bg-purple-600 p-2 rounded-xl border my-2 border-black w-fit mx-auto'>
-                {templateData.supply} templates left
+                {templateData.supply} units left
               </p>
 
               <p>
@@ -172,19 +180,19 @@ function TemplatePage({ userAnky }) {
                 using here.
               </p>
               <p>10% of it will go to who created the template as royalties.</p>
-              <div className='w-96 mx-auto flex space-x-2 mt-2'>
+              <div className='w-96 mx-auto flex space-x-2 my-4'>
                 <Button
                   buttonColor='bg-purple-600'
                   buttonText={
                     mintingNotebook
                       ? `Minting...`
-                      : `Mint Notebook ${templateData.price} eth`
+                      : `Mint Into Notebook ${templateData.price} eth`
                   }
                   buttonAction={handleMint}
                 />
                 <Button
                   buttonColor='bg-red-600'
-                  buttonText='Back to templates'
+                  buttonText='Back'
                   buttonAction={() => router.push('/templates')}
                 />
               </div>

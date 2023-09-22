@@ -142,6 +142,7 @@ function CreateNotebookTemplate({ userAnky }) {
   const [title, setTitle] = useState('the process of being');
   const [description, setDescription] = useState('96 days of exploration');
   const [numPages, setNumPages] = useState(4);
+  const [bulkImportString, setBulkImportString] = useState('');
   const [createdTemplateId, setCreatedTemplateId] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   // const [imageFile, setImageFile] = useState(null);
@@ -273,7 +274,7 @@ function CreateNotebookTemplate({ userAnky }) {
   const renderPrompts = () => {
     return prompts.map((prompt, index) => (
       <div key={index} className='relative mt-0'>
-        <p className='absolute -left-6 top-0 mt-2 ml-2'>{index + 1}.</p>
+        <p className='absolute -left-9 top-0 mt-2 ml-2'>{index + 1}.</p>
         <input
           className='border p-2 w-full rounded'
           value={prompt}
@@ -296,6 +297,13 @@ function CreateNotebookTemplate({ userAnky }) {
     setDescription(notebook.description);
     setPrice(notebook.price);
     setPrompts(notebook.prompts);
+  };
+
+  const handleBulkImport = () => {
+    const importedPrompts = bulkImportString.split(',').map(s => s.trim());
+    setPrompts([...prompts, ...importedPrompts]);
+    setNumPages(numPages + importedPrompts.length);
+    setBulkImportString(''); // Clear the bulk import input
   };
 
   function renderModal() {
@@ -365,7 +373,7 @@ function CreateNotebookTemplate({ userAnky }) {
                       What they will write in there will be forever stored on
                       the blockchain.
                     </p>
-                    <div className='flex left-0 right-0 bottom-5 absolute'>
+                    <div className='flex left-0 mt-2'>
                       <Button
                         buttonAction={() => setIsModalOpen(false)}
                         buttonColor='bg-red-600'
@@ -441,6 +449,21 @@ function CreateNotebookTemplate({ userAnky }) {
             />
           </div>
 
+          <p className='text-left text-sm text-gray-500 my-0'>Bulk import</p>
+          <textarea
+            className='border p-2 w-full rounded text-gray-500'
+            placeholder='Enter questions separated by commas...'
+            value={bulkImportString}
+            onChange={e => setBulkImportString(e.target.value)}
+          />
+          <button
+            type='button'
+            className='bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded w-fit mt-2 mr-auto'
+            onClick={handleBulkImport}
+          >
+            Import All Questions
+          </button>
+
           <p className='text-left text-sm text-gray-500 mt-1 mb-0'>
             Notebook Prompts
           </p>
@@ -482,18 +505,6 @@ function CreateNotebookTemplate({ userAnky }) {
               required
             />
           </div>
-          {/* <div>
-            <p className='text-left text-sm text-gray-500 mt-1'>
-              Notebook Cover
-            </p>
-            <input
-              type='file'
-              accept='image/*'
-              onChange={e => setImageFile(e.target.files[0])}
-              className='border p-2 w-full rounded'
-              required
-            />
-          </div> */}
 
           <button
             className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-fit mt-4'
