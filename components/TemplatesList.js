@@ -92,13 +92,12 @@ function TemplatesList() {
 
   return (
     <div className='flex flex-col'>
-      <h2 className='text-white text-center'>Templates</h2>
+      <h2 className='text-white text-center text-4xl my-2 '>Notebooks</h2>
       <p className='text-white'>
-        A template is a blueprint that other people can mint to write inside it.
+        A notebook is a blueprint that other people can mint to write inside it.
       </p>
       <p className='text-white'>
-        It is your way of showing them a direction. A path. Of you guiding them
-        into a journey.
+        It is a pathway that someone designed for you to navigate yourself.
       </p>
       <div className='flex flex-wrap '>
         {templates.map((template, index) => (
@@ -113,24 +112,11 @@ function TemplatesList() {
       <div className='mt-4 flex flex-col w-64 mx-auto'>
         <div className='flex justify-center'>
           <Button
-            buttonText='Add new template'
+            buttonText='Add new notebook'
             buttonColor='bg-green-600'
             buttonAction={() => router.push('/templates/new')}
           />
-          <Button
-            buttonText='?'
-            buttonAction={() => setDisplayInfo(x => !x)}
-            buttonColor={`${displayInfo ? 'bg-purple-600' : 'bg-purple-400'}`}
-          />
         </div>
-        {displayInfo && (
-          <div className='text-white mt-2 text-sm'>
-            <p>a template is the blueprint</p>
-            <p>that others will follow</p>
-            <p>to have you guide them through the unknown</p>
-            <p>with the power of your prompts</p>
-          </div>
-        )}
       </div>
     </div>
   );
@@ -186,16 +172,16 @@ function TemplateItem({ template, provider, thisWallet }) {
   };
 
   return (
-    <div className='text-white w-48 flex flex-col p-2 m-2 border border-white rounded bg-black '>
+    <div className='text-white w-48 flex flex-col justify-between p-2 m-2 border border-white rounded-xl bg-black '>
       <h2 className='italic'>{template.metadata?.title || 'undefined'}</h2>
       <p>{template.metadata?.prompts?.length || 'undefined'} prompts</p>
       <p>{template.metadata.supply - template.supply} notebook(s) minted</p>
-      <p>{template.supply} templates remaining</p>
+      <p>{template.supply} in stock</p>
       <div className='mt-2'>
         <Button
           buttonAction={() => router.push(`/template/${template.templateId}`)}
           buttonColor='bg-green-600'
-          buttonText='Visit'
+          buttonText='explore'
         />
       </div>
     </div>

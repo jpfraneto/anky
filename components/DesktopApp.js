@@ -10,6 +10,7 @@ import { useRouter } from 'next/router';
 import NotebooksPage from './NotebooksPage';
 import NewTemplatePage from './NewTemplatePage';
 import TemplatesPage from './TemplatesPage';
+import LandingPage from './LandingPage';
 import BuildersPage from './BuildersPage';
 import TemplatePage from './TemplateById';
 import UserPage from './UserPage';
@@ -48,7 +49,6 @@ const DesktopApp = () => {
       if (!userAppInformation?.wallet?.chainId.includes('84531'))
         await changeChain();
       // I won't call the aidrop call because it is called when the user logs in.
-      console.log('in here', userAppInformation);
       if (!userAppInformation?.ankyIndex) await airdropCall();
       if (!userAppInformation?.tbaAddress) await callTba();
 
@@ -59,10 +59,14 @@ const DesktopApp = () => {
 
   function getComponentForRoute(route) {
     switch (route) {
+      case '/':
+        return <LandingPage />;
       case '/notebooks':
-        return <NotebooksPage />;
+        return <TemplatesPage />;
       case '/templates':
         return <TemplatesPage />;
+      case '/profile':
+        return <ProfilePage />;
       case '/templates/new':
         return <NewTemplatePage userAnky={userAppInformation} />;
       case `/template/${route.split('/').pop()}`: // Extracts the template id from the route

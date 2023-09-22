@@ -16,7 +16,7 @@ const EXAMPLE_NOTEBOOKS = [
     title: 'Journey of Self',
     description:
       'Delve deep into your soul, discover the intricacies of your essence, and pen down the whims of your spirit.',
-    price: 0.01,
+    price: 0.001,
     prompts: [
       "What does 'self' mean to you?",
       'Recall a time when you felt most alive.',
@@ -28,7 +28,7 @@ const EXAMPLE_NOTEBOOKS = [
     title: 'Dreams & Aspirations',
     description:
       'Capture your loftiest dreams, aspirations, and hopes for the future. Carve a path of intention and drive.',
-    price: 0.015,
+    price: 0.0015,
     prompts: [
       "What's a dream you've never told anyone?",
       'Where do you see yourself in 10 years?',
@@ -40,7 +40,7 @@ const EXAMPLE_NOTEBOOKS = [
     title: 'Childhood Nostalgia',
     description:
       'Revisit the days of unbridled joy, curious wonder, and innocent adventures. Embrace the child within you.',
-    price: 0.012,
+    price: 0.0012,
     prompts: [
       "What's your fondest childhood memory?",
       'Which toy or game was your favorite?',
@@ -52,7 +52,7 @@ const EXAMPLE_NOTEBOOKS = [
     title: "Nature's Whispers",
     description:
       'Nature speaks in hushed tones and mighty roars. Capture its essence, beauty, and lessons it imparts.',
-    price: 0.014,
+    price: 0.0014,
     prompts: [
       'Describe your favorite place in nature.',
       'How does nature inspire you?',
@@ -64,7 +64,7 @@ const EXAMPLE_NOTEBOOKS = [
     title: 'Love & Relationships',
     description:
       'Dive into the complexities of human connections. Explore the love you give, receive, and everything in between.',
-    price: 0.02,
+    price: 0.002,
     prompts: [
       'Describe your first crush.',
       'What does love mean to you?',
@@ -76,7 +76,7 @@ const EXAMPLE_NOTEBOOKS = [
     title: 'Mystical Musings',
     description:
       'Venture into the world of the unknown. Explore magic, fantasies, and the mysteries that beckon your spirit.',
-    price: 0.017,
+    price: 0.0017,
     prompts: [
       'If you had a magical power, what would it be?',
       'Describe a dream that felt too real.',
@@ -88,7 +88,7 @@ const EXAMPLE_NOTEBOOKS = [
     title: 'Galactic Explorations',
     description:
       'Embark on a cosmic journey. Traverse galaxies, meet aliens, and unravel the secrets of the universe.',
-    price: 0.018,
+    price: 0.0018,
     prompts: [
       'If you could visit any planet, which would it be?',
       "Write a message you'd send to extraterrestrial life.",
@@ -100,7 +100,7 @@ const EXAMPLE_NOTEBOOKS = [
     title: 'Culinary Chronicles',
     description:
       'Embark on a gastronomic journey. Relish flavors, explore recipes, and pen down your foodie adventures.',
-    price: 0.016,
+    price: 0.0016,
     prompts: [
       'Describe your favorite meal.',
       'Which cuisine do you want to explore?',
@@ -112,7 +112,7 @@ const EXAMPLE_NOTEBOOKS = [
     title: 'Musical Memories',
     description:
       "Dance to life's rhythm. Chronicle your favorite tunes, concerts, and the melodies that move your soul.",
-    price: 0.013,
+    price: 0.0013,
     prompts: [
       "What's the first song that made you cry?",
       'Describe a concert that changed your life.',
@@ -124,7 +124,7 @@ const EXAMPLE_NOTEBOOKS = [
     title: 'Historical Hues',
     description:
       'Time travel through history. Chronicle tales of yesteryears, epochs gone by, and moments that shaped the world.',
-    price: 0.015,
+    price: 0.0015,
     prompts: [
       'If you could meet any historical figure, who would it be?',
       'Describe a past era you wish you lived in.',
@@ -375,14 +375,14 @@ function CreateNotebookTemplate({ userAnky }) {
                     </p>
                     <div className='flex left-0 mt-2'>
                       <Button
-                        buttonAction={() => setIsModalOpen(false)}
-                        buttonColor='bg-red-600'
-                        buttonText='Cancel'
-                      />
-                      <Button
                         buttonAction={finalSubmit}
                         buttonColor='bg-green-600'
                         buttonText='Confirm and Create'
+                      />
+                      <Button
+                        buttonAction={() => setIsModalOpen(false)}
+                        buttonColor='bg-red-600'
+                        buttonText='Cancel'
                       />
                     </div>
                   </>
@@ -481,7 +481,7 @@ function CreateNotebookTemplate({ userAnky }) {
           <div>
             <p className='text-left text-sm text-gray-500 mt-1'>
               Price (in eth - how much will a user pay for minting an instance
-              of this notebook? - you will get 20% of each transaction)
+              of this notebook? - you will get 10% of each transaction)
             </p>
             <input
               className='border p-2 w-full rounded text-gray-500'

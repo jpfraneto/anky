@@ -10,6 +10,7 @@ import buildersABI from '../lib/buildersABI.json';
 
 import { usePrivy } from '@privy-io/react-auth';
 import { usePWA } from '../context/pwaContext';
+import Spinner from './Spinner';
 
 function sleep(ms) {
   return new Promise(resolve => {
@@ -44,6 +45,7 @@ const WritingGameComponent = ({
   const audioRef = useRef();
   const [preparing, setPreparing] = useState(true);
   const [saveText, setSaveText] = useState('save anon');
+  const [uploadingWriting, setUploadingWriting] = useState(false);
   const [upscaledUrls, setUpscaledUrls] = useState([]);
   const [isActive, setIsActive] = useState(false);
   const [savingRound, setSavingRound] = useState(false);
@@ -120,8 +122,7 @@ const WritingGameComponent = ({
 
   const finishRun = async () => {
     setLifeBarLength(0);
-    audioRef.current.volume = 0.1;
-    audioRef.current.play();
+
     setFinished(true);
     setEndTime(Date.now());
     setIsDone(true);
@@ -143,7 +144,6 @@ const WritingGameComponent = ({
 
   const startNewRun = () => {
     copyToClipboard();
-    audioRef.current.pause();
     setCopyText('Copy my writing');
     setTime(0);
     setLifeBarLength(100);
@@ -195,6 +195,27 @@ const WritingGameComponent = ({
       </div>
     );
 
+  if (uploadingWriting) {
+    return (
+      <div
+        className={`${righteous.className} text-black relative overflow-y-scroll flex flex-col items-center  w-full bg-cover bg-center`}
+        style={{
+          boxSizing: 'border-box',
+          height: 'calc(100vh - 33px)',
+          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(${
+            preloadedBackground || '/images/mintbg.jpg'
+          })`,
+          backgroundPosition: 'center center',
+          backgroundSize: 'cover',
+          backgroundRepeat: 'no-repeat',
+        }}
+      >
+        <Spinner />
+        <p className='text-white'>loading...</p>
+      </div>
+    );
+  }
+
   return (
     <div
       className={`${righteous.className} text-black relative overflow-y-scroll flex flex-col items-center  w-full bg-cover bg-center`}
@@ -225,12 +246,6 @@ const WritingGameComponent = ({
               >
                 {prompt}
               </p>
-
-              <small
-                className={`${righteous.className} md:hidden mb-2 font-bold`}
-              >
-                (This website is optimized for desktop)
-              </small>
             </div>
           )}
 
@@ -294,9 +309,11 @@ const WritingGameComponent = ({
                   <div className='flex justify-center '>
                     <Button
                       buttonAction={async () => {
+                        setUploadingWriting(true);
                         setSavingTextAnon(true);
-                        onFinish(text);
+                        await onFinish(text);
                         startNewRun();
+                        setUploadingWriting(false);
                       }}
                       buttonColor='bg-green-600 text-black'
                       buttonText={savingTextAnon ? 'saving...' : 'save text'}

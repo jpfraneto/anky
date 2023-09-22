@@ -20,6 +20,7 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
   const [loading, setLoading] = useState(true);
   const [time, setTime] = useState(0);
   const [text, setText] = useState('');
+  const [uploadingWriting, setUploadingWriting] = useState(false);
   const [provider, setProvider] = useState(null);
   const [notebookTemplate, setNotebookTemplate] = useState(null);
   const [notebookPages, setNotebookPages] = useState([]);
@@ -131,14 +132,25 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
       const tx = await notebooksContract.writePage(notebookID, pageNumber, cid);
       await tx.wait();
       console.log('after the response of writing in the notebook');
-      setNotebookPages(x => [
-        ...x,
-        {
-          text: finishText,
-          pageIndex: notebookPages.length,
-          written: true,
-        },
-      ]);
+      console.log('the notebook pages are: ', notebookPages);
+      if (notebookPages.length === 0) {
+        setNotebookPages([
+          {
+            text: finishText,
+            pageIndex: notebookPages.length,
+            written: true,
+          },
+        ]);
+      } else {
+        setNotebookPages(x => [
+          ...x,
+          {
+            text: finishText,
+            pageIndex: notebookPages.length,
+            written: true,
+          },
+        ]);
+      }
       setLoadWritingGame(false);
     } catch (error) {
       console.error('Failed to write to notebook:', error);
@@ -203,19 +215,26 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
       {notebookPages.length === notebookTemplate.metadata.prompts.length ? (
         <div>
           <p>Congratulations, you finished writing this notebook</p>
-          <p className='mb-4'>Time to mint another template!</p>
+          <p className='mb-4'>Time to mint another one!</p>
           <Button
-            buttonText={`Browse templates`}
+            buttonText={`Browse notebooks`}
             buttonColor='bg-purple-500 w-48 mx-auto'
             buttonAction={() => router.push('/templates')}
           />
         </div>
       ) : (
-        <Button
-          buttonText={`Answer prompt #${notebookPages.length + 1}`}
-          buttonColor='bg-purple-500 w-48 mx-auto mb-3'
-          buttonAction={writeOnNotebook}
-        />
+        <div className='flex'>
+          <Button
+            buttonText={`Answer prompt #${notebookPages.length + 1}`}
+            buttonColor='bg-purple-500 w-48 mx-auto mb-3'
+            buttonAction={writeOnNotebook}
+          />
+          <Button
+            buttonText={`Go Back`}
+            buttonColor='bg-red-600 w-48 mx-auto mb-3'
+            buttonAction={() => router.push('/templates')}
+          />
+        </div>
       )}
     </div>
   );

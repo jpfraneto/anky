@@ -115,9 +115,7 @@ function TemplatePage({ userAnky }) {
       </div>
     );
 
-  if (loading) return <Spinner />;
-
-  console.log('notebook information', notebookInformation);
+  if (loading || mintingNotebook) return <Spinner />;
 
   return (
     <div className=' text-white pt-5'>
@@ -133,14 +131,13 @@ function TemplatePage({ userAnky }) {
               </h2>
 
               <p>
-                The notebooks id is:{' '}
-                {ethers.utils.formatUnits(notebookInformation.notebookId, 0)}
+                {notebookInformation.creatorAmount} ETH was transferred to the
+                notebook creator as royalties.
               </p>
               <p>
-                {notebookInformation.creatorAmount} ETH was transferred to the
-                template creator.
+                {notebookInformation.userAmount} ETH was returned to you as
+                in-app credits.
               </p>
-              <p>{notebookInformation.userAmount} ETH was returned to you.</p>
               <div className='w-fit mx-auto mt-2'>
                 <Button
                   buttonColor='bg-purple-600'
