@@ -301,8 +301,8 @@ function CreateNotebookTemplate({ userAnky }) {
 
   const handleBulkImport = () => {
     const importedPrompts = bulkImportString.split(',').map(s => s.trim());
-    setPrompts([...prompts, ...importedPrompts]);
-    setNumPages(numPages + importedPrompts.length);
+    setPrompts([...importedPrompts]);
+    setNumPages(importedPrompts.length);
     setBulkImportString(''); // Clear the bulk import input
   };
 
