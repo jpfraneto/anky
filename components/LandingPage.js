@@ -85,7 +85,7 @@ function LandingPage() {
       {/* Notebooks System Section */}
       <div className='py-8 px-64 bg-white'>
         <h2 className='text-3xl font-semibold mb-6'>
-          Journey with Anky's Notebooks
+          Journey with Anky&apos;s Notebooks
         </h2>
         <p className='mb-4'>
           Imagine a notebook, not just any notebook, but one that is alive with
@@ -93,11 +93,11 @@ function LandingPage() {
           soul.
         </p>
         <p className='mb-4'>
-          But there's a twist - in the realm of Anky, every pause is a step
+          But there&apos;s a twist - in the realm of Anky, every pause is a step
           back. The moment you hesitate for more than a breath (3 seconds to be
           precise), the words fade. A test, a game, a challenge? All of it and
-          more. It's the dance of the subconscious, and only the bravest writers
-          can keep up.
+          more. It&apos;s the dance of the subconscious, and only the bravest
+          writers can keep up.
         </p>
       </div>
 
