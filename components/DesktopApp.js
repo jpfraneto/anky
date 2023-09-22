@@ -11,6 +11,7 @@ import NotebooksPage from './NotebooksPage';
 import NewTemplatePage from './NewTemplatePage';
 import TemplatesPage from './TemplatesPage';
 import LandingPage from './LandingPage';
+import ProfilePage from './ProfilePage';
 import BuildersPage from './BuildersPage';
 import TemplatePage from './TemplateById';
 import UserPage from './UserPage';
