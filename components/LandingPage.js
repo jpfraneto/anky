@@ -86,9 +86,9 @@ function LandingPage() {
           challenge your writing boundaries.
         </p>
         <p className='mb-4'>
-          But tread with care. In Anky’s realm, a moment's hesitation, and the
-          words vanish. It’s not just a test, it’s a dance of thoughts,
-          challenging the boundaries of your creativity.
+          But tread with care. In Anky&apos;s realm, a moment&apos;s hesitation,
+          and the words vanish. It&apos;s not just a test, it&apos;s a dance of
+          thoughts, challenging the boundaries of your creativity.
         </p>
       </div>
 
@@ -130,8 +130,8 @@ function LandingPage() {
         </h2>
         <p className='mb-4'>
           The Ankyverse is a universe brimming with stories, dreams, and
-          emotions. It's a world where each Anky tells its own tale, waiting for
-          you to join the narrative.
+          emotions. It&apos;s a world where each Anky tells its own tale,
+          waiting for you to join the narrative.
         </p>
         <p className='mb-4'>
           Venture into a domain where words wield power and where stories unfold
