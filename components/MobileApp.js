@@ -15,13 +15,13 @@ const sections = [
     question: 'why?',
     image: 'why.png',
     oneLiner:
-      'because humanity is awakening and it is a hard process. like being born again but feeling that you are completely crazy.',
+      'because humanity is awakening and it is a hard process to go through.',
   },
   {
     question: 'what?',
     image: 'what.png',
     oneLiner:
-      'an interface to develop open source practical tools for you to realize who you really are. please contribute here: <a className="text-yellow-600" href="https://www.github.com/ankylat" target="_blank">https://www.github.com/ankylat</a>',
+      'an interface to develop open source practical tools for you to realize who you really are. ',
   },
   {
     question: 'when?',
@@ -186,6 +186,18 @@ const MobileApp = () => {
             login
           </p>
         </div>
+        <div className='text-white px-2'>
+          <p className='text-white mb-3'>
+            this system is under development, and mainly that is now happening
+            on the desktop version.
+          </p>
+          <p>
+            everything is open source, and we need help. the repo is here:{' '}
+            <a href='https://www.github.com/ankylat' target='_blank'>
+              https://www.github.com/ankylat
+            </a>
+          </p>
+        </div>
       </div>
     );
   }
@@ -218,7 +230,7 @@ const Element = ({ section }) => {
   return (
     <div
       onClick={() => setOpened(x => !x)}
-      className='h-1/7 p-4 w-full relative bg-cover'
+      className='h-24 p-4 w-full relative bg-cover'
       style={{
         backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/ankys/${section.image}')`,
         backgroundPosition: 'center center',
