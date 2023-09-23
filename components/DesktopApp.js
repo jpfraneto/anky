@@ -15,6 +15,7 @@ import ProfilePage from './ProfilePage';
 import BuildersPage from './BuildersPage';
 import TemplatePage from './TemplateById';
 import UserPage from './UserPage';
+import DashboardPage from './dashboard/DashboardPage';
 import EulogiasListPage from './eulogias/EulogiasListPage';
 import NewEulogiaPage from './eulogias/NewEulogiaPage';
 import IndividualEulogiaDisplayPage from './eulogias/IndividualEulogiaDisplayPage';
@@ -78,6 +79,8 @@ const DesktopApp = () => {
         return <UserPage />;
       case '/eulogias':
         return <EulogiasListPage />;
+      case '/dashboard':
+        return <DashboardPage />;
       case '/eulogias/new':
         return <NewEulogiaPage userAnky={userAppInformation} />;
       case `/eulogias/${route.split('/').pop()}`:

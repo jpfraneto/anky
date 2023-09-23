@@ -43,20 +43,25 @@ function LandingPage() {
           <h1 className='text-5xl text-gray-400 font-bold mt-32 mb-8'>
             Are you ready to be a writer?
           </h1>
-          {startJourney ? (
+
+          {authenticated ? (
+            <div className='text-gray-400'>
+              <div className='mt-2 flex space-x-2'>
+                <Button
+                  buttonText='dashboard'
+                  buttonAction={() => router.push('/dashboard')}
+                  buttonColor='bg-purple-400 text-black'
+                />
+                <Button
+                  buttonText='prompt of the day'
+                  buttonAction={() => router.push('/ankyverse')}
+                  buttonColor='bg-green-400 text-black'
+                />
+              </div>
+            </div>
+          ) : (
             <>
-              {authenticated ? (
-                <div className='text-gray-400'>
-                  <p>you are already logged in</p>
-                  <div className='mt-2 w-48 mx-auto'>
-                    <Button
-                      buttonText='notebooks'
-                      buttonAction={() => router.push('/notebooks')}
-                      buttonColor='bg-purple-400 text-black'
-                    />
-                  </div>
-                </div>
-              ) : (
+              {startJourney ? (
                 <div className='text-gray-400'>
                   <p>
                     you&apos;ll have to login with an email. whatever email you
@@ -70,14 +75,14 @@ function LandingPage() {
                     />
                   </div>
                 </div>
+              ) : (
+                <Button
+                  buttonText='start journey'
+                  buttonColor='bg-purple-500'
+                  buttonAction={() => setStartJourney(true)}
+                />
               )}
             </>
-          ) : (
-            <Button
-              buttonText='start journey'
-              buttonColor='bg-purple-500'
-              buttonAction={() => setStartJourney(true)}
-            />
           )}
         </div>
       </div>
