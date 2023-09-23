@@ -57,11 +57,18 @@ function LandingPage() {
                   </div>
                 </div>
               ) : (
-                <Button
-                  buttonText='start journey'
-                  buttonColor='bg-purple-500'
-                  buttonAction={() => setStartJourney(true)}
-                />
+                <div className='mt-2 flex space-x-2'>
+                  <Button
+                    buttonText='start journey'
+                    buttonColor='bg-purple-500'
+                    buttonAction={() => setStartJourney(true)}
+                  />
+                  <Button
+                    buttonText='prompt of the day'
+                    buttonAction={() => router.push('/ankyverse')}
+                    buttonColor='bg-green-400 text-black'
+                  />
+                </div>
               )}
             </>
           )}
