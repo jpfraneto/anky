@@ -15,11 +15,13 @@ import ProfilePage from './ProfilePage';
 import BuildersPage from './BuildersPage';
 import TemplatePage from './TemplateById';
 import UserPage from './UserPage';
+import JournalPage from './journals/JournalPage';
 import LibraryPage from './library/LibraryPage';
 import EulogiasListPage from './eulogias/EulogiasListPage';
 import NewEulogiaPage from './eulogias/NewEulogiaPage';
 import IndividualEulogiaDisplayPage from './eulogias/IndividualEulogiaDisplayPage';
 import IndividualNotebookPage from './notebook/IndividualNotebookPage';
+import JournalById from './journals/JournalById';
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 const ankyverseToday = getAnkyverseDay(new Date());
@@ -81,6 +83,8 @@ const DesktopApp = () => {
         return <EulogiasListPage />;
       case '/library':
         return <LibraryPage />;
+      case '/journal':
+        return <JournalPage userAnky={userAppInformation} />;
       case '/eulogias/new':
         return <NewEulogiaPage userAnky={userAppInformation} />;
       case `/eulogias/${route.split('/').pop()}`:
@@ -93,6 +97,13 @@ const DesktopApp = () => {
       case `/notebook/${route.split('/').pop()}`:
         return (
           <IndividualNotebookPage
+            setLifeBarLength={setLifeBarLength}
+            lifeBarLength={lifeBarLength}
+          />
+        );
+      case `/journal/${route.split('/').pop()}`:
+        return (
+          <JournalById
             setLifeBarLength={setLifeBarLength}
             lifeBarLength={lifeBarLength}
           />

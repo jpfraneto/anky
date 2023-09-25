@@ -6,12 +6,14 @@ import eulogiasABI from '../../lib/eulogiaABI.json';
 import templatesABI from '../../lib/templatesABI.json';
 import journalsABI from '../../lib/journalsABI.json';
 import NotebookCard from '../NotebookCard';
-import JournalCard from '../JournalCard';
+import JournalCard from '../journals/JournalCard';
 import Button from '../Button';
 import Spinner from '../Spinner';
 import {
   processFetchedNotebook,
   processFetchedTemplate,
+  fetchAllEntriesContent,
+  formatUserJournals,
 } from '../../lib/notebooks';
 import { useRouter } from 'next/router';
 
@@ -21,7 +23,7 @@ const LibraryPage = () => {
   const [notebooks, setNotebooks] = useState(null);
   const [journals, setJournals] = useState(null);
   const [eulogias, setEulogias] = useState(null);
-  const { userAppInformation } = usePWA();
+  const { userAppInformation, setUserAppInformation } = usePWA();
 
   async function fetchUserJournals(signer) {
     const contract = new ethers.Contract(
@@ -31,17 +33,18 @@ const LibraryPage = () => {
     );
 
     const userJournals = await contract.getUserJournals();
-    console.log('the journals are: ', userJournals);
+    console.log('the raw journal tokens are: ', userJournals);
 
     const userJournalsPromises = userJournals.map(tokenId =>
-      contract.getJournal(tokenId)
+      contract.getJournal(ethers.utils.formatUnits(tokenId, 0))
     );
 
-    const detailedJournals = await Promise.all(userJournalsPromises);
+    const rawDetailedJournals = await Promise.all(userJournalsPromises);
+    console.log('the raw detailed journals', rawDetailedJournals);
+    const formattedJournals = formatUserJournals(rawDetailedJournals);
+    const journalsWithContent = await fetchAllEntriesContent(formattedJournals);
 
-    console.log('the journals are: ', detailedJournals);
-
-    setJournals(detailedJournals); // Process data if necessary
+    setJournals(journalsWithContent);
   }
 
   async function fetchUserNotebooks(signer) {
@@ -97,7 +100,7 @@ const LibraryPage = () => {
       signer
     );
     console.log('contact', contract);
-    const userEulogias = await contract.getMyEulogias();
+    const userEulogias = await contract.getUserEulogias();
     console.log('the user eulogias are:', userEulogias);
     setEulogias(userEulogias); // Process data if necessary
   }
@@ -107,7 +110,7 @@ const LibraryPage = () => {
     const setup = async () => {
       if (userAppInformation.wallet && userAppInformation.tbaAddress) {
         const provider = await userAppInformation.wallet?.getEthersProvider();
-        console.log('HERE ', userAppInformation.tbaAddress);
+        console.log('HERE ', userAppInformation.tbaAddress, provider);
         const signer = await provider.getSigner();
         if (userAppInformation.wallet) {
           await fetchUserJournals(signer);

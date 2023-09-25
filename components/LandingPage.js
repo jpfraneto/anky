@@ -35,7 +35,7 @@ function LandingPage() {
                 />
                 <Button
                   buttonText='journal'
-                  buttonAction={() => router.push('/ankyverse')}
+                  buttonAction={() => router.push('/journal')}
                   buttonColor='bg-green-400 text-black'
                 />
               </div>

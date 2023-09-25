@@ -200,26 +200,10 @@
     "type": "function"
   },
   {
-    "inputs": [
-      { "internalType": "uint256", "name": "", "type": "uint256" },
-      { "internalType": "uint256", "name": "", "type": "uint256" }
-    ],
-    "name": "eulogiaMessages",
-    "outputs": [
-      { "internalType": "address", "name": "writer", "type": "address" },
-      { "internalType": "string", "name": "whoWroteIt", "type": "string" },
-      { "internalType": "string", "name": "cid", "type": "string" },
-      { "internalType": "uint256", "name": "timestamp", "type": "uint256" }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "name": "eulogias",
     "outputs": [
       { "internalType": "string", "name": "metadataURI", "type": "string" },
-      { "internalType": "uint256", "name": "messageCount", "type": "uint256" },
       { "internalType": "uint256", "name": "maxMessages", "type": "uint256" }
     ],
     "stateMutability": "view",
@@ -265,9 +249,27 @@
         "components": [
           { "internalType": "string", "name": "metadataURI", "type": "string" },
           {
-            "internalType": "uint256",
-            "name": "messageCount",
-            "type": "uint256"
+            "components": [
+              {
+                "internalType": "address",
+                "name": "writer",
+                "type": "address"
+              },
+              {
+                "internalType": "string",
+                "name": "whoWroteIt",
+                "type": "string"
+              },
+              { "internalType": "string", "name": "cid", "type": "string" },
+              {
+                "internalType": "uint256",
+                "name": "timestamp",
+                "type": "uint256"
+              }
+            ],
+            "internalType": "struct AnkyEulogias.Message[]",
+            "name": "messages",
+            "type": "tuple[]"
           },
           {
             "internalType": "uint256",
@@ -284,10 +286,17 @@
     "type": "function"
   },
   {
-    "inputs": [
-      { "internalType": "address", "name": "userAddress", "type": "address" }
-    ],
+    "inputs": [],
     "name": "getUserEulogias",
+    "outputs": [
+      { "internalType": "uint256[]", "name": "", "type": "uint256[]" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getWrittenEulogias",
     "outputs": [
       { "internalType": "uint256[]", "name": "", "type": "uint256[]" }
     ],
@@ -453,6 +462,16 @@
       { "internalType": "uint256", "name": "", "type": "uint256" }
     ],
     "name": "userEulogias",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "", "type": "address" },
+      { "internalType": "uint256", "name": "", "type": "uint256" }
+    ],
+    "name": "writtenEulogias",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
