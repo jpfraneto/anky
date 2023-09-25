@@ -50,11 +50,16 @@ const DesktopApp = () => {
 
   useEffect(() => {
     const setup = async () => {
-      if (!userAppInformation?.wallet?.chainId.includes('84531'))
+      if (
+        !userAppInformation &&
+        !userAppInformation?.wallet?.chainId.includes('84531')
+      )
         await changeChain();
       // I won't call the aidrop call because it is called when the user logs in.
-      if (!userAppInformation?.ankyIndex) await airdropCall();
-      if (!userAppInformation?.tbaAddress) await callTba();
+      if (!userAppInformation && !userAppInformation?.ankyIndex)
+        await airdropCall();
+      if (!userAppInformation && !userAppInformation?.tbaAddress)
+        await callTba();
 
       setLoading(false);
     };

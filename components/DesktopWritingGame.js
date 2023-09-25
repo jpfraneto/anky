@@ -174,7 +174,7 @@ const DesktopWritingGame = ({
         await callSmartContract(arweaveLink);
         setSavedText(true);
         setIsAnkyLoading(true);
-        router.push('/journal');
+        router.push('/100builders');
       } else {
         alert('There was an error, contact jp asap.');
       }
@@ -216,7 +216,6 @@ const DesktopWritingGame = ({
 
         await transactionResponse.wait(); // Wait for the transaction to be mined
         console.log('Notebook template created successfully');
-        setLoadingNotebookCreation(false);
       } else {
         console.error('Wallet not connected or not authenticated with Privy');
       }
