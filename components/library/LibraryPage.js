@@ -3,17 +3,24 @@ import { usePWA } from '../../context/pwaContext';
 import { ethers } from 'ethers';
 import notebooksABI from '../../lib/notebookABI.json';
 import eulogiasABI from '../../lib/eulogiaABI.json';
+import templatesABI from '../../lib/templatesABI.json';
 import journalsABI from '../../lib/journalsABI.json';
+import NotebookCard from '../NotebookCard';
+import JournalCard from '../JournalCard';
+import Button from '../Button';
 import Spinner from '../Spinner';
 import {
   processFetchedNotebook,
   processFetchedTemplate,
 } from '../../lib/notebooks';
+import { useRouter } from 'next/router';
 
-const DashboardPage = () => {
-  const [notebooks, setNotebooks] = useState(null);
+const LibraryPage = () => {
+  const router = useRouter();
   const [loading, setLoading] = useState(true);
+  const [notebooks, setNotebooks] = useState(null);
   const [journals, setJournals] = useState(null);
+  const [eulogias, setEulogias] = useState(null);
   const { userAppInformation } = usePWA();
 
   async function fetchUserJournals(signer) {
@@ -23,11 +30,18 @@ const DashboardPage = () => {
       signer
     );
 
-    const userJournals = await contract.getUserJournals(
-      userAppInformation.tbaAddress
+    const userJournals = await contract.getUserJournals();
+    console.log('the journals are: ', userJournals);
+
+    const userJournalsPromises = userJournals.map(tokenId =>
+      contract.getJournal(tokenId)
     );
-    console.log('the journals are: ', journals);
-    setJournals(userJournals); // Process data if necessary
+
+    const detailedJournals = await Promise.all(userJournalsPromises);
+
+    console.log('the journals are: ', detailedJournals);
+
+    setJournals(detailedJournals); // Process data if necessary
   }
 
   async function fetchUserNotebooks(signer) {
@@ -49,8 +63,8 @@ const DashboardPage = () => {
 
     // Create an instance for templates contract (assuming it's the same ABI and signer)
     const templatesContract = new ethers.Contract(
-      process.env.NEXT_PUBLIC_EULOGIAS_CONTRACT_ADDRESS, // Assuming templates are fetched from the Eulogias contract
-      eulogiasABI,
+      process.env.NEXT_PUBLIC_TEMPLATES_CONTRACT_ADDRESS, // Assuming templates are fetched from the Eulogias contract
+      templatesABI,
       signer
     );
 
@@ -58,11 +72,8 @@ const DashboardPage = () => {
     const notebookObjects = [];
     for (const notebookId of notebookIdsArray) {
       const rawNotebookObject = await contract.getFullNotebook(notebookId);
-
-      // Fetch and process the template data using the templateId from the notebook
-      const rawTemplate = await templatesContract.getTemplateById(
-        rawNotebookObject.templateId
-      );
+      const before = ethers.utils.formatUnits(rawNotebookObject.templateId, 0);
+      const rawTemplate = await templatesContract.getTemplate(before);
       const processedTemplate = await processFetchedTemplate(rawTemplate);
 
       const processedNotebook = await processFetchedNotebook(rawNotebookObject);
@@ -73,13 +84,9 @@ const DashboardPage = () => {
         template: processedTemplate,
       };
 
-      console.log('the combined notebooks is: 0', combinedNotebookData);
-
       notebookObjects.push(combinedNotebookData);
     }
 
-    // Now, notebookObjects will be an array of the full notebook objects you need, each containing its corresponding template data
-    console.log('The notebooks are: ', notebookObjects);
     setNotebooks(notebookObjects);
   }
 
@@ -89,10 +96,9 @@ const DashboardPage = () => {
       eulogiasABI,
       signer
     );
-
-    const userEulogias = await contract.getUserEulogias(
-      userAppInformation.tbaAddress
-    );
+    console.log('contact', contract);
+    const userEulogias = await contract.getMyEulogias();
+    console.log('the user eulogias are:', userEulogias);
     setEulogias(userEulogias); // Process data if necessary
   }
 
@@ -101,12 +107,13 @@ const DashboardPage = () => {
     const setup = async () => {
       if (userAppInformation.wallet && userAppInformation.tbaAddress) {
         const provider = await userAppInformation.wallet?.getEthersProvider();
+        console.log('HERE ', userAppInformation.tbaAddress);
         const signer = await provider.getSigner();
         if (userAppInformation.wallet) {
           await fetchUserJournals(signer);
           await fetchUserNotebooks(signer);
+          await fetchUserEulogias(signer);
           setLoading(false);
-          // fetchUserEulogias(signer);
         }
       }
     };
@@ -121,7 +128,38 @@ const DashboardPage = () => {
       </div>
     );
 
-  return <div>DashboardPage</div>;
+  return (
+    <div className='text-white'>
+      <p>this is the library page</p>
+      <h2 className='text-3xl'>journals</h2>
+      <div className='my-2 bg-green-300 rounded-xl p-4'>
+        {journals.map((x, i) => {
+          return <JournalCard journal={x} key={i} />;
+        })}
+      </div>
+      <h2 className='text-3xl'>notebooks</h2>
+      <div className='my-2 bg-purple-300 rounded-xl p-4'>
+        {notebooks.map((x, i) => {
+          return <NotebookCard notebook={x} key={i} />;
+        })}
+      </div>
+
+      <div className='flex space-x-2'>
+        <Button
+          buttonAction={() => router.push('/notebooks')}
+          buttonText='browse notebooks'
+          buttonColor='bg-purple-600'
+        />
+        <Button
+          buttonAction={() => router.push('/notebooks/new')}
+          buttonText='new notebooks'
+          buttonColor='bg-green-600'
+        />
+      </div>
+
+      <h2>eulogias</h2>
+    </div>
+  );
 };
 
-export default DashboardPage;
+export default LibraryPage;

@@ -255,7 +255,7 @@ const DesktopWritingGame = ({
       <audio ref={audioRef}>
         <source src='/sounds/bell.mp3' />
       </audio>
-      <div className='md:block text-white w-full px-2 md:w-1/2 lg:w-2/3'>
+      <div className='md:block text-white w-full px-2 md:w-full lg:w-2/3'>
         <div>
           {!finished && (
             <div
@@ -271,24 +271,6 @@ const DesktopWritingGame = ({
               >
                 {userPrompt}
               </p>
-
-              {/* <small
-                className={`${righteous.className} hidden text-center md:flex md:justify-center mb-2 font-bold`}
-              >
-                (this won&apos;t be stored anywhere, yet. im working on that)
-              </small> */}
-              <small
-                className={`${righteous.className} md:hidden mb-2 font-bold`}
-              >
-                (This website is optimized for desktop)
-              </small>
-              {/* <div className='flex space-x-2 justify-center'>
-                <p>Do you want music?</p>{' '}
-                <input
-                  type='checkbox'
-                  onChange={() => setMusicPlaying(x => !x)}
-                />
-              </div> */}
             </div>
           )}
 
@@ -308,9 +290,18 @@ const DesktopWritingGame = ({
               time > 2 && 'opacity-80'
             } placeholder-white  text-2xl border border-white rounded-md  bg-opacity-10 bg-black`}
             value={text}
-            placeholder='write as if you wanted to know the truth...'
+            placeholder='write without thinking...'
             onChange={handleTextChange}
           ></textarea>
+          <div>
+            <div className='flex w-48 justify-center mx-auto mt-4'>
+              <Button
+                buttonText='cancel'
+                buttonColor='bg-red-600'
+                buttonAction={() => router.back()}
+              />
+            </div>
+          </div>
           {text && (
             <div
               className={`${
@@ -340,21 +331,6 @@ const DesktopWritingGame = ({
                     you can add what you wrote to a special notebook that will
                     be stored forever on the blockchain.
                   </p>
-                  {/* <p className={`${righteous.className} mb-2 font-bold`}>
-                    i&apos;m working on giving you the ability to store your
-                    writings forever.
-                  </p> */}
-                  {/* <p className={`${righteous.className} mb-2 font-bold`}>
-                    on the blockchain, associated with a blue character like
-                    this one
-                  </p>
-                  <div className='w-64 h-64 my-4 mx-auto relative rounded-xl overflow-hidden'>
-                    <Image src='/ankys/3.png' fill alt='anky' />
-                  </div>
-                  <p className={`${righteous.className} mb-2 font-bold`}>
-                    for now, you can just copy what you wrote. keep it for
-                    yourself. it is a gift
-                  </p> */}
 
                   <div className='flex justify-center '>
                     <Button

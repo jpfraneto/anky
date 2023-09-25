@@ -99,7 +99,7 @@ function TemplatesList() {
       <p className='text-white'>
         It is a pathway that someone designed for you to navigate yourself.
       </p>
-      <div className='flex flex-wrap '>
+      <div className='flex flex-wrap my-4'>
         {templates.map((template, index) => (
           <TemplateItem
             key={index}
@@ -109,16 +109,21 @@ function TemplatesList() {
           />
         ))}
       </div>
-      <div className='flex mt-8 justify-center'>
+      <div className='flex  justify-center'>
         <Button
-          buttonText='Add new notebook'
+          buttonText='add new notebook'
           buttonColor='bg-green-600'
           buttonAction={() => router.push('/templates/new')}
         />
         <Button
-          buttonText='Add eulogia'
+          buttonText='add eulogia'
           buttonColor='bg-purple-600'
           buttonAction={() => router.push('/eulogias/new')}
+        />
+        <Button
+          buttonText='library'
+          buttonColor='bg-orange-600'
+          buttonAction={() => router.push('/library')}
         />
       </div>
     </div>

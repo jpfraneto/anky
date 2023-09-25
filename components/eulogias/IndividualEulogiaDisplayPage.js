@@ -50,7 +50,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
         if (thisEulogia.metadataURI === '') return setLoading(false);
         const formattedEulogia = await processFetchedEulogia(thisEulogia);
         formattedEulogia.eulogiaID = eulogiaID;
-
+        console.log('the formatted euloogia is: ', formattedEulogia);
         formattedEulogia.metadata.backgroundImageUrl = `https://ipfs.io/ipfs/${formattedEulogia.metadata.backgroundImageCid}`;
         formattedEulogia.metadata.coverImageUrl = `https://ipfs.io/ipfs/${formattedEulogia.metadata.coverImageCid}`;
 
@@ -351,16 +351,16 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
         </div>
       </div>
       <div className='w-96 mx-auto'>
-        <div className='flex space-x-2'>
-          {/* <Button
-            buttonText='mint eulogia'
-            buttonColor='bg-purple-600 mb-2'
-            buttonAction={mintEulogia}
-          /> */}
+        <div className='flex justify-center'>
           <Button
             buttonText={linkCopied ? `copied` : `share link`}
             buttonColor='bg-green-600 mb-2'
             buttonAction={copyEulogiaLink}
+          />
+          <Button
+            buttonText='library'
+            buttonColor='bg-orange-600 mb-2'
+            buttonAction={() => router.push('/library')}
           />
         </div>
 

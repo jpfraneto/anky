@@ -22,19 +22,19 @@ function LandingPage() {
         <div className='absolute inset-0 bg-black opacity-40'></div>
         <div className='relative z-10 flex flex-col items-center justify-center h-full'>
           <h1 className='text-5xl text-gray-400 font-bold mt-32 mb-8'>
-            Embrace Your Inner Writer
+            {authenticated ? 'hello there, my friend' : 'you are also a writer'}
           </h1>
 
           {authenticated ? (
             <div className='text-gray-400'>
               <div className='mt-2 flex space-x-2'>
                 <Button
-                  buttonText='dashboard'
-                  buttonAction={() => router.push('/dashboard')}
+                  buttonText='library'
+                  buttonAction={() => router.push('/library')}
                   buttonColor='bg-purple-400 text-black'
                 />
                 <Button
-                  buttonText='prompt of the day'
+                  buttonText='journal'
                   buttonAction={() => router.push('/ankyverse')}
                   buttonColor='bg-green-400 text-black'
                 />
