@@ -174,7 +174,7 @@ const DesktopWritingGame = ({
         await callSmartContract(arweaveLink);
         setSavedText(true);
         setIsAnkyLoading(true);
-        router.push('/100builders');
+        router.push('/journal');
       } else {
         alert('There was an error, contact jp asap.');
       }
