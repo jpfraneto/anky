@@ -156,16 +156,16 @@ const MobileApp = () => {
       default:
         return (
           <div className='p-4 text-white h-screen'>
-            <p>
+            <p className='my-2'>
               this app is being prototyped on the browser. i need creative
               freedom to design the back end of it, and my 10 fingers provide
               that freedom. you can go through your laptop to being to
               understand what will happen here.
             </p>
-            <p>
+            <p className='my-2'>
               if you want to contribute, this is the repo: github.com/ankylat
             </p>
-            <p>
+            <p className='my-2'>
               if you know how to do a decentralized codebase without using a
               centralized service like github, please help me with that also.
             </p>
