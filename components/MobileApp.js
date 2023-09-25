@@ -155,13 +155,20 @@ const MobileApp = () => {
 
       default:
         return (
-          <div className='text-white h-screen'>
-            <div className=' p-4 w-full text-2xl flex justify-center items-center bg-black'>
-              <Link href='/templates'>browse templates</Link>
-            </div>
-            <div className=' p-4 w-full text-2xl  flex justify-center items-center bg-red-600'>
-              <Link href='/eulogias'>browse eulogias</Link>
-            </div>
+          <div className='p-4 text-white h-screen'>
+            <p>
+              this app is being prototyped on the browser. i need creative
+              freedom to design the back end of it, and my 10 fingers provide
+              that freedom. you can go through your laptop to being to
+              understand what will happen here.
+            </p>
+            <p>
+              if you want to contribute, this is the repo: github.com/ankylat
+            </p>
+            <p>
+              if you know how to do a decentralized codebase without using a
+              centralized service like github, please help me with that also.
+            </p>
           </div>
         );
     }
@@ -186,18 +193,6 @@ const MobileApp = () => {
             login
           </p>
         </div>
-        <div className='text-white px-2'>
-          <p className='text-white mb-3'>
-            this system is under development, and mainly that is now happening
-            on the desktop version.
-          </p>
-          <p>
-            everything is open source, and we need help. the repo is here:{' '}
-            <a href='https://www.github.com/ankylat' target='_blank'>
-              https://www.github.com/ankylat
-            </a>
-          </p>
-        </div>
       </div>
     );
   }
@@ -212,7 +207,7 @@ const MobileApp = () => {
             backgroundColor: lifeBarLength > 30 ? 'green' : 'red',
           }}
         ></div>
-      </div>{' '}
+      </div>
       <div
         className={`text-black relative overflow-y-scroll flex flex-col items-center h-full w-full bg-cover bg-center`}
       >
