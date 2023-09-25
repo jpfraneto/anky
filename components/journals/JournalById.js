@@ -160,6 +160,7 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
           {journal.entries.map((x, i) => {
             return (
               <div
+                key={i}
                 onClick={() => alert(x.text)}
                 className='p-2 w-8 h-8 flex justify-center items-center hover:bg-blue-600 cursor-pointer bg-blue-400 rounded-xl'
               >
