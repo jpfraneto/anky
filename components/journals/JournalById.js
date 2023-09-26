@@ -126,6 +126,7 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
       //   return {...x, entries: [...journal.entries, {}]}
       // })
       setLoadWritingGame(false);
+      console.log('after the setloadwrtinggame put into false');
     } catch (error) {
       console.error('Failed to write to notebook:', error);
     }
@@ -156,13 +157,13 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
     <div className='text-white pt-4'>
       <h2 className='text-2xl mb-4'>This is journal {journal.journalId}</h2>
       {journal.entries.length !== 0 ? (
-        <div className='p-4 rounded-xl bg-yellow-500'>
+        <div className='p-4 flex rounded-xl bg-yellow-500'>
           {journal.entries.map((x, i) => {
             return (
               <div
                 key={i}
                 onClick={() => alert(x.text)}
-                className='p-2 w-8 h-8 flex justify-center items-center hover:bg-blue-600 cursor-pointer bg-blue-400 rounded-xl'
+                className='px-2  py-1 m-1 w-8 h-8 flex justify-center items-center hover:bg-blue-600 cursor-pointer bg-blue-400 rounded-xl'
               >
                 {i + 1}
               </div>

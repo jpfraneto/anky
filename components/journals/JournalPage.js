@@ -69,13 +69,20 @@ const JournalPage = ({ userAnky }) => {
           return <JournalCard journal={x} key={i} />;
         })}
       </div>
-      <Button
-        buttonText='buy new journal'
-        buttonColor='bg-purple-600'
-        buttonAction={() =>
-          alert('this will allow the user to mint another journal')
-        }
-      />
+      <div className='flex space-x-2'>
+        <Button
+          buttonText='buy new journal'
+          buttonColor='bg-purple-600'
+          buttonAction={() =>
+            alert('this will allow the user to mint another journal')
+          }
+        />
+        <Button
+          buttonText='back'
+          buttonColor='bg-red-600'
+          buttonAction={() => router.push('/library')}
+        />
+      </div>
     </div>
   );
 };

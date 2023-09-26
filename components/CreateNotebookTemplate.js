@@ -10,6 +10,7 @@ import templatesContractABI from '../lib/templatesABI.json';
 import Spinner from './Spinner';
 import SampleButton from './SampleButton';
 import SuccessfulNotebookTemplate from './SuccessfulNotebookTemplate';
+import { useRouter } from 'next/router';
 
 const EXAMPLE_NOTEBOOKS = [
   {
@@ -136,8 +137,11 @@ const EXAMPLE_NOTEBOOKS = [
 
 function CreateNotebookTemplate({ userAnky }) {
   const { login } = usePrivy();
+  const router = useRouter();
   const [loadingNotebookCreation, setLoadingNotebookCreation] = useState(false);
   const [templateCreationError, setTemplateCreationError] = useState(false);
+  const [templateCreationErrorMessage, setTemplateCreationErrorMessage] =
+    useState('');
   const [success, setSuccess] = useState(false);
   const [title, setTitle] = useState('the process of being');
   const [description, setDescription] = useState('96 days of exploration');
@@ -163,7 +167,6 @@ function CreateNotebookTemplate({ userAnky }) {
 
   async function finalSubmit() {
     setLoadingNotebookCreation(true);
-    event.preventDefault();
 
     try {
       console.log('the user anky is after: ', thisWallet);
@@ -217,6 +220,8 @@ function CreateNotebookTemplate({ userAnky }) {
           }
         );
 
+        console.log('the transaction response is: ', transactionResponse);
+
         const transactionReceipt = await transactionResponse.wait(); // Wait for the transaction to be mined
         console.log(
           'Notebook template created successfully',
@@ -240,8 +245,25 @@ function CreateNotebookTemplate({ userAnky }) {
         console.error('Wallet not connected or not authenticated with Privy');
       }
     } catch (error) {
+      console.log('IN HERE, THERE WAS AN ERROR', error);
+      let errorMessage = 'There was an error creating the notebook:';
+
+      // Try extracting the revert reason
+      const revertIndicator = 'execution reverted:';
+      if (error && error.message && error.message.includes(revertIndicator)) {
+        console.log('the message is: ', error.message);
+        const revertReasonStart =
+          error.message.indexOf(revertIndicator) + revertIndicator.length;
+        const revertReason = error.message.slice(revertReasonStart).trim();
+
+        errorMessage += ` ${revertReason}`;
+      } else {
+        errorMessage += ` ${error.message}`;
+      }
+
+      setTemplateCreationErrorMessage(errorMessage); // Assuming you have a state called templateCreationErrorMessage to store the full error message
       setTemplateCreationError(true);
-      console.error('There was an error creating the notebook:', error);
+      console.error('HEREEEE', errorMessage);
     }
   }
 
@@ -328,7 +350,10 @@ function CreateNotebookTemplate({ userAnky }) {
                       </div>
                     ) : (
                       <div>
-                        <p>There was an error creating the notebook</p>
+                        <p>
+                          {templateCreationErrorMessage ||
+                            'There was an error creating the notebook'}
+                        </p>
                         <div className='mx-auto w-48 mt-4'>
                           <Button
                             buttonColor='bg-purple-500'
@@ -505,15 +530,23 @@ function CreateNotebookTemplate({ userAnky }) {
               required
             />
           </div>
-
-          <button
-            className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-fit mt-4'
-            type='submit'
-          >
-            {loadingNotebookCreation
-              ? 'Loading...'
-              : 'Create Notebook Template'}
-          </button>
+          <div className='flex space-x-2'>
+            <button
+              className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-fit mt-4'
+              type='submit'
+            >
+              {loadingNotebookCreation
+                ? 'loading...'
+                : 'create notebook template'}
+            </button>
+            <button
+              className='bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded w-fit mt-4'
+              type='button'
+              onClick={() => router.back()}
+            >
+              go back
+            </button>
+          </div>
         </form>
       ) : (
         <button

@@ -63,7 +63,7 @@ const LibraryPage = () => {
 
     // Convert BigNumbers to usable array of numbers
     const notebookIdsArray = notebookIds.map(id => id.toNumber());
-
+    console.log('here', notebookIdsArray);
     // Create an instance for templates contract (assuming it's the same ABI and signer)
     const templatesContract = new ethers.Contract(
       process.env.NEXT_PUBLIC_TEMPLATES_CONTRACT_ADDRESS, // Assuming templates are fetched from the Eulogias contract
@@ -74,8 +74,10 @@ const LibraryPage = () => {
     // Fetch full notebook object for each notebook ID
     const notebookObjects = [];
     for (const notebookId of notebookIdsArray) {
+      console.log('BEFORE HERE');
       const rawNotebookObject = await contract.getFullNotebook(notebookId);
       const before = ethers.utils.formatUnits(rawNotebookObject.templateId, 0);
+      console.log('the before is: ', before);
       const rawTemplate = await templatesContract.getTemplate(before);
       const processedTemplate = await processFetchedTemplate(rawTemplate);
 
@@ -114,8 +116,12 @@ const LibraryPage = () => {
         const signer = await provider.getSigner();
         if (userAppInformation.wallet) {
           await fetchUserJournals(signer);
+          console.log('the journals were fetched');
           await fetchUserNotebooks(signer);
+          console.log('the notebooks were fetched');
           await fetchUserEulogias(signer);
+          console.log('the eulogias were fetched');
+
           setLoading(false);
         }
       }
@@ -134,13 +140,13 @@ const LibraryPage = () => {
   return (
     <div className='text-white'>
       <p>this is the library page</p>
-      <h2 className='text-3xl'>journals</h2>
+      <h2 className='text-3xl my-4'>journals</h2>
       <div className='my-2 bg-green-300 rounded-xl p-4'>
         {journals.map((x, i) => {
           return <JournalCard journal={x} key={i} />;
         })}
       </div>
-      <h2 className='text-3xl'>notebooks</h2>
+      <h2 className='text-3xl my-4'>notebooks</h2>
       <div className='my-2 bg-purple-300 rounded-xl p-4'>
         {notebooks.map((x, i) => {
           return <NotebookCard notebook={x} key={i} />;
@@ -154,13 +160,13 @@ const LibraryPage = () => {
           buttonColor='bg-purple-600'
         />
         <Button
-          buttonAction={() => router.push('/notebooks/new')}
-          buttonText='new notebooks'
+          buttonAction={() => router.push('/templates/new')}
+          buttonText='new notebook template'
           buttonColor='bg-green-600'
         />
       </div>
 
-      <h2>eulogias</h2>
+      <h2 className='text-3xl my-4'>eulogias</h2>
     </div>
   );
 };

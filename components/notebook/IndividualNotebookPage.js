@@ -41,6 +41,7 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
 
         let fetchedProvider = await thisWallet.getEthersProvider();
         setProvider(fetchedProvider);
+        console.log('the provider is: ', fetchedProvider);
         let signer = await fetchedProvider.getSigner();
         const notebooksContract = new ethers.Contract(
           process.env.NEXT_PUBLIC_NOTEBOOKS_CONTRACT,
@@ -48,9 +49,11 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
           signer
         );
         console.log('this notebook id is: ', notebookID);
+        console.log('the notebooks contract is: ', notebooksContract);
         const thisNotebook = await notebooksContract.getFullNotebook(
-          notebookID
+          Number(notebookID)
         );
+        console.log('this notebook is: ', thisNotebook);
         const fetchedPages = await fetchArweaveContent(thisNotebook.userPages);
         setNotebookPages(fetchedPages);
         console.log('the notebook is: ', thisNotebook);
