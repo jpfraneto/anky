@@ -23,7 +23,7 @@ const LibraryPage = () => {
   const [notebooks, setNotebooks] = useState(null);
   const [journals, setJournals] = useState(null);
   const [eulogias, setEulogias] = useState(null);
-  const { userAppInformation, setUserAppInformation } = usePWA();
+  const { userAppInformation } = usePWA();
 
   async function fetchUserJournals(signer) {
     const contract = new ethers.Contract(

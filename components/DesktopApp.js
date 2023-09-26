@@ -50,17 +50,15 @@ const DesktopApp = () => {
 
   useEffect(() => {
     const setup = async () => {
-      if (
-        !userAppInformation &&
-        !userAppInformation?.wallet?.chainId.includes('84531')
-      )
-        await changeChain();
+      console.log('inside the setup', wallet, userAppInformation);
+      if (wallet && !wallet?.chainId.includes('84531')) await changeChain();
       // I won't call the aidrop call because it is called when the user logs in.
-      if (!userAppInformation && !userAppInformation?.ankyIndex)
-        await airdropCall();
-      if (!userAppInformation && !userAppInformation?.tbaAddress)
-        await callTba();
-
+      if (wallet && !userAppInformation?.ankyIndex) await airdropCall();
+      if (wallet && !userAppInformation?.tbaAddress) await callTba();
+      if (!userAppInformation.wallet)
+        setUserAppInformation(x => {
+          return { ...x, wallet };
+        });
       setLoading(false);
     };
     setup();
@@ -130,10 +128,7 @@ const DesktopApp = () => {
 
   async function airdropCall() {
     try {
-      console.log(
-        'sending the call to the airdrop route',
-        userAppInformation.wallet.address
-      );
+      console.log('sending the call to the airdrop route', wallet.address);
       console.log(
         'The call is being sent to:',
         `${process.env.NEXT_PUBLIC_SERVER_URL}/blockchain/airdrop`
@@ -146,7 +141,7 @@ const DesktopApp = () => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            wallet: userAppInformation.wallet.address,
+            wallet: wallet.address,
           }),
         }
       );
@@ -164,10 +159,10 @@ const DesktopApp = () => {
     try {
       console.log(
         'sending the call to the fetch the tba account route',
-        userAppInformation.wallet.address
+        wallet.address
       );
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/blockchain/getTBA/${userAppInformation.wallet.address}`
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/blockchain/getTBA/${wallet.address}`
       );
       const data = await response.json();
       console.log('the response data is: ', data);

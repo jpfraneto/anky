@@ -22,7 +22,7 @@ function LandingPage() {
         <div className='absolute inset-0 bg-black opacity-40'></div>
         <div className='relative z-10 flex flex-col items-center justify-center h-full'>
           <h1 className='text-5xl text-gray-400 font-bold mt-32 mb-8'>
-            {authenticated ? 'hello there, my friend' : 'you are also a writer'}
+            {authenticated ? 'welcome back, my friend' : 'we are all writers'}
           </h1>
 
           {authenticated ? (
