@@ -62,32 +62,12 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
         setPreloadedBackground(imageUrl);
 
         if (formattedEulogia) {
-          console.log('the formatted eulogia is: ', formattedEulogia);
           setEulogia(formattedEulogia);
           setLoading(false);
-          const allMessages = await eulogiasContract.getAllMessages(eulogiaID);
-          console.log('all the messages are: ', allMessages);
-          const formattedMessages = allMessages.map(messageArray => ({
-            writer: messageArray[0],
-            whoWroteIt: messageArray[1],
-            cid: messageArray[2],
-            timestamp: ethers.utils.formatUnits(messageArray[3], 0),
-          }));
-          console.log('the formatted messages are: ', formattedMessages);
-          // Initiate fetching of content for each message from Arweave
-          const contentPromises = formattedMessages.map(msg =>
-            getContentFromArweave(msg.cid)
-          );
-          const contents = await Promise.all(contentPromises);
 
-          // Augment the messages with the content fetched
-          formattedMessages.forEach((msg, index) => {
-            msg.text = contents[index];
-          });
-          console.log('the messages are', formattedMessages);
-          setMessages(formattedMessages);
+          setMessages(formattedEulogia.messages);
 
-          const userMessage = formattedMessages.find(
+          const userMessage = formattedEulogia.messages.find(
             msg => msg.writer === thisWallet.address
           );
           setUserHasWritten(Boolean(userMessage));
@@ -150,6 +130,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
       );
 
       const { cid } = await response.json();
+      console.log('time to add the writing to the smart contract:', cid);
       let signer = await provider.getSigner();
       // Step 2: Send the CID to the smart contract.
       const eulogiasContract = new ethers.Contract(
@@ -159,13 +140,14 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
       );
 
       console.log('the eulogias contract is: ', eulogiasContract);
-
+      console.log('eulog', eulogia, cid, whoIsWriting);
       const tx = await eulogiasContract.addMessage(
         eulogia.eulogiaID,
         cid,
         whoIsWriting
       );
       await tx.wait();
+      console.log('after the transaction');
       setMessages(x => [
         ...x,
         {
@@ -177,8 +159,11 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
       setUserHasWritten(true); // Update the state to reflect the user has written.
       setLoadWritingGame(false);
     } catch (error) {
+      await navigator.clipboard.writeText(finishText);
       console.error('Failed to write to eulogia:', error);
-      alert('Failed to write to eulogia. Please try again.');
+      alert(
+        'Failed to write to eulogia. Please try again. Your writing is on the clipboard.'
+      );
     }
   };
 
@@ -216,14 +201,15 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
             </p>
 
             <div className='overflow-y-scroll'>
-              {displayModalMessage.text.split('\n').map((x, i) => {
-                return (
-                  <p className='my-2 ' key={i}>
-                    {x}
-                  </p>
-                );
-              })}
+              {displayModalMessage && displayModalMessage.text
+                ? displayModalMessage.text.split('\n').map((x, i) => (
+                    <p className='my-2' key={i}>
+                      {x}
+                    </p>
+                  ))
+                : null}
             </div>
+
             <p className='absolute right-2 bottom-1 italic '>
               {displayModalMessage.whoWroteIt}
             </p>
@@ -315,7 +301,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
               <div className='w-full flex justify-center flex-wrap mx-auto'>
                 {messages.map((msg, index) => (
                   <div
-                    className='p-2 w-8 flex justify-center items-center cursor-pointer h-8 mx-auto bg-purple-200 m-2 rounded-xl text-black'
+                    className='p-2 w-8 flex justify-center items-center cursor-pointer h-8 mx-auto bg-purple-200 hover:bg-purple-400 m-2 rounded-xl text-black'
                     key={index}
                     onClick={() => {
                       setIsModalOpen(true);
@@ -358,7 +344,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
             buttonAction={copyEulogiaLink}
           />
           <Button
-            buttonText='library'
+            buttonText='my library'
             buttonColor='bg-orange-600 mb-2'
             buttonAction={() => router.push('/library')}
           />

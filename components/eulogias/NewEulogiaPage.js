@@ -151,7 +151,7 @@ const NewEulogiaPage = ({ userAnky }) => {
           <div className='bg-purple-200 overflow-y-scroll text-black rounded relative p-6 w-2/3 h-2/3'>
             {success ? (
               <>
-                <p>Congratulations!!!</p>
+                <p>Congratulations!</p>
                 <SuccessfulEulogiaTemplate
                   eulogia={{ createdEulogiaId, title, pages }}
                 />

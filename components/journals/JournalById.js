@@ -28,7 +28,9 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
   const [text, setText] = useState('');
   const [uploadingWriting, setUploadingWriting] = useState(false);
   const [provider, setProvider] = useState(null);
+  const [entryForDisplay, setEntryForDisplay] = useState(null);
   const [chosenPrompt, setChosenPrompt] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [loadWritingGame, setLoadWritingGame] = useState(false);
   const [writingForDisplay, setWritingForDisplay] = useState(null);
   const [writingGameProps, setWritingGameProps] = useState(null);
@@ -121,16 +123,45 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
       const tx = await journalsContract.writeJournal(journalId, cid, false);
       await tx.wait();
       console.log('after the response of writing in the journal', journal);
-
-      // setJournal(x=> {
-      //   return {...x, entries: [...journal.entries, {}]}
-      // })
+      setJournal(x => {
+        return {
+          ...x,
+          entries: [
+            ...journal.entries,
+            {
+              cid: cid,
+              isPublic: false,
+              text: finishText,
+              timestamp: new Date().getTime(),
+            },
+          ],
+        };
+      });
+      setLifeBarLength(0);
       setLoadWritingGame(false);
       console.log('after the setloadwrtinggame put into false');
     } catch (error) {
       console.error('Failed to write to notebook:', error);
     }
   };
+
+  function renderModal() {
+    return (
+      isModalOpen && (
+        <div className='fixed top-0 left-0 bg-black w-full h-full flex items-center justify-center z-50'>
+          <div className='bg-purple-300 overflow-y-scroll text-black rounded relative p-6 w-2/3 h-2/3'>
+            {entryForDisplay.text.split('\n').map((x, i) => {
+              return (
+                <p key={i} className='my-2'>
+                  {x}
+                </p>
+              );
+            })}
+          </div>
+        </div>
+      )
+    );
+  }
 
   if (loading)
     return (
@@ -162,7 +193,7 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
             return (
               <div
                 key={i}
-                onClick={() => alert(x.text)}
+                onClick={() => setEntryForDisplay(x)}
                 className='px-2  py-1 m-1 w-8 h-8 flex justify-center items-center hover:bg-blue-600 cursor-pointer bg-blue-400 rounded-xl'
               >
                 {i + 1}
@@ -183,79 +214,20 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
       </button>
       <div className='flex mt-8 space-x-2'>
         <Button
-          buttonText='back to my journals'
-          buttonColor='bg-green-600'
-          buttonAction={() => router.push('/journal')}
-        />
-        <Button
           buttonText='buy new journal'
           buttonColor='bg-purple-600'
           buttonAction={() =>
             alert('this will allow the user to mint another journal')
           }
         />
+        <Button
+          buttonText='back to my journals'
+          buttonColor='bg-green-600'
+          buttonAction={() => router.push('/journal')}
+        />
       </div>
     </div>
   );
-  // return (
-  //   <div className='text-white'>
-  //     <h2 className='text-4xl my-2'>{notebookTemplate.metadata.title}</h2>{' '}
-  //     <small className='italic'>{notebookTemplate.metadata.description}</small>
-  //     <div className='text-left my-4'>
-  //       {journal.metadata.prompts.map((x, i) => {
-  //         return (
-  //           <div key={i}>
-  //             <p
-  //               className={`${
-  //                 notebookPages[i] &&
-  //                 notebookPages[i].pageIndex &&
-  //                 'line-through'
-  //               }`}
-  //               onClick={() => {
-  //                 if (writingForDisplay?.index === i + 1) {
-  //                   setWritingForDisplay({}); // Empty it if it's the same index
-  //                 } else {
-  //                   setWritingForDisplay(notebookPages[i]);
-  //                 }
-  //               }}
-  //             >
-  //               {i + 1}. {x}
-  //             </p>
-  //             {writingForDisplay?.pageIndex === i + 1 && (
-  //               <div className='my-2 text-white p-2 bg-purple-600 rounded-xl'>
-  //                 {writingForDisplay.text}
-  //               </div>
-  //             )}
-  //           </div>
-  //         );
-  //       })}
-  //     </div>
-  //     {notebookPages.length === notebookTemplate.metadata.prompts.length ? (
-  //       <div>
-  //         <p>Congratulations, you finished writing this notebook</p>
-  //         <p className='mb-4'>Time to mint another one!</p>
-  //         <Button
-  //           buttonText={`Browse notebooks`}
-  //           buttonColor='bg-purple-500 w-48 mx-auto'
-  //           buttonAction={() => router.push('/templates')}
-  //         />
-  //       </div>
-  //     ) : (
-  //       <div className='flex'>
-  //         <Button
-  //           buttonText={`Answer prompt #${notebookPages.length + 1}`}
-  //           buttonColor='bg-purple-500 w-48 mx-auto mb-3'
-  //           buttonAction={writeOnNotebook}
-  //         />
-  //         <Button
-  //           buttonText={`Go Back`}
-  //           buttonColor='bg-red-600 w-48 mx-auto mb-3'
-  //           buttonAction={() => router.push('/templates')}
-  //         />
-  //       </div>
-  //     )}
-  //   </div>
-  // );
 };
 
 export default JournalById;

@@ -6,6 +6,7 @@ import eulogiasABI from '../../lib/eulogiaABI.json';
 import templatesABI from '../../lib/templatesABI.json';
 import journalsABI from '../../lib/journalsABI.json';
 import NotebookCard from '../NotebookCard';
+import EulogiaCard from '../eulogias/EulogiaCard';
 import JournalCard from '../journals/JournalCard';
 import Button from '../Button';
 import Spinner from '../Spinner';
@@ -14,6 +15,7 @@ import {
   processFetchedTemplate,
   fetchAllEntriesContent,
   formatUserJournals,
+  processFetchedEulogia,
 } from '../../lib/notebooks';
 import { useRouter } from 'next/router';
 
@@ -103,8 +105,18 @@ const LibraryPage = () => {
     );
     console.log('contact', contract);
     const userEulogias = await contract.getUserEulogias();
-    console.log('the user eulogias are:', userEulogias);
-    setEulogias(userEulogias); // Process data if necessary
+    const eulogiaDataArray = [];
+    for (let i = 0; i < userEulogias.length; i++) {
+      const eulogiaId = ethers.utils.formatUnits(userEulogias[i], 0);
+
+      const eulogiaData = await contract.getEulogia(eulogiaId);
+      const processedEulogia = await processFetchedEulogia(eulogiaData);
+      processedEulogia.eulogiaId = Number(eulogiaId);
+      eulogiaDataArray.push(processedEulogia);
+    }
+
+    console.log('All Eulogia data:', eulogiaDataArray);
+    setEulogias(eulogiaDataArray);
   }
 
   useEffect(() => {
@@ -139,24 +151,25 @@ const LibraryPage = () => {
 
   return (
     <div className='text-white'>
-      <p>this is the library page</p>
       <h2 className='text-3xl my-4'>journals</h2>
       <div className='my-2 bg-green-300 rounded-xl p-4'>
-        {journals.map((x, i) => {
-          return <JournalCard journal={x} key={i} />;
-        })}
+        {journals &&
+          journals.map((x, i) => {
+            return <JournalCard journal={x} key={i} />;
+          })}
       </div>
       <h2 className='text-3xl my-4'>notebooks</h2>
       <div className='my-2 bg-purple-300 rounded-xl p-4'>
-        {notebooks.map((x, i) => {
-          return <NotebookCard notebook={x} key={i} />;
-        })}
+        {notebooks &&
+          notebooks.map((x, i) => {
+            return <NotebookCard notebook={x} key={i} />;
+          })}
       </div>
 
       <div className='flex space-x-2'>
         <Button
           buttonAction={() => router.push('/notebooks')}
-          buttonText='browse notebooks'
+          buttonText='find notebooks'
           buttonColor='bg-purple-600'
         />
         <Button
@@ -167,6 +180,19 @@ const LibraryPage = () => {
       </div>
 
       <h2 className='text-3xl my-4'>eulogias</h2>
+      <div className='my-2 bg-orange-300 rounded-xl p-4'>
+        {eulogias &&
+          eulogias.map((x, i) => {
+            return <EulogiaCard eulogia={x} key={i} />;
+          })}
+      </div>
+      <div className='flex space-x-2'>
+        <Button
+          buttonAction={() => router.push('/eulogias/new')}
+          buttonText='add eulogia'
+          buttonColor='bg-orange-600'
+        />
+      </div>
     </div>
   );
 };
