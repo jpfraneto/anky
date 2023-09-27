@@ -22,6 +22,7 @@ import NewEulogiaPage from './eulogias/NewEulogiaPage';
 import IndividualEulogiaDisplayPage from './eulogias/IndividualEulogiaDisplayPage';
 import IndividualNotebookPage from './notebook/IndividualNotebookPage';
 import JournalById from './journals/JournalById';
+import BuyNewJournal from './journals/BuyNewJournal';
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 const ankyverseToday = getAnkyverseDay(new Date());
@@ -104,6 +105,8 @@ const DesktopApp = () => {
             lifeBarLength={lifeBarLength}
           />
         );
+      case `/journal/new`:
+        return <BuyNewJournal />;
       case `/journal/${route.split('/').pop()}`:
         return (
           <JournalById
@@ -194,7 +197,7 @@ const DesktopApp = () => {
             }}
           ></div>
         </div>
-        <div className='flex space-x-2'>
+        <div className='px-2 w-fit flex space-x-2'>
           {isAnkyLoading && (
             <Link className='hover:text-purple-600' href='/notebooks'>
               wtf?

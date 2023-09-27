@@ -294,7 +294,7 @@ const WritingGameComponent = ({
               </div>
 
               {finished ? (
-                <div className='p-4 bg-black drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]  z-50'>
+                <div className='p-4 bg-black drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] rounded-xl  z-50'>
                   <p
                     className={`${righteous.className} mb-2 text-xl font-bold`}
                   >

@@ -16,7 +16,7 @@ const JournalCard = ({ journal }) => {
   return (
     // ChANGE THIS
     <Link href={`/journal/${journal.journalId}`}>
-      <div className='p-2 rounded-xl bg-green-600 hover:bg-green-700 text-black'>
+      <div className='p-2 m-2 rounded-xl bg-green-600 hover:bg-green-700 text-black'>
         <h2 className='text-2xl'>Journal #{journal.journalId}</h2>
         <p>
           {journal.entries.length} / {transformJournalType(journal.journalType)}{' '}

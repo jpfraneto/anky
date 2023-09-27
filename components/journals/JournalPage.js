@@ -64,12 +64,12 @@ const JournalPage = ({ userAnky }) => {
   return (
     <div className='text-white'>
       <button onClick={() => console.log(journals)}>journals</button>
-      <div className='my-4'>
+      <div className='my-4 flex '>
         {journals.map((x, i) => {
           return <JournalCard journal={x} key={i} />;
         })}
       </div>
-      <div className='flex space-x-2'>
+      <div className='flex justify-center space-x-2'>
         <Button
           buttonText='buy new journal'
           buttonColor='bg-purple-600'

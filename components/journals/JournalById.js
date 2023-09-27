@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { ethers } from 'ethers';
 import Button from '../Button';
@@ -14,9 +14,9 @@ function transformJournalType(index) {
     case 0:
       return 8;
     case 1:
-      return 16;
-    case 2:
       return 32;
+    case 2:
+      return 64;
   }
 }
 
@@ -38,6 +38,25 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
   const { wallets } = useWallets();
 
   const thisWallet = wallets[0];
+
+  const closeModal = useCallback(() => {
+    setIsModalOpen(false);
+    setEntryForDisplay(null);
+  }, []);
+
+  useEffect(() => {
+    const handleKeyPress = event => {
+      if (event.key === 'Escape' && isModalOpen) {
+        closeModal();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress);
+    };
+  }, [isModalOpen, closeModal]);
 
   useEffect(() => {
     async function fetchJournal() {
@@ -150,6 +169,12 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
       isModalOpen && (
         <div className='fixed top-0 left-0 bg-black w-full h-full flex items-center justify-center z-50'>
           <div className='bg-purple-300 overflow-y-scroll text-black rounded relative p-6 w-2/3 h-2/3'>
+            <p
+              onClick={closeModal}
+              className='absolute top-1 cursor-pointer right-2 text-red-600'
+            >
+              close
+            </p>
             {entryForDisplay.text.split('\n').map((x, i) => {
               return (
                 <p key={i} className='my-2'>
@@ -193,7 +218,10 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
             return (
               <div
                 key={i}
-                onClick={() => setEntryForDisplay(x)}
+                onClick={() => {
+                  setIsModalOpen(true);
+                  setEntryForDisplay(x);
+                }}
                 className='px-2  py-1 m-1 w-8 h-8 flex justify-center items-center hover:bg-blue-600 cursor-pointer bg-blue-400 rounded-xl'
               >
                 {i + 1}
@@ -206,19 +234,24 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
           <p>you haven&apos;t written here yet</p>
         </div>
       )}
-      <button
-        onClick={writeOnJournal}
-        className='text-4xl p-4 bg-red-400 rounded-xl hover:bg-red-600 my-4'
-      >
-        write journal
-      </button>
-      <div className='flex mt-8 space-x-2'>
+      {journal.pagesLeft === 0 ? (
+        <p className='text-4xl p-4 bg-red-400 rounded-xl hover:bg-red-600 hover:cursor-not-allowed my-4'>
+          you wrote it all
+        </p>
+      ) : (
+        <button
+          onClick={writeOnJournal}
+          className='text-4xl p-4 bg-red-400 rounded-xl hover:bg-red-600 my-4'
+        >
+          write journal
+        </button>
+      )}
+
+      <div className='flex space-x-2'>
         <Button
           buttonText='buy new journal'
           buttonColor='bg-purple-600'
-          buttonAction={() =>
-            alert('this will allow the user to mint another journal')
-          }
+          buttonAction={() => router.push('/journal/new')}
         />
         <Button
           buttonText='back to my journals'
@@ -226,6 +259,7 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
           buttonAction={() => router.push('/journal')}
         />
       </div>
+      {renderModal()}
     </div>
   );
 };
