@@ -158,6 +158,13 @@ const LibraryPage = () => {
             return <JournalCard journal={x} key={i} />;
           })}
       </div>
+      <div className='flex space-x-2'>
+        <Button
+          buttonAction={() => router.push('/journal/new')}
+          buttonText='new journal'
+          buttonColor='bg-purple-600'
+        />
+      </div>
       <h2 className='text-3xl my-4'>notebooks</h2>
       <div className='my-2 bg-purple-300 rounded-xl p-4'>
         {notebooks &&
