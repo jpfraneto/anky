@@ -15,6 +15,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import Navbar from '../components/Navbar';
 import { PWAProvider, usePWA } from '../context/pwaContext';
+import { UserProvider } from '../context/userContext';
 
 const configureChainsConfig = configureChains([baseGoerli], [publicProvider()]);
 
@@ -41,7 +42,6 @@ function MyApp({ Component, pageProps }) {
     if (window.innerWidth > 768) {
       setIsDesktop(true);
     }
-    console.log('Right before the setloading');
     setLoading(false);
   }, []);
 
@@ -201,9 +201,13 @@ function MyApp({ Component, pageProps }) {
         }}
       >
         <PrivyWagmiConnector wagmiChainsConfig={configureChainsConfig}>
-          <PWAProvider>
-            {isDesktop ? <DesktopApp /> : <MobileApp />}
-          </PWAProvider>
+          {isDesktop ? (
+            <UserProvider>
+              <DesktopApp />
+            </UserProvider>
+          ) : (
+            <MobileApp />
+          )}
         </PrivyWagmiConnector>
       </PrivyProvider>
     </main>

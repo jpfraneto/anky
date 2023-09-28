@@ -4,9 +4,10 @@ import { usePrivy, useWallets } from '@privy-io/react-auth';
 import { Righteous, Dancing_Script } from 'next/font/google';
 import { getAnkyverseDay, getAnkyverseQuestion } from '../lib/ankyverse';
 import { createTBA, airdropAnky } from '../lib/backend';
-import { usePWA } from '../context/pwaContext';
+import { useUser } from '../context/userContext';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { Transition } from 'react-transition-group';
 import NotebooksPage from './NotebooksPage';
 import NewTemplatePage from './NewTemplatePage';
 import TemplatesPage from './TemplatesPage';
@@ -30,40 +31,10 @@ const ankyverseQuestion = getAnkyverseQuestion(ankyverseToday.wink);
 
 const DesktopApp = () => {
   const { login, ready, authenticated, logout } = usePrivy();
-  const { userAppInformation, setUserAppInformation, isAnkyLoading } = usePWA();
+  const { userAppInformation, setUserAppInformation, loading } = useUser();
   const router = useRouter();
   const [lifeBarLength, setLifeBarLength] = useState(0);
-  const [loading, setLoading] = useState(true);
   const [userWallet, setUserWallet] = useState(null);
-
-  const wallets = useWallets();
-  const wallet = wallets.wallets[0];
-  const changeChain = async () => {
-    if (wallet) {
-      await wallet.switchChain(84531);
-      setUserWallet(wallet);
-      console.log('the chain was changed', wallet);
-      setUserAppInformation(x => {
-        return { ...x, wallet: wallet };
-      });
-    }
-  };
-
-  useEffect(() => {
-    const setup = async () => {
-      console.log('inside the setup', wallet, userAppInformation);
-      if (wallet && !wallet?.chainId.includes('84531')) await changeChain();
-      // I won't call the aidrop call because it is called when the user logs in.
-      if (wallet && !userAppInformation?.ankyIndex) await airdropCall();
-      if (wallet && !userAppInformation?.tbaAddress) await callTba();
-      if (!userAppInformation.wallet)
-        setUserAppInformation(x => {
-          return { ...x, wallet };
-        });
-      setLoading(false);
-    };
-    setup();
-  }, [wallet, userAppInformation.wallet]);
 
   function getComponentForRoute(route) {
     switch (route) {
@@ -86,9 +57,15 @@ const DesktopApp = () => {
       case '/eulogias':
         return <EulogiasListPage />;
       case '/library':
-        return <LibraryPage />;
+        return (
+          <LibraryPage
+            notebooksProp={userAppInformation.userNotebooks}
+            eulogiasProp={userAppInformation.userEulogias}
+            journalsProp={userAppInformation.userJournals}
+          />
+        );
       case '/journal':
-        return <JournalPage userAnky={userAppInformation} />;
+        return <JournalPage userAppInformation={userAppInformation} />;
       case '/eulogias/new':
         return <NewEulogiaPage userAnky={userAppInformation} />;
       case `/eulogias/${route.split('/').pop()}`:
@@ -129,55 +106,19 @@ const DesktopApp = () => {
     }
   }
 
-  async function airdropCall() {
-    try {
-      console.log('sending the call to the airdrop route', wallet.address);
-      console.log(
-        'The call is being sent to:',
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/blockchain/airdrop`
-      );
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/blockchain/airdrop`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            wallet: wallet.address,
-          }),
-        }
-      );
-      const data = await response.json();
-      console.log('in here, the data is: ', data);
-      setUserAppInformation(x => {
-        return { ...x, tokenUri: data.tokenUri, ankyIndex: data.userAnkyIndex };
-      });
-    } catch (error) {
-      console.log('The airdrop was not successful', error);
-    }
-  }
-
-  async function callTba() {
-    try {
-      console.log(
-        'sending the call to the fetch the tba account route',
-        wallet.address
-      );
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/blockchain/getTBA/${wallet.address}`
-      );
-      const data = await response.json();
-      console.log('the response data is: ', data);
-      setUserAppInformation(x => {
-        return { ...x, tbaAddress: data.ankyTba };
-      });
-    } catch (error) {
-      console.log('The airdrop was not successful', error);
-    }
-  }
-
-  if (loading) return <p>Loading</p>;
+  if (loading)
+    return (
+      <Transition in={loading} timeout={500} mountOnEnter unmountOnExit>
+        {state => (
+          <div
+            className={`flex-col text-white h-screen w-screen bg-black flex justify-center items-center fade-${state}`}
+          >
+            <h1 className='text-5xl text-center '>anky</h1>
+            <p className='text-sm'>(don&apos;t try to understand)</p>
+          </div>
+        )}
+      </Transition>
+    );
 
   return (
     <div className='text-center text-white'>
@@ -198,12 +139,6 @@ const DesktopApp = () => {
           ></div>
         </div>
         <div className='px-2 w-fit flex space-x-2'>
-          {isAnkyLoading && (
-            <Link className='hover:text-purple-600' href='/notebooks'>
-              wtf?
-            </Link>
-          )}
-
           {authenticated ? (
             <button className='hover:text-purple-600' onClick={logout}>
               logout

@@ -11,47 +11,15 @@ import JournalCard from './JournalCard';
 import Spinner from '../Spinner';
 import { useRouter } from 'next/router';
 
-const JournalPage = ({ userAnky }) => {
+const JournalPage = ({ userAppInformation }) => {
   const router = useRouter();
   const [activeProvider, setActiveProvider] = useState(null);
   const [journals, setJournals] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { userAppInformation } = usePWA();
 
   useEffect(() => {
-    const setup = async () => {
-      if (userAppInformation.wallet && userAppInformation.tbaAddress) {
-        const provider = await userAppInformation.wallet?.getEthersProvider();
-        console.log('the provider is: ', provider);
-        const signer = await provider.getSigner();
-        console.log('the signer is: ', signer);
-        await fetchUserJournals(signer);
-        setLoading(false);
-      }
-    };
-    setup();
-  }, [userAppInformation]);
-
-  async function fetchUserJournals(signer) {
-    const contract = new ethers.Contract(
-      process.env.NEXT_PUBLIC_JOURNALS_CONTRACT_ADDRESS,
-      journalsABI,
-      signer
-    );
-
-    const userJournals = await contract.getUserJournals();
-    console.log('the raw journal tokens are: ', userJournals);
-
-    const userJournalsPromises = userJournals.map(tokenId =>
-      contract.getJournal(ethers.utils.formatUnits(tokenId, 0))
-    );
-
-    const rawDetailedJournals = await Promise.all(userJournalsPromises);
-    const formattedJournals = formatUserJournals(rawDetailedJournals);
-    const journalsWithContent = await fetchAllEntriesContent(formattedJournals);
-
-    setJournals(journalsWithContent);
-  }
+    setJournals(userAppInformation.userJournals);
+  }, []);
 
   if (loading)
     return (

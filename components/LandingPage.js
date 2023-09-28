@@ -1,11 +1,26 @@
 import React, { useState } from 'react';
 import Button from './Button';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 import { usePrivy } from '@privy-io/react-auth';
 import Image from 'next/image';
+import { useUser } from '../context/userContext';
+
+const notebookTypes = [
+  { name: 'notebook', description: 'minted from a template. limited supply.' },
+  {
+    name: 'eulogias',
+    description: 'community written notebook. you can only write one.',
+  },
+  {
+    name: 'journal',
+    description: 'designed to allow you to just write streams of consciousness',
+  },
+];
 
 function LandingPage() {
   const { login, authenticated } = usePrivy();
+  const { userAppInformation, libraryLoading } = useUser();
   const router = useRouter();
   const [startJourney, setStartJourney] = useState(false);
 
@@ -28,16 +43,27 @@ function LandingPage() {
           {authenticated ? (
             <div className='text-gray-400'>
               <div className='mt-2 flex space-x-2'>
-                <Button
-                  buttonText='library'
-                  buttonAction={() => router.push('/library')}
-                  buttonColor='bg-purple-400 text-black'
-                />
-                <Button
-                  buttonText='journal'
-                  buttonAction={() => router.push('/journal')}
-                  buttonColor='bg-green-400 text-black'
-                />
+                {libraryLoading ? (
+                  <Button
+                    disabled
+                    buttonText='loading library...'
+                    buttonColor='bg-purple-400 text-black'
+                  />
+                ) : (
+                  <Link href='/library' passHref>
+                    <Button
+                      buttonText='library'
+                      buttonColor='bg-purple-400 text-black'
+                    />
+                  </Link>
+                )}
+
+                <Link href='/journal' passHref>
+                  <Button
+                    buttonText='journal'
+                    buttonColor='bg-green-400 text-black'
+                  />
+                </Link>
               </div>
             </div>
           ) : (
@@ -62,7 +88,7 @@ function LandingPage() {
                     buttonText='start journey'
                     buttonColor='bg-purple-500'
                     buttonAction={() => setStartJourney(true)}
-                  />
+                  />{' '}
                   <Button
                     buttonText='prompt of the day'
                     buttonAction={() => router.push('/ankyverse')}
@@ -78,35 +104,20 @@ function LandingPage() {
       {/* Journey with Anky Section */}
       <div className='py-8 px-64 bg-white'>
         <h2 className='text-3xl font-semibold mb-6'>
-          Embark on a Unique Journey with Anky
+          embark on a unique journey with anky
         </h2>
         <p className='mb-4'>
-          Enter an enchanted notebook, guided by the ethereal whispers of Anky.
-          Navigate pages filled with prompts that resonate with your soul and
-          challenge your writing boundaries.
+          as soon as you create an account here, you are assigned a unique
+          character: your anky
         </p>
         <p className='mb-4'>
-          But tread with care. In Anky&apos;s realm, a moment&apos;s hesitation,
-          and the words vanish. It&apos;s not just a test, it&apos;s a dance of
-          thoughts, challenging the boundaries of your creativity.
+          think of it as the keeper of your secrets. your imaginary friend.
         </p>
-      </div>
-
-      {/* Discover your Anky Section */}
-      <div className='p-8 bg-gray-200 flex flex-row'>
-        <div className='w-3/5'>
-          <h2 className='text-3xl font-semibold mb-6'>
-            Unearth Your Anky: The Guardian of Stories
-          </h2>
-          <p className='mb-4'>
-            Register and be bestowed with an Anky, a mystical guardian tailored
-            to your narrative essence.
-          </p>
-          <p className='mb-4'>
-            Your Anky safeguards your deepest stories, secrets, and the truths
-            you pen.
-          </p>
-        </div>
+        <p className='mb-4'>
+          built on top of blockchain technolgy, your anky will store your
+          writings forever.
+        </p>
+        <p className='mb-4'>this is how they look:</p>
         <div className='flex flex-wrap justify-center'>
           <div className='relative w-48 h-48 m-2 rounded-xl overflow-hidden'>
             <Image src='/ankys/1.png' alt='anky' layout='fill' />
@@ -123,21 +134,65 @@ function LandingPage() {
         </div>
       </div>
 
+      {/* Discover your Anky Section */}
+      <div className='p-8 bg-gray-200 flex flex-row'>
+        <div className='w-3/5 mx-auto'>
+          <h2 className='text-3xl font-semibold mb-6'>
+            in here, there are three types of writing containers
+          </h2>
+          <div className='flex flex-wrap mx-auto justify-center mb-4'>
+            {notebookTypes.map((x, i) => {
+              return (
+                <div
+                  key={i}
+                  className='p-2 rounded-xl border-purple-600 border-2 shadow-lg shadow-yellow-500 hover:bg-purple-500 bg-purple-400 m-2'
+                >
+                  <h2 className='text-xl '>{x.name}</h2>
+                  <p className='text-sm'>{x.description}</p>
+                </div>
+              );
+            })}
+          </div>
+          <p className='mb-4'>
+            all of them powered by the unique writing mechanism of anky:
+            consciousness dumping.
+          </p>
+          <p className='mb-4'>
+            Your Anky safeguards your deepest stories, secrets, and the truths
+            you write.
+          </p>
+          <div className='w-48 mx-auto'>
+            <Link href='/ankyverse' passHref>
+              <Button
+                buttonText='test it out'
+                buttonColor='bg-green-400 text-black'
+              />
+            </Link>
+          </div>
+        </div>
+      </div>
+
       {/* Join the Ankyverse Section */}
       <div className='py-8 px-64 bg-white'>
-        <h2 className='text-3xl font-semibold mb-6'>
-          Dive Deeper into the Ankyverse
-        </h2>
+        <h2 className='text-3xl font-semibold mb-6'>the goal</h2>
         <p className='mb-4'>
-          The Ankyverse is a universe brimming with stories, dreams, and
-          emotions. It&apos;s a world where each Anky tells its own tale,
-          waiting for you to join the narrative.
+          what is happening here is designed to be a powerful meditation
+          practice.
         </p>
-        <p className='mb-4'>
-          Venture into a domain where words wield power and where stories unfold
-          in mystical patterns. Find your place in the Ankyverse and let your
-          Anky guide your way.
-        </p>
+        <p className='mb-4'>if you want to experience how you think.</p>
+        <p className='mb-4'>if you want to see yourself with more clarity.</p>
+        <p className='mb-4'>if you want to know who you are.</p>
+        <p className='mb-4'>welcome to the ankyverse.</p>
+      </div>
+
+      <div className='p-8 bg-gray-200 flex flex-row'>
+        <div className='w-3/5 mx-auto'>
+          <p>i need help</p>
+          <p>all your feedback is gold</p>
+          <p>@kithkui on x</p>
+          <p>@jpfraneto on farcaster</p>
+          <p>its all open source https://www.github.com/ankylat</p>
+        </div>
       </div>
     </div>
   );

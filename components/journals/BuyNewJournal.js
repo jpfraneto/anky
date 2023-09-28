@@ -84,8 +84,6 @@ const BuyNewJournal = () => {
 
   const mintNewJournal = async size => {
     try {
-      console.log('inside the mint new journal function');
-
       if (!thisWallet) {
         // Handle the case where the wallet is not available
         console.error('Wallet not available.');
@@ -163,6 +161,7 @@ const BuyNewJournal = () => {
       ) : (
         <div>
           <p className='mb-2'>mint new journal</p>
+          <p className='mb-4'>how many pages do you want?</p>
           <div className='flex'>
             {[0, 1, 2].map((x, i) => {
               return (
@@ -173,7 +172,7 @@ const BuyNewJournal = () => {
                   <span
                     key={i}
                     onClick={() => mintNewJournal(x)}
-                    className='m-2 bg-red-400 cursor-pointer hover:bg-red-600 p-2 w-8 h-8 rounded-xl flex justify-center items-center'
+                    className='m-2 bg-red-400 cursor-pointer hover:bg-red-600 shadow-lg shadow-black p-2 w-8 h-8 rounded-xl flex justify-center items-center'
                   >
                     {x}
                   </span>
@@ -186,6 +185,11 @@ const BuyNewJournal = () => {
                 </div>
               );
             })}
+          </div>
+          <div className='mt-4 w-36 mx-auto'>
+            <Link href='/library' passHref>
+              <Button buttonText='go back' buttonColor='bg-red-600' />
+            </Link>
           </div>
         </div>
       )}

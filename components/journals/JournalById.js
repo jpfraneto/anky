@@ -8,6 +8,7 @@ import Image from 'next/image';
 import WritingGameComponent from '../WritingGameComponent';
 import Spinner from '../Spinner';
 import AnkyJournalsAbi from '../../lib/journalsABI.json'; // Assuming you have the ABI
+import { useUser } from '../../context/userContext';
 
 function transformJournalType(index) {
   switch (index) {
@@ -22,6 +23,7 @@ function transformJournalType(index) {
 
 const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
   const router = useRouter();
+  const { userAppInformation } = useUser();
   const [journal, setJournal] = useState([]);
   const [loading, setLoading] = useState(true);
   const [time, setTime] = useState(0);
@@ -61,28 +63,18 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
   useEffect(() => {
     async function fetchJournal() {
       try {
-        if (!thisWallet) return;
-        const journalId = router.query.id;
-
-        let fetchedProvider = await thisWallet.getEthersProvider();
-        setProvider(fetchedProvider);
-        let signer = await fetchedProvider.getSigner();
-        const journalsContract = new ethers.Contract(
-          process.env.NEXT_PUBLIC_JOURNALS_CONTRACT_ADDRESS,
-          AnkyJournalsAbi,
-          signer
+        const userJournals = userAppInformation.userJournals;
+        console.log(router.query);
+        const thisJournal = userJournals.filter(
+          x => x.journalId === router.query.id
         );
-        console.log('this journal id is: ', journalId);
-        const thisJournal = await journalsContract.getJournal(journalId);
-        console.log('the journal is: ', thisJournal);
-
-        const formattedJournal = await formatUserJournal(thisJournal);
-        console.log('the formatted journal is: ', formattedJournal);
-        if (thisJournal && formattedJournal) {
-          setJournal(formattedJournal);
+        console.log('sajl', thisJournal);
+        if (thisJournal.length > 0) {
+          setJournal(thisJournal[0]);
           setLoading(false);
         } else {
           throw Error('No notebook found');
+          alert('eeerrroooooor');
         }
       } catch (error) {
         console.error(error);

@@ -188,6 +188,35 @@ a {
   }
 }
 
+/* Fade In */
+.fade-enter {
+  opacity: 0.01;
+}
+
+.fade-enter-active {
+  opacity: 1;
+  transition: opacity 500ms ease-in;
+}
+
+/* Dot transformation and explosion */
+.fade-exit {
+  opacity: 1;
+  transform: scale(1);
+  width: 100%;
+  height: auto;
+  border-radius: 0%;
+}
+
+.fade-exit-active {
+  opacity: 0.01;
+  transform: scale(2.5);
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  transition: opacity 500ms ease-in, transform 500ms ease-in,
+    width 500ms ease-in, height 500ms ease-in;
+}
+
 #notebook-paper {
   width: 400px;
   height: 600px;

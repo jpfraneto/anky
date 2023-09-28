@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
 import AnkyEulogiasAbi from '../../lib/eulogiaABI.json';
 import { useRouter } from 'next/router';
@@ -28,6 +28,24 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
   const [userHasWritten, setUserHasWritten] = useState(false);
   const { wallets } = useWallets();
   const thisWallet = wallets[0];
+
+  const closeModal = useCallback(() => {
+    setIsModalOpen(false);
+  }, []);
+
+  useEffect(() => {
+    const handleKeyPress = event => {
+      if (event.key === 'Escape' && isModalOpen) {
+        closeModal();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress);
+    };
+  }, [isModalOpen, closeModal]);
 
   useEffect(() => {
     async function fetchEulogia() {
@@ -167,6 +185,17 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
     }
   };
 
+  var options = {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric',
+    hour12: true,
+  };
+
   const writeOnEulogia = async () => {
     const writingGameParameters = {
       notebookType: 'eulogia',
@@ -195,21 +224,21 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
           <div className='bg-purple-200 relative overflow-y-scroll text-black rounded  p-6 w-2/3 h-2/3'>
             <p
               onClick={() => setIsModalOpen(false)}
-              className='absolute top-1 cursor-pointer right-2 text-red-600'
+              className='absolute top-1 cursor-pointer right-2 text-red-600 hover:text-red-800'
             >
               close
             </p>
 
             <div className='overflow-y-scroll h-9/12'>
-              {displayModalMessage && displayModalMessage.text ? (
-                displayModalMessage.text.includes('\n') ? (
-                  displayModalMessage.text.split('\n').map((x, i) => (
+              {displayModalMessage && displayModalMessage.content ? (
+                displayModalMessage.content.includes('\n') ? (
+                  displayModalMessage.content.split('\n').map((x, i) => (
                     <p className='my-2' key={i}>
                       {x}
                     </p>
                   ))
                 ) : (
-                  <p className='my-2'>{displayModalMessage.text}</p>
+                  <p className='my-2'>{displayModalMessage.content}</p>
                 )
               ) : null}
             </div>
@@ -220,7 +249,9 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
                 {displayModalMessage.whoWroteIt}
               </span>
               <span className='text-sm'>
-                {new Date(displayModalMessage.timestamp * 1000).toString()} -{' '}
+                {new Date(
+                  displayModalMessage.timestamp * 1000
+                ).toLocaleDateString('en-US', options)}
               </span>
             </p>
           </div>
