@@ -9,7 +9,6 @@ import {
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-  console.log('running inside the user provider compoennt');
   const [userAppInformation, setUserAppInformation] = useState({});
   const [loading, setLoading] = useState(true);
   const [libraryLoading, setLibraryLoading] = useState(true);
@@ -25,7 +24,6 @@ export const UserProvider = ({ children }) => {
       });
     }
   };
-  console.log('Outside useEffect:', wallet, wallets);
 
   useEffect(() => {
     const setup = async () => {
@@ -45,14 +43,12 @@ export const UserProvider = ({ children }) => {
         setLoading(false);
         if (!userAppInformation.userJournals) {
           const userJournals = await fetchUserJournals(signer);
-          console.log('the userJournals are', userJournals);
           setUserAppInformation(x => {
             return { ...x, userJournals: userJournals };
           });
         }
         if (!userAppInformation.userNotebooks) {
           const userNotebooks = await fetchUserNotebooks(signer, userTba);
-          console.log('the userNotebooks are', userNotebooks);
 
           setUserAppInformation(x => {
             return { ...x, userNotebooks: userNotebooks };
