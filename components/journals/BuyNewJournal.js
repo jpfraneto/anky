@@ -166,7 +166,10 @@ const BuyNewJournal = () => {
           <div className='flex'>
             {[0, 1, 2].map((x, i) => {
               return (
-                <div className='mx-4 text-center flex flex-col items-center rounded-xl bg-red-200 p-2 text-black'>
+                <div
+                  key={i}
+                  className='mx-4 text-center flex flex-col items-center rounded-xl bg-red-200 p-2 text-black'
+                >
                   <span
                     key={i}
                     onClick={() => mintNewJournal(x)}
