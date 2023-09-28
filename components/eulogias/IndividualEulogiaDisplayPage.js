@@ -221,7 +221,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
     return (
       isModalOpen && (
         <div className='fixed top-0 left-0 bg-black w-full h-full flex items-center justify-center z-50'>
-          <div className='bg-purple-200 relative overflow-y-scroll text-black rounded  p-6 w-2/3 h-2/3'>
+          <div className='bg-purple-200 relative overflow-y-scroll text-black rounded  p-6 w-1/2 h-2/3'>
             <p
               onClick={() => setIsModalOpen(false)}
               className='absolute top-1 cursor-pointer right-2 text-red-600 hover:text-red-800'

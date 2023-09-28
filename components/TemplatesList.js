@@ -186,11 +186,9 @@ function TemplateItem({ template, provider, thisWallet }) {
       <p>{template.metadata.supply - template.supply} notebook(s) minted</p>
       <p>{template.supply} in stock</p>
       <div className='mt-2'>
-        <Button
-          buttonAction={() => router.push(`/template/${template.templateId}`)}
-          buttonColor='bg-green-600'
-          buttonText='explore'
-        />
+        <Link href={`/template/${template.templateId}`} passHref>
+          <Button buttonColor='bg-green-600' buttonText='explore' />
+        </Link>
       </div>
     </div>
   );

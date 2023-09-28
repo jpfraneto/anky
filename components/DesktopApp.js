@@ -114,7 +114,11 @@ const DesktopApp = () => {
             className={`flex-col text-white h-screen w-screen bg-black flex justify-center items-center fade-${state}`}
           >
             <h1 className='text-5xl text-center '>anky</h1>
-            <p className='text-sm'>(don&apos;t try to understand)</p>
+            <p className='text-sm mb-3'>(don&apos;t try to understand)</p>
+            <div class='lds-ripple'>
+              <div></div>
+              <div></div>
+            </div>
           </div>
         )}
       </Transition>

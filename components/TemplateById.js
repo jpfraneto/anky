@@ -118,7 +118,7 @@ function TemplatePage({ userAnky }) {
   if (loading || mintingNotebook) return <Spinner />;
 
   return (
-    <div className=' text-white pt-5'>
+    <div className='md:w-1/2 mx-auto text-white pt-5'>
       {templateData ? (
         <>
           {mintedNotebookSuccess ? (

@@ -19,8 +19,8 @@ const NewEulogiaPageMobile = ({ userAnky }) => {
   const [eulogiaCreationError, setEulogiaCreationError] = useState(false);
   const [success, setSuccess] = useState(false);
   const [createdEulogiaId, setCreatedEulogiaId] = useState(null);
-  const [title, setTitle] = useState('the monument game');
-  const [description, setDescription] = useState('what do you see?');
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
   const [pages, setPages] = useState(24);
   const [fileError, setFileError] = useState('');
   const [price, setPrice] = useState((24 * PRICE_FACTOR).toFixed(4));
@@ -249,7 +249,7 @@ const NewEulogiaPageMobile = ({ userAnky }) => {
             </p>
             <input
               type='text'
-              placeholder='prompt'
+              placeholder='prompt for writer'
               className='border p-2 w-full rounded text-gray-500'
               value={description}
               onChange={e => setDescription(e.target.value)}
@@ -262,6 +262,7 @@ const NewEulogiaPageMobile = ({ userAnky }) => {
             </p>
             <input
               type='number'
+              placeholder='number of pages (people that will write here)'
               min={0}
               className='border p-2 w-36 rounded text-gray-500'
               value={pages}
