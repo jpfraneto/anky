@@ -6,6 +6,7 @@ import NotebooksAbi from '../lib/notebookABI.json'; // Assuming you have this
 import { processFetchedTemplate } from '../lib/notebooks.js';
 import { useRouter } from 'next/router';
 import Button from './Button';
+import Link from 'next/link';
 import Spinner from './Spinner';
 
 function loadExampleToState(example) {
