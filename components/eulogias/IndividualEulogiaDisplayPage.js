@@ -262,7 +262,8 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
 
   if (!authenticated) {
     return (
-      <div className='mt-2 text-white '>
+      <div className='mt-2 text-white pt-8'>
+        <p className='mb-3'>you were invited to write on an eulogia</p>
         <p className='mb-3'>please login first</p>
         <Button
           buttonAction={login}

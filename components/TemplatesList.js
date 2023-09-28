@@ -29,7 +29,6 @@ const EXAMPLE_NOTEBOOKS = [
       // ... Add more prompts as needed
     ],
   },
-  // ... 9 more example notebook objects
 ];
 
 function TemplatesList() {
