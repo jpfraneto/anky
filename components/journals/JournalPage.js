@@ -19,6 +19,7 @@ const JournalPage = ({ userAppInformation }) => {
 
   useEffect(() => {
     setJournals(userAppInformation.userJournals);
+    setLoading(false);
   }, []);
 
   if (loading)
@@ -37,7 +38,7 @@ const JournalPage = ({ userAppInformation }) => {
           return <JournalCard journal={x} key={i} />;
         })}
       </div>
-      <div className='flex justify-center space-x-2'>
+      <div className='flex justify-center '>
         <Button
           buttonText='buy new journal'
           buttonColor='bg-purple-600'
