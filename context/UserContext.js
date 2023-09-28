@@ -9,6 +9,7 @@ import {
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
+  console.log('ahora si');
   const [userAppInformation, setUserAppInformation] = useState({});
   const [loading, setLoading] = useState(true);
   const [libraryLoading, setLibraryLoading] = useState(true);
