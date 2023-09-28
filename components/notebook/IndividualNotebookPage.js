@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { ethers } from 'ethers';
 import Button from '../Button';
+import Link from 'next/link';
 import {
   processFetchedTemplate,
   fetchArweaveContent,
@@ -29,6 +30,7 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
   const [writingForDisplay, setWritingForDisplay] = useState(null);
   const [writingGameProps, setWritingGameProps] = useState(null);
   const [whoIsWriting, setWhoIsWriting] = useState('');
+  const [failed, setFailed] = useState(false);
   const { wallets } = useWallets();
 
   const thisWallet = wallets[0];
@@ -38,7 +40,10 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
       try {
         if (!thisWallet) return;
         const notebookID = router.query.id;
-
+        if (notebookID === undefined || !notebookID) {
+          console.log('IN EHREEEE');
+          return setFailed(true);
+        }
         let fetchedProvider = await thisWallet.getEthersProvider();
         setProvider(fetchedProvider);
         console.log('the provider is: ', fetchedProvider);
@@ -48,7 +53,7 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
           AnkyNotebooksAbi,
           signer
         );
-        console.log('this notebook id is: ', notebookID);
+        console.log('this notebook id is: ');
         console.log('the notebooks contract is: ', notebooksContract);
         const thisNotebook = await notebooksContract.getFullNotebook(
           Number(notebookID)
@@ -160,13 +165,27 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
     }
   };
 
-  if (loading)
+  if (!router.isReady || loading)
     return (
       <div>
         <Spinner />
         <p className='text-white'>loading...</p>
       </div>
     );
+
+  if (failed) {
+    return (
+      <div className='pt-8 text-white'>
+        <p>that notebook doesn&apos;t exist</p>
+        <p>create it here:</p>
+        <Button
+          buttonAction={() => router.push('/templates/new')}
+          buttonText='new notebook template'
+          buttonColor='bg-green-600'
+        />
+      </div>
+    );
+  }
 
   if (loadWritingGame)
     return (
@@ -183,10 +202,10 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
     );
 
   return (
-    <div className='text-white'>
+    <div className='text-white md:w-3/5 mx-auto'>
       <h2 className='text-4xl my-2'>{notebookTemplate.metadata.title}</h2>{' '}
       <small className='italic'>{notebookTemplate.metadata.description}</small>
-      <div className='text-left my-4'>
+      <div className='text-left my-4 '>
         {notebookTemplate.metadata.prompts.map((x, i) => {
           return (
             <div key={i}>
@@ -194,19 +213,22 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
                 className={`${
                   notebookPages[i] &&
                   notebookPages[i].pageIndex &&
-                  'line-through'
+                  'line-through cursor-pointer hover:text-amber-500'
                 }`}
                 onClick={() => {
-                  if (writingForDisplay?.index === i + 1) {
-                    setWritingForDisplay({}); // Empty it if it's the same index
+                  if (writingForDisplay?.pageIndex === i + 1) {
+                    setWritingForDisplay(null);
                   } else {
-                    setWritingForDisplay(notebookPages[i]);
+                    setWritingForDisplay({
+                      ...notebookPages[i],
+                      pageIndex: i + 1,
+                    });
                   }
                 }}
               >
                 {i + 1}. {x}
               </p>
-              {writingForDisplay?.pageIndex === i + 1 && (
+              {writingForDisplay && writingForDisplay.pageIndex === i + 1 && (
                 <div className='my-2 text-white p-2 bg-purple-600 rounded-xl'>
                   {writingForDisplay.text}
                 </div>
@@ -219,11 +241,12 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
         <div>
           <p>Congratulations, you finished writing this notebook</p>
           <p className='mb-4'>Time to mint another one!</p>
-          <Button
-            buttonText={`Browse notebooks`}
-            buttonColor='bg-purple-500 w-48 mx-auto'
-            buttonAction={() => router.push('/templates')}
-          />
+          <Link href='/templates' passHref>
+            <Button
+              buttonText={`Browse notebooks`}
+              buttonColor='bg-purple-500 w-48 mx-auto'
+            />
+          </Link>
         </div>
       ) : (
         <div className='flex'>
@@ -232,11 +255,12 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
             buttonColor='bg-purple-500 w-48 mx-auto mb-3'
             buttonAction={writeOnNotebook}
           />
-          <Button
-            buttonText={`Go Back`}
-            buttonColor='bg-red-600 w-48 mx-auto mb-3'
-            buttonAction={() => router.push('/templates')}
-          />
+          <Link passHref href='/templates'>
+            <Button
+              buttonText={`Go Back`}
+              buttonColor='bg-red-600 w-48 mx-auto mb-3'
+            />
+          </Link>
         </div>
       )}
     </div>

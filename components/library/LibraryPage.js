@@ -84,13 +84,13 @@ const LibraryPage = () => {
       const processedTemplate = await processFetchedTemplate(rawTemplate);
 
       const processedNotebook = await processFetchedNotebook(rawNotebookObject);
-
+      processedNotebook.notebookId = notebookId;
       // Combine template data with notebook data
       const combinedNotebookData = {
         ...processedNotebook,
         template: processedTemplate,
       };
-
+      console.log('the combined notebook data is: ', combinedNotebookData);
       notebookObjects.push(combinedNotebookData);
     }
 
@@ -150,9 +150,9 @@ const LibraryPage = () => {
     );
 
   return (
-    <div className='text-white'>
-      <h2 className='text-3xl my-4'>journals</h2>
-      <div className='my-2 bg-green-300 rounded-xl p-4'>
+    <div className='text-white py-4'>
+      <h2 className='text-3xl mb-4'>journals</h2>
+      <div className='my-2 flex flex-wrap bg-green-300 rounded-xl p-4'>
         {journals &&
           journals.map((x, i) => {
             return <JournalCard journal={x} key={i} />;
@@ -166,14 +166,15 @@ const LibraryPage = () => {
         />
       </div>
       <h2 className='text-3xl my-4'>notebooks</h2>
-      <div className='my-2 bg-purple-300 rounded-xl p-4'>
+      <div className='my-2 bg-purple-300 rounded-xl p-4 flex flex-wrap'>
         {notebooks &&
           notebooks.map((x, i) => {
+            console.log('HEIFHAKSJHCA', x);
             return <NotebookCard notebook={x} key={i} />;
           })}
       </div>
 
-      <div className='flex space-x-2'>
+      <div className='flex  justify-center'>
         <Button
           buttonAction={() => router.push('/notebooks')}
           buttonText='find notebooks'
@@ -187,13 +188,13 @@ const LibraryPage = () => {
       </div>
 
       <h2 className='text-3xl my-4'>eulogias</h2>
-      <div className='my-2 bg-orange-300 rounded-xl p-4'>
+      <div className='my-2 bg-orange-300 rounded-xl p-4 flex flex-wrap'>
         {eulogias &&
           eulogias.map((x, i) => {
             return <EulogiaCard eulogia={x} key={i} />;
           })}
       </div>
-      <div className='flex space-x-2'>
+      <div className='flex space-x-2 '>
         <Button
           buttonAction={() => router.push('/eulogias/new')}
           buttonText='add eulogia'

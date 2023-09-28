@@ -200,18 +200,28 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
               close
             </p>
 
-            <div className='overflow-y-scroll'>
-              {displayModalMessage && displayModalMessage.text
-                ? displayModalMessage.text.split('\n').map((x, i) => (
+            <div className='overflow-y-scroll h-9/12'>
+              {displayModalMessage && displayModalMessage.text ? (
+                displayModalMessage.text.includes('\n') ? (
+                  displayModalMessage.text.split('\n').map((x, i) => (
                     <p className='my-2' key={i}>
                       {x}
                     </p>
                   ))
-                : null}
+                ) : (
+                  <p className='my-2'>{displayModalMessage.text}</p>
+                )
+              ) : null}
             </div>
 
-            <p className='absolute right-2 bottom-1 italic '>
-              {displayModalMessage.whoWroteIt}
+            <p className='absolute w-full right-2 bottom-1 italic  flex flex-col'>
+              <span className='text-xl mb-4'>
+                {' '}
+                {displayModalMessage.whoWroteIt}
+              </span>
+              <span className='text-sm'>
+                {new Date(displayModalMessage.timestamp * 1000).toString()} -{' '}
+              </span>
             </p>
           </div>
         </div>
@@ -327,11 +337,13 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
                 value={whoIsWriting}
                 onChange={e => setWhoIsWriting(e.target.value)}
               />
-              <Button
-                buttonText={`Write and sign as ${whoIsWriting}`}
-                buttonColor='bg-purple-500 w-48 mx-auto'
-                buttonAction={writeOnEulogia}
-              />
+              {whoIsWriting && (
+                <Button
+                  buttonText={`Write and sign as ${whoIsWriting}`}
+                  buttonColor='bg-purple-500 w-48 mx-auto'
+                  buttonAction={writeOnEulogia}
+                />
+              )}
             </div>
           )}
         </div>
@@ -350,7 +362,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
           />
         </div>
 
-        <p>anyone with the link will be able to write</p>
+        <p>anyone with the link will be able to write here</p>
       </div>
       {renderModal()}
     </div>

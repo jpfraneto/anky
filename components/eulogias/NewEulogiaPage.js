@@ -6,6 +6,7 @@ import { usePrivyWagmi } from '@privy-io/wagmi-connector';
 import { useContractRead } from 'wagmi';
 import { createTBA } from '../../lib/backend';
 import Button from '../Button';
+import Link from 'next/link';
 import eulogiaABI from '../../lib/eulogiaABI.json';
 import Spinner from '../Spinner';
 import SampleButton from '../SampleButton';
@@ -312,13 +313,20 @@ const NewEulogiaPage = ({ userAnky }) => {
             />
           </div> */}
           {fileError && <div className='text-red-500 mt-2'>{fileError}</div>}
-
-          <button
-            className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full mt-4'
-            onClick={handleSubmit}
-          >
-            Submit
-          </button>
+          <div className='flex flex-row'>
+            <button
+              className='bg-green-500 hover:bg-green-700 mx-2 text-white font-bold py-2 px-4 rounded w-full mt-4'
+              onClick={handleSubmit}
+            >
+              Submit
+            </button>
+            <Link
+              href='/library'
+              className='bg-red-500 hover:bg-red-700 mx-2 text-white font-bold py-2 px-4 rounded w-full mt-4'
+            >
+              library
+            </Link>
+          </div>
         </form>
       ) : (
         <button

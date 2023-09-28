@@ -246,7 +246,7 @@ function CreateNotebookTemplate({ userAnky }) {
       }
     } catch (error) {
       console.log('IN HERE, THERE WAS AN ERROR', error);
-      let errorMessage = 'There was an error creating the notebook:';
+      let errorMessage = '';
 
       // Try extracting the revert reason
       const revertIndicator = 'execution reverted:';
@@ -350,10 +350,7 @@ function CreateNotebookTemplate({ userAnky }) {
                       </div>
                     ) : (
                       <div>
-                        <p>
-                          {templateCreationErrorMessage ||
-                            'There was an error creating the notebook'}
-                        </p>
+                        <p>{templateCreationErrorMessage}</p>
                         <div className='mx-auto w-48 mt-4'>
                           <Button
                             buttonColor='bg-purple-500'
@@ -385,15 +382,14 @@ function CreateNotebookTemplate({ userAnky }) {
                         ))}
                       </ol>
                     </div>
+                    <p>
+                      People will be able to buy this notebook and write inside
+                      it.
+                    </p>
                     <p className='bg-purple-500 p-2 rounded-xl border border-black w-fit mx-auto'>
-                      <strong>Minting Price:</strong> {price} ETH | Supply:{' '}
-                      {supply}
+                      <strong>Price:</strong> {price} ETH | Supply: {supply}
                     </p>
-                    <p className='mt-2'>
-                      The people that mint this notebook will be invited to
-                      write on it, answering each one of the prompts that you
-                      created.
-                    </p>
+
                     <p className='mt-2'>
                       What they will write in there will be forever stored on
                       the blockchain.
@@ -497,7 +493,7 @@ function CreateNotebookTemplate({ userAnky }) {
 
           <button
             type='button'
-            className='bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-fit mt-2 mr-auto'
+            className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-fit mt-2 mr-auto'
             onClick={handleAddPrompt}
           >
             Add Prompt
@@ -532,7 +528,7 @@ function CreateNotebookTemplate({ userAnky }) {
           </div>
           <div className='flex space-x-2'>
             <button
-              className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-fit mt-4'
+              className='bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-fit mt-4'
               type='submit'
             >
               {loadingNotebookCreation

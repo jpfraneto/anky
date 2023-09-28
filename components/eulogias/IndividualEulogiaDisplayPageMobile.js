@@ -321,7 +321,7 @@ const IndividualEulogiaDisplayPageMobile = ({
           </div>
 
           <p className='text-center mb-3'>
-            anyone with the link will be able to write
+            anyone with the link will be able to write here
           </p>
         </div>
       )}
