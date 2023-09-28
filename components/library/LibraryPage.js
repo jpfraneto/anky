@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useUser } from '../../context/userContext';
+import { useUser } from '../../context/UserContext';
 import { ethers } from 'ethers';
 import Link from 'next/link';
 import NotebookCard from '../NotebookCard';

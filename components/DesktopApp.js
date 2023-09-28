@@ -4,7 +4,7 @@ import { usePrivy, useWallets } from '@privy-io/react-auth';
 import { Righteous, Dancing_Script } from 'next/font/google';
 import { getAnkyverseDay, getAnkyverseQuestion } from '../lib/ankyverse';
 import { createTBA, airdropAnky } from '../lib/backend';
-import { useUser } from '../context/userContext';
+import { useUser } from '../context/UserContext';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Transition } from 'react-transition-group';

@@ -15,7 +15,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import Navbar from '../components/Navbar';
 import { PWAProvider, usePWA } from '../context/pwaContext';
-import { UserProvider } from '../context/userContext';
+import { UserProvider } from '../context/UserContext';
 
 const configureChainsConfig = configureChains([baseGoerli], [publicProvider()]);
 

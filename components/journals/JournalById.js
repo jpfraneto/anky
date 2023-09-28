@@ -8,7 +8,7 @@ import Image from 'next/image';
 import WritingGameComponent from '../WritingGameComponent';
 import Spinner from '../Spinner';
 import AnkyJournalsAbi from '../../lib/journalsABI.json'; // Assuming you have the ABI
-import { useUser } from '../../context/userContext';
+import { useUser } from '../../context/UserContext';
 
 function transformJournalType(index) {
   switch (index) {

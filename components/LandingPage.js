@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { usePrivy } from '@privy-io/react-auth';
 import Image from 'next/image';
-import { useUser } from '../context/userContext';
+import { useUser } from '../context/UserContext';
 
 const notebookTypes = [
   { name: 'notebook', description: 'minted from a template. limited supply.' },
