@@ -71,7 +71,7 @@ function LandingPage() {
           ) : (
             <>
               <div className='text-gray-400'>
-                <div className='mt-2 w-48 mx-auto'>
+                <div className='mt-2 w-96 flex mx-auto'>
                   {startJourney ? (
                     <Button
                       buttonText='login'
@@ -81,7 +81,7 @@ function LandingPage() {
                   ) : (
                     <Button
                       buttonText='start journey'
-                      buttonColor='bg-purple-500 mx-1'
+                      buttonColor='bg-purple-500 mx-1 text-black'
                       buttonAction={() => setStartJourney(true)}
                     />
                   )}
