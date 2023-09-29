@@ -3,6 +3,7 @@ import { useUser } from '../../context/UserContext';
 import { ethers } from 'ethers';
 import Link from 'next/link';
 import NotebookCard from '../NotebookCard';
+import { usePrivy, useWallets } from '@privy-io/react-auth';
 import EulogiaCard from '../eulogias/EulogiaCard';
 import JournalCard from '../journals/JournalCard';
 import Button from '../Button';
@@ -20,6 +21,11 @@ const LibraryPage = ({ notebooksProp, eulogiasProp, journalsProp }) => {
   const [journals, setJournals] = useState(journalsProp);
   const [eulogias, setEulogias] = useState(eulogiasProp);
   const { userAppInformation } = useUser();
+  const wallets = useWallets();
+  const { authenticated } = usePrivy();
+  console.log('a', userAppInformation);
+  console.log('b', wallets);
+  console.log('c', authenticated);
 
   return (
     <div className='text-white py-4'>
@@ -70,8 +76,6 @@ const LibraryPage = ({ notebooksProp, eulogiasProp, journalsProp }) => {
           <Button buttonText='add eulogia' buttonColor='bg-orange-600' />
         </Link>
       </div>
-      <p className='mt-4'>yes. everything in here is YOURS.</p>
-      <p>your anky is taking care of it. forever.</p>
     </div>
   );
 };

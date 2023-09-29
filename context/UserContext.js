@@ -9,6 +9,7 @@ import {
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
+  const { authenticated } = usePrivy();
   const [userAppInformation, setUserAppInformation] = useState({});
   const [loading, setLoading] = useState(true);
   const [libraryLoading, setLibraryLoading] = useState(true);
@@ -16,9 +17,8 @@ export const UserProvider = ({ children }) => {
   const wallets = useWallets();
   const wallet = wallets.wallets[0];
   const changeChain = async () => {
-    if (wallet) {
+    if (authenticated && wallet) {
       await wallet.switchChain(84531);
-      setUserWallet(wallet);
       setUserAppInformation(x => {
         return { ...x, wallet: wallet };
       });
@@ -27,7 +27,12 @@ export const UserProvider = ({ children }) => {
 
   useEffect(() => {
     const setup = async () => {
-      if (wallet && wallet.address && wallet.address.length > 0) {
+      if (
+        authenticated &&
+        wallet &&
+        wallet.address &&
+        wallet.address.length > 0
+      ) {
         let provider = await wallet.getEthersProvider();
         const signer = await provider.getSigner();
         let userTba = userAppInformation?.tbaAddress || '';
@@ -40,6 +45,9 @@ export const UserProvider = ({ children }) => {
           setUserAppInformation(x => {
             return { ...x, wallet };
           });
+        console.log(
+          'inside the user provider, right before the loading is set to false'
+        );
         setLoading(false);
         if (!userAppInformation.userJournals) {
           const userJournals = await fetchUserJournals(signer);
@@ -62,11 +70,12 @@ export const UserProvider = ({ children }) => {
           });
         }
         setLibraryLoading(false);
+      } else {
+        setLoading(false);
       }
-      setLoading(false);
     };
     setup();
-  }, [wallets]);
+  }, [wallets, authenticated]);
 
   async function airdropCall() {
     try {

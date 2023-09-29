@@ -136,7 +136,7 @@ const EXAMPLE_NOTEBOOKS = [
 ];
 
 function CreateNotebookTemplate({ userAnky }) {
-  const { login } = usePrivy();
+  const { login, authenticated } = usePrivy();
   const router = useRouter();
   const [loadingNotebookCreation, setLoadingNotebookCreation] = useState(false);
   const [templateCreationError, setTemplateCreationError] = useState(false);
@@ -416,7 +416,7 @@ function CreateNotebookTemplate({ userAnky }) {
     );
   }
 
-  if (!userAnky?.wallet)
+  if (!userAnky?.wallet || !authenticated)
     return (
       <p
         className='text-white hover:text-purple-300 cursor-pointer'

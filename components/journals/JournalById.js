@@ -5,6 +5,7 @@ import Button from '../Button';
 import { formatUserJournal } from '../../lib/notebooks.js';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
 import Image from 'next/image';
+import Link from 'next/link';
 import WritingGameComponent from '../WritingGameComponent';
 import Spinner from '../Spinner';
 import AnkyJournalsAbi from '../../lib/journalsABI.json'; // Assuming you have the ABI
@@ -28,8 +29,8 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
   const [loading, setLoading] = useState(true);
   const [time, setTime] = useState(0);
   const [text, setText] = useState('');
+  const [noJournals, setNoJournals] = useState(false);
   const [uploadingWriting, setUploadingWriting] = useState(false);
-  const [provider, setProvider] = useState(null);
   const [entryForDisplay, setEntryForDisplay] = useState(null);
   const [chosenPrompt, setChosenPrompt] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -64,19 +65,28 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
     async function fetchJournal() {
       try {
         const userJournals = userAppInformation.userJournals;
+        console.log('the user app information is: ', userAppInformation);
         console.log(router.query);
-        const thisJournal = userJournals.filter(
-          x => x.journalId === router.query.id
-        );
-        console.log('sajl', thisJournal);
-        if (thisJournal.length > 0) {
-          setJournal(thisJournal[0]);
-          setLoading(false);
+        console.log('the user journals are: ', userJournals);
+
+        if (userJournals?.length > 0) {
+          const thisJournal = userJournals.filter(
+            x => x.journalId === router.query.id
+          );
+          if (thisJournal.length > 0) {
+            console.log('sajl', thisJournal);
+            setJournal(thisJournal[0]);
+            setLoading(false);
+          } else {
+            setNoJournals(true);
+            throw Error('No notebook found');
+          }
         } else {
+          setNoJournals(true);
           throw Error('No notebook found');
-          alert('eeerrroooooor');
         }
       } catch (error) {
+        console.log('there was an error');
         console.error(error);
       }
     }
@@ -118,6 +128,8 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
 
       const { cid } = await response.json();
       console.log('the cid is: ', cid);
+      console.log('the WALLETS are: ', wallets);
+      const provider = await thisWallet.getEthersProvider();
       let signer = await provider.getSigner();
       const journalsContract = new ethers.Contract(
         process.env.NEXT_PUBLIC_JOURNALS_CONTRACT_ADDRESS,
@@ -177,6 +189,19 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
           </div>
         </div>
       )
+    );
+  }
+
+  if (noJournals) {
+    return (
+      <div className='pt-8'>
+        <p className='text-white mb-3'>
+          this journal doesn&apos;t belong to you
+        </p>
+        <Link href='/library' passHref>
+          <Button buttonText='my library' buttonColor='bg-green-600' />
+        </Link>
+      </div>
     );
   }
 

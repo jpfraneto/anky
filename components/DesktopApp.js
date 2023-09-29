@@ -142,7 +142,7 @@ const DesktopApp = () => {
             }}
           ></div>
         </div>
-        <div className='px-2 w-fit flex space-x-2'>
+        <div className='px-2 w-36 flex justify-center space-x-2'>
           {authenticated ? (
             <button className='hover:text-purple-600' onClick={logout}>
               logout

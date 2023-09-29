@@ -71,10 +71,6 @@ function LandingPage() {
             <>
               {startJourney ? (
                 <div className='text-gray-400'>
-                  <p>
-                    you&apos;ll have to login with an email. whatever email you
-                    want.
-                  </p>
                   <div className='mt-2 w-48 mx-auto'>
                     <Button
                       buttonText='login'
