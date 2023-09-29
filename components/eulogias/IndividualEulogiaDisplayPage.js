@@ -371,7 +371,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
               <p>Are you ready?</p>
               <input
                 type='text'
-                className='my-2 p-2 w-full rounded-xl text-black'
+                className='my-2 p-2 w-48 mx-auto rounded-xl text-black'
                 placeholder='your signature'
                 value={whoIsWriting}
                 onChange={e => setWhoIsWriting(e.target.value)}
