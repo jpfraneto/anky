@@ -313,10 +313,14 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
     <div className='text-white'>
       <div className='flex flex-col'>
         <div className='p-2'>
-          <h2 className='text-4xl my-2'>{eulogia.metadata.title}</h2>
-          <p className='italic text-2xl mb-2'>{eulogia.metadata.description}</p>
+          <h2 className='text-6xl my-2 text-purple-200'>
+            {eulogia.metadata.title}
+          </h2>
+          <p className='italic text-2xl mb-2 w-48 mx-auto'>
+            {eulogia.metadata.description}
+          </p>
           <div className='mb-4'>
-            {messages.length} writing(s) of {eulogia.maxMessages} spots
+            {eulogia.maxMessages - messages.length} pages available
           </div>
           <div className='mx-auto relative w-96 h-96 flex overflow-hidden border-white border rounded-xl justify-center'>
             <Image
@@ -344,7 +348,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
           {!authenticated ? (
             <div>
               <p>
-                you can write if you{' '}
+                you can write here if you{' '}
                 <span
                   className='text-orange-300 hover:text-orange-400 active:text-yellow-300 cursor-pointer'
                   onClick={login}
