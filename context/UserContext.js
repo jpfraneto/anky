@@ -9,9 +9,9 @@ import {
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-  const { authenticated } = usePrivy();
+  const { authenticated, loading } = usePrivy();
   const [userAppInformation, setUserAppInformation] = useState({});
-  const [loading, setLoading] = useState(true);
+  const [appLoading, setAppLoading] = useState(true);
   const [libraryLoading, setLibraryLoading] = useState(true);
 
   const wallets = useWallets();
@@ -48,7 +48,7 @@ export const UserProvider = ({ children }) => {
         console.log(
           'inside the user provider, right before the loading is set to false'
         );
-        setLoading(false);
+        setAppLoading(false);
         if (!userAppInformation.userJournals) {
           const userJournals = await fetchUserJournals(signer);
           setUserAppInformation(x => {
@@ -71,11 +71,11 @@ export const UserProvider = ({ children }) => {
         }
         setLibraryLoading(false);
       } else {
-        setLoading(false);
+        setAppLoading(false);
       }
     };
     setup();
-  }, [wallets, authenticated]);
+  }, [loading, wallets]);
 
   async function airdropCall() {
     try {
@@ -126,7 +126,7 @@ export const UserProvider = ({ children }) => {
       value={{
         userAppInformation,
         setUserAppInformation,
-        loading,
+        appLoading,
         libraryLoading,
       }}
     >

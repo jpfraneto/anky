@@ -31,7 +31,7 @@ const ankyverseQuestion = getAnkyverseQuestion(ankyverseToday.wink);
 
 const DesktopApp = () => {
   const { login, ready, authenticated, logout } = usePrivy();
-  const { userAppInformation, setUserAppInformation, loading } = useUser();
+  const { userAppInformation, setUserAppInformation, appLoading } = useUser();
   const router = useRouter();
   const [lifeBarLength, setLifeBarLength] = useState(0);
   const [userWallet, setUserWallet] = useState(null);
@@ -100,7 +100,7 @@ const DesktopApp = () => {
     }
   }
 
-  if (loading)
+  if (appLoading)
     return (
       <Transition in={loading} timeout={500} mountOnEnter unmountOnExit>
         {state => (

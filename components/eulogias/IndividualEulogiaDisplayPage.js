@@ -10,10 +10,10 @@ import WritingGameComponent from '../WritingGameComponent';
 import Spinner from '../Spinner';
 
 const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
-  const { login, authenticated } = usePrivy();
+  const { login, authenticated, loading } = usePrivy();
   const router = useRouter();
   const [eulogia, setEulogia] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [eulogiaLoading, setEulogiaLoading] = useState(true);
   const [time, setTime] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
@@ -50,56 +50,69 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
   useEffect(() => {
     async function fetchEulogia() {
       try {
-        if (!thisWallet) return;
-        console.log('in hereeeee', thisWallet);
-        let fetchedProvider = await thisWallet.getEthersProvider();
-        setProvider(fetchedProvider);
-        let signer = await fetchedProvider.getSigner();
-
-        const eulogiasContract = new ethers.Contract(
-          process.env.NEXT_PUBLIC_EULOGIAS_CONTRACT_ADDRESS,
-          AnkyEulogiasAbi,
-          signer
-        );
-
-        const eulogiaID = router.query.id;
-        const thisEulogia = await eulogiasContract.getEulogia(eulogiaID);
-        console.log('this eulogia is: ', thisEulogia);
-        if (thisEulogia.metadataURI === '') return setLoading(false);
-        const formattedEulogia = await processFetchedEulogia(thisEulogia);
-        formattedEulogia.eulogiaID = eulogiaID;
-        console.log('the formatted euloogia is: ', formattedEulogia);
-        formattedEulogia.metadata.backgroundImageUrl = `https://ipfs.io/ipfs/${formattedEulogia.metadata.backgroundImageCid}`;
-        formattedEulogia.metadata.coverImageUrl = `https://ipfs.io/ipfs/${formattedEulogia.metadata.coverImageCid}`;
-
-        const response = await fetch(
-          formattedEulogia.metadata.backgroundImageUrl
-        );
-        const imageBlob = await response.blob();
-        const imageUrl = URL.createObjectURL(imageBlob);
-        setPreloadedBackground(imageUrl);
-
-        if (formattedEulogia) {
-          setEulogia(formattedEulogia);
-          setLoading(false);
-
-          setMessages(formattedEulogia.messages);
-
-          const userMessage = formattedEulogia.messages.find(
-            msg => msg.writer === thisWallet.address
+        if (!router.query) return;
+        if (!authenticated && !loading) {
+          const serverResponse = await fetch(
+            `${process.env.NEXT_PUBLIC_SERVER_URL}/notebooks/eulogia/${router.query.id}`
           );
-          setUserHasWritten(Boolean(userMessage));
-          setLoading(false);
+          const data = await serverResponse.json();
+          console.log('the server response is: ', data);
+          setEulogia(data.eulogia);
+          setMessages(data.eulogia.messages);
+          setEulogiaLoading(false);
         } else {
-          throw Error('No eulogia');
+          if (!thisWallet) return;
+          console.log('in hereeeee', thisWallet);
+          let fetchedProvider = await thisWallet.getEthersProvider();
+          setProvider(fetchedProvider);
+          let signer = await fetchedProvider.getSigner();
+
+          const eulogiasContract = new ethers.Contract(
+            process.env.NEXT_PUBLIC_EULOGIAS_CONTRACT_ADDRESS,
+            AnkyEulogiasAbi,
+            signer
+          );
+
+          const eulogiaID = router.query.id;
+          const thisEulogia = await eulogiasContract.getEulogia(eulogiaID);
+          console.log('this eulogia is: ', thisEulogia);
+          if (thisEulogia.metadataURI === '') return setEulogiaLoading(false);
+          const formattedEulogia = await processFetchedEulogia(thisEulogia);
+          formattedEulogia.eulogiaID = eulogiaID;
+          console.log('the formatted euloogia is: ', formattedEulogia);
+          formattedEulogia.metadata.backgroundImageUrl = `https://ipfs.io/ipfs/${formattedEulogia.metadata.backgroundImageCid}`;
+          formattedEulogia.metadata.coverImageUrl = `https://ipfs.io/ipfs/${formattedEulogia.metadata.coverImageCid}`;
+
+          const response = await fetch(
+            formattedEulogia.metadata.backgroundImageUrl
+          );
+          const imageBlob = await response.blob();
+          const imageUrl = URL.createObjectURL(imageBlob);
+          setPreloadedBackground(imageUrl);
+
+          if (formattedEulogia) {
+            setEulogia(formattedEulogia);
+            setEulogiaLoading(false);
+
+            setMessages(formattedEulogia.messages);
+
+            const userMessage = formattedEulogia.messages.find(
+              msg => msg.writer === thisWallet.address
+            );
+            setUserHasWritten(Boolean(userMessage));
+            setLoading(false);
+          } else {
+            throw Error('No eulogia');
+          }
         }
       } catch (error) {
         console.log(error);
         console.log('There was an error.');
       }
     }
+
     fetchEulogia();
-  }, [thisWallet]);
+  }, [loading, authenticated, thisWallet, router.query]);
 
   async function getContentFromArweave(cid) {
     try {
@@ -260,21 +273,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
     );
   }
 
-  if (!authenticated) {
-    return (
-      <div className='mt-2 text-white pt-8'>
-        <p className='mb-3'>you were invited to write on an eulogia</p>
-        <p className='mb-3'>please login first</p>
-        <Button
-          buttonAction={login}
-          buttonText='login'
-          buttonColor='bg-purple-600'
-        />
-      </div>
-    );
-  }
-
-  if (loading)
+  if (eulogiaLoading)
     return (
       <div>
         <Spinner />
@@ -327,33 +326,37 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
             />
           </div>
         </div>
+        <div className='w-full flex justify-center flex-wrap mx-auto'>
+          {messages.map((msg, index) => (
+            <div
+              className='p-2 w-8 flex justify-center items-center cursor-pointer h-8 mx-auto bg-purple-200 hover:bg-purple-400 m-2 rounded-xl text-black'
+              key={index}
+              onClick={() => {
+                setIsModalOpen(true);
+                setDisplayModalMessage(msg);
+              }}
+            >
+              <p>{index}</p>
+            </div>
+          ))}
+        </div>
         <div className='p-2 h-full overflow-y-scroll my-0'>
-          {wallets.length === 0 ? (
+          {!authenticated ? (
             <div>
-              <p>Please log in to interact with this eulogia.</p>
-              <Button
-                buttonAction={login}
-                buttonText='login'
-                buttonColor='bg-purple-600'
-              />
+              <p>
+                you can write if you{' '}
+                <span
+                  className='text-orange-300 hover:text-orange-400 active:text-yellow-300 cursor-pointer'
+                  onClick={login}
+                >
+                  login
+                </span>
+                .
+              </p>
             </div>
           ) : userHasWritten ? (
             <div className='w-full'>
               <p>you already wrote here...</p>
-              <div className='w-full flex justify-center flex-wrap mx-auto'>
-                {messages.map((msg, index) => (
-                  <div
-                    className='p-2 w-8 flex justify-center items-center cursor-pointer h-8 mx-auto bg-purple-200 hover:bg-purple-400 m-2 rounded-xl text-black'
-                    key={index}
-                    onClick={() => {
-                      setIsModalOpen(true);
-                      setDisplayModalMessage(msg);
-                    }}
-                  >
-                    <p>{index}</p>
-                  </div>
-                ))}
-              </div>
             </div>
           ) : (
             <div className='my-0 h-full'>
@@ -382,19 +385,14 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
       </div>
       <div className='w-96 mx-auto'>
         <div className='flex justify-center'>
-          <Button
-            buttonText={linkCopied ? `copied` : `share link`}
-            buttonColor='bg-green-600 mb-2'
-            buttonAction={copyEulogiaLink}
-          />
-          <Button
-            buttonText='my library'
-            buttonColor='bg-orange-600 mb-2'
-            buttonAction={() => router.push('/library')}
-          />
+          {authenticated && (
+            <Button
+              buttonText='my library'
+              buttonColor='bg-orange-600 mb-2'
+              buttonAction={() => router.push('/library')}
+            />
+          )}
         </div>
-
-        <p>anyone with the link will be able to write here</p>
       </div>
       {renderModal()}
     </div>

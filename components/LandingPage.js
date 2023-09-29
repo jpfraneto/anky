@@ -10,7 +10,8 @@ const notebookTypes = [
   { name: 'notebook', description: 'minted from a template. limited supply.' },
   {
     name: 'eulogias',
-    description: 'community written notebook. you can only write one.',
+    description:
+      'community written notebook. wanna say happy birthday? say goodbye to someone that passed? eulogias are for that.',
   },
   {
     name: 'journal',
@@ -69,30 +70,28 @@ function LandingPage() {
             </div>
           ) : (
             <>
-              {startJourney ? (
-                <div className='text-gray-400'>
-                  <div className='mt-2 w-48 mx-auto'>
+              <div className='text-gray-400'>
+                <div className='mt-2 w-48 mx-auto'>
+                  {startJourney ? (
                     <Button
                       buttonText='login'
                       buttonAction={login}
                       buttonColor='bg-purple-400 text-black'
                     />
-                  </div>
-                </div>
-              ) : (
-                <div className='mt-2 flex space-x-2'>
-                  <Button
-                    buttonText='start journey'
-                    buttonColor='bg-purple-500'
-                    buttonAction={() => setStartJourney(true)}
-                  />{' '}
+                  ) : (
+                    <Button
+                      buttonText='start journey'
+                      buttonColor='bg-purple-500'
+                      buttonAction={() => setStartJourney(true)}
+                    />
+                  )}
                   <Button
                     buttonText='prompt of the day'
                     buttonAction={() => router.push('/ankyverse')}
                     buttonColor='bg-green-400 text-black'
                   />
                 </div>
-              )}
+              </div>
             </>
           )}
         </div>
@@ -155,7 +154,7 @@ function LandingPage() {
             consciousness dumping.
           </p>
           <p className='mb-4'>
-            Your Anky safeguards your deepest stories, secrets, and the truths
+            your Anky safeguards your deepest stories, secrets, and the truths
             you write.
           </p>
           <div className='w-48 mx-auto'>
@@ -182,13 +181,25 @@ function LandingPage() {
         <p className='mb-4'>welcome to the ankyverse.</p>
       </div>
 
-      <div className='p-8 bg-gray-200 flex flex-row'>
+      <div className='py-8 px-64 bg-gray-200'>
+        <h2 className='text-3xl font-semibold mb-6'>the tech</h2>
+        <p className='w-48 mx-auto'>
+          what is happening here is a blend of blockchain and arweave. each of
+          your writings will be stored on arweave, and the cid of that writing
+          will be stored on the smart contract associated with that particular
+          notebook instance.
+        </p>
+      </div>
+
+      <div className='p-8 bg-white flex flex-row'>
         <div className='w-3/5 mx-auto'>
-          <p>i need help</p>
-          <p>all your feedback is gold</p>
-          <p>@kithkui on x</p>
-          <p>@jpfraneto on farcaster</p>
-          <p>its all open source https://www.github.com/ankylat</p>
+          <p className='mb-4'>i need help</p>
+          <p className='mb-4'>all your feedback is gold</p>
+          <p className='mb-4'>@kithkui on x</p>
+          <p className='mb-4'>@jpfraneto on farcaster</p>
+          <p className='mb-4'>
+            its all open source https://www.github.com/ankylat
+          </p>
         </div>
       </div>
     </div>
