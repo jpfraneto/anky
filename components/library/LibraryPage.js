@@ -24,7 +24,7 @@ const LibraryPage = ({ notebooksProp, eulogiasProp, journalsProp }) => {
   const wallets = useWallets();
   const { authenticated } = usePrivy();
   console.log('a', userAppInformation);
-  console.log('b', wallets);
+  console.log('b - the wallets are: ', wallets);
   console.log('c', authenticated);
 
   return (

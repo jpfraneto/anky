@@ -142,6 +142,7 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
       console.log('after the response of writing in the notebook');
       console.log('the notebook pages are: ', notebookPages);
       if (notebookPages.length === 0) {
+        console.log('setting the first notebook page');
         setNotebookPages([
           {
             text: finishText,

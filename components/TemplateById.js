@@ -6,6 +6,7 @@ import templatesContractABI from '../lib/templatesABI.json';
 import notebookContractABI from '../lib/notebookABI.json';
 import { processFetchedTemplate } from '../lib/notebooks.js';
 import Spinner from './Spinner';
+import { useWallets } from '@privy-io/react-auth';
 
 function TemplatePage({ userAnky }) {
   console.log('the user anky is: ', userAnky);
@@ -17,6 +18,7 @@ function TemplatePage({ userAnky }) {
   const [notebookInformation, setNotebookInformation] = useState({});
   const router = useRouter();
   const { id } = router.query;
+  const wallets = useWallets();
 
   useEffect(() => {
     if (id && userAnky) fetchTemplateData(id);
@@ -65,7 +67,7 @@ function TemplatePage({ userAnky }) {
 
       const amount = 1;
       const priceInWei = ethers.utils.parseEther(templateData.price);
-
+      console.log('the user anky is: ', userAnky);
       console.log('HEREEE', userAnky.wallet.address);
 
       const transaction = await notebooksContract.mintNotebook(

@@ -298,14 +298,14 @@ function CreateNotebookTemplate({ userAnky }) {
       <div key={index} className='relative mt-0'>
         <p className='absolute -left-9 top-0 mt-2 ml-2'>{index + 1}.</p>
         <input
-          className='border p-2 w-full rounded'
+          className='border p-2 w-full mr-auto rounded'
           value={prompt}
           onChange={e => handlePromptChange(index, e.target.value)}
           required
         />
         <button
           type='button'
-          className='absolute right-0 top-0 mt-2 mr-2 text-red-500'
+          className='absolute right-0 top-0 mt-2 mr-2 text-red-500 hover:text-red-700'
           onClick={() => handleRemovePrompt(index)}
         >
           Remove
@@ -472,7 +472,7 @@ function CreateNotebookTemplate({ userAnky }) {
 
           <p className='text-left text-sm text-gray-500 my-0'>Bulk import</p>
           <textarea
-            className='border p-2 w-full rounded text-gray-500'
+            className='border p-2 w-full h-fit rounded text-gray-500'
             placeholder='Enter questions separated by commas...'
             value={bulkImportString}
             onChange={e => setBulkImportString(e.target.value)}
@@ -491,13 +491,26 @@ function CreateNotebookTemplate({ userAnky }) {
 
           <div className='space-y-2 mt-0 text-gray-500'>{renderPrompts()}</div>
 
-          <button
-            type='button'
-            className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-fit mt-2 mr-auto'
-            onClick={handleAddPrompt}
-          >
-            Add Prompt
-          </button>
+          <div className='flex mr-auto'>
+            <button
+              type='button'
+              className='bg-blue-500  hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-fit mt-2 mr-2'
+              onClick={handleAddPrompt}
+            >
+              Add Prompt
+            </button>
+            <button
+              type='button'
+              className='bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded w-fit mt-2 mr-auto'
+              onClick={() => {
+                if (confirm('do you want to delete all the prompts?')) {
+                  setPrompts([]);
+                }
+              }}
+            >
+              Clear Prompts
+            </button>
+          </div>
 
           <div>
             <p className='text-left text-sm text-gray-500 mt-1'>
