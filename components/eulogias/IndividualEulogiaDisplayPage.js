@@ -316,7 +316,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
           <h2 className='text-4xl my-2'>{eulogia.metadata.title}</h2>
           <p className='italic text-2xl mb-2'>{eulogia.metadata.description}</p>
           <div className='mb-4'>
-            {messages.length} writing of {eulogia.maxMessages}
+            {messages.length} writing(s) of {eulogia.maxMessages} spots
           </div>
           <div className='mx-auto relative w-96 h-96 flex overflow-hidden border-white border rounded-xl justify-center'>
             <Image

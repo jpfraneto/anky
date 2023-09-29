@@ -76,19 +76,19 @@ function LandingPage() {
                     <Button
                       buttonText='login'
                       buttonAction={login}
-                      buttonColor='bg-purple-400 text-black'
+                      buttonColor='bg-purple-400 mx-1 text-black'
                     />
                   ) : (
                     <Button
                       buttonText='start journey'
-                      buttonColor='bg-purple-500'
+                      buttonColor='bg-purple-500 mx-1'
                       buttonAction={() => setStartJourney(true)}
                     />
                   )}
                   <Button
                     buttonText='prompt of the day'
                     buttonAction={() => router.push('/ankyverse')}
-                    buttonColor='bg-green-400 text-black'
+                    buttonColor='bg-green-400 text-black mx-1'
                   />
                 </div>
               </div>
