@@ -316,7 +316,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
           <h2 className='text-6xl my-2 text-purple-200'>
             {eulogia.metadata.title}
           </h2>
-          <p className='italic text-2xl mb-2 w-48 mx-auto'>
+          <p className='italic text-2xl mb-2 w-96 mx-auto'>
             {eulogia.metadata.description}
           </p>
           <div className='mb-4'>
