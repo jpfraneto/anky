@@ -8,24 +8,35 @@ import EulogiaCard from '../eulogias/EulogiaCard';
 import JournalCard from '../journals/JournalCard';
 import Button from '../Button';
 import Spinner from '../Spinner';
-import {
-  fetchUserEulogias,
-  fetchUserNotebooks,
-  fetchUserJournals,
-} from '../../lib/notebooks';
+
 import { useRouter } from 'next/router';
 
-const LibraryPage = ({ notebooksProp, eulogiasProp, journalsProp }) => {
+const LibraryPage = ({}) => {
   const router = useRouter();
-  const [notebooks, setNotebooks] = useState(notebooksProp);
-  const [journals, setJournals] = useState(journalsProp);
-  const [eulogias, setEulogias] = useState(eulogiasProp);
-  const { userAppInformation } = useUser();
+  const { userAppInformation, loading } = useUser();
+
+  const [notebooks, setNotebooks] = useState([]);
+  const [journals, setJournals] = useState([]);
+  const [eulogias, setEulogias] = useState([]);
   const wallets = useWallets();
   const { authenticated } = usePrivy();
   console.log('a', userAppInformation);
   console.log('b - the wallets are: ', wallets);
   console.log('c', authenticated);
+  useEffect(() => {
+    setJournals(userAppInformation.userJournals || []);
+    setNotebooks(userAppInformation.userNotebooks || []);
+    setEulogias(userAppInformation.userEulogias || []);
+  }, [loading]);
+
+  if (loading) {
+    return (
+      <div>
+        <Spinner />
+        <p>loading...</p>
+      </div>
+    );
+  }
 
   return (
     <div className='text-white py-4'>

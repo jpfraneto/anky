@@ -57,13 +57,7 @@ const DesktopApp = () => {
       case '/eulogias':
         return <EulogiasListPage />;
       case '/library':
-        return (
-          <LibraryPage
-            notebooksProp={userAppInformation.userNotebooks}
-            eulogiasProp={userAppInformation.userEulogias}
-            journalsProp={userAppInformation.userJournals}
-          />
-        );
+        return <LibraryPage />;
       case '/journal':
         return <JournalPage userAppInformation={userAppInformation} />;
       case '/eulogias/new':
