@@ -24,10 +24,13 @@ const LibraryPage = ({}) => {
   console.log('b - the wallets are: ', wallets);
   console.log('c', authenticated);
   useEffect(() => {
+    console.log('the user journals are: ', userAppInformation.userJournals);
     setJournals(userAppInformation.userJournals || []);
+    console.log('the user notebooks are: ', userAppInformation.userNotebooks);
     setNotebooks(userAppInformation.userNotebooks || []);
+    console.log('the user eulogias are: ', userAppInformation.userEulogias);
     setEulogias(userAppInformation.userEulogias || []);
-  }, [loading]);
+  }, [loading, userAppInformation]);
 
   if (loading) {
     return (
