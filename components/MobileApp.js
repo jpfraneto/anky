@@ -88,12 +88,13 @@ const MobileApp = () => {
                 <p className='text-2xl'>lunamaria</p>
               </div>
             </div>
+
             <div
               onClick={() => alert('go to user journals')}
               className='bg-yellow-400 w-5/6 mx-auto h-16 rounded-2xl mt-4 flex items-center'
             >
               <p className='text-white text-3xl text-center w-9/12 mx-auto'>
-                journals ({userAppInformation.userJournals.length})
+                journals ({userAppInformation?.userJournals?.length || 0})
               </p>
             </div>
 
@@ -102,7 +103,7 @@ const MobileApp = () => {
               className='bg-orange-400 w-5/6 mx-auto h-16 rounded-2xl mt-4 flex items-center'
             >
               <p className='text-white text-3xl text-center w-9/12 mx-auto'>
-                eulogias ({userAppInformation.userEulogias.length})
+                eulogias ({userAppInformation?.userEulogias?.length})
               </p>
             </div>
 
@@ -111,7 +112,7 @@ const MobileApp = () => {
               className='bg-blue-400 w-5/6 mx-auto h-16 rounded-2xl mt-4 flex items-center'
             >
               <p className='text-white text-3xl text-center w-9/12 mx-auto'>
-                notebooks ({userAppInformation.userNotebooks.length})
+                notebooks ({userAppInformation?.userNotebooks?.length || 0})
               </p>
             </div>
 
@@ -132,6 +133,11 @@ const MobileApp = () => {
     return (
       <div className='h-screen bg-black w-screen flex justify-center items-center'>
         <h2 className='text-white text-6xl'>anky</h2>
+        <p className='text-sm mb-3'>(don&apos;t try to understand)</p>
+        <div class='lds-ripple'>
+          <div></div>
+          <div></div>
+        </div>
       </div>
     );
   }
