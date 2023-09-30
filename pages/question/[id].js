@@ -18,17 +18,7 @@ const QuestionById = () => {
         avatar='anky'
         id='1'
       />
-      {/* <div className='my-4 px-2'>
-        {writing &&
-          writing.split('\n').map((x, i) => {
-            return <p key={i}>{x}</p>;
-          })}
-      </div>
-      <Button
-        buttonAction={() => router.back()}
-        buttonText='Go Back'
-        buttonColor='bg-green-700'
-      /> */}
+
       {answers.map((answer, i) => (
         <AnswerToQuestionCard answer={answer} key={i} index={i} />
       ))}

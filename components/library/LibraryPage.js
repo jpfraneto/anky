@@ -13,7 +13,7 @@ import { useRouter } from 'next/router';
 
 const LibraryPage = ({}) => {
   const router = useRouter();
-  const { userAppInformation, loading } = useUser();
+  const { userAppInformation, appLoading } = useUser();
 
   const [notebooks, setNotebooks] = useState([]);
   const [journals, setJournals] = useState([]);
@@ -30,9 +30,9 @@ const LibraryPage = ({}) => {
     setNotebooks(userAppInformation.userNotebooks || []);
     console.log('the user eulogias are: ', userAppInformation.userEulogias);
     setEulogias(userAppInformation.userEulogias || []);
-  }, [loading, userAppInformation]);
+  }, [appLoading, userAppInformation]);
 
-  if (loading) {
+  if (appLoading) {
     return (
       <div>
         <Spinner />

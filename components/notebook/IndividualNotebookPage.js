@@ -256,12 +256,11 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
             buttonColor='bg-purple-500 w-48 mx-auto mb-3'
             buttonAction={writeOnNotebook}
           />
-          <Link passHref href='/templates'>
-            <Button
-              buttonText={`Go Back`}
-              buttonColor='bg-red-600 w-48 mx-auto mb-3'
-            />
-          </Link>
+          <Button
+            buttonAction={() => router.back()}
+            buttonText={`Go Back`}
+            buttonColor='bg-red-600 w-48 mx-auto mb-3'
+          />
         </div>
       )}
     </div>

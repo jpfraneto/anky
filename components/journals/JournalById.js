@@ -169,6 +169,11 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
   };
 
   function renderModal() {
+    let content;
+    if (entryForDisplay) {
+      console.log('the entry for display is: ', entryForDisplay);
+      content = entryForDisplay.content || entryForDisplay.text;
+    }
     return (
       isModalOpen && (
         <div className='fixed top-0 left-0 bg-black w-full h-full flex items-center justify-center z-50'>
@@ -179,13 +184,19 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
             >
               close
             </p>
-            {entryForDisplay.text.split('\n').map((x, i) => {
-              return (
-                <p key={i} className='my-2'>
-                  {x}
-                </p>
-              );
-            })}
+            <div className='overflow-y-scroll h-9/12'>
+              {content ? (
+                content.includes('\n') ? (
+                  content.split('\n').map((x, i) => (
+                    <p className='my-2' key={i}>
+                      {x}
+                    </p>
+                  ))
+                ) : (
+                  <p className='my-2'>{content}</p>
+                )
+              ) : null}
+            </div>
           </div>
         </div>
       )
@@ -236,8 +247,8 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
               <div
                 key={i}
                 onClick={() => {
-                  setIsModalOpen(true);
                   setEntryForDisplay(x);
+                  setIsModalOpen(true);
                 }}
                 className='px-2  py-1 m-1 w-8 h-8 flex justify-center items-center hover:bg-blue-600 cursor-pointer bg-blue-400 rounded-xl'
               >

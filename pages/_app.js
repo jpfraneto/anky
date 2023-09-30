@@ -36,13 +36,13 @@ function MyApp({ Component, pageProps }) {
   } = usePWA();
 
   const [isDesktop, setIsDesktop] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [mainAppLoading, setMainAppLoading] = useState(true);
 
   useEffect(() => {
     if (window.innerWidth > 768) {
       setIsDesktop(true);
     }
-    setLoading(false);
+    setMainAppLoading(false);
   }, []);
 
   useEffect(() => {
@@ -100,7 +100,7 @@ function MyApp({ Component, pageProps }) {
     } catch (error) {}
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (mainAppLoading) return <p>Loading...</p>;
 
   return (
     <main className={`${righteous.className}`}>
