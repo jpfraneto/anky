@@ -88,33 +88,40 @@ const MobileApp = () => {
                 <p className='text-2xl'>lunamaria</p>
               </div>
             </div>
-            <Link href='/m/user/journals' passHref>
-              <div className='bg-yellow-400 w-5/6 mx-auto h-16 rounded-2xl mt-4 flex items-center'>
-                <p className='text-white text-3xl text-center w-9/12 mx-auto'>
-                  journals ({userAppInformation.userJournals.length})
-                </p>
-              </div>
-            </Link>
-            <Link href='/m/user/eulogias' passHref>
-              <div className='bg-orange-400 w-5/6 mx-auto h-16 rounded-2xl mt-4 flex items-center'>
-                <p className='text-white text-3xl text-center w-9/12 mx-auto'>
-                  eulogias ({userAppInformation.userEulogias.length})
-                </p>
-              </div>
-            </Link>
+            <div
+              onClick={() => alert('go to user journals')}
+              className='bg-yellow-400 w-5/6 mx-auto h-16 rounded-2xl mt-4 flex items-center'
+            >
+              <p className='text-white text-3xl text-center w-9/12 mx-auto'>
+                journals ({userAppInformation.userJournals.length})
+              </p>
+            </div>
 
-            <Link href='/m/user/notebooks' passHref>
-              <div className='bg-blue-400 w-5/6 mx-auto h-16 rounded-2xl mt-4 flex items-center'>
-                <p className='text-white text-3xl text-center w-9/12 mx-auto'>
-                  notebooks ({userAppInformation.userNotebooks.length})
-                </p>
-              </div>
-            </Link>
+            <div
+              onClick={() => alert('go to user eulogias')}
+              className='bg-orange-400 w-5/6 mx-auto h-16 rounded-2xl mt-4 flex items-center'
+            >
+              <p className='text-white text-3xl text-center w-9/12 mx-auto'>
+                eulogias ({userAppInformation.userEulogias.length})
+              </p>
+            </div>
+
+            <div
+              onClick={() => alert('go to user notebooks')}
+              className='bg-blue-400 w-5/6 mx-auto h-16 rounded-2xl mt-4 flex items-center'
+            >
+              <p className='text-white text-3xl text-center w-9/12 mx-auto'>
+                notebooks ({userAppInformation.userNotebooks.length})
+              </p>
+            </div>
+
             <div className='w-5/6 mx-auto'>
               <p>all what you see here is happening in real time.</p>
               <p className='mt-2'>
                 every day a new piece of the story is wrote.
               </p>
+              <p className='mt-2'>where will everything be displayed?</p>
+              <p className='mt-2'>its a mess, i know. but every day cleaner.</p>
             </div>
           </div>
         );
