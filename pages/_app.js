@@ -206,7 +206,9 @@ function MyApp({ Component, pageProps }) {
               <DesktopApp />
             </UserProvider>
           ) : (
-            <MobileApp />
+            <UserProvider>
+              <MobileApp />
+            </UserProvider>
           )}
         </PrivyWagmiConnector>
       </PrivyProvider>

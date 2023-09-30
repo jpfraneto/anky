@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { usePWA } from '../context/pwaContext';
+import { useUser } from '../context/UserContext';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
+import Image from 'next/image';
 import { Righteous, Dancing_Script } from 'next/font/google';
 import { getAnkyverseDay, getAnkyverseQuestion } from '../lib/ankyverse';
 import { createTBA, airdropAnky } from '../lib/backend';
@@ -51,94 +52,14 @@ const MobileApp = () => {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const [lifeBarLength, setLifeBarLength] = useState(0);
-  const { userAppInformation, setUserAppInformation, isAnkyLoading } = usePWA();
-  const [userWallet, setUserWallet] = useState(null);
-
-  const wallets = useWallets();
-  const wallet = wallets.wallets[0];
-  const changeChain = async () => {
-    if (wallet) {
-      await wallet.switchChain(84531);
-      setUserWallet(wallet);
-      console.log('the chain was changed', wallet);
-      setUserAppInformation(x => {
-        return { ...x, wallet: wallet };
-      });
-    }
-  };
-
-  useEffect(() => {
-    const setup = async () => {
-      if (!userAppInformation?.wallet?.chainId.includes('84531'))
-        await changeChain();
-      // I won't call the aidrop call because it is called when the user logs in.
-      console.log('in here', userAppInformation);
-      if (!userAppInformation?.ankyIndex) await airdropCall();
-      if (!userAppInformation?.tbaAddress) await callTba();
-
-      setLoading(false);
-    };
-    setup();
-  }, [wallet, userAppInformation.wallet]);
-
-  async function airdropCall() {
-    try {
-      console.log(
-        'sending the call to the airdrop route',
-        userAppInformation.wallet.address
-      );
-      console.log(
-        'The call is being sent to:',
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/blockchain/airdrop`
-      );
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/blockchain/airdrop`,
-        {
-          method: 'POST',
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            wallet: userAppInformation.wallet.address,
-          }),
-        }
-      );
-      const data = await response.json();
-      console.log('in here, the data is: ', data);
-      setUserAppInformation(x => {
-        return { ...x, tokenUri: data.tokenUri, ankyIndex: data.userAnkyIndex };
-      });
-    } catch (error) {
-      console.log('The airdrop was not successful', error);
-    }
-  }
-
-  async function callTba() {
-    try {
-      console.log(
-        'sending the call to the fetch the tba account route',
-        userAppInformation.wallet.address
-      );
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/blockchain/getTBA/${userAppInformation.wallet.address}`
-      );
-      const data = await response.json();
-      console.log('the response data is: ', data);
-      setUserAppInformation(x => {
-        return { ...x, tbaAddress: data.ankyTba };
-      });
-    } catch (error) {
-      console.log('The airdrop was not successful', error);
-    }
-  }
+  const { userAppInformation, appLoading } = useUser();
 
   function getComponentForRoute(route) {
+    console.log('in here', userAppInformation);
     switch (route) {
       case '/eulogias/new':
         return <NewEulogiaPageMobile userAnky={userAppInformation} />;
       case `/eulogias/${route.split('/').pop()}`:
-        console.log('IN THIS ROUTE');
         return (
           <IndividualEulogiaDisplayPageMobile
             setLifeBarLength={setLifeBarLength}
@@ -155,28 +76,54 @@ const MobileApp = () => {
 
       default:
         return (
-          <div className='p-4 text-white h-screen'>
-            <p className='my-2'>
-              this app is being prototyped on the browser. i need creative
-              freedom to design the back end of it, and my 10 fingers provide
-              that freedom. you can go through your laptop to being to
-              understand what will happen here.
-            </p>
-            <p className='my-2'>
-              if you want to contribute, this is the repo: github.com/ankylat
-            </p>
-            <p className='my-2'>
-              if you know how to do a decentralized codebase without using a
-              centralized service like github, please help me with that also.
-            </p>
+          <div className='p-4 w-full text-black h-screen'>
+            <div className='flex rounded-full bg-purple-200 w-3/5 mx-auto h-18'>
+              <div className='w-1/4 flex justify-center items-center'>
+                <div className='w-12 h-12 aspect-square rounded-full pl-10 relative overflow-hidden'>
+                  <Image src='/ankys/2.png' fill alt='anky' />
+                </div>
+              </div>
+
+              <div className='w-3/4 py-4 px-2 flex justify-center items-center'>
+                <p className='text-2xl'>lunamaria</p>
+              </div>
+            </div>
+            <Link href='/m/user/journals' passHref>
+              <div className='bg-yellow-400 w-5/6 mx-auto h-16 rounded-2xl mt-4 flex items-center'>
+                <p className='text-white text-3xl text-center w-9/12 mx-auto'>
+                  journals ({userAppInformation.userJournals.length})
+                </p>
+              </div>
+            </Link>
+            <Link href='/m/user/eulogias' passHref>
+              <div className='bg-orange-400 w-5/6 mx-auto h-16 rounded-2xl mt-4 flex items-center'>
+                <p className='text-white text-3xl text-center w-9/12 mx-auto'>
+                  eulogias ({userAppInformation.userEulogias.length})
+                </p>
+              </div>
+            </Link>
+
+            <Link href='/m/user/notebooks' passHref>
+              <div className='bg-blue-400 w-5/6 mx-auto h-16 rounded-2xl mt-4 flex items-center'>
+                <p className='text-white text-3xl text-center w-9/12 mx-auto'>
+                  notebooks ({userAppInformation.userNotebooks.length})
+                </p>
+              </div>
+            </Link>
+            <div className='w-5/6 mx-auto'>
+              <p>all what you see here is happening in real time.</p>
+              <p className='mt-2'>
+                every day a new piece of the story is wrote.
+              </p>
+            </div>
           </div>
         );
     }
   }
 
-  if (loading) {
+  if (appLoading) {
     return (
-      <div className='h-screen w-screen flex justify-center items-center'>
+      <div className='h-screen bg-black w-screen flex justify-center items-center'>
         <h2 className='text-white text-6xl'>anky</h2>
       </div>
     );
@@ -198,18 +145,9 @@ const MobileApp = () => {
   }
 
   return (
-    <div className='h-screen w-screen'>
-      <div className='h-8 w-screen'>
-        <div
-          className='h-full opacity-50'
-          style={{
-            width: `${lifeBarLength}%`,
-            backgroundColor: lifeBarLength > 30 ? 'green' : 'red',
-          }}
-        ></div>
-      </div>
+    <div className='fixed h-screen w-screen'>
       <div
-        className={`text-black relative overflow-y-scroll flex flex-col items-center h-full w-full bg-cover bg-center`}
+        className={`bg-white relative overflow-y-scroll flex flex-col items-center h-full w-full bg-cover bg-center`}
       >
         {getComponentForRoute(router.pathname)}
       </div>
