@@ -9,9 +9,12 @@ const MobileUserNotebooksPage = ({ userAnky }) => {
   return (
     <div className='w-full p-4'>
       {userAnky.userNotebooks.map((notebook, i) => {
-        console.log('THE NOTEBOOK IS ', notebook);
         return (
-          <Link href={`/m/user/notebooks/${notebook.notebookId}`} passHref>
+          <Link
+            href={`/m/user/notebooks/${notebook.notebookId}`}
+            passHref
+            key={i}
+          >
             <div className='p-2 bg-blue-400 w-5/6 mx-auto aspect-square rounded-2xl mt-4 flex  flex-col items-center text-center active:bg-blue-500'>
               <div className='flex w-full h-1/2 '>
                 <div className='rounded-xl overflow-hidden relative w-1/2 aspect-square'>

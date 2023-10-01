@@ -65,6 +65,7 @@ const MobileUserEulogiaById = ({ userAnky }) => {
         );
         return (
           <div
+            key={i}
             onClick={() => toggleExpand(i)}
             className={`${
               writtenPage ? 'bg-amber-300' : 'bg-amber-200'

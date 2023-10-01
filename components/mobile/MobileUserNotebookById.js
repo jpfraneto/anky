@@ -64,6 +64,7 @@ const MobileUserNotebookById = ({ userAnky }) => {
         );
         return (
           <div
+            key={i}
             onClick={() => toggleExpand(i)}
             className={`${
               userPage ? 'bg-blue-300' : 'bg-blue-200'

@@ -46,6 +46,7 @@ const MobileUserJournalByIdPage = ({ userAnky }) => {
       {thisJournal.entries.map((journalEntry, i) => {
         return (
           <div
+            key={i}
             onClick={() => toggleExpand(i)}
             className={`bg-lime-300 w-5/6 p-2 mx-auto mt-4 pb-12 flex flex-col relative items-center rounded-2xl transition-all duration-300 ${
               expanded === i ? 'h-auto' : 'h-24'

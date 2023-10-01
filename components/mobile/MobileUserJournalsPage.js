@@ -8,7 +8,7 @@ const MobileUserJournalsPage = ({ userAnky }) => {
     <div className='w-full p-4'>
       {userAnky.userJournals.map((journal, i) => {
         return (
-          <Link href={`/m/user/journals/${journal.journalId}`} passHref>
+          <Link key={i} href={`/m/user/journals/${journal.journalId}`} passHref>
             <div className='bg-lime-400 w-5/6 mx-auto h-16 rounded-2xl mt-4 flex items-center text-center active:bg-lime-500'>
               <p className='text-center  w-full text-xl'>{`journal #${
                 journal.journalId
