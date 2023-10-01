@@ -10,6 +10,12 @@ import { createTBA, airdropAnky } from '../lib/backend';
 import IndividualEulogiaDisplayPageMobile from './eulogias/IndividualEulogiaDisplayPageMobile.js';
 import NewEulogiaPageMobile from './eulogias/NewEulogiaPageMobile.js';
 import IndividualNotebookPageMobile from './notebook/IndividualNotebookPageMobile.js';
+import MobileUserEulogiasPage from './mobile/MobileUserEulogiasPage';
+import MobileUserJournalsPage from './mobile/MobileUserJournalsPage';
+import MobileUserNotebooksPage from './mobile/MobileUserNotebooksPage';
+import MobileUserJournalByIdPage from './mobile/MobileUserJournalByIdPage';
+import MobileUserNotebookById from './mobile/MobileUserNotebookById';
+import MobileUserEulogiaById from './mobile/MobileUserEulogiaById';
 
 const sections = [
   {
@@ -57,6 +63,18 @@ const MobileApp = () => {
   function getComponentForRoute(route) {
     console.log('in here', userAppInformation);
     switch (route) {
+      case '/m/user/journals':
+        return <MobileUserJournalsPage userAnky={userAppInformation} />;
+      case `/m/user/journals/${route.split('/').pop()}`:
+        return <MobileUserJournalByIdPage userAnky={userAppInformation} />;
+      case '/m/user/eulogias':
+        return <MobileUserEulogiasPage userAnky={userAppInformation} />;
+      case `/m/user/eulogias/${route.split('/').pop()}`:
+        return <MobileUserEulogiaById userAnky={userAppInformation} />;
+      case '/m/user/notebooks':
+        return <MobileUserNotebooksPage userAnky={userAppInformation} />;
+      case `/m/user/notebooks/${route.split('/').pop()}`:
+        return <MobileUserNotebookById userAnky={userAppInformation} />;
       case '/eulogias/new':
         return <NewEulogiaPageMobile userAnky={userAppInformation} />;
       case `/eulogias/${route.split('/').pop()}`:
@@ -77,62 +95,49 @@ const MobileApp = () => {
       default:
         return (
           <div className='p-4 w-full text-black h-screen'>
-            <div className='flex rounded-full bg-purple-200 w-3/5 mx-auto h-18'>
-              <div className='w-1/4 flex justify-center items-center'>
-                <div className='w-12 h-12 aspect-square rounded-full pl-10 relative overflow-hidden'>
-                  <Image src='/ankys/2.png' fill alt='anky' />
-                </div>
+            <Link passHref href={`/m/user/journals`}>
+              <div className='bg-lime-400 w-5/6 mx-auto h-16 rounded-2xl mt-4 flex items-center active:bg-lime-500'>
+                <p className='text-black text-xl text-center w-9/12 mx-auto'>
+                  journals ({userAppInformation?.userJournals?.length || 0})
+                </p>
               </div>
+            </Link>
 
-              <div className='w-3/4 py-4 px-2 flex justify-center items-center'>
-                <p className='text-2xl'>lunamaria</p>
+            <Link passHref href={`/m/user/eulogias`}>
+              <div className='bg-amber-400 w-5/6 mx-auto h-16 rounded-2xl mt-4 flex items-center active:bg-amber-500'>
+                <p className='text-black text-xl text-center w-9/12 mx-auto'>
+                  eulogias ({userAppInformation?.userEulogias?.length || 0})
+                </p>
               </div>
-            </div>
+            </Link>
 
-            <div
-              onClick={() => alert('go to user journals')}
-              className='bg-yellow-400 w-5/6 mx-auto h-16 rounded-2xl mt-4 flex items-center'
-            >
-              <p className='text-white text-3xl text-center w-9/12 mx-auto'>
-                journals ({userAppInformation?.userJournals?.length || 0})
-              </p>
-            </div>
-
-            <div
-              onClick={() => alert('go to user eulogias')}
-              className='bg-orange-400 w-5/6 mx-auto h-16 rounded-2xl mt-4 flex items-center'
-            >
-              <p className='text-white text-3xl text-center w-9/12 mx-auto'>
-                eulogias ({userAppInformation?.userEulogias?.length || 0})
-              </p>
-            </div>
-
-            <div
-              onClick={() => alert('go to user notebooks')}
-              className='bg-blue-400 w-5/6 mx-auto h-16 rounded-2xl mt-4 flex items-center'
-            >
-              <p className='text-white text-3xl text-center w-9/12 mx-auto'>
-                notebooks ({userAppInformation?.userNotebooks?.length || 0})
-              </p>
-            </div>
-            <div
-              onClick={logout}
-              className='bg-red-400 w-5/6 mx-auto h-16 rounded-2xl mt-4 flex items-center'
-            >
-              <p className='text-white text-3xl text-center w-9/12 mx-auto'>
-                logout
-              </p>
-            </div>
+            <Link passHref href={`/m/user/notebooks`}>
+              <div className='bg-blue-400 w-5/6 mx-auto h-16 rounded-2xl mt-4 flex items-center'>
+                <p className='text-black text-xl text-center w-9/12 mx-auto'>
+                  notebooks ({userAppInformation?.userNotebooks?.length || 0})
+                </p>
+              </div>
+            </Link>
 
             <div className='w-5/6 mx-auto mt-2'>
-              <p>all what you see here is happening in real time.</p>
+              <p className='mt-2'>
+                all what you see here is evolving in real time.
+              </p>
               <p className='mt-2'>
                 every day a new piece of the story is wrote.
               </p>
-              <p className='mt-2'>where will everything be displayed?</p>
               <p className='mt-2'>its a mess, i know. but every day cleaner.</p>
               <p className='mt-2'>
                 the desktop app is cool. explore it. write on it.
+              </p>
+              <p className='mt-2'>i&apos;m doing my best.</p>
+            </div>
+            <div
+              onClick={logout}
+              className='bg-red-400 w-4/6 mx-auto h-12 rounded-2xl mt-4 flex items-center'
+            >
+              <p className='text-white text-3xl text-center w-9/12 mx-auto'>
+                logout
               </p>
             </div>
           </div>
@@ -173,6 +178,17 @@ const MobileApp = () => {
       <div
         className={`bg-white relative overflow-y-scroll flex flex-col items-center h-full w-full bg-cover bg-center`}
       >
+        <div className='flex mt-6 mb-0 rounded-full bg-purple-300 w-3/5 mx-auto h-18 border border-black'>
+          <div className='w-2/5 flex justify-center items-center'>
+            <div className='w-12 h-12 aspect-square rounded-full pl-10 relative overflow-hidden'>
+              <Image src='/ankys/2.png' fill alt='anky' />
+            </div>
+          </div>
+
+          <div className='w-3/5 py-4 pr-4 flex justify-center items-center '>
+            <p className='text-2xl'>lunamaria</p>
+          </div>
+        </div>
         {getComponentForRoute(router.pathname)}
       </div>
     </div>
