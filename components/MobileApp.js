@@ -17,6 +17,7 @@ import MobileUserJournalByIdPage from './mobile/MobileUserJournalByIdPage';
 import MobileUserNotebookById from './mobile/MobileUserNotebookById';
 import MobileUserEulogiaById from './mobile/MobileUserEulogiaById';
 import MobileBuyNewJournal from './mobile/MobileBuyNewJournal';
+import MobileNotebookTemplatesList from './mobile/MobileNotebookTemplatesList';
 import Spinner from './Spinner';
 import MobileNewEulogia from './mobile/MobileNewEulogia';
 
@@ -65,6 +66,8 @@ const MobileApp = () => {
 
   function getComponentForRoute(route) {
     switch (route) {
+      case '/m/notebooks':
+        return <MobileNotebookTemplatesList userAnky={userAppInformation} />;
       case '/m/user/journals':
         return <MobileUserJournalsPage userAnky={userAppInformation} />;
       case '/m/journals/new':

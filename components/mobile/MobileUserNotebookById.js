@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { ethers } from 'ethers';
+import { Inter } from 'next/font/google';
 
 var options = {
   weekday: 'long',
@@ -13,6 +14,8 @@ var options = {
   minute: 'numeric',
   second: 'numeric',
 };
+
+const inter = Inter({ subsets: ['latin'], weight: ['200', '400'] });
 
 const MobileUserNotebookById = ({ userAnky }) => {
   const [thisNotebook, setThisNotebook] = useState(null);
@@ -37,7 +40,7 @@ const MobileUserNotebookById = ({ userAnky }) => {
     setExpanded(expanded === index ? null : index);
   };
   return (
-    <div className='w-full p-4'>
+    <div className={`${inter.className} w-full p-4`}>
       <div className='p-2 bg-blue-400 w-5/6 mx-auto aspect-square rounded-2xl mt-4 flex  flex-col items-center text-center active:bg-blue-500'>
         <div className='flex w-full h-1/2 '>
           <div className='rounded-xl overflow-hidden relative w-1/2 aspect-square'>
@@ -68,7 +71,7 @@ const MobileUserNotebookById = ({ userAnky }) => {
             onClick={() => toggleExpand(i)}
             className={`${
               userPage ? 'bg-blue-300' : 'bg-blue-200'
-            } w-5/6 p-2 mx-auto mt-4 pb-12 flex flex-col relative items-start rounded-2xl transition-all duration-300 ${
+            } w-full p-2 mx-auto mt-4 pb-12 flex flex-col relative items-start rounded-2xl transition-all duration-300 ${
               expanded === i ? 'h-auto' : `${userPage ? 'h-32' : 'h-8'}`
             } active:bg-blue-400`}
           >

@@ -2,12 +2,15 @@ import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
+import { Inter } from 'next/font/google';
+
+const inter = Inter({ subsets: ['latin'], weight: ['200', '400'] });
 
 const MobileUserNotebooksPage = ({ userAnky }) => {
   const router = useRouter();
   if (!userAnky && !userAnky.userNotebooks) return <p>loading!</p>;
   return (
-    <div className='w-full p-4'>
+    <div className={`${inter.className} w-full p-4`}>
       {userAnky.userNotebooks.map((notebook, i) => {
         return (
           <Link
@@ -35,6 +38,14 @@ const MobileUserNotebooksPage = ({ userAnky }) => {
           </Link>
         );
       })}
+      <Link passHref href='/m/notebooks'>
+        <div className='bg-blue-800 w-4/6 mx-auto h-12 rounded-2xl mt-4 flex items-center'>
+          <p className='text-white text-3xl text-center w-9/12 mx-auto'>
+            explore
+          </p>
+        </div>
+      </Link>
+
       <div
         onClick={() => router.back()}
         className='bg-red-400 w-4/6 mx-auto h-12 rounded-2xl mt-4 flex items-center'

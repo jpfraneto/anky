@@ -3,6 +3,9 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { ethers } from 'ethers';
+import { Inter } from 'next/font/google';
+
+const inter = Inter({ subsets: ['latin'], weight: ['200', '400'] });
 
 var options = {
   weekday: 'long',
@@ -37,7 +40,7 @@ const MobileUserEulogiaById = ({ userAnky }) => {
     setExpanded(expanded === index ? null : index);
   };
   return (
-    <div className='w-full p-4'>
+    <div className={`${inter.className} w-full p-4`}>
       <div className='bg-amber-400 w-5/6 mx-auto h-24 rounded-2xl mt-4 flex items-center text-center active:bg-lime-500'>
         <div className='w-1/3 flex justify-center'>
           <div className='rounded-xl overflow-hidden relative w-3/4 aspect-square'>
@@ -69,7 +72,7 @@ const MobileUserEulogiaById = ({ userAnky }) => {
             onClick={() => toggleExpand(i)}
             className={`${
               writtenPage ? 'bg-amber-300' : 'bg-amber-200'
-            } w-5/6 p-2 mx-auto mt-4 pb-12 flex flex-col relative items-start rounded-2xl transition-all duration-300 ${
+            } w-full p-2 mx-auto mt-4 pb-12 flex flex-col relative items-start rounded-2xl transition-all duration-300 ${
               expanded === i ? 'h-auto' : `${writtenPage ? 'h-32' : 'h-8'}`
             } active:bg-amber-400`}
           >
