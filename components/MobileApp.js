@@ -104,7 +104,7 @@ const MobileApp = () => {
       default:
         if (!authenticated) {
           return (
-            <div className='h-screen'>
+            <div className='h-screen w-screen'>
               {sections.map((x, i) => (
                 <Element section={x} key={i} />
               ))}
@@ -192,25 +192,8 @@ const MobileApp = () => {
   return (
     <div className='fixed h-screen w-screen'>
       <div
-        className={`bg-white relative overflow-y-scroll flex flex-col items-center h-full w-full bg-cover bg-center`}
+        className={`bg-white relative overflow-y-scroll flex flex-col items-center h-full w-screen bg-cover bg-center`}
       >
-        {/* {authenticated && (
-          <div
-            onClick={() => alert('go to the users page')}
-            className='flex mt-6 mb-0 rounded-full bg-purple-300 w-3/5 mx-auto h-18 border border-black'
-          >
-            <div className='w-2/5 flex justify-center items-center'>
-              <div className='w-12 h-12 aspect-square rounded-full pl-10 relative overflow-hidden'>
-                <Image src='/ankys/2.png' fill alt='anky' />
-              </div>
-            </div>
-
-            <div className='w-3/5 py-4 pr-4 flex justify-center items-center '>
-              <p className='text-2xl'>lunamaria</p>
-            </div>
-          </div>
-        )} */}
-
         {getComponentForRoute(router.pathname)}
       </div>
     </div>
