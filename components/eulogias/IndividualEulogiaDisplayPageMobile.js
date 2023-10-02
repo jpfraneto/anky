@@ -13,10 +13,10 @@ const IndividualEulogiaDisplayPageMobile = ({
   setLifeBarLength,
   lifeBarLength,
 }) => {
-  const { login } = usePrivy();
+  const { login, authenticated, loading } = usePrivy();
   const router = useRouter();
   const [eulogia, setEulogia] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [pageLoading, setPageLoading] = useState(true);
   const [time, setTime] = useState(0);
   const [linkCopied, setLinkCopied] = useState(false);
   const [preloadedBackground, setPreloadedBackground] = useState(null);
@@ -33,77 +33,75 @@ const IndividualEulogiaDisplayPageMobile = ({
   useEffect(() => {
     async function fetchEulogia() {
       try {
-        if (!thisWallet) return;
-        console.log('in hereeeee', thisWallet);
-        let fetchedProvider = await thisWallet.getEthersProvider();
-        setProvider(fetchedProvider);
-        let signer = await fetchedProvider.getSigner();
-
-        const eulogiasContract = new ethers.Contract(
-          process.env.NEXT_PUBLIC_EULOGIAS_CONTRACT_ADDRESS,
-          AnkyEulogiasAbi,
-          signer
-        );
-
-        const eulogiaID = router.query.id;
-        const thisEulogia = await eulogiasContract.getEulogia(eulogiaID);
-        console.log('this eulogia is: ', thisEulogia);
-        if (thisEulogia.metadataURI === '') return setLoading(false);
-        const formattedEulogia = await processFetchedEulogia(thisEulogia);
-        formattedEulogia.eulogiaID = eulogiaID;
-
-        formattedEulogia.metadata.backgroundImageUrl = `https://ipfs.io/ipfs/${formattedEulogia.metadata.backgroundImageCid}`;
-        formattedEulogia.metadata.coverImageUrl = `https://ipfs.io/ipfs/${formattedEulogia.metadata.coverImageCid}`;
-
-        const response = await fetch(
-          formattedEulogia.metadata.backgroundImageUrl,
-          { credentials: 'include' }
-        );
-        const imageBlob = await response.blob();
-        const imageUrl = URL.createObjectURL(imageBlob);
-        setPreloadedBackground(imageUrl);
-
-        if (formattedEulogia) {
-          console.log('the formatted eulogia is: ', formattedEulogia);
-          setEulogia(formattedEulogia);
-          setLoading(false);
-          const allMessages = await eulogiasContract.getAllMessages(eulogiaID);
-          console.log('all the messages are: ', allMessages);
-          const formattedMessages = allMessages.map(messageArray => ({
-            writer: messageArray[0],
-            whoWroteIt: messageArray[1],
-            cid: messageArray[2],
-            timestamp: ethers.utils.formatUnits(messageArray[3], 0),
-          }));
-          console.log('the formatted messages are: ', formattedMessages);
-          // Initiate fetching of content for each message from Arweave
-          const contentPromises = formattedMessages.map(msg =>
-            getContentFromArweave(msg.cid)
+        console.log('IN HERE', eulogia, router, authenticated);
+        if (eulogia) return;
+        console.log('after this one');
+        if (!router.query) return;
+        console.log('after the second one');
+        if (!authenticated && !loading) {
+          console.log('inside here');
+          const serverResponse = await fetch(
+            `${process.env.NEXT_PUBLIC_SERVER_URL}/notebooks/eulogia/${router.query.id}`
           );
-          const contents = await Promise.all(contentPromises);
-
-          // Augment the messages with the content fetched
-          formattedMessages.forEach((msg, index) => {
-            msg.text = contents[index];
-          });
-          console.log('the messages are', formattedMessages);
-          setMessages(formattedMessages);
-
-          const userMessage = formattedMessages.find(
-            msg => msg.writer === thisWallet.address
-          );
-          setUserHasWritten(Boolean(userMessage));
-          setLoading(false);
+          const data = await serverResponse.json();
+          console.log('the server response is: ', data);
+          setEulogia(data.eulogia);
+          setMessages(data.eulogia.messages);
+          setPageLoading(false);
         } else {
-          throw Error('No eulogia');
+          if (!thisWallet) return;
+          console.log('in hereeeee', thisWallet);
+          let fetchedProvider = await thisWallet.getEthersProvider();
+          setProvider(fetchedProvider);
+          let signer = await fetchedProvider.getSigner();
+
+          const eulogiasContract = new ethers.Contract(
+            process.env.NEXT_PUBLIC_EULOGIAS_CONTRACT_ADDRESS,
+            AnkyEulogiasAbi,
+            signer
+          );
+          console.log('the router query is: ', router.query.id);
+          const eulogiaID = router.query.id;
+          const thisEulogia = await eulogiasContract.getEulogia(eulogiaID);
+          console.log('this eulogia is: ', thisEulogia);
+          if (thisEulogia.metadataURI === '') return setEulogiaLoading(false);
+          const formattedEulogia = await processFetchedEulogia(thisEulogia);
+          formattedEulogia.eulogiaID = eulogiaID;
+
+          console.log('the formatted euloogia is: ', formattedEulogia);
+          formattedEulogia.metadata.backgroundImageUrl = `https://ipfs.io/ipfs/${formattedEulogia.metadata.backgroundImageCid}`;
+          formattedEulogia.metadata.coverImageUrl = `https://ipfs.io/ipfs/${formattedEulogia.metadata.coverImageCid}`;
+
+          const response = await fetch(
+            formattedEulogia.metadata.backgroundImageUrl
+          );
+          const imageBlob = await response.blob();
+          const imageUrl = URL.createObjectURL(imageBlob);
+          setPreloadedBackground(imageUrl);
+
+          if (formattedEulogia) {
+            console.log('right before the set eulogia', formattedEulogia);
+            setEulogia(formattedEulogia);
+
+            setMessages(formattedEulogia.messages);
+
+            const userMessage = formattedEulogia.messages.find(
+              msg => msg.writer === thisWallet.address
+            );
+            setUserHasWritten(Boolean(userMessage));
+            setEulogiaLoading(false);
+          } else {
+            throw Error('No eulogia');
+          }
         }
       } catch (error) {
         console.log(error);
         console.log('There was an error.');
       }
     }
+
     fetchEulogia();
-  }, [thisWallet]);
+  }, [loading, authenticated, thisWallet, router.query]);
 
   async function getContentFromArweave(cid) {
     try {
@@ -197,18 +195,17 @@ const IndividualEulogiaDisplayPageMobile = ({
     setLinkCopied(true);
   };
 
-  if (loading)
+  if (pageLoading)
     return (
       <div>
         <Spinner />
-        <p className='text-white'>loading...</p>
+        <p className='text-black'>loading...</p>
       </div>
     );
 
-  console.log('The eulogia is: ', eulogia);
   if (!eulogia)
     return (
-      <div className='text-white'>
+      <div className='text-black'>
         <p>this eulogia doesn&apos;t exist.</p>
         <p>add it by clicking this button.</p>
         <Button
@@ -235,13 +232,13 @@ const IndividualEulogiaDisplayPageMobile = ({
       </div>
     );
   return (
-    <div className='text-white w-screen'>
+    <div className='text-black w-screen'>
       <div className='flex flex-col '>
         <div className='p-4 text-center'>
           <h2 className='text-4xl my-2'>{eulogia.metadata.title}</h2>
           <p className='italic text-2xl'>{eulogia.metadata.description}</p>
           <div className='mb-4'>
-            {messages.length} writing of {eulogia.maxMessages}
+            {messages.length} writing(s) of {eulogia.maxMessages}
           </div>
           <div className='mx-auto flex overflow-hidden rounded-xl justify-center'>
             <Image
@@ -255,12 +252,14 @@ const IndividualEulogiaDisplayPageMobile = ({
         <div className='p-4 h-full overflow-y-scroll'>
           {wallets.length === 0 ? (
             <div>
-              <p>Please log in to interact with this eulogia.</p>
-              <Button
-                buttonAction={login}
-                buttonText='login'
-                buttonColor='bg-purple-600'
-              />
+              <p>Please login to write on this eulogia.</p>
+              <div className='w-2/4 mx-auto mt-2'>
+                <Button
+                  buttonAction={login}
+                  buttonText='login'
+                  buttonColor='bg-purple-400'
+                />
+              </div>
             </div>
           ) : userHasWritten ? (
             <div>

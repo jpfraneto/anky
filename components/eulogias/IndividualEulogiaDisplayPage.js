@@ -393,20 +393,21 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
       </div>
       <div className='w-96 mx-auto'>
         <div className='flex justify-center'>
-          <Link passHref href='/eulogias/new'>
-            <Button
-              buttonText='create eulogia'
-              buttonColor='bg-amber-600 mb-2'
-              buttonAction={() => router.push('/library')}
-            />
-          </Link>
-
           {authenticated && (
-            <Button
-              buttonText='my library'
-              buttonColor='bg-orange-600 mb-2'
-              buttonAction={() => router.push('/library')}
-            />
+            <>
+              <Link passHref href='/eulogias/new'>
+                <Button
+                  buttonText='create eulogia'
+                  buttonColor='bg-amber-600 mb-2'
+                  buttonAction={() => router.push('/library')}
+                />
+              </Link>{' '}
+              <Button
+                buttonText='my library'
+                buttonColor='bg-orange-600 mb-2'
+                buttonAction={() => router.push('/library')}
+              />
+            </>
           )}
         </div>
       </div>

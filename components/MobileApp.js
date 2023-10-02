@@ -87,6 +87,7 @@ const MobileApp = () => {
       case '/eulogias/new':
         return <NewEulogiaPageMobile userAnky={userAppInformation} />;
       case `/eulogias/${route.split('/').pop()}`:
+        console.log('inINSAKUCHASIOJCASIL');
         return (
           <IndividualEulogiaDisplayPageMobile
             setLifeBarLength={setLifeBarLength}
@@ -102,6 +103,20 @@ const MobileApp = () => {
         );
 
       default:
+        if (!authenticated) {
+          return (
+            <div className='h-screen'>
+              {sections.map((x, i) => (
+                <Element section={x} key={i} />
+              ))}
+              <div className='h-1/7 p-4 w-full flex justify-center items-center bg-black'>
+                <p onClick={login} className='text-white text-2xl'>
+                  login
+                </p>
+              </div>
+            </div>
+          );
+        }
         return (
           <div className='p-4 w-full text-black h-screen'>
             {libraryLoading ? (
@@ -111,7 +126,6 @@ const MobileApp = () => {
               </div>
             ) : (
               <>
-                {' '}
                 <Link passHref href={`/m/user/journals`}>
                   <div className='bg-lime-400 w-5/6 mx-auto h-16 rounded-2xl mt-4 flex items-center active:bg-lime-500'>
                     <p className='text-black text-xl text-center w-9/12 mx-auto'>
@@ -176,40 +190,28 @@ const MobileApp = () => {
     );
   }
 
-  if (!authenticated) {
-    return (
-      <div className='h-screen'>
-        {sections.map((x, i) => (
-          <Element section={x} key={i} />
-        ))}
-        <div className='h-1/7 p-4 w-full flex justify-center items-center bg-black'>
-          <p onClick={login} className='text-white text-2xl'>
-            login
-          </p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className='fixed h-screen w-screen'>
       <div
         className={`bg-white relative overflow-y-scroll flex flex-col items-center h-full w-full bg-cover bg-center`}
       >
-        <div
-          onClick={() => alert('go to the users page')}
-          className='flex mt-6 mb-0 rounded-full bg-purple-300 w-3/5 mx-auto h-18 border border-black'
-        >
-          <div className='w-2/5 flex justify-center items-center'>
-            <div className='w-12 h-12 aspect-square rounded-full pl-10 relative overflow-hidden'>
-              <Image src='/ankys/2.png' fill alt='anky' />
+        {authenticated && (
+          <div
+            onClick={() => alert('go to the users page')}
+            className='flex mt-6 mb-0 rounded-full bg-purple-300 w-3/5 mx-auto h-18 border border-black'
+          >
+            <div className='w-2/5 flex justify-center items-center'>
+              <div className='w-12 h-12 aspect-square rounded-full pl-10 relative overflow-hidden'>
+                <Image src='/ankys/2.png' fill alt='anky' />
+              </div>
+            </div>
+
+            <div className='w-3/5 py-4 pr-4 flex justify-center items-center '>
+              <p className='text-2xl'>lunamaria</p>
             </div>
           </div>
+        )}
 
-          <div className='w-3/5 py-4 pr-4 flex justify-center items-center '>
-            <p className='text-2xl'>lunamaria</p>
-          </div>
-        </div>
         {getComponentForRoute(router.pathname)}
       </div>
     </div>
