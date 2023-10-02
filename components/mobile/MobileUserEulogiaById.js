@@ -39,6 +39,11 @@ const MobileUserEulogiaById = ({ userAnky }) => {
     // add this function
     setExpanded(expanded === index ? null : index);
   };
+
+  async function createSharingLink() {
+    const newLink = `https://www.anky.lat/eulogias/${thisEulogia.eulogiaId}`;
+    await navigator.clipboard.writeText(newLink);
+  }
   return (
     <div className={`${inter.className} w-full p-4 pb-24`}>
       <div className='bg-amber-400 w-5/6 mx-auto h-24 rounded-2xl mt-4 flex items-center text-center active:bg-lime-500'>
@@ -96,7 +101,14 @@ const MobileUserEulogiaById = ({ userAnky }) => {
           </div>
         );
       })}
-
+      <div
+        onClick={createSharingLink}
+        className='bg-red-400 w-4/6 mx-auto h-12 rounded-2xl mt-4 flex items-center'
+      >
+        <p className='text-white text-3xl text-center w-9/12 mx-auto'>
+          copy link
+        </p>
+      </div>
       <div
         onClick={() => router.back()}
         className='bg-red-400 w-4/6 mx-auto h-12 rounded-2xl mt-4 flex items-center'
