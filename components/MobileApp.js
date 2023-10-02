@@ -87,7 +87,6 @@ const MobileApp = () => {
       case '/eulogias/new':
         return <NewEulogiaPageMobile userAnky={userAppInformation} />;
       case `/eulogias/${route.split('/').pop()}`:
-        console.log('inINSAKUCHASIOJCASIL');
         return (
           <IndividualEulogiaDisplayPageMobile
             setLifeBarLength={setLifeBarLength}
@@ -195,7 +194,7 @@ const MobileApp = () => {
       <div
         className={`bg-white relative overflow-y-scroll flex flex-col items-center h-full w-full bg-cover bg-center`}
       >
-        {authenticated && (
+        {/* {authenticated && (
           <div
             onClick={() => alert('go to the users page')}
             className='flex mt-6 mb-0 rounded-full bg-purple-300 w-3/5 mx-auto h-18 border border-black'
@@ -210,7 +209,7 @@ const MobileApp = () => {
               <p className='text-2xl'>lunamaria</p>
             </div>
           </div>
-        )}
+        )} */}
 
         {getComponentForRoute(router.pathname)}
       </div>
@@ -222,7 +221,6 @@ export default MobileApp;
 
 const Element = ({ section }) => {
   const [opened, setOpened] = useState(false);
-  console.log('the section is: ', section);
   return (
     <div
       onClick={() => setOpened(x => !x)}

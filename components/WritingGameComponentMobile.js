@@ -200,7 +200,7 @@ const WritingGameComponentMobile = ({
       className={`${righteous.className} text-black relative overflow-y-scroll flex flex-col items-center  w-full bg-cover bg-center`}
       style={{
         boxSizing: 'border-box',
-        height: 'calc(100vh - 33px)',
+        height: 'calc(100vh)',
         backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${
           preloadedBackground || '/images/mintbg.jpg'
         })`,
@@ -209,10 +209,19 @@ const WritingGameComponentMobile = ({
         backgroundRepeat: 'no-repeat',
       }}
     >
+      <div className='h-8 w-full'>
+        <div
+          className='h-full opacity-50'
+          style={{
+            width: `${lifeBarLength}%`,
+            backgroundColor: lifeBarLength > 30 ? 'green' : 'red',
+          }}
+        ></div>
+      </div>
       <audio ref={audioRef}>
         <source src='/sounds/bell.mp3' />
       </audio>
-      <div className='md:block text-white w-screen h-screen'>
+      <div className='md:block mt-8 text-white w-screen h-screen'>
         <div>
           {!finished && (
             <div

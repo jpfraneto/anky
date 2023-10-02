@@ -397,7 +397,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
             <>
               <Link passHref href='/eulogias/new'>
                 <Button
-                  buttonText='create eulogia'
+                  buttonText='create new eulogia'
                   buttonColor='bg-amber-600 mb-2'
                   buttonAction={() => router.push('/library')}
                 />

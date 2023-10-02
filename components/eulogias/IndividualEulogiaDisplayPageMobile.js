@@ -9,6 +9,16 @@ import Image from 'next/image';
 import Spinner from '../Spinner';
 import WritingGameComponentMobile from '../WritingGameComponentMobile';
 
+var options = {
+  weekday: 'long',
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+  hour: 'numeric',
+  minute: 'numeric',
+  second: 'numeric',
+};
+
 const IndividualEulogiaDisplayPageMobile = ({
   setLifeBarLength,
   lifeBarLength,
@@ -16,7 +26,10 @@ const IndividualEulogiaDisplayPageMobile = ({
   const { login, authenticated, loading } = usePrivy();
   const router = useRouter();
   const [eulogia, setEulogia] = useState(null);
+  const [thisEulogia, setThisEulogia] = useState(null);
+  const [expanded, setExpanded] = useState(null); // add this line
   const [pageLoading, setPageLoading] = useState(true);
+  const [eulogiaLoading, setEulogiaLoading] = useState(true);
   const [time, setTime] = useState(0);
   const [linkCopied, setLinkCopied] = useState(false);
   const [preloadedBackground, setPreloadedBackground] = useState(null);
@@ -44,7 +57,7 @@ const IndividualEulogiaDisplayPageMobile = ({
             `${process.env.NEXT_PUBLIC_SERVER_URL}/notebooks/eulogia/${router.query.id}`
           );
           const data = await serverResponse.json();
-          console.log('the server response is: ', data);
+          data.eulogia.eulogiaId = router.query.id;
           setEulogia(data.eulogia);
           setMessages(data.eulogia.messages);
           setPageLoading(false);
@@ -52,6 +65,7 @@ const IndividualEulogiaDisplayPageMobile = ({
           if (!thisWallet) return;
           console.log('in hereeeee', thisWallet);
           let fetchedProvider = await thisWallet.getEthersProvider();
+          console.log('THE FETCHED PROVIDER IS: ', fetchedProvider);
           setProvider(fetchedProvider);
           let signer = await fetchedProvider.getSigner();
 
@@ -143,18 +157,30 @@ const IndividualEulogiaDisplayPageMobile = ({
       );
 
       const { cid } = await response.json();
-      let signer = await provider.getSigner();
+      let signer;
+      console.log('IN HERE, THE PROVIDER IS: ', provider);
+      if (!provider) {
+        const newProvider = await thisWallet.getEthersProvider();
+        signer = await newProvider.getSigner();
+      } else {
+        signer = await provider.getSigner();
+      }
+      console.log('THE SIGNER IS: ', signer);
       // Step 2: Send the CID to the smart contract.
+
       const eulogiasContract = new ethers.Contract(
         process.env.NEXT_PUBLIC_EULOGIAS_CONTRACT_ADDRESS,
         AnkyEulogiasAbi,
         signer
       );
+      console.log('the eulogia is: ', eulogia);
 
+      const eulogiaNumber =
+        Number(eulogia.eulogiaID) || Number(router.query.id);
+      console.log('the eulogia number is: ', eulogiaNumber);
       console.log('the eulogias contract is: ', eulogiasContract);
-
       const tx = await eulogiasContract.addMessage(
-        eulogia.eulogiaID,
+        eulogiaNumber,
         cid,
         whoIsWriting
       );
@@ -195,6 +221,11 @@ const IndividualEulogiaDisplayPageMobile = ({
     setLinkCopied(true);
   };
 
+  const toggleExpand = index => {
+    // add this function
+    setExpanded(expanded === index ? null : index);
+  };
+
   if (pageLoading)
     return (
       <div>
@@ -231,11 +262,12 @@ const IndividualEulogiaDisplayPageMobile = ({
         />
       </div>
     );
+
   return (
     <div className='text-black w-screen'>
       <div className='flex flex-col '>
         <div className='p-4 text-center'>
-          <h2 className='text-4xl my-2'>{eulogia.metadata.title}</h2>
+          <h2 className='text-2xl my-2 '>{eulogia.metadata.title}</h2>
           <p className='italic text-2xl'>{eulogia.metadata.description}</p>
           <div className='mb-4'>
             {messages.length} writing(s) of {eulogia.maxMessages}
@@ -243,8 +275,8 @@ const IndividualEulogiaDisplayPageMobile = ({
           <div className='mx-auto flex overflow-hidden rounded-xl justify-center'>
             <Image
               src={eulogia.metadata.coverImageUrl}
-              width={356}
-              height={555}
+              width={333}
+              height={333}
               alt='Eulogia Cover Image'
             />
           </div>
@@ -265,18 +297,40 @@ const IndividualEulogiaDisplayPageMobile = ({
             <div>
               <p className='mt-2'>You already wrote here.</p>
               <div className='w-full mx-auto'>
-                {messages.map((msg, index) => (
-                  <div
-                    className='p-2 w-full mx-auto bg-purple-200 my-2 rounded-xl text-black'
-                    key={index}
-                  >
-                    <p>{msg.text}</p>
-
-                    <h3 className='ml-auto text-right italic'>
-                      {msg.whoWroteIt}
-                    </h3>
-                  </div>
-                ))}
+                {messages.map((msg, i) => {
+                  console.log('the msg is: ', msg);
+                  return (
+                    <div
+                      key={i}
+                      onClick={() => toggleExpand(i)}
+                      className={`${
+                        msg ? 'bg-amber-300' : 'bg-amber-200'
+                      } w-full p-2 mx-auto mt-4 pb-12 flex flex-col relative items-start rounded-2xl transition-all duration-300 ${
+                        expanded === i ? 'h-auto' : `${msg ? 'h-32' : 'h-8'}`
+                      } active:bg-amber-400`}
+                    >
+                      {msg ? (
+                        expanded === i ? (
+                          <p className='w-full'>{msg.content}</p>
+                        ) : (
+                          <p className='w-full'>
+                            {msg.content.slice(0, 50)}...
+                          </p>
+                        )
+                      ) : (
+                        <div className='w-full h-full bg-amber-200' />
+                      )}
+                      {msg && (
+                        <p className='absolute bottom-1 text-gray-500 text-xs right-1'>
+                          {new Date(msg.timestamp * 1000).toLocaleDateString(
+                            'en-US',
+                            options
+                          )}
+                        </p>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           ) : (
@@ -289,7 +343,7 @@ const IndividualEulogiaDisplayPageMobile = ({
               </p>
               <input
                 type='text'
-                className='my-2 p-2 w-full rounded-xl text-black'
+                className='my-2 p-2 w-full rounded-xl border border-black text-black'
                 placeholder='how do you want to sign?'
                 onChange={e => setWhoIsWriting(e.target.value)}
               />
@@ -307,11 +361,6 @@ const IndividualEulogiaDisplayPageMobile = ({
       {userHasWritten && (
         <div className='w-screen px-3'>
           <div className='flex'>
-            <Button
-              buttonText='mint eulogia'
-              buttonColor='bg-purple-600 mb-2'
-              buttonAction={mintEulogia}
-            />
             <Button
               buttonText={linkCopied ? `copied` : `share eulogia link`}
               buttonColor='bg-purple-600 mb-2'
