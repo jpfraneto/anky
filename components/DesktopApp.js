@@ -102,7 +102,7 @@ const DesktopApp = () => {
 
   if (appLoading)
     return (
-      <Transition in={loading} timeout={500} mountOnEnter unmountOnExit>
+      <Transition in={appLoading} timeout={500} mountOnEnter unmountOnExit>
         {state => (
           <div
             className={`flex-col text-white h-screen w-screen bg-black flex justify-center items-center fade-${state}`}

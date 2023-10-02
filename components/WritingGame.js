@@ -142,7 +142,7 @@ const WritingGame = ({
           width: '100%',
           fontSize: '16px',
         }}
-        placeholder='write without thinking...'
+        placeholder='just write...'
         value={text}
         className={` p-2  bg-black ${
           text.length > 0 ? 'h-64' : 'h-64'

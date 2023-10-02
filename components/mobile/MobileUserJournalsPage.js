@@ -19,13 +19,20 @@ const MobileUserJournalsPage = ({ userAnky }) => {
           </Link>
         );
       })}
+      <Link href='/m/journals/new' passHref>
+        <div className='bg-lime-600 w-5/6 mx-auto h-12 rounded-2xl mt-4 flex items-center'>
+          <p className='text-white text-3xl text-center w-9/12 mx-auto'>
+            buy journal
+          </p>
+        </div>
+      </Link>
+
       <div
         onClick={() => router.back()}
         className='bg-red-400 w-4/6 mx-auto h-12 rounded-2xl mt-4 flex items-center'
       >
         <p className='text-white text-3xl text-center w-9/12 mx-auto'>back</p>
       </div>
-      <p className='mt-4'>(you can buy a new journal on the desktop app)</p>
     </div>
   );
 };

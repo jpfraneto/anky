@@ -289,7 +289,7 @@ const DesktopWritingGame = ({
               time > 2 && 'opacity-80'
             } placeholder-white  text-2xl border border-white rounded-md  bg-opacity-10 bg-black`}
             value={text}
-            placeholder='write without thinking...'
+            placeholder='just write...'
             onChange={handleTextChange}
           ></textarea>
           <div>

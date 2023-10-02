@@ -5,8 +5,8 @@ import Button from '../Button';
 import { formatUserJournal } from '../../lib/notebooks.js';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
 import Image from 'next/image';
-import WritingGameComponent from '../WritingGameComponent';
 import { useUser } from '../../context/UserContext';
+import WritingGameComponent from '../WritingGameComponent';
 import Spinner from '../Spinner';
 import AnkyJournalsAbi from '../../lib/journalsABI.json'; // Assuming you have the ABI
 import Link from 'next/link';
@@ -22,13 +22,14 @@ function transformJournalType(index) {
   }
 }
 
-const BuyNewJournal = () => {
+const MobileBuyNewJournal = () => {
   const router = useRouter();
   const [journal, setJournal] = useState([]);
   const [loading, setLoading] = useState(true);
   const [mintedJournalId, setMintedJournalId] = useState(null);
   const [successfullyMintedJournal, setSuccessfullyMintedJournal] =
     useState(false);
+  const { userAppInformation, setUserAppInformation, appLoading } = useUser();
   const [journalPrices, setJournalPrices] = useState({}); // Store journal prices
   const [displayJournalOption, setDisplayJournalOption] = useState(null);
 
@@ -90,7 +91,7 @@ const BuyNewJournal = () => {
         console.error('Wallet not available.');
         return;
       }
-
+      console.log('inside the mint new journal', size);
       const provider = await thisWallet.getEthersProvider();
       const signer = await provider.getSigner();
 
@@ -102,7 +103,7 @@ const BuyNewJournal = () => {
 
       // Get the price for the selected journal size
       const price = journalPrices[size];
-
+      console.log('the price is: ', price);
       if (!price) {
         // Handle the case where the price is not available
         console.error('Price not available for size', size);
@@ -112,9 +113,12 @@ const BuyNewJournal = () => {
       const priceWei = ethers.utils.parseUnits(price, 'ether');
 
       // Send the correct amount of Ether when minting
+      console.log('before the tx');
+
       const tx = await journalsContract.mintJournal(size, {
         value: priceWei,
       });
+      console.log('after the tx', tx);
       const receipt = await tx.wait();
 
       // Process logs from the transaction receipt
@@ -126,7 +130,9 @@ const BuyNewJournal = () => {
 
           setMintedJournalId(tokenId.toString()); // Save the tokenId to state
           setSuccessfullyMintedJournal(true);
-
+          setUserAppInformation(x => {
+            console.log('the user app information in here is: ', x);
+          });
           break; // Exit loop once you find the first event that matches
         }
       }
@@ -146,22 +152,22 @@ const BuyNewJournal = () => {
     );
 
   return (
-    <div className='text-white pt-4'>
+    <div className='text-black pt-4'>
       {successfullyMintedJournal ? (
-        <div>
+        <div className='p-2 text-center'>
           <p className='my-2'>
             you now have a new journal where to download your consciousness
           </p>
-          <p className='my-2'>the id of it is {mintedJournalId}</p>
+          <p className='mt-2 mb-4'>the id of it is {mintedJournalId}</p>
           <Link
-            href={`/journal/${mintedJournalId}`}
+            href={`/m/user/journals/${mintedJournalId}`}
             className='p-2 bg-green-600 rounded-xl'
           >
             go to journal
           </Link>
         </div>
       ) : (
-        <div>
+        <div className='p-2'>
           <p className='mb-2'>mint new journal</p>
           <p className='mb-4'>how many pages do you want?</p>
           <div className='flex'>
@@ -199,4 +205,4 @@ const BuyNewJournal = () => {
   );
 };
 
-export default BuyNewJournal;
+export default MobileBuyNewJournal;

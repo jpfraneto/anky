@@ -16,6 +16,9 @@ import MobileUserNotebooksPage from './mobile/MobileUserNotebooksPage';
 import MobileUserJournalByIdPage from './mobile/MobileUserJournalByIdPage';
 import MobileUserNotebookById from './mobile/MobileUserNotebookById';
 import MobileUserEulogiaById from './mobile/MobileUserEulogiaById';
+import MobileBuyNewJournal from './mobile/MobileBuyNewJournal';
+import Spinner from './Spinner';
+import MobileNewEulogia from './mobile/MobileNewEulogia';
 
 const sections = [
   {
@@ -58,13 +61,16 @@ const MobileApp = () => {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const [lifeBarLength, setLifeBarLength] = useState(0);
-  const { userAppInformation, appLoading } = useUser();
+  const { userAppInformation, appLoading, libraryLoading } = useUser();
 
   function getComponentForRoute(route) {
-    console.log('in here', userAppInformation);
     switch (route) {
       case '/m/user/journals':
         return <MobileUserJournalsPage userAnky={userAppInformation} />;
+      case '/m/journals/new':
+        return <MobileBuyNewJournal userAnky={userAppInformation} />;
+      case '/m/eulogias/new':
+        return <MobileNewEulogia userAnky={userAppInformation} />;
       case `/m/user/journals/${route.split('/').pop()}`:
         return <MobileUserJournalByIdPage userAnky={userAppInformation} />;
       case '/m/user/eulogias':
@@ -95,29 +101,38 @@ const MobileApp = () => {
       default:
         return (
           <div className='p-4 w-full text-black h-screen'>
-            <Link passHref href={`/m/user/journals`}>
-              <div className='bg-lime-400 w-5/6 mx-auto h-16 rounded-2xl mt-4 flex items-center active:bg-lime-500'>
-                <p className='text-black text-xl text-center w-9/12 mx-auto'>
-                  journals ({userAppInformation?.userJournals?.length || 0})
-                </p>
+            {libraryLoading ? (
+              <div className='flex flex-col items-center'>
+                <p>your library is loading</p>
+                <Spinner />
               </div>
-            </Link>
-
-            <Link passHref href={`/m/user/eulogias`}>
-              <div className='bg-amber-400 w-5/6 mx-auto h-16 rounded-2xl mt-4 flex items-center active:bg-amber-500'>
-                <p className='text-black text-xl text-center w-9/12 mx-auto'>
-                  eulogias ({userAppInformation?.userEulogias?.length || 0})
-                </p>
-              </div>
-            </Link>
-
-            <Link passHref href={`/m/user/notebooks`}>
-              <div className='bg-blue-400 w-5/6 mx-auto h-16 rounded-2xl mt-4 flex items-center'>
-                <p className='text-black text-xl text-center w-9/12 mx-auto'>
-                  notebooks ({userAppInformation?.userNotebooks?.length || 0})
-                </p>
-              </div>
-            </Link>
+            ) : (
+              <>
+                {' '}
+                <Link passHref href={`/m/user/journals`}>
+                  <div className='bg-lime-400 w-5/6 mx-auto h-16 rounded-2xl mt-4 flex items-center active:bg-lime-500'>
+                    <p className='text-black text-xl text-center w-9/12 mx-auto'>
+                      journals ({userAppInformation?.userJournals?.length || 0})
+                    </p>
+                  </div>
+                </Link>
+                <Link passHref href={`/m/user/eulogias`}>
+                  <div className='bg-amber-400 w-5/6 mx-auto h-16 rounded-2xl mt-4 flex items-center active:bg-amber-500'>
+                    <p className='text-black text-xl text-center w-9/12 mx-auto'>
+                      eulogias ({userAppInformation?.userEulogias?.length || 0})
+                    </p>
+                  </div>
+                </Link>
+                <Link passHref href={`/m/user/notebooks`}>
+                  <div className='bg-blue-400 w-5/6 mx-auto h-16 rounded-2xl mt-4 flex items-center'>
+                    <p className='text-black text-xl text-center w-9/12 mx-auto'>
+                      notebooks (
+                      {userAppInformation?.userNotebooks?.length || 0})
+                    </p>
+                  </div>
+                </Link>
+              </>
+            )}
 
             <div className='w-5/6 mx-auto mt-2'>
               <p className='mt-2'>
@@ -178,7 +193,10 @@ const MobileApp = () => {
       <div
         className={`bg-white relative overflow-y-scroll flex flex-col items-center h-full w-full bg-cover bg-center`}
       >
-        <div className='flex mt-6 mb-0 rounded-full bg-purple-300 w-3/5 mx-auto h-18 border border-black'>
+        <div
+          onClick={() => alert('go to the users page')}
+          className='flex mt-6 mb-0 rounded-full bg-purple-300 w-3/5 mx-auto h-18 border border-black'
+        >
           <div className='w-2/5 flex justify-center items-center'>
             <div className='w-12 h-12 aspect-square rounded-full pl-10 relative overflow-hidden'>
               <Image src='/ankys/2.png' fill alt='anky' />

@@ -31,13 +31,20 @@ const MobileUserEulogiasPage = ({ userAnky }) => {
           </Link>
         );
       })}
+      <Link passHref href='/m/eulogias/new'>
+        <div className='bg-amber-600 w-4/6 mx-auto h-12 rounded-2xl mt-4 flex items-center'>
+          <p className='text-white text-3xl text-center w-9/12 mx-auto'>
+            new eulogia
+          </p>
+        </div>
+      </Link>
+
       <div
         onClick={() => router.back()}
         className='bg-red-400 w-4/6 mx-auto h-12 rounded-2xl mt-4 flex items-center'
       >
         <p className='text-white text-3xl text-center w-9/12 mx-auto'>back</p>
       </div>
-      <p className='mt-4'>(you can create a new eulogia on the desktop app)</p>
     </div>
   );
 };

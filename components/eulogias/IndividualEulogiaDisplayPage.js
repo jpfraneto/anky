@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
 import AnkyEulogiasAbi from '../../lib/eulogiaABI.json';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { processFetchedEulogia } from '../../lib/notebooks.js';
 import { ethers } from 'ethers';
@@ -50,6 +51,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
   useEffect(() => {
     async function fetchEulogia() {
       try {
+        if (eulogia) return;
         if (!router.query) return;
         if (!authenticated && !loading) {
           const serverResponse = await fetch(
@@ -72,13 +74,14 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
             AnkyEulogiasAbi,
             signer
           );
-
+          console.log('the router query is: ', router.query.id);
           const eulogiaID = router.query.id;
           const thisEulogia = await eulogiasContract.getEulogia(eulogiaID);
           console.log('this eulogia is: ', thisEulogia);
           if (thisEulogia.metadataURI === '') return setEulogiaLoading(false);
           const formattedEulogia = await processFetchedEulogia(thisEulogia);
           formattedEulogia.eulogiaID = eulogiaID;
+
           console.log('the formatted euloogia is: ', formattedEulogia);
           formattedEulogia.metadata.backgroundImageUrl = `https://ipfs.io/ipfs/${formattedEulogia.metadata.backgroundImageCid}`;
           formattedEulogia.metadata.coverImageUrl = `https://ipfs.io/ipfs/${formattedEulogia.metadata.coverImageCid}`;
@@ -91,8 +94,8 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
           setPreloadedBackground(imageUrl);
 
           if (formattedEulogia) {
+            console.log('right before the set eulogia', formattedEulogia);
             setEulogia(formattedEulogia);
-            setEulogiaLoading(false);
 
             setMessages(formattedEulogia.messages);
 
@@ -100,7 +103,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
               msg => msg.writer === thisWallet.address
             );
             setUserHasWritten(Boolean(userMessage));
-            setLoading(false);
+            setEulogiaLoading(false);
           } else {
             throw Error('No eulogia');
           }
@@ -184,7 +187,8 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
         {
           writer: thisWallet.address,
           whoWroteIt: whoIsWriting,
-          text: finishText,
+          content: finishText,
+          timestamp: new Date().getTime(),
         },
       ]);
       setUserHasWritten(true); // Update the state to reflect the user has written.
@@ -360,7 +364,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
             </div>
           ) : userHasWritten ? (
             <div className='w-full'>
-              <p>you already wrote here...</p>
+              <p>you already wrote here.</p>
             </div>
           ) : (
             <div className='my-0 h-full'>
@@ -389,6 +393,14 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
       </div>
       <div className='w-96 mx-auto'>
         <div className='flex justify-center'>
+          <Link passHref href='/eulogias/new'>
+            <Button
+              buttonText='create eulogia'
+              buttonColor='bg-amber-600 mb-2'
+              buttonAction={() => router.push('/library')}
+            />
+          </Link>
+
           {authenticated && (
             <Button
               buttonText='my library'

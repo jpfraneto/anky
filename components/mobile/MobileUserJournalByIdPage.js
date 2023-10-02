@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { Inter } from 'next/font/google';
 
 var options = {
   weekday: 'long',
@@ -11,6 +12,8 @@ var options = {
   minute: 'numeric',
   second: 'numeric',
 };
+
+const inter = Inter({ subsets: ['latin'], weight: ['200', '400'] });
 
 const MobileUserJournalByIdPage = ({ userAnky }) => {
   const [thisJournal, setThisJournal] = useState(null);
@@ -35,7 +38,7 @@ const MobileUserJournalByIdPage = ({ userAnky }) => {
     setExpanded(expanded === index ? null : index);
   };
   return (
-    <div className='w-full p-4'>
+    <div className={`${inter.className} w-full p-4`}>
       <div className='bg-lime-400 w-5/6 mx-auto h-16 rounded-2xl mt-4 flex items-center text-center active:bg-lime-500'>
         <p className='text-center  w-full text-xl'>{`journal #${
           thisJournal.journalId
@@ -48,7 +51,7 @@ const MobileUserJournalByIdPage = ({ userAnky }) => {
           <div
             key={i}
             onClick={() => toggleExpand(i)}
-            className={`bg-lime-300 w-5/6 p-2 mx-auto mt-4 pb-12 flex flex-col relative items-center rounded-2xl transition-all duration-300 ${
+            className={`bg-lime-300 w-full p-2 mx-auto mt-4 pb-12 flex flex-col relative items-center rounded-2xl transition-all duration-300 ${
               expanded === i ? 'h-auto' : 'h-24'
             } active:bg-lime-400`}
           >
