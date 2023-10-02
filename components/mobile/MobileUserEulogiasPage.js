@@ -9,7 +9,7 @@ const inter = Inter({ subsets: ['latin'], weight: ['200', '400'] });
 const MobileUserEulogiasPage = ({ userAnky }) => {
   const router = useRouter();
   return (
-    <div className={`${inter.className} w-full p-4`}>
+    <div className={`${inter.className} w-full p-4 pb-24`}>
       {userAnky.userEulogias.map((eulogia, i) => {
         return (
           <Link href={`/m/user/eulogias/${eulogia.eulogiaId}`} passHref key={i}>

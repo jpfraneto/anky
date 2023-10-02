@@ -40,7 +40,7 @@ const MobileUserEulogiaById = ({ userAnky }) => {
     setExpanded(expanded === index ? null : index);
   };
   return (
-    <div className={`${inter.className} w-full p-4`}>
+    <div className={`${inter.className} w-full p-4 pb-24`}>
       <div className='bg-amber-400 w-5/6 mx-auto h-24 rounded-2xl mt-4 flex items-center text-center active:bg-lime-500'>
         <div className='w-1/3 flex justify-center'>
           <div className='rounded-xl overflow-hidden relative w-3/4 aspect-square'>

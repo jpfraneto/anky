@@ -38,7 +38,7 @@ const MobileUserJournalByIdPage = ({ userAnky }) => {
     setExpanded(expanded === index ? null : index);
   };
   return (
-    <div className={`${inter.className} w-full p-4`}>
+    <div className={`${inter.className} w-full p-4 pb-24`}>
       <div className='bg-lime-400 w-5/6 mx-auto h-16 rounded-2xl mt-4 flex items-center text-center active:bg-lime-500'>
         <p className='text-center  w-full text-xl'>{`journal #${
           thisJournal.journalId

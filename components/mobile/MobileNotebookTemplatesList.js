@@ -112,19 +112,9 @@ function MobileNotebookTemplatesList() {
       </div>
       <div className='flex  justify-center'>
         <Button
-          buttonText='add new notebook'
-          buttonColor='bg-green-600'
-          buttonAction={() => router.push('/templates/new')}
-        />
-        <Button
-          buttonText='add eulogia'
+          buttonText='back'
           buttonColor='bg-purple-600'
-          buttonAction={() => router.push('/eulogias/new')}
-        />
-        <Button
-          buttonText='library'
-          buttonColor='bg-orange-600'
-          buttonAction={() => router.push('/library')}
+          buttonAction={() => router.back()}
         />
       </div>
     </div>

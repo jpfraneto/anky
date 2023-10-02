@@ -159,12 +159,13 @@ const MobileBuyNewJournal = () => {
             you now have a new journal where to download your consciousness
           </p>
           <p className='mt-2 mb-4'>the id of it is {mintedJournalId}</p>
-          <Link
+          <p>im working on adding it to your library</p>
+          {/* <Link
             href={`/m/user/journals/${mintedJournalId}`}
             className='p-2 bg-green-600 rounded-xl'
           >
             go to journal
-          </Link>
+          </Link> */}
         </div>
       ) : (
         <div className='p-2'>
