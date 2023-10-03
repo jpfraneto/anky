@@ -49,7 +49,7 @@ const DesktopApp = () => {
       case '/templates/new':
         return <NewTemplatePage userAnky={userAppInformation} />;
       case `/template/${route.split('/').pop()}`: // Extracts the template id from the route
-        return <TemplatePage userAnky={userAppInformation} />;
+        return <TemplatePage userAnky={userAppInformation} router={router} />;
       case '/100builders':
         return <BuildersPage />;
       case '/user':

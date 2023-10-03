@@ -6,28 +6,43 @@ import templatesContractABI from '../lib/templatesABI.json';
 import notebookContractABI from '../lib/notebookABI.json';
 import { processFetchedTemplate } from '../lib/notebooks.js';
 import Spinner from './Spinner';
-import { useWallets } from '@privy-io/react-auth';
+import { usePrivy, useWallets } from '@privy-io/react-auth';
 
-function TemplatePage({ userAnky }) {
-  console.log('the user anky is: ', userAnky);
+function TemplatePage({ userAnky, router }) {
+  const { authenticated, login } = usePrivy();
   const [templateData, setTemplateData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loadingTemplate, setLoadingTemplate] = useState(true);
   const [mintingNotebook, setMintingNotebook] = useState(false);
   const [mintedNotebookId, setMintedNotebookId] = useState(null);
   const [mintedNotebookSuccess, setMintedNotebookSuccess] = useState(false);
   const [notebookInformation, setNotebookInformation] = useState({});
-  const router = useRouter();
+  console.log('the router is: ', router);
   const { id } = router.query;
-  const wallets = useWallets();
-
   useEffect(() => {
-    if (id && userAnky) fetchTemplateData(id);
+    if (id && userAnky.wallet) fetchTemplateData(id);
+    else {
+      console.log('LKSAJOIC', id);
+
+      if (id) {
+        console.log('salhcasiljñla');
+        fetchTemplateFromServer();
+      }
+    }
+    async function fetchTemplateFromServer() {
+      const serverResponse = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/notebooks/template/${id}`
+      );
+      const data = await serverResponse.json();
+      console.log('the server response is: ', data);
+      setTemplateData(data.template);
+      setLoadingTemplate(false);
+    }
   }, [id, userAnky]);
 
   async function fetchTemplateData(templateId) {
+    console.log('inside the fetch template data', userAnky);
     if (!userAnky && !userAnky.wallet && !userAnky.wallet.getEthersProvider)
       return;
-    console.log(' in here, ', userAnky);
     let provider = await userAnky.wallet?.getEthersProvider();
     let signer;
 
@@ -48,14 +63,14 @@ function TemplatePage({ userAnky }) {
     const processedData = await processFetchedTemplate(data);
     console.log('the data is:', processedData);
     setTemplateData(processedData);
-    setLoading(false);
+    setLoadingTemplate(false);
   }
 
   async function handleMint() {
     setMintingNotebook(true);
     try {
       if (!userAnky) return alert('You need to login first');
-
+      console.log('the user anky is: ', userAnky);
       let provider = await userAnky.wallet.getEthersProvider();
       let signer = await provider.getSigner();
 
@@ -110,14 +125,13 @@ function TemplatePage({ userAnky }) {
     }
   }
 
-  if (!userAnky)
+  if (loadingTemplate || mintingNotebook)
     return (
-      <div className='text-white'>
-        <p>Please login first</p>
+      <div>
+        <Spinner />
+        <p className='text-white'>loading</p>
       </div>
     );
-
-  if (loading || mintingNotebook) return <Spinner />;
 
   return (
     <div className='md:w-1/2 mx-auto text-white pt-5'>
@@ -179,16 +193,25 @@ function TemplatePage({ userAnky }) {
                 using here.
               </p>
               <p>10% of it will go to who created the template as royalties.</p>
-              <div className='w-96 mx-auto flex space-x-2 my-4'>
-                <Button
-                  buttonColor='bg-purple-600'
-                  buttonText={
-                    mintingNotebook
-                      ? `Minting...`
-                      : `Mint Into Notebook ${templateData.price} eth`
-                  }
-                  buttonAction={handleMint}
-                />
+              <div className='w-96 mx-auto flex justify-center my-4'>
+                {authenticated ? (
+                  <Button
+                    buttonColor='bg-purple-600'
+                    buttonText={
+                      mintingNotebook
+                        ? `Minting...`
+                        : `Mint Into Notebook ${templateData.price} eth`
+                    }
+                    buttonAction={handleMint}
+                  />
+                ) : (
+                  <Button
+                    buttonColor='bg-purple-400'
+                    buttonText='login to mint'
+                    buttonAction={login}
+                  />
+                )}
+
                 <Button
                   buttonColor='bg-red-600'
                   buttonText='Back'
