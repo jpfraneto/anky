@@ -89,14 +89,11 @@ function MyApp({ Component, pageProps }) {
           wallet: user.wallet.address,
         }),
       };
-      const initialEthTransaction = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/get-initial-eth`,
-        fetchOptions
-      );
       const ankyAirdropTransaction = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/blockchain/airdrop`,
         fetchOptions
       );
+      console.log('the anky airdrop is: ', ankyAirdropTransaction);
     } catch (error) {}
   };
 

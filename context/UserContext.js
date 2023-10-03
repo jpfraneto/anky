@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
+import { ethers } from 'ethers';
 import {
   fetchUserEulogias,
   fetchUserNotebooks,
@@ -37,6 +38,26 @@ export const UserProvider = ({ children }) => {
         const signer = await provider.getSigner();
         let userTba = userAppInformation?.tbaAddress || '';
         if (!wallet?.chainId.includes('84531')) await changeChain();
+        console.log('THIS IS HAPPENING');
+        const balanceWei = await provider.getBalance(wallet.address);
+        const balanceEth = ethers.utils.formatEther(balanceWei);
+        if (Number(balanceEth) === 0) {
+          const fetchOptions = {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              wallet: wallet.address,
+            }),
+          };
+          const initialEthTransaction = await fetch(
+            `${process.env.NEXT_PUBLIC_SERVER_URL}/get-initial-eth`,
+            fetchOptions
+          );
+          console.log('the initial eth transaction is:', initialEthTransaction);
+        }
+
         if ((wallet && wallet.address) || !userAppInformation?.tbaAddress) {
           userTba = await callTba(wallet.address);
         }

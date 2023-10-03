@@ -449,22 +449,28 @@ function CreateNotebookTemplate({ userAnky }) {
           </div>
 
           <div>
-            <p className='text-left text-sm text-gray-500 mt-1'>Title</p>
+            <p className='text-left text-sm text-gray-500 mt-1'>
+              Title (max 50 characters)
+            </p>
 
             <input
               className='border p-2 w-full rounded text-gray-500'
               value={title}
+              maxlength='50'
               onChange={e => setTitle(e.target.value)}
               required
             />
           </div>
 
           <div>
-            <p className='text-left text-sm text-gray-500 mt-1'>Description</p>
+            <p className='text-left text-sm text-gray-500 mt-1'>
+              Description (max 560 characters)
+            </p>
 
             <textarea
               className='border p-2 w-full rounded text-gray-500'
               value={description}
+              maxlength='560'
               onChange={e => setDescription(e.target.value)}
               required
             />

@@ -121,7 +121,10 @@ const MobileApp = () => {
             {libraryLoading ? (
               <div className='flex flex-col items-center'>
                 <p>your library is loading</p>
-                <Spinner />
+                <div class='lds-ripple'>
+                  <div></div>
+                  <div></div>
+                </div>
               </div>
             ) : (
               <>

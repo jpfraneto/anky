@@ -250,10 +250,13 @@ const NewEulogiaPage = ({ userAnky }) => {
             blockchain.
           </p>
           <div>
-            <p className='text-left text-sm text-gray-500 mt-1'>Title</p>
+            <p className='text-left text-sm text-gray-500 mt-1'>
+              Title (max 50 chars)
+            </p>
             <input
               className='border p-2 w-full rounded text-gray-500'
               type='text'
+              maxlength='50'
               value={title}
               onChange={e => setTitle(e.target.value)}
             />
@@ -261,10 +264,12 @@ const NewEulogiaPage = ({ userAnky }) => {
 
           <div>
             <p className='text-left text-sm text-gray-500 mt-1'>
-              Prompt (this will be displayed to those who come and write)
+              Prompt (this will be displayed to those who come and write) - max
+              280 characters
             </p>
             <input
               type='text'
+              maxlength='280'
               className='border p-2 w-full rounded text-gray-500'
               value={description}
               onChange={e => setDescription(e.target.value)}
@@ -273,11 +278,12 @@ const NewEulogiaPage = ({ userAnky }) => {
 
           <div className='flex flex-col items-start'>
             <p className='text-left text-sm text-gray-500 my-1'>
-              Number of Pages
+              Number of Pages (max 100)
             </p>
             <input
               type='number'
               min={0}
+              max={100}
               className='border p-2 w-36 rounded text-gray-500'
               value={pages}
               onChange={e => {
