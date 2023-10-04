@@ -29,7 +29,7 @@ const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 const ankyverseToday = getAnkyverseDay(new Date());
 const ankyverseQuestion = getAnkyverseQuestion(ankyverseToday.wink);
 
-const DesktopApp = () => {
+const DesktopApp = ({ alchemy }) => {
   const { login, ready, authenticated, logout } = usePrivy();
   const { userAppInformation, setUserAppInformation, appLoading } = useUser();
   const router = useRouter();
@@ -49,7 +49,13 @@ const DesktopApp = () => {
       case '/templates/new':
         return <NewTemplatePage userAnky={userAppInformation} />;
       case `/template/${route.split('/').pop()}`: // Extracts the template id from the route
-        return <TemplatePage userAnky={userAppInformation} router={router} />;
+        return (
+          <TemplatePage
+            userAnky={userAppInformation}
+            alchemy={alchemy}
+            router={router}
+          />
+        );
       case '/100builders':
         return <BuildersPage />;
       case '/user':

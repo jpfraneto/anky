@@ -20,6 +20,7 @@ import MobileBuyNewJournal from './mobile/MobileBuyNewJournal';
 import MobileNotebookTemplatesList from './mobile/MobileNotebookTemplatesList';
 import Spinner from './Spinner';
 import MobileNewEulogia from './mobile/MobileNewEulogia';
+import MobileFeed from './mobile/MobileFeed';
 
 const sections = [
   {
@@ -57,7 +58,7 @@ const sections = [
   },
 ];
 
-const MobileApp = () => {
+const MobileApp = ({ alchemy }) => {
   const { login, authenticated, user, logout } = usePrivy();
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -66,6 +67,8 @@ const MobileApp = () => {
 
   function getComponentForRoute(route) {
     switch (route) {
+      case '/m/feed':
+        return <MobileFeed userAnky={userAppInformation} alchemy={alchemy} />;
       case '/m/notebooks':
         return <MobileNotebookTemplatesList userAnky={userAppInformation} />;
       case '/m/user/journals':

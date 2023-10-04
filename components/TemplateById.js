@@ -8,7 +8,8 @@ import { processFetchedTemplate } from '../lib/notebooks.js';
 import Spinner from './Spinner';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
 
-function TemplatePage({ userAnky, router }) {
+function TemplatePage({ userAnky, router, alchemy }) {
+  console.log('alchemy is: ', alchemy);
   const { authenticated, login } = usePrivy();
   const [templateData, setTemplateData] = useState(null);
   const [loadingTemplate, setLoadingTemplate] = useState(true);

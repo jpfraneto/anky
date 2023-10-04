@@ -36,6 +36,7 @@ export const UserProvider = ({ children }) => {
       ) {
         let provider = await wallet.getEthersProvider();
         const signer = await provider.getSigner();
+        console.log('the signer is: ', signer);
         let userTba = userAppInformation?.tbaAddress || '';
         if (!wallet?.chainId.includes('84531')) await changeChain();
         console.log('THIS IS HAPPENING');

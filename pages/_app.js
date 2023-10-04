@@ -16,8 +16,16 @@ import Link from 'next/link';
 import Navbar from '../components/Navbar';
 import { PWAProvider, usePWA } from '../context/pwaContext';
 import { UserProvider } from '../context/UserContext';
+import { Network, Alchemy } from 'alchemy-sdk';
 
 const configureChainsConfig = configureChains([baseGoerli], [publicProvider()]);
+
+const settings = {
+  apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY, // Replace with your Alchemy API Key.
+  network: Network.BASE_GOERLI, // Replace with your network.
+};
+
+const alchemy = new Alchemy(settings);
 
 const righteous = Righteous({ subsets: ['latin'], weight: ['400'] });
 const DesktopApp = dynamic(() => import('../components/DesktopApp'));
@@ -200,11 +208,11 @@ function MyApp({ Component, pageProps }) {
         <PrivyWagmiConnector wagmiChainsConfig={configureChainsConfig}>
           {isDesktop ? (
             <UserProvider>
-              <DesktopApp />
+              <DesktopApp alchemy={alchemy} />
             </UserProvider>
           ) : (
             <UserProvider>
-              <MobileApp />
+              <MobileApp alchemy={alchemy} />
             </UserProvider>
           )}
         </PrivyWagmiConnector>
