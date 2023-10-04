@@ -135,7 +135,7 @@ function TemplatePage({ userAnky, router, alchemy }) {
     );
 
   return (
-    <div className='md:w-1/2 mx-auto text-white pt-5'>
+    <div className='md:w-1/2 p-2 mx-auto w-screen text-black md:text-white pt-5'>
       {templateData ? (
         <>
           {mintedNotebookSuccess ? (
@@ -185,7 +185,7 @@ function TemplatePage({ userAnky, router, alchemy }) {
                   </li>
                 ))}
               </ol>
-              <p className='bg-purple-600 p-2 rounded-xl border my-2 border-black w-fit mx-auto'>
+              <p className='bg-purple-600 p-2 text-white rounded-xl border my-2 border-black w-fit mx-auto'>
                 {templateData.supply} units left
               </p>
 
@@ -194,7 +194,7 @@ function TemplatePage({ userAnky, router, alchemy }) {
                 using here.
               </p>
               <p>10% of it will go to who created the template as royalties.</p>
-              <div className='w-96 mx-auto flex justify-center my-4'>
+              <div className='w-96 mx-auto md:text-black text-white flex justify-center my-4'>
                 {authenticated ? (
                   <Button
                     buttonColor='bg-purple-600'
