@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { Righteous, Dancing_Script } from 'next/font/google';
 import { getAnkyverseDay, getAnkyverseQuestion } from '../lib/ankyverse';
 import { createTBA, airdropAnky } from '../lib/backend';
+import TemplatePage from './TemplateById';
 import IndividualEulogiaDisplayPageMobile from './eulogias/IndividualEulogiaDisplayPageMobile.js';
 import NewEulogiaPageMobile from './eulogias/NewEulogiaPageMobile.js';
 import IndividualNotebookPageMobile from './notebook/IndividualNotebookPageMobile.js';
@@ -89,6 +90,14 @@ const MobileApp = ({ alchemy }) => {
         return <MobileUserNotebookById userAnky={userAppInformation} />;
       case '/eulogias/new':
         return <NewEulogiaPageMobile userAnky={userAppInformation} />;
+      case `/template/${route.split('/').pop()}`:
+        return (
+          <TemplatePage
+            userAnky={userAppInformation}
+            alchemy={alchemy}
+            router={router}
+          />
+        );
       case `/eulogias/${route.split('/').pop()}`:
         return (
           <IndividualEulogiaDisplayPageMobile
