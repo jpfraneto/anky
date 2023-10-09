@@ -233,6 +233,17 @@ a {
 .lds-ripple div:nth-child(2) {
   animation-delay: -0.5s;
 }
+
+/* animations.css */
+@keyframes animateSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @keyframes lds-ripple {
   0% {
     top: 36px;

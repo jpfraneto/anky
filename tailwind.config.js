@@ -11,6 +11,10 @@ module.exports = {
   theme: {
     extend: {
       keyframes: {
+        animateSpin: {
+          '0%': { transform: 'rotate(0)' },
+          '100%': { transform: 'rotate(360)' },
+        },
         shrink: {
           '0%': { transform: 'scale(1)' },
           '100%': { transform: 'scale(0)' },
@@ -31,5 +35,4 @@ module.exports = {
       },
     },
   },
-  plugins: [],
 };

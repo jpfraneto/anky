@@ -34,9 +34,10 @@ const JournalPage = ({ userAppInformation }) => {
     <div className='text-white'>
       <button onClick={() => console.log(journals)}>journals</button>
       <div className='my-4 flex '>
-        {journals.map((x, i) => {
-          return <JournalCard journal={x} key={i} />;
-        })}
+        {journals &&
+          journals.map((x, i) => {
+            return <JournalCard journal={x} key={i} />;
+          })}
       </div>
       <div className='flex justify-center '>
         <Button
