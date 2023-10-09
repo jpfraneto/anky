@@ -46,7 +46,7 @@ export const UserProvider = ({ children }) => {
         if (
           authenticated &&
           wallet &&
-          !localStorage.getItem('firstTimeUser18')
+          !localStorage.getItem('firstTimeUser23')
         ) {
           console.log(
             'this is the first time that the user logs in and the progress modal will be shown now'
@@ -89,7 +89,7 @@ export const UserProvider = ({ children }) => {
           }
           setCurrentStep(5);
           console.log('all the setup is ready');
-          localStorage.setItem('firstTimeUser18', 'done');
+          localStorage.setItem('firstTimeUser23', 'done');
           setShowProgressModal(false);
           return setSetupIsReady(true);
         } else {
