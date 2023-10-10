@@ -175,10 +175,12 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
 
       console.log('the eulogias contract is: ', eulogiasContract);
       console.log('eulog', eulogia, cid, whoIsWriting);
-      const tx = await eulogiasContract.addMessage(
+      const tx = await eulogiasContract.writeEulogiaPage(
         eulogia.eulogiaID,
         cid,
-        whoIsWriting
+        whoIsWriting,
+        true,
+        false
       );
       await tx.wait();
       console.log('after the transaction');
