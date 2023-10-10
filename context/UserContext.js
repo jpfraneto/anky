@@ -104,7 +104,7 @@ export const UserProvider = ({ children }) => {
       }
     }
     mainSetup();
-  }, [loading, wallet]);
+  }, [loading, wallet, authenticated]);
 
   useEffect(() => {
     const loadUserLibrary = async () => {

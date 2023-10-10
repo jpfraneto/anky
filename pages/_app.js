@@ -15,7 +15,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import Navbar from '../components/Navbar';
 import { PWAProvider, usePWA } from '../context/pwaContext';
-import { UserProvider, useUser } from '../context/UserContext';
 import { Network, Alchemy } from 'alchemy-sdk';
 
 const configureChainsConfig = configureChains([baseGoerli], [publicProvider()]);
@@ -45,7 +44,6 @@ function MyApp({ Component, pageProps }) {
 
   const [isDesktop, setIsDesktop] = useState(false);
   const [mainAppLoading, setMainAppLoading] = useState(true);
-  const { appLoading } = useUser();
 
   useEffect(() => {
     if (window.innerWidth > 768) {
