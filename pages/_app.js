@@ -15,6 +15,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import Navbar from '../components/Navbar';
 import { PWAProvider, usePWA } from '../context/pwaContext';
+import { UserProvider } from '../context/UserContext';
 import { Network, Alchemy } from 'alchemy-sdk';
 
 const configureChainsConfig = configureChains([baseGoerli], [publicProvider()]);
