@@ -214,10 +214,7 @@ function CreateNotebookTemplate({ userAnky }) {
           userEnteredPriceInWei,
           metadataCID.metadataCID,
           supply,
-          prompts.length,
-          {
-            gasLimit: 1000000000,
-          }
+          prompts.length
         );
 
         console.log('the transaction response is: ', transactionResponse);

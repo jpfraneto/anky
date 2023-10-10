@@ -16,6 +16,7 @@ export const UserProvider = ({ children }) => {
   const [appLoading, setAppLoading] = useState(true);
   const [firstTimeUser, setFirstTimeUser] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
+  const [settingThingsUp, setSettingThingsUp] = useState(false);
   const [showProgressModal, setShowProgressModal] = useState(false);
   const [libraryLoading, setLibraryLoading] = useState(true);
   const [setupIsReady, setSetupIsReady] = useState(false);
@@ -46,11 +47,13 @@ export const UserProvider = ({ children }) => {
         if (
           authenticated &&
           wallet &&
-          !localStorage.getItem('firstTimeUser23')
+          !settingThingsUp &&
+          !localStorage.getItem('firstTimeUser39')
         ) {
           console.log(
             'this is the first time that the user logs in and the progress modal will be shown now'
           );
+          setSettingThingsUp(true);
           setShowProgressModal(true);
           await changeChain();
           setCurrentStep(1);
@@ -89,7 +92,7 @@ export const UserProvider = ({ children }) => {
           }
           setCurrentStep(5);
           console.log('all the setup is ready');
-          localStorage.setItem('firstTimeUser23', 'done');
+          localStorage.setItem('firstTimeUser39', 'done');
           setShowProgressModal(false);
           return setSetupIsReady(true);
         } else {
@@ -105,57 +108,63 @@ export const UserProvider = ({ children }) => {
 
   useEffect(() => {
     const loadUserLibrary = async () => {
-      if (
-        setupIsReady &&
-        authenticated &&
-        wallet &&
-        wallet.address &&
-        wallet.address.length > 0
-      ) {
-        console.log('befoekfaouchsoa');
-        const { tba } = await callTba(wallet.address);
-        console.log('in here, the wallet is: ', wallet, tba);
-        let provider = await wallet.getEthersProvider();
-        const signer = await provider.getSigner();
-        console.log('the signer is: ', signer);
-        console.log('the user app information is: ', userAppInformation);
-        let userTba = userAppInformation?.tbaAddress || tba;
+      try {
+        if (
+          setupIsReady &&
+          authenticated &&
+          wallet &&
+          wallet.address &&
+          wallet.address.length > 0
+        ) {
+          console.log('befoekfaouchsoa');
+          const { tba } = await callTba(wallet.address);
+          console.log('in here, the wallet is: ', wallet, tba);
+          let provider = await wallet.getEthersProvider();
+          const signer = await provider.getSigner();
+          console.log('the signer is: ', signer);
+          console.log('the user app information is: ', userAppInformation);
+          let userTba = userAppInformation?.tbaAddress || tba;
 
-        if (!userAppInformation || !userAppInformation.wallet)
-          setUserAppInformation(x => {
-            return { ...x, wallet };
-          });
-        console.log(
-          'inside the user provider, right before the loading is set to false'
-        );
+          if (!userAppInformation || !userAppInformation.wallet)
+            setUserAppInformation(x => {
+              return { ...x, wallet };
+            });
+          console.log(
+            'inside the user provider, right before the loading is set to false'
+          );
+          setAppLoading(false);
+          if (!userAppInformation.userJournals) {
+            const userJournals = await fetchUserJournals(signer);
+            console.log('the user journals are213: ', userJournals);
+            setUserAppInformation(x => {
+              return { ...x, userJournals: userJournals };
+            });
+          }
+          if (!userAppInformation.userNotebooks) {
+            console.log('in here', userAppInformation);
+            const userNotebooks = await fetchUserNotebooks(signer, userTba);
+            console.log('the user notebooks are213: ', userNotebooks);
+
+            setUserAppInformation(x => {
+              return { ...x, userNotebooks: userNotebooks };
+            });
+          }
+          if (!userAppInformation.userEulogias) {
+            const userEulogias = await fetchUserEulogias(signer);
+            console.log('the user eulogias are213: ', userEulogias);
+
+            setUserAppInformation(x => {
+              return { ...x, userEulogias: userEulogias };
+            });
+          }
+          setLibraryLoading(false);
+        } else {
+          setAppLoading(false);
+        }
+      } catch (error) {
         setAppLoading(false);
-        if (!userAppInformation.userJournals) {
-          const userJournals = await fetchUserJournals(signer);
-          console.log('the user journals are213: ', userJournals);
-          setUserAppInformation(x => {
-            return { ...x, userJournals: userJournals };
-          });
-        }
-        if (!userAppInformation.userNotebooks) {
-          console.log('in here', userAppInformation);
-          const userNotebooks = await fetchUserNotebooks(signer, userTba);
-          console.log('the user notebooks are213: ', userNotebooks);
-
-          setUserAppInformation(x => {
-            return { ...x, userNotebooks: userNotebooks };
-          });
-        }
-        if (!userAppInformation.userEulogias) {
-          const userEulogias = await fetchUserEulogias(signer);
-          console.log('the user eulogias are213: ', userEulogias);
-
-          setUserAppInformation(x => {
-            return { ...x, userEulogias: userEulogias };
-          });
-        }
-        setLibraryLoading(false);
-      } else {
-        setAppLoading(false);
+        console.log('there was an error retrieving the users library.');
+        console.log(error);
       }
     };
     loadUserLibrary();

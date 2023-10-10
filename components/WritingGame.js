@@ -46,7 +46,7 @@ const WritingGame = ({
       keystrokeIntervalRef.current = setInterval(() => {
         const elapsedTime = Date.now() - lastKeystroke;
         if (time === 480) {
-          audioRef.current.play();
+          // audioRef.current.play();
         }
         if (elapsedTime > 3000 && !isDone) {
           finishRun();

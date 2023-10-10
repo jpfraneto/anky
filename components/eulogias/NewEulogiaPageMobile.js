@@ -99,10 +99,7 @@ const NewEulogiaPageMobile = ({ userAnky }) => {
         // Call the contract's method and send the transaction
         const transactionResponse = await eulogiaContract.createEulogia(
           metadataCID.cid,
-          maxMsgs,
-          {
-            gasLimit: 1000000000,
-          }
+          maxMsgs
         );
 
         const transactionReceipt = await transactionResponse.wait(); // Wait for the transaction to be mined

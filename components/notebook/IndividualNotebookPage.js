@@ -130,14 +130,19 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
         AnkyNotebooksAbi,
         signer
       );
-      console.log('the notebooks contract is: ', notebook);
+      console.log('the notebooks contract is: ', notebooksContract);
       console.log('the pages number is: ', notebookPages);
       const pageNumber = notebookPages.length + 1;
       console.log('the page number is :0', pageNumber);
       console.log('the notebook is: ', notebook);
       const notebookID = router.query.id;
       console.log('the notebook id is: ', notebookID);
-      const tx = await notebooksContract.writePage(notebookID, pageNumber, cid);
+      const tx = await notebooksContract.writePage(
+        notebookID,
+        pageNumber,
+        cid,
+        true
+      );
       await tx.wait();
       console.log('after the response of writing in the notebook');
       console.log('the notebook pages are: ', notebookPages);

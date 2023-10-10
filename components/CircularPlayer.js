@@ -80,7 +80,7 @@ const CircularPlayer = ({ image, audio, setMeditationReady }) => {
       if (!pathLength) {
         startAnimation();
       }
-      audioRef.current.play();
+      // audioRef.current.play();
     }
 
     setActive(!active);

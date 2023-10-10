@@ -101,16 +101,12 @@ const NewEulogiaPage = ({ userAnky }) => {
 
         const userEnteredPriceInWei = ethers.utils.parseEther(price.toString());
         // You may need to set appropriate values for metadataURI, password, and maxMsgs
-        const metadataURI = metadataCID.metadataCID;
         const maxMsgs = pages; // Update with actual max messages
 
         // Call the contract's method and send the transaction
         const transactionResponse = await eulogiaContract.createEulogia(
           metadataCID.cid,
-          maxMsgs,
-          {
-            gasLimit: 1000000000,
-          }
+          maxMsgs
         );
 
         const transactionReceipt = await transactionResponse.wait(); // Wait for the transaction to be mined

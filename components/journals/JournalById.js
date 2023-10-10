@@ -79,11 +79,11 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
             setLoading(false);
           } else {
             setNoJournals(true);
-            throw Error('No notebook found');
+            throw Error('No journal found');
           }
         } else {
           setNoJournals(true);
-          throw Error('No notebook found');
+          throw Error('No journal found');
         }
       } catch (error) {
         console.log('there was an error');
@@ -143,7 +143,8 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
       console.log('the notebook is: ', journal);
       const journalId = router.query.id;
       console.log('the journal id is: ', journalId, cid);
-      const tx = await journalsContract.writeJournal(journalId, cid, false);
+      console.log('the journals contract is: ', journalsContract);
+      const tx = await journalsContract.writeJournalPage(journalId, cid, true);
       await tx.wait();
       console.log('after the response of writing in the journal', journal);
       setJournal(x => {

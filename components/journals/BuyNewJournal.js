@@ -26,11 +26,13 @@ const BuyNewJournal = () => {
   const router = useRouter();
   const [journal, setJournal] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [mintingNewJournal, setMintingNewJournal] = useState(false);
   const [mintedJournalId, setMintedJournalId] = useState(null);
   const [successfullyMintedJournal, setSuccessfullyMintedJournal] =
     useState(false);
   const [journalPrices, setJournalPrices] = useState({}); // Store journal prices
   const [displayJournalOption, setDisplayJournalOption] = useState(null);
+  const { userAppInformation, setUserAppInformation, appLoading } = useUser();
 
   const { wallets } = useWallets();
 
@@ -90,7 +92,7 @@ const BuyNewJournal = () => {
         console.error('Wallet not available.');
         return;
       }
-
+      setMintingNewJournal(true);
       const provider = await thisWallet.getEthersProvider();
       const signer = await provider.getSigner();
 
@@ -123,9 +125,19 @@ const BuyNewJournal = () => {
         if (log.topics[0] === eventTopic) {
           const decodedLog = journalsContract.interface.parseLog(log);
           const { tokenId } = decodedLog.args;
-
+          setUserAppInformation(x => {
+            console.log(
+              'the x in the user app information before adding a new journal is: ',
+              x
+            );
+            return {
+              ...x,
+              journals: [...x.journals, { journalId: tokenId, entries: [] }],
+            };
+          });
           setMintedJournalId(tokenId.toString()); // Save the tokenId to state
           setSuccessfullyMintedJournal(true);
+          setMintingNewJournal(false);
 
           break; // Exit loop once you find the first event that matches
         }
@@ -161,39 +173,48 @@ const BuyNewJournal = () => {
           </Link>
         </div>
       ) : (
-        <div>
-          <p className='mb-2'>mint new journal</p>
-          <p className='mb-4'>how many pages do you want?</p>
-          <div className='flex'>
-            {[0, 1, 2].map((x, i) => {
-              return (
-                <div
-                  key={i}
-                  className='mx-4 text-center flex flex-col items-center rounded-xl bg-red-200 p-2 text-black'
-                >
-                  <span
-                    key={i}
-                    onClick={() => mintNewJournal(x)}
-                    className='m-2 bg-red-400 cursor-pointer hover:bg-red-600 shadow-lg shadow-black p-2 w-8 h-8 rounded-xl flex justify-center items-center'
-                  >
-                    {x}
-                  </span>
-                  <p>{transformJournalType(x)} pages</p>
-                  <p>
-                    {journalPrices[x] !== undefined
-                      ? `${journalPrices[x]} ETH`
-                      : ''}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
-          <div className='mt-4 w-36 mx-auto'>
-            <Link href='/library' passHref>
-              <Button buttonText='go back' buttonColor='bg-red-600' />
-            </Link>
-          </div>
-        </div>
+        <>
+          {mintingNewJournal ? (
+            <div>
+              <Spinner />
+              <p className='text-white'>minting your new journal</p>
+            </div>
+          ) : (
+            <div>
+              <p className='mb-2'>mint new journal</p>
+              <p className='mb-4'>how many pages do you want?</p>
+              <div className='flex'>
+                {[0, 1, 2].map((x, i) => {
+                  return (
+                    <div
+                      key={i}
+                      className='mx-4 text-center flex flex-col items-center rounded-xl bg-red-200 p-2 text-black'
+                    >
+                      <span
+                        key={i}
+                        onClick={() => mintNewJournal(x)}
+                        className='m-2 bg-red-400 cursor-pointer hover:bg-red-600 shadow-lg shadow-black p-2 w-8 h-8 rounded-xl flex justify-center items-center'
+                      >
+                        {x}
+                      </span>
+                      <p>{transformJournalType(x)} pages</p>
+                      <p>
+                        {journalPrices[x] !== undefined
+                          ? `${journalPrices[x]} ETH`
+                          : ''}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className='mt-4 w-36 mx-auto'>
+                <Link href='/library' passHref>
+                  <Button buttonText='go back' buttonColor='bg-red-600' />
+                </Link>
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import journalsABI from '../../lib/journalsABI.json';
+import Link from 'next/link';
 import { usePWA } from '../../context/pwaContext';
 import Button from '../Button';
 import {
@@ -40,13 +41,10 @@ const JournalPage = ({ userAppInformation }) => {
           })}
       </div>
       <div className='flex justify-center '>
-        <Button
-          buttonText='buy new journal'
-          buttonColor='bg-purple-600'
-          buttonAction={() =>
-            alert('this will allow the user to mint another journal')
-          }
-        />
+        <Link href='/journal/new' passHref>
+          <Button buttonText='buy new journal' buttonColor='bg-purple-600' />
+        </Link>
+
         <Button
           buttonText='back'
           buttonColor='bg-red-600'

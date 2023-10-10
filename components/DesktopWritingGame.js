@@ -91,7 +91,7 @@ const DesktopWritingGame = ({
       keystrokeIntervalRef.current = setInterval(() => {
         const elapsedTime = Date.now() - lastKeystroke;
         if (time === 480) {
-          audioRef.current.play();
+          // audioRef.current.play();
         }
         if (elapsedTime > 3000 && !isDone) {
           finishRun();
@@ -111,7 +111,7 @@ const DesktopWritingGame = ({
   const finishRun = async () => {
     setLifeBarLength(0);
     audioRef.current.volume = 0.1;
-    audioRef.current.play();
+    // audioRef.current.play();
     setFinished(true);
     setEndTime(Date.now());
     setIsDone(true);
@@ -208,10 +208,7 @@ const DesktopWritingGame = ({
 
         const transactionResponse = await templatesContract.safeMint(
           arweaveLink,
-          addressForMinting,
-          {
-            gasLimit: 1000000000,
-          }
+          addressForMinting
         );
 
         await transactionResponse.wait(); // Wait for the transaction to be mined

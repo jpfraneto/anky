@@ -11,7 +11,7 @@ const steps = [
   { id: 'airdrop', label: 'Looking for your companion in the Ankyverse' },
   {
     id: 'getTBA',
-    label: 'Teaching your anky how to store all your writing containers...',
+    label: 'Teaching your Anky how to store all your writing containers...',
   },
   { id: 'sendJournal', label: 'Gifting you your first journal' },
 ];
