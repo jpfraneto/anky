@@ -41,7 +41,7 @@ export const UserProvider = ({ children }) => {
         if (loading) return;
         if (!authenticated) {
           setAppLoading(false);
-          return setShowProgressModal();
+          return setShowProgressModal(false);
         }
         setShowProgressModal(true);
         if (
