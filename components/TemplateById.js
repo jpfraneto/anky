@@ -4,6 +4,7 @@ import { ethers } from 'ethers';
 import Button from '../components/Button';
 import templatesContractABI from '../lib/templatesABI.json';
 import notebookContractABI from '../lib/notebookABI.json';
+import { useUser } from '../context/UserContext';
 import { processFetchedTemplate } from '../lib/notebooks.js';
 import Spinner from './Spinner';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
@@ -17,6 +18,8 @@ function TemplatePage({ userAnky, router, alchemy }) {
   const [mintedNotebookId, setMintedNotebookId] = useState(null);
   const [mintedNotebookSuccess, setMintedNotebookSuccess] = useState(false);
   const [notebookInformation, setNotebookInformation] = useState({});
+  const { setUserAppInformation } = useUser();
+
   console.log('the router is: ', router);
   const { id } = router.query;
   useEffect(() => {
@@ -114,7 +117,19 @@ function TemplatePage({ userAnky, router, alchemy }) {
       const creatorAmount = ethers.utils.formatEther(transferredAmounts[0]);
       const userAmount = ethers.utils.formatEther(transferredAmounts[1]);
       setNotebookInformation({ creatorAmount, userAmount, notebookId });
-
+      setUserAppInformation(x => {
+        console.log(
+          'the x in the user app information before adding a new journal is: ',
+          x
+        );
+        return {
+          ...x,
+          userNotebooks: [
+            ...x.userNotebooks,
+            { notebookId: notebookId, pages: [] },
+          ],
+        };
+      });
       setMintedNotebookId(notebookId);
       setMintedNotebookSuccess(true);
       setMintingNotebook(false);

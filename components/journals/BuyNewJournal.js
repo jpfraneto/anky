@@ -132,7 +132,10 @@ const BuyNewJournal = () => {
             );
             return {
               ...x,
-              journals: [...x.journals, { journalId: tokenId, entries: [] }],
+              userJournals: [
+                ...x.userJournals,
+                { journalId: tokenId, entries: [] },
+              ],
             };
           });
           setMintedJournalId(tokenId.toString()); // Save the tokenId to state

@@ -10,7 +10,6 @@ import {
 import templatesContractABI from '../../lib/templatesABI.json';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
 import Image from 'next/image';
-
 import WritingGameComponent from '../WritingGameComponent';
 import Spinner from '../Spinner';
 import AnkyNotebooksAbi from '../../lib/notebookABI.json'; // Assuming you have the ABI
@@ -151,7 +150,7 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
         setNotebookPages([
           {
             text: finishText,
-            pageIndex: notebookPages.length,
+            pageIndex: 1,
             written: true,
           },
         ]);
