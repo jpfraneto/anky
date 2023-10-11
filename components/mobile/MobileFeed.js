@@ -56,7 +56,7 @@ const MobileFeed = ({ alchemy }) => {
   };
 
   return (
-    <div>
+    <div className='w-full'>
       <div className='text-center h-fit py-2 w-full bg-black text-white'>
         {' '}
         <h2 className='text-2xl'>we are all crazy</h2>
@@ -65,28 +65,31 @@ const MobileFeed = ({ alchemy }) => {
         </p>
       </div>
 
-      {events.map((event, index) => (
-        <div
-          key={index}
-          className={getContainerColor(event.containerType)}
-          style={{
-            height: '50vh',
-            overflow: 'auto',
-            marginBottom: '10px',
-            padding: '10px',
-            cursor: 'pointer',
-          }}
-          onClick={e => {
-            if (e.target.style.height === 'auto') {
-              e.target.style.height = '50vh';
-            } else {
-              e.target.style.height = 'auto';
-            }
-          }}
-        >
-          {event.text}
+      {events.length === 0 ? (
+        <div>
+          <p>loading...</p>
+          <div class='lds-ripple'>
+            <div></div>
+            <div></div>
+          </div>
         </div>
-      ))}
+      ) : (
+        events.map((event, index) => (
+          <div
+            key={index}
+            className={getContainerColor(event.containerType)}
+            style={{
+              height: '100vh',
+              overflow: 'auto',
+              marginBottom: '10px',
+              padding: '10px',
+              cursor: 'pointer',
+            }}
+          >
+            {event.text}
+          </div>
+        ))
+      )}
     </div>
   );
 };
