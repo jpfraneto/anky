@@ -115,21 +115,10 @@ const MobileApp = ({ alchemy }) => {
 
       default:
         if (!authenticated) {
-          return (
-            <div className='h-screen w-screen'>
-              {sections.map((x, i) => (
-                <Element section={x} key={i} />
-              ))}
-              <div className='h-1/7 p-4 w-full flex justify-center items-center bg-black'>
-                <p onClick={login} className='text-white text-2xl'>
-                  login
-                </p>
-              </div>
-            </div>
-          );
+          return <MobileFeed alchemy={alchemy} />;
         }
         return (
-          <div className='p-4 w-full text-black h-screen'>
+          <div className='bg-black p-4 w-full text-white h-screen'>
             {libraryLoading ? (
               <div className='flex flex-col items-center'>
                 <p>your library is loading</p>

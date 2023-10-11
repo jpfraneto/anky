@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
-import AnkyAidropAbi from '../../lib/airdropABI.json'; // Assuming you have the ABI
+import AnkyAidropAbi from '../../lib/airdropABI.json';
 
 const provider = new ethers.providers.JsonRpcProvider(
-  `https://eth-mainnet.alchemyapi.io/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`
+  `https://base-goerli.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`
 );
 
 const MobileFeed = ({ alchemy }) => {
@@ -11,33 +11,80 @@ const MobileFeed = ({ alchemy }) => {
 
   useEffect(() => {
     const fetchEvents = async () => {
-      console.log('the provider is: ', provider);
-      const contract = new alchemy.core.Contract(
-        process.env.NEXT_PUBLIC_ANKY_AIRDROP_SMART_CONTRACT,
-        AnkyAidropAbi,
-        provider
-      );
-      console.log('the contract is: ', contract);
-      const filter = contract.filters.WritingEvent(); // Assuming WritingEvent is the name of your event
-      const logs = await provider.getLogs({
-        ...filter,
-        fromBlock: 0, // Starting block (you might want to adjust this to avoid querying the entire history)
-        toBlock: 'latest',
+      const response = await alchemy.core.getLogs({
+        address: process.env.NEXT_PUBLIC_ANKY_AIRDROP_SMART_CONTRACT,
+        topics: [
+          '0x784793a26cf95517c1388aaac377b126d2469f8c9e69209984bb4ec5ceae02c3',
+        ],
+        fromBlock: '0xA61AAE',
       });
-      const parsedEvents = logs
-        .map(log => contract.interface.parseLog(log))
+
+      const contractInterface = new ethers.utils.Interface(AnkyAidropAbi);
+
+      const parsedEvents = response
+        .map(log => contractInterface.parseLog(log).args)
         .slice(-20);
-      setEvents(parsedEvents);
+      const fetchContents = async event => {
+        const response = await fetch(`https://www.arweave.net/${event.cid}`);
+        const text = await response.text();
+        return {
+          containerType: event[1],
+          cid: event[2],
+          text: text,
+        };
+      };
+
+      const formattedEventsPromises = parsedEvents.map(fetchContents);
+      const formattedEvents = await Promise.all(formattedEventsPromises);
+      setEvents(formattedEvents);
     };
+
     fetchEvents();
   }, []);
 
+  const getContainerColor = containerType => {
+    switch (containerType) {
+      case 'notebook':
+        return 'bg-blue-400';
+      case 'eulogia':
+        return 'bg-orange-400';
+      case 'journal':
+        return 'bg-green-400';
+      default:
+        return 'white';
+    }
+  };
+
   return (
     <div>
-      {events.map(event => (
-        // Render each event as you'd like
-        <div key={event.transactionHash}>
-          {event.args.writingContainerType} - {event.args.cid}
+      <div className='text-center h-fit py-2 w-full bg-black text-white'>
+        {' '}
+        <h2 className='text-2xl'>we are all crazy</h2>
+        <p className='text-xl text-orange-200'>
+          let&apos;s embrace it together
+        </p>
+      </div>
+
+      {events.map((event, index) => (
+        <div
+          key={index}
+          className={getContainerColor(event.containerType)}
+          style={{
+            height: '50vh',
+            overflow: 'auto',
+            marginBottom: '10px',
+            padding: '10px',
+            cursor: 'pointer',
+          }}
+          onClick={e => {
+            if (e.target.style.height === 'auto') {
+              e.target.style.height = '50vh';
+            } else {
+              e.target.style.height = 'auto';
+            }
+          }}
+        >
+          {event.text}
         </div>
       ))}
     </div>

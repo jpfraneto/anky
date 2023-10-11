@@ -86,24 +86,7 @@ function MyApp({ Component, pageProps }) {
     }
   }, []);
 
-  const handleLogin = async user => {
-    // try {
-    //   const fetchOptions = {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify({
-    //       wallet: user.wallet.address,
-    //     }),
-    //   };
-    //   const ankyAirdropTransaction = await fetch(
-    //     `${process.env.NEXT_PUBLIC_SERVER_URL}/blockchain/airdrop`,
-    //     fetchOptions
-    //   );
-    //   console.log('the anky airdrop is: ', ankyAirdropTransaction);
-    // } catch (error) {}
-  };
+  const handleLogin = async user => {};
 
   if (mainAppLoading) return <p>Loading...</p>;
 

@@ -164,7 +164,6 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
       );
 
       const { cid } = await response.json();
-      console.log('time to add the writing to the smart contract:', cid);
       let signer = await provider.getSigner();
       // Step 2: Send the CID to the smart contract.
       const eulogiasContract = new ethers.Contract(
