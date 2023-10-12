@@ -82,7 +82,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
           const formattedEulogia = await processFetchedEulogia(thisEulogia);
           formattedEulogia.eulogiaID = eulogiaID;
 
-          console.log('the formatted euloogia is: ', formattedEulogia);
+          console.log('the formatted euloogi231a is: ', formattedEulogia);
           formattedEulogia.metadata.backgroundImageUrl = `https://ipfs.io/ipfs/${formattedEulogia.metadata.backgroundImageCid}`;
           formattedEulogia.metadata.coverImageUrl = `https://ipfs.io/ipfs/${formattedEulogia.metadata.coverImageCid}`;
 

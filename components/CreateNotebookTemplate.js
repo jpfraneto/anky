@@ -465,7 +465,7 @@ function CreateNotebookTemplate({ userAnky }) {
             </p>
 
             <textarea
-              className='border p-2 w-full rounded text-gray-500'
+              className='border p-2 w-full h-64 rounded text-gray-500'
               value={description}
               maxlength='560'
               onChange={e => setDescription(e.target.value)}
@@ -475,14 +475,14 @@ function CreateNotebookTemplate({ userAnky }) {
 
           <p className='text-left text-sm text-gray-500 my-0'>Bulk import</p>
           <textarea
-            className='border p-2 w-full h-fit rounded text-gray-500'
+            className='border p-2 w-full h-96 rounded text-gray-500'
             placeholder='Enter questions separated by commas...'
             value={bulkImportString}
             onChange={e => setBulkImportString(e.target.value)}
           />
           <button
             type='button'
-            className='bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded w-fit mt-2 mr-auto'
+            className='bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded  w-fit mt-2 mr-auto'
             onClick={handleBulkImport}
           >
             Import All Questions

@@ -23,6 +23,7 @@ export const UserProvider = ({ children }) => {
   const [currentStep, setCurrentStep] = useState(0);
 
   const wallets = useWallets();
+  console.log('the wallets are: ', wallets);
   const wallet = wallets.wallets[0];
   const changeChain = async () => {
     if (authenticated && wallet) {
@@ -37,7 +38,16 @@ export const UserProvider = ({ children }) => {
 
   useEffect(() => {
     async function mainSetup() {
+      console.log('inside the main setup function, starting');
       try {
+        console.log('loading is: ', loading);
+        console.log('authenticated is: ', authenticated);
+        console.log('the wallet is: ', wallet);
+        console.log('the seeting things up is: ', settingThingsUp);
+        console.log(
+          'the first time user is: ',
+          localStorage.getItem('firstTimeUser92')
+        );
         if (loading) return;
         if (!authenticated) {
           setAppLoading(false);
@@ -48,7 +58,7 @@ export const UserProvider = ({ children }) => {
           authenticated &&
           wallet &&
           !settingThingsUp &&
-          !localStorage.getItem('firstTimeUser55')
+          !localStorage.getItem('firstTimeUser92')
         ) {
           console.log(
             'this is the first time that the user logs in and the progress modal will be shown now'
@@ -92,7 +102,7 @@ export const UserProvider = ({ children }) => {
           }
           setCurrentStep(5);
           console.log('all the setup is ready');
-          localStorage.setItem('firstTimeUser55', 'done');
+          localStorage.setItem('firstTimeUser92', 'done');
           setShowProgressModal(false);
           return setSetupIsReady(true);
         } else {

@@ -23,7 +23,7 @@ const IndividualEulogiaDisplayPageMobile = ({
   setLifeBarLength,
   lifeBarLength,
 }) => {
-  const { login, authenticated, loading } = usePrivy();
+  const { login, authenticated, loading, logout } = usePrivy();
   const router = useRouter();
   const [eulogia, setEulogia] = useState(null);
   const [thisEulogia, setThisEulogia] = useState(null);
@@ -92,9 +92,10 @@ const IndividualEulogiaDisplayPageMobile = ({
           const imageBlob = await response.blob();
           const imageUrl = URL.createObjectURL(imageBlob);
           setPreloadedBackground(imageUrl);
-
+          console.log('right before the fofrmasljasl');
           if (formattedEulogia) {
             console.log('right before the set eulogia', formattedEulogia);
+            console.log('the users wallet is: ', thisWallet.address);
             setEulogia(formattedEulogia);
 
             setMessages(formattedEulogia.messages);
@@ -179,10 +180,13 @@ const IndividualEulogiaDisplayPageMobile = ({
         Number(eulogia.eulogiaID) || Number(router.query.id);
       console.log('the eulogia number is: ', eulogiaNumber);
       console.log('the eulogias contract is: ', eulogiasContract);
-      const tx = await eulogiasContract.addMessage(
+
+      const tx = await eulogiasContract.writeEulogiaPage(
         eulogiaNumber,
         cid,
-        whoIsWriting
+        whoIsWriting,
+        true,
+        false
       );
       await tx.wait();
       setMessages(x => [
@@ -190,7 +194,7 @@ const IndividualEulogiaDisplayPageMobile = ({
         {
           writer: thisWallet.address,
           whoWroteIt: whoIsWriting,
-          text: finishText,
+          content: finishText,
         },
       ]);
       setUserHasWritten(true); // Update the state to reflect the user has written.
@@ -282,7 +286,7 @@ const IndividualEulogiaDisplayPageMobile = ({
           </div>
         </div>
         <div className='p-4 h-full overflow-y-scroll'>
-          {wallets.length === 0 ? (
+          {!authenticated ? (
             <div>
               <p>Please login to write on this eulogia.</p>
               <div className='w-2/4 mx-auto mt-2'>
@@ -298,7 +302,6 @@ const IndividualEulogiaDisplayPageMobile = ({
               <p className='mt-2'>You already wrote here.</p>
               <div className='w-full mx-auto'>
                 {messages.map((msg, i) => {
-                  console.log('the msg is: ', msg);
                   return (
                     <div
                       key={i}
@@ -373,6 +376,7 @@ const IndividualEulogiaDisplayPageMobile = ({
           </p>
         </div>
       )}
+      {authenticated && <button onClick={logout}>logout</button>}
     </div>
   );
 };
