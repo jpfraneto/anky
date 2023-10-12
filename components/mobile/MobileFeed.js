@@ -77,13 +77,20 @@ const MobileFeed = ({ alchemy }) => {
         events.map((event, index) => (
           <div
             key={index}
-            className={getContainerColor(event.containerType)}
             style={{
-              height: '100vh',
+              background: getContainerColor(event.containerType),
+              height: '50vh',
               overflow: 'auto',
               marginBottom: '10px',
               padding: '10px',
               cursor: 'pointer',
+            }}
+            onClick={e => {
+              if (e.target.style.height === 'auto') {
+                e.target.style.height = '50vh';
+              } else {
+                e.target.style.height = 'auto';
+              }
             }}
           >
             {event.text}
