@@ -77,12 +77,12 @@ const MobileFeed = ({ alchemy }) => {
         events.map((event, index) => (
           <div
             key={index}
+            className={`${getContainerColor(
+              event.containerType
+            )} p-2 border-2 border-black my-2 shadow-lg shadow-pink-500 `}
             style={{
-              background: getContainerColor(event.containerType),
               height: '50vh',
               overflow: 'auto',
-              marginBottom: '10px',
-              padding: '10px',
               cursor: 'pointer',
             }}
             onClick={e => {
