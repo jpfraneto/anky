@@ -23,6 +23,7 @@ const MobileFeed = ({ alchemy }) => {
 
       const parsedEvents = response
         .map(log => contractInterface.parseLog(log).args)
+        .reverse()
         .slice(-20);
       const fetchContents = async event => {
         const response = await fetch(`https://www.arweave.net/${event.cid}`);
@@ -64,6 +65,11 @@ const MobileFeed = ({ alchemy }) => {
           let&apos;s embrace it together
         </p>
       </div>
+      <p className='px-2 mt-2'>
+        (your computer is for writing. your phone is for reading. once you write
+        inside the webapp, you will understand how writing on anky feels. treat
+        it as a meditation practice.)
+      </p>
 
       {events.length === 0 ? (
         <div>
