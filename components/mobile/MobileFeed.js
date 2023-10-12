@@ -66,9 +66,9 @@ const MobileFeed = ({ alchemy }) => {
         </p>
       </div>
       <p className='px-2 mt-2'>
-        (your computer is for writing. your phone is for reading. once you write
-        inside the webapp, you will understand how writing on anky feels. treat
-        it as a meditation practice.)
+        (in here, your computer is for writing. your phone is for reading. once
+        you write inside the webapp, you will understand how writing on anky
+        feels. treat it as a meditation practice.)
       </p>
 
       {events.length === 0 ? (
