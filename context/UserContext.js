@@ -111,7 +111,7 @@ export const UserProvider = ({ children }) => {
 
   const shouldInitializeUser = () => {
     // return authenticated && wallet && true;
-    return authenticated && wallet && !localStorage.getItem('firstTimeUser120');
+    return authenticated && wallet && !localStorage.getItem('firstTimeUser122');
   };
 
   const userIsReady = () => {
@@ -257,7 +257,7 @@ export const UserProvider = ({ children }) => {
       setCurrentStep(5);
 
       console.log('all the setup is ready');
-      localStorage.setItem('firstTimeUser120', 'done');
+      localStorage.setItem('firstTimeUser122', 'done');
       setShowProgressModal(false);
       setUserIsReadyNow(true);
       return setSetupIsReady(true);
