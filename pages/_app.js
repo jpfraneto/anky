@@ -56,11 +56,11 @@ function MyApp({ Component, pageProps }) {
     // } else {
     //   alert('the user doesnt have the pwa installed');
     // }
-    // if (typeof window !== 'undefined') {
-    //   initializeDB().then(db => {
-    //     // You can use the db instance here.
-    //   });
-    // }
+    if (typeof window !== 'undefined') {
+      initializeDB().then(db => {
+        console.log('the db was initialized');
+      });
+    }
     if (window.innerWidth > 768) {
       setIsDesktop(true);
     }

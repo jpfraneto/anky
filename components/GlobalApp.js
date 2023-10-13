@@ -7,6 +7,8 @@ import { createTBA, airdropAnky } from '../lib/backend';
 import { useUser } from '../context/UserContext';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { getUserData } from '../lib/idbHelper';
+
 import { Transition } from 'react-transition-group';
 import NotebooksPage from './NotebooksPage';
 import NewTemplatePage from './NewTemplatePage';
@@ -107,6 +109,22 @@ const GlobalApp = ({ alchemy }) => {
     }
   }
 
+  async function getUserDataFromData() {
+    const userJournals = await getUserData('userJournals');
+    const userNotebooks = await getUserData('userNotebooks');
+    const userEulogias = await getUserData('userEulogias');
+    const ankyIndex = await getUserData('ankyIndex');
+    const ankyTbaAddress = await getUserData('ankyTbaAddress');
+    console.log(
+      '------------ BEFORE THE SET USER APP INFORMATION --------------------',
+      userJournals,
+      userNotebooks,
+      userEulogias,
+      ankyIndex,
+      ankyTbaAddress
+    );
+  }
+
   if (appLoading)
     return (
       <Transition in={appLoading} timeout={500} mountOnEnter unmountOnExit>
@@ -143,6 +161,7 @@ const GlobalApp = ({ alchemy }) => {
             }}
           ></div>
         </div>
+        <p onClick={getUserDataFromData}>get data</p>
         <div className='px-2 w-36 flex justify-center space-x-2'>
           {authenticated ? (
             <button className='hover:text-purple-600' onClick={logout}>
