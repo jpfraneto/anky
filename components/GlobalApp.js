@@ -144,7 +144,7 @@ const GlobalApp = ({ alchemy }) => {
     );
 
   return (
-    <div className='text-center text-white'>
+    <div className='text-center w-screen text-white'>
       <div className='text-white w-full h-8 flex justify-between items-center px-2'>
         <div
           className='hover:text-red-300 hover:cursor-pointer px-2 active:text-red-400'
