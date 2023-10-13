@@ -16,6 +16,8 @@ import Link from 'next/link';
 import Navbar from '../components/Navbar';
 import { PWAProvider, usePWA } from '../context/pwaContext';
 import { UserProvider } from '../context/UserContext';
+import { initializeDB } from '../lib/idbHelper';
+
 import { Network, Alchemy } from 'alchemy-sdk';
 
 const configureChainsConfig = configureChains([baseGoerli], [publicProvider()]);
@@ -28,8 +30,7 @@ const settings = {
 const alchemy = new Alchemy(settings);
 
 const righteous = Righteous({ subsets: ['latin'], weight: ['400'] });
-const DesktopApp = dynamic(() => import('../components/DesktopApp'));
-const MobileApp = dynamic(() => import('../components/MobileApp'));
+const GlobalApp = dynamic(() => import('../components/GlobalApp'));
 
 function MyApp({ Component, pageProps }) {
   const {
@@ -47,6 +48,19 @@ function MyApp({ Component, pageProps }) {
   const [mainAppLoading, setMainAppLoading] = useState(true);
 
   useEffect(() => {
+    // const isStandalone = window.matchMedia(
+    //   '(display-mode: standalone)'
+    // ).matches;
+    // if (isStandalone) {
+    //   alert('the user has the pwa installed');
+    // } else {
+    //   alert('the user doesnt have the pwa installed');
+    // }
+    // if (typeof window !== 'undefined') {
+    //   initializeDB().then(db => {
+    //     // You can use the db instance here.
+    //   });
+    // }
     if (window.innerWidth > 768) {
       setIsDesktop(true);
     }
@@ -189,15 +203,9 @@ function MyApp({ Component, pageProps }) {
         }}
       >
         <PrivyWagmiConnector wagmiChainsConfig={configureChainsConfig}>
-          {isDesktop ? (
-            <UserProvider>
-              <DesktopApp alchemy={alchemy} />
-            </UserProvider>
-          ) : (
-            <UserProvider>
-              <MobileApp alchemy={alchemy} />
-            </UserProvider>
-          )}
+          <UserProvider>
+            <GlobalApp alchemy={alchemy} />
+          </UserProvider>
         </PrivyWagmiConnector>
       </PrivyProvider>
     </main>
