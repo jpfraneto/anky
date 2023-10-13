@@ -110,8 +110,12 @@ export const UserProvider = ({ children }) => {
   }, [finalSetup]);
 
   const shouldInitializeUser = () => {
-    // return authenticated && wallet && true;
-    return authenticated && wallet && !localStorage.getItem('firstTimeUser122');
+    return (
+      authenticated &&
+      wallet &&
+      !userAppInformation.ankyIndex &&
+      !userAppInformation.tbaAddress
+    );
   };
 
   const userIsReady = () => {
