@@ -26,10 +26,10 @@ function LandingPage() {
   const [startJourney, setStartJourney] = useState(false);
 
   return (
-    <div className=''>
+    <div className='w-screen'>
       {/* Hero Section */}
       <div
-        className='relative h-screen w-screen bg-center bg-no-repeat bg-cover'
+        className='h-screen w-screen bg-center bg-no-repeat bg-cover'
         style={{
           backgroundImage:
             "linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('/images/librarian.png')",
@@ -98,7 +98,7 @@ function LandingPage() {
       </div>
 
       {/* Journey with Anky Section */}
-      <div className='py-8 px-64 bg-white'>
+      <div className='py-8 px-2 md:px-64 bg-white'>
         <h2 className='text-3xl font-semibold mb-6'>
           embark on a unique journey with anky
         </h2>
@@ -132,7 +132,7 @@ function LandingPage() {
 
       {/* Discover your Anky Section */}
       <div className='p-8 bg-gray-200 flex flex-row'>
-        <div className='w-3/5 mx-auto'>
+        <div className='px-2 md:w-3/5 mx-auto'>
           <h2 className='text-3xl font-semibold mb-6'>
             in here, there are three types of writing containers
           </h2>
@@ -169,7 +169,7 @@ function LandingPage() {
       </div>
 
       {/* Join the Ankyverse Section */}
-      <div className='py-8 px-64 bg-white'>
+      <div className='py-8 px-2 md:px-64 bg-white'>
         <h2 className='text-3xl font-semibold mb-6'>the goal</h2>
         <p className='mb-4'>
           what is happening here is designed to be a powerful meditation
@@ -181,7 +181,7 @@ function LandingPage() {
         <p className='mb-4'>welcome to the ankyverse.</p>
       </div>
 
-      <div className='py-8 px-64 bg-gray-200'>
+      <div className='py-8 px-2 md:px-64 bg-gray-200'>
         <h2 className='text-3xl font-semibold mb-6'>the tech</h2>
         <p className='w-48 mx-auto'>
           what is happening here is a blend of blockchain and arweave. each of
@@ -192,7 +192,7 @@ function LandingPage() {
       </div>
 
       <div className='p-8 bg-white flex flex-row'>
-        <div className='w-3/5 mx-auto'>
+        <div className='px-2 md:w-3/5 mx-auto'>
           <p className='mb-4'>i need help</p>
           <p className='mb-4'>all your feedback is gold</p>
           <p className='mb-4'>@kithkui on x</p>
