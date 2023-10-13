@@ -124,7 +124,11 @@ const IndividualNotebookPageMobile = ({ setLifeBarLength, lifeBarLength }) => {
       console.log('the notebook is: ', notebook);
       const notebookID = router.query.id;
       console.log('the notebook id is: ', notebookID);
-      const tx = await notebooksContract.writePage(notebookID, pageNumber, cid);
+      const tx = await notebooksContract.writeNotebookPage(
+        notebookID,
+        pageNumber,
+        cid
+      );
       await tx.wait();
       console.log('after the response of writing in the notebook');
       setNotebookPages(x => [
