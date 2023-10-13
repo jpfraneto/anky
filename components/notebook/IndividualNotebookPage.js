@@ -131,9 +131,10 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
       );
       console.log('the notebooks contract is: ', notebooksContract);
       console.log('the pages number is: ', notebookPages);
-      const pageNumber = notebookPages.length + 1;
+      const pageNumber = notebookPages.length;
       console.log('the page number is :0', pageNumber);
       console.log('the notebook is: ', notebook);
+      console.log('the provider is: ', provider);
       const notebookID = router.query.id;
       console.log('the notebook id is: ', notebookID);
       const tx = await notebooksContract.writeNotebookPage(

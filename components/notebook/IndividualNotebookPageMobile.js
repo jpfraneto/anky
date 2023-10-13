@@ -119,15 +119,18 @@ const IndividualNotebookPageMobile = ({ setLifeBarLength, lifeBarLength }) => {
         signer
       );
       console.log('the notebooks contract is: ', notebook);
-      const pageNumber = notebook.userPages.length + 1;
+      const pageNumber = notebook.userPages.length;
       console.log('the page number is :0', pageNumber);
       console.log('the notebook is: ', notebook);
+      console.log('the provider is: ', provider);
+
       const notebookID = router.query.id;
-      console.log('the notebook id is: ', notebookID);
+      console.log('the notebook id Mobile is: ', notebookID);
       const tx = await notebooksContract.writeNotebookPage(
         notebookID,
         pageNumber,
-        cid
+        cid,
+        true
       );
       await tx.wait();
       console.log('after the response of writing in the notebook');
