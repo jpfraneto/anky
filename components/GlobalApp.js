@@ -17,6 +17,7 @@ import LandingPage from './LandingPage';
 import ProfilePage from './ProfilePage';
 import BuildersPage from './BuildersPage';
 import TemplatePage from './TemplateById';
+import AnkyDementorPage from './AnkyDementorPage';
 import UserPage from './UserPage';
 import JournalPage from './journals/JournalPage';
 import LibraryPage from './library/LibraryPage';
@@ -42,6 +43,13 @@ const GlobalApp = ({ alchemy }) => {
     switch (route) {
       case '/':
         return <LandingPage />;
+      case '/account-setup':
+        return (
+          <AnkyDementorPage
+            setLifeBarLength={setLifeBarLength}
+            lifeBarLength={lifeBarLength}
+          />
+        );
       case '/notebooks':
         return <TemplatesPage />;
       case '/templates':

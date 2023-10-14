@@ -110,6 +110,11 @@ export const UserProvider = ({ children }) => {
   }, [finalSetup]);
 
   const shouldInitializeUser = () => {
+    // return (
+    // authenticated && wallet && false
+    // !userAppInformation.ankyIndex &&
+    // !userAppInformation.tbaAddress
+    // );
     return (
       authenticated &&
       wallet &&
