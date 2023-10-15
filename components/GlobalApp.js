@@ -14,6 +14,7 @@ import NotebooksPage from './NotebooksPage';
 import NewTemplatePage from './NewTemplatePage';
 import TemplatesPage from './TemplatesPage';
 import LandingPage from './LandingPage';
+import DementorPage from './DementorById';
 import ProfilePage from './ProfilePage';
 import BuildersPage from './BuildersPage';
 import TemplatePage from './TemplateById';
@@ -46,6 +47,16 @@ const GlobalApp = ({ alchemy }) => {
       case '/account-setup':
         return (
           <AnkyDementorPage
+            setLifeBarLength={setLifeBarLength}
+            lifeBarLength={lifeBarLength}
+          />
+        );
+      case `/dementor/${route.split('/').pop()}`: // Extracts the dementor id from the route
+        return (
+          <DementorPage
+            userAnky={userAppInformation}
+            alchemy={alchemy}
+            router={router}
             setLifeBarLength={setLifeBarLength}
             lifeBarLength={lifeBarLength}
           />

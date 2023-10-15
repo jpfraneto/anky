@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Button from './Button';
 import Spinner from './Spinner';
+import Link from 'next/link';
 import { ethers } from 'ethers';
 import { useWallets } from '@privy-io/react-auth';
 import WritingGameComponent from './WritingGameComponent';
@@ -13,6 +14,9 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
   const [text, setText] = useState('');
   const [loadWritingGame, setLoadWritingGame] = useState(false);
   const [provider, setProvider] = useState(null);
+  const [ankyDementorId, setAnkyDementorId] = useState(null);
+  const [ankyDementorCreated, setAnkyDementorCreated] = useState(false);
+  const [userOwnsDementor, setUserOwnsDementor] = useState(false);
   const [writingGameProps, setWritingGameProps] = useState(null);
   const [loading, setLoading] = useState(false); // Loading state
   const router = useRouter();
@@ -23,9 +27,9 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
   useEffect(() => {
     async function setup() {
       if (!thisWallet) return;
-      return setLoading(false);
       let fetchedProvider = await thisWallet.getEthersProvider();
       setProvider(fetchedProvider);
+
       let signer = await fetchedProvider.getSigner();
 
       const ankyDementorsContract = new ethers.Contract(
@@ -34,11 +38,13 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
         signer
       );
 
-      const userDementor = ankyDementorsContract.doesUserOwnAnkyDementor();
+      const userDementor =
+        await ankyDementorsContract.doesUserOwnAnkyDementor();
+      console.log('the user dementor is: ', userDementor);
       if (!userDementor) {
         alert('the user doesnt own an anky dementor');
       } else {
-        alert('you already own one of these!');
+        setUserOwnsDementor(true);
       }
       setLoading(false);
     }
@@ -86,13 +92,6 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
 
   const createFirstUserAnkyDementor = async finishText => {
     try {
-      //   let signer = await provider.getSigner();
-
-      //   const ankyDementorsContract = new ethers.Contract(
-      //     process.env.NEXT_PUBLIC_ANKY_DEMENTORS_CONTRACT,
-      //     AnkyDementorsAbi,
-      //     signer
-      //   );
       console.log('inside the update notebook with page function');
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/ai/tell-me-who-you-are`,
@@ -104,8 +103,9 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
           body: JSON.stringify({ finishText }),
         }
       );
-      const { cid } = await response.json();
-      console.log('in here, the cid is: ', cid);
+      const { firstPageCid } = await response.json();
+      console.log('in here, the cid is: ', firstPageCid);
+
       let signer = await provider.getSigner();
       const ankyDementorsContract = new ethers.Contract(
         process.env.NEXT_PUBLIC_ANKY_DEMENTORS_CONTRACT,
@@ -113,10 +113,21 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
         signer
       );
 
-      const tx = await ankyDementorsContract.createAnkyDementorNotebook(cid);
-      await tx.wait();
-      console.log('after the response of creating the anky dementor notebook');
+      const tx = await ankyDementorsContract.createAnkyDementorNotebook(
+        firstPageCid
+      );
+      const receipt = await tx.wait();
+      const event = receipt.events?.find(
+        e => e.event === 'DementorNotebookCreated'
+      );
 
+      if (event) {
+        // Extract the tokenId from the event and set it to state
+        const tokenId = event.args.tokenId;
+        setAnkyDementorId(tokenId.toString());
+      }
+      console.log('after the response of creating the anky dementor notebook');
+      setAnkyDementorCreated(true);
       setLoadWritingGame(false);
     } catch (error) {
       console.error('Failed to write to notebook:', error);
@@ -130,6 +141,13 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
         <p className='text-white'>loading...</p>
       </div>
     );
+  if (userOwnsDementor) {
+    return (
+      <div>
+        <p>you already own a dementor!</p>
+      </div>
+    );
+  }
 
   if (loadWritingGame)
     return (
@@ -146,12 +164,27 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
     );
   return (
     <div className='text-white md:w-3/5 mx-auto'>
-      <p>ARE YOU READY???</p>
-      <Button
-        buttonAction={writeOnNotebook}
-        buttonText='LFG'
-        buttonColor='bg-purple-600'
-      />
+      {ankyDementorCreated ? (
+        <div>
+          <p>holy shit, your anky dementor was created.</p>
+          <p>you can check its first page here:</p>
+          <Link href={`/dementor/${ankyDementorId}`} passHref>
+            <Button
+              buttonText='go to my anky dementor'
+              buttonColor='bg-purple-600'
+            />
+          </Link>
+        </div>
+      ) : (
+        <div>
+          <p>ARE YOU READY???</p>
+          <Button
+            buttonAction={writeOnNotebook}
+            buttonText='LFG'
+            buttonColor='bg-purple-600'
+          />
+        </div>
+      )}
     </div>
   );
 };
