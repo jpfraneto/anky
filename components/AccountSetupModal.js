@@ -27,6 +27,10 @@ const AccountSetupModal = ({
       <div className='bg-white p-8 rounded-lg shadow-md space-y-4'>
         {/* <p onClick={logout}>logout</p> */}
         <h2 className='text-xl font-semibold'>Setting up your account...</h2>
+        <p>
+          (everything is deployed on a sandbox, no real money is in place
+          here... yet.)
+        </p>
         <ul>
           {steps.map((step, idx) => (
             <li key={step.id} className='flex items-center space-x-2'>

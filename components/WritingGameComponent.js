@@ -47,6 +47,7 @@ const WritingGameComponent = ({
   const [saveText, setSaveText] = useState('save anon');
   const [uploadingWriting, setUploadingWriting] = useState(false);
   const [upscaledUrls, setUpscaledUrls] = useState([]);
+  const [userNeedsToWriteAgain, setUserNeedsToWriteAgain] = useState(false);
   const [isActive, setIsActive] = useState(false);
   const [savingRound, setSavingRound] = useState(false);
   const [moreThanMinRun, setMoreThanMinRound] = useState(null);
@@ -106,7 +107,13 @@ const WritingGameComponent = ({
           // audioRef.current.play();
         }
         if (elapsedTime > 3000 && !isDone) {
-          finishRun();
+          if (time > 180) {
+            finishRun();
+          } else {
+            setFinished(true);
+            setCopyText('copy what i wrote');
+            setUserNeedsToWriteAgain(true);
+          }
         } else {
           // calculate life bar length
           const newLifeBarLength = 100 - elapsedTime / 30; // 100% - (elapsed time in seconds * (100 / 3))
@@ -269,7 +276,7 @@ const WritingGameComponent = ({
             onChange={handleTextChange}
           ></textarea>
           {!text && (
-            <div className='w-48 mx-auto'>
+            <div className='w-48 mx-auto mt-4'>
               <Button
                 buttonText='Cancel'
                 buttonColor='bg-red-600'
@@ -294,37 +301,75 @@ const WritingGameComponent = ({
               </div>
 
               {finished ? (
-                <div className='p-4 bg-black drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] rounded-xl  z-50'>
-                  <p
-                    className={`${righteous.className} mb-2 text-xl font-bold`}
-                  >
-                    you are ready.
-                  </p>
-                  <p
-                    className={`${righteous.className} mb-2 text-xl font-bold`}
-                  >
-                    do you want to store your writing?
-                  </p>
+                <>
+                  {userNeedsToWriteAgain ? (
+                    <div className='p-4 bg-black drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] rounded-xl  z-50'>
+                      <p
+                        className={`${righteous.className} mb-2 text-xl font-bold`}
+                      >
+                        you lost.
+                      </p>
+                      <p
+                        className={`${righteous.className} mb-2 text-xl font-bold`}
+                      >
+                        the minimum time to write is 180 seconds.
+                      </p>
 
-                  <div className='flex justify-center '>
-                    <Button
-                      buttonAction={async () => {
-                        setUploadingWriting(true);
-                        setSavingTextAnon(true);
-                        await onFinish(text);
-                        startNewRun();
-                        setUploadingWriting(false);
-                      }}
-                      buttonColor='bg-green-600 text-black'
-                      buttonText={savingTextAnon ? 'saving...' : 'save text'}
-                    />
-                    <Button
-                      buttonAction={startNewRun}
-                      buttonColor='bg-cyan-200 text-black'
-                      buttonText='start again'
-                    />
-                  </div>
-                </div>
+                      <div className='flex justify-center '>
+                        <Button
+                          buttonAction={copyToClipboard}
+                          buttonColor='bg-cyan-200 text-black'
+                          buttonText={copyText}
+                        />
+                        <Button
+                          buttonAction={startNewRun}
+                          buttonColor='bg-cyan-200 text-black'
+                          buttonText='start again'
+                        />
+                        <Link passHref href='/library'>
+                          <Button
+                            buttonText='library'
+                            buttonColor='bg-purple-600'
+                          />
+                        </Link>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className='p-4 bg-black drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] rounded-xl  z-50'>
+                      <p
+                        className={`${righteous.className} mb-2 text-xl font-bold`}
+                      >
+                        you are ready.
+                      </p>
+                      <p
+                        className={`${righteous.className} mb-2 text-xl font-bold`}
+                      >
+                        do you want to store your writing?
+                      </p>
+
+                      <div className='flex justify-center '>
+                        <Button
+                          buttonAction={async () => {
+                            setUploadingWriting(true);
+                            setSavingTextAnon(true);
+                            await onFinish(text);
+                            startNewRun();
+                            setUploadingWriting(false);
+                          }}
+                          buttonColor='bg-green-600 text-black'
+                          buttonText={
+                            savingTextAnon ? 'saving...' : 'save text'
+                          }
+                        />
+                        <Button
+                          buttonAction={startNewRun}
+                          buttonColor='bg-cyan-200 text-black'
+                          buttonText='start again'
+                        />
+                      </div>
+                    </div>
+                  )}
+                </>
               ) : (
                 <p
                   className={`${righteous.className}  ${

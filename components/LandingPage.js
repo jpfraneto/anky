@@ -7,6 +7,10 @@ import Image from 'next/image';
 import { useUser } from '../context/UserContext';
 
 const notebookTypes = [
+  {
+    name: 'dementor',
+    description: 'designed to help you realize your true nature.',
+  },
   { name: 'notebook', description: 'minted from a template. limited supply.' },
   {
     name: 'eulogias',
@@ -38,7 +42,7 @@ function LandingPage() {
         <div className='absolute inset-0 bg-black opacity-40'></div>
         <div className='relative z-10 flex flex-col items-center justify-center h-full'>
           <h1 className='text-5xl text-gray-400 font-bold mt-32 mb-8'>
-            {authenticated ? 'welcome back, my friend' : 'tell us who you are'}
+            {authenticated ? 'welcome back, my friend' : 'tell me who you are'}
           </h1>
 
           {authenticated ? (
@@ -52,7 +56,7 @@ function LandingPage() {
                   />
                 ) : (
                   <>
-                    <Link href='/library' passHref>
+                    {/* <Link href='/library' passHref>
                       <Button
                         buttonText='library'
                         buttonColor='bg-purple-400 text-black'
@@ -63,7 +67,7 @@ function LandingPage() {
                         buttonText='journal'
                         buttonColor='bg-green-400 text-black'
                       />
-                    </Link>
+                    </Link> */}
                     <Link href='/dementor' passHref>
                       <Button
                         buttonText='dementor'
@@ -80,7 +84,7 @@ function LandingPage() {
                 <div className='mt-2 w-96 flex mx-auto'>
                   {startJourney ? (
                     <Button
-                      buttonText='login'
+                      buttonText='login with any email'
                       buttonAction={login}
                       buttonColor='bg-purple-400 mx-1 text-black'
                     />
@@ -104,10 +108,17 @@ function LandingPage() {
       </div>
 
       {/* Journey with Anky Section */}
-      <div className='py-8 px-2 md:px-64 bg-white'>
+      <div className='py-8 px-2 w-full md:px-64 bg-white'>
         <h2 className='text-3xl font-semibold mb-6'>
-          embark on a unique journey with anky
+          welcome to a self inquiry tool like no other.
         </h2>
+        <p>
+          writing is the vehicle here. time is your friend. anky is built on top
+          of a pioneed system:
+        </p>
+        <p>if you stop writing for more than three seconds, you lose.</p>
+        <p>as simple as that.</p>
+
         <p className='mb-4'>
           as soon as you create an account here, you are assigned a unique
           character: your anky
@@ -121,16 +132,16 @@ function LandingPage() {
         </p>
         <p className='mb-4'>this is how they look:</p>
         <div className='flex flex-wrap justify-center'>
-          <div className='relative w-48 h-48 m-2 rounded-xl overflow-hidden'>
+          <div className='relative w-1/3 h-1/3 md:w-48 md:h-48 m-2 rounded-xl overflow-hidden'>
             <Image src='/ankys/1.png' alt='anky' layout='fill' />
           </div>
-          <div className='relative w-48 h-48 m-2 rounded-xl overflow-hidden'>
+          <div className='relative w-1/3 h-1/3 md:w-48 md:h-48 m-2 rounded-xl overflow-hidden'>
             <Image src='/ankys/2.png' alt='anky' layout='fill' />
           </div>
-          <div className='relative w-48 h-48 m-2 rounded-xl overflow-hidden'>
+          <div className='relative w-1/3 h-1/3 md:w-48 md:h-48 m-2 rounded-xl overflow-hidden'>
             <Image src='/ankys/3.png' alt='anky' layout='fill' />
           </div>
-          <div className='relative w-48 h-48 m-2 rounded-xl overflow-hidden'>
+          <div className='relative w-1/3 h-1/3 md:w-48 md:h-48 m-2 rounded-xl overflow-hidden'>
             <Image src='/ankys/4.png' alt='anky' layout='fill' />
           </div>
         </div>
@@ -140,7 +151,7 @@ function LandingPage() {
       <div className='p-8 bg-gray-200 flex flex-row'>
         <div className='px-2 md:w-3/5 mx-auto'>
           <h2 className='text-3xl font-semibold mb-6'>
-            in here, there are three types of writing containers
+            in here, there are four types of writing containers
           </h2>
           <div className='flex flex-wrap mx-auto justify-center mb-4'>
             {notebookTypes.map((x, i) => {
@@ -189,15 +200,15 @@ function LandingPage() {
 
       <div className='py-8 px-2 md:px-64 bg-gray-200'>
         <h2 className='text-3xl font-semibold mb-6'>the tech</h2>
-        <p className='w-48 mx-auto'>
-          what is happening here is a blend of blockchain and arweave. each of
-          your writings will be stored on arweave, and the cid of that writing
-          will be stored on the smart contract associated with that particular
-          notebook instance.
+        <p>blockchain and ai collide on this transformative platform.</p>
+        <p className='md:w-48 mx-auto'>
+          each of your writings will be stored on arweave, and the cid of that
+          writing will be stored on the smart contract associated with that
+          particular writing container instance.
         </p>
       </div>
 
-      <div className='p-8 bg-white flex flex-row'>
+      <div className='p-8 bg-white flex flex-row mb-8'>
         <div className='px-2 md:w-3/5 mx-auto'>
           <p className='mb-4'>i need help</p>
           <p className='mb-4'>all your feedback is gold</p>

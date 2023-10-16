@@ -194,13 +194,19 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
           </Link>
         </div>
       ) : (
-        <div>
-          <p>ARE YOU READY???</p>
-          <Button
-            buttonAction={writeOnNotebook}
-            buttonText='LFG'
-            buttonColor='bg-purple-600'
-          />
+        <div className='my-2'>
+          <p>welcome to the most important practice of your life.</p>
+          <p>are you ready?</p>
+          <p>write as if there was no tomorrow.</p>
+          <p>your target is 180 seconds.</p>
+          <p>just write.</p>
+          <div className='w-48 mx-auto my-2'>
+            <Button
+              buttonAction={writeOnNotebook}
+              buttonText='LFG'
+              buttonColor='bg-purple-600'
+            />
+          </div>
         </div>
       )}
     </div>
