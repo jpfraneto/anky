@@ -28,17 +28,19 @@ function DementorById({
   const [dementorData, setDementorData] = useState(null);
   const [text, setText] = useState('');
   const [time, setTime] = useState(0);
+  const [loadingSavingNewPage, setLoadingSavingNewPage] = useState(false);
   const [loadingDementor, setLoadingDementor] = useState(true);
+  const [dementorsContract, setDementorsContract] = useState(null);
   const [writingGameProps, setWritingGameProps] = useState(null);
   const [mintingNotebook, setMintingNotebook] = useState(false);
   const [userIsReadyToWrite, setUserIsReadyToWrite] = useState(false);
+  const wallets = useWallets();
 
-  console.log('the router is: ', router);
   const { id } = router.query;
   useEffect(() => {
-    setDementorData(dummyDementorData);
-    setLoadingDementor(false);
-    return;
+    // setDementorData(dummyDementorData);
+    // setLoadingDementor(false);
+    // return;
     if (id && userAnky.wallet) fetchDementorData(id);
   }, [id, userAnky]);
 
@@ -60,6 +62,7 @@ function DementorById({
       AnkyDementorsAbi,
       signer
     );
+    setDementorsContract(ankyDementorsContract);
     console.log('the dementor id', dementorId);
     const data = await ankyDementorsContract.getCurrentPage(dementorId);
     console.log(
@@ -76,14 +79,59 @@ function DementorById({
     const writingGameParameters = {
       notebookType: 'dementor',
       backgroundImage: null, // You can modify this if you have an image.
-      onFinish: uploadDementorPageToSmartContract,
+      uploadDementorPageToSmartContract: uploadDementorPageToSmartContract,
     };
     setWritingGameProps(writingGameParameters);
     setUserIsReadyToWrite(true);
   }
 
-  async function uploadDementorPageToSmartContract() {
-    // EDIT THIS FUNCTION
+  async function uploadDementorPageToSmartContract(finishText, prompts) {
+    console.log(
+      'sending text to chatgtp, and then updating the smart contract with these new cids.'
+    );
+    setLoadingSavingNewPage(true);
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/ai/get-subsequent-page`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ finishText, prompts }),
+        }
+      );
+      console.log('before here', response);
+      const responseData = await response.json();
+      console.log('the response data is: ', responseData);
+      const { thisWritingCid, newPageCid } = responseData;
+
+      // HERE I NEED TO UPDATE THE USERS DEMENTOR WITH THIS NEW CID.
+      console.log('this writing cid is: ', thisWritingCid);
+      console.log('this new page cid is: ', newPageCid);
+
+      //     function writeDementorPage(uint256 dementorNotebookId, string memory userWritingCID, string memory nextPromptCID) external onlyAnkyHolder {
+      // ************************** //
+
+      console.log('the dementors contract is: ', dementorsContract);
+      console.log('this dementors id is: ', id);
+      if (dementorsContract) {
+        const tx = await dementorsContract.writeDementorPage(
+          id,
+          thisWritingCid,
+          newPageCid
+        );
+        await tx.wait();
+        console.log('after the response of writing in the dementor');
+
+        setLoadingSavingNewPage(false);
+
+        // ************************** //
+      }
+    } catch (error) {
+      console.error('Failed to submit writing:', error);
+      setLoadingSavingNewPage(false);
+    }
   }
 
   if (loadingDementor)
@@ -97,9 +145,9 @@ function DementorById({
   if (userIsReadyToWrite) {
     return (
       <DementorGame
-        prompts={dementorData.prompts.split('%%')}
-        secondsPerPrompt={180}
         {...writingGameProps}
+        prompts={dementorData.prompts.split('%%')}
+        secondsPerPrompt={4}
         text={text}
         setLifeBarLength={setLifeBarLength}
         lifeBarLength={lifeBarLength}
@@ -115,11 +163,22 @@ function DementorById({
     <div className='md:w-1/2 p-2 mx-auto w-screen text-black md:text-white pt-5'>
       <h2 className='text-3xl'>{dementorData.title}</h2>
       <p className='italic'>{dementorData.description}</p>
-      <Button
-        buttonText='im more than ready'
-        buttonAction={userIsReadyToWriteTrigger}
-        buttonColor='bg-green-600'
-      />
+      <div className='my-2 w-48 mx-auto'>
+        <Button
+          buttonText='im more than ready'
+          buttonAction={userIsReadyToWriteTrigger}
+          buttonColor='bg-green-600'
+        />
+      </div>
+      {/* <div>
+        {dementorData.prompts.split('%%').map((x, i) => {
+          return (
+            <p className='text-left' key={i}>
+              {i + 1}. {x}
+            </p>
+          );
+        })}
+      </div> */}
     </div>
   );
 }
