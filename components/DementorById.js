@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { ethers } from 'ethers';
+import Link from 'next/link';
 import Button from '../components/Button';
 import AnkyDementorsAbi from '../lib/ankyDementorsAbi.json'; // Assuming you have the ABI
 import { useUser } from '../context/UserContext';
@@ -17,7 +18,7 @@ const dummyDementorData = {
     'What does it mean to live in the present moment?%%What is the gift of this moment?%%How does self-inquiry lead to transformation?%%What is the beauty of becoming the present moment?%%How does the willingness to explore shape our experiences?%%What is the importance of the practice and repetition in self-exploration?%%How does the perception of words and experiences evolve over time?%%Why is the quest for self-knowledge essential for authentic connection?',
 };
 
-function DementorById({
+function DementorPage({
   userAnky,
   router,
   alchemy,
@@ -32,23 +33,27 @@ function DementorById({
   const [loadingDementor, setLoadingDementor] = useState(true);
   const [dementorsContract, setDementorsContract] = useState(null);
   const [writingGameProps, setWritingGameProps] = useState(null);
+  const [dementorWasUpdated, setDementorWasUpdated] = useState(false);
   const [mintingNotebook, setMintingNotebook] = useState(false);
   const [userIsReadyToWrite, setUserIsReadyToWrite] = useState(false);
   const wallets = useWallets();
+  console.log('the wallets are: ', wallets);
+  const wallet = wallets.wallets[0];
 
   const { id } = router.query;
   useEffect(() => {
     // setDementorData(dummyDementorData);
     // setLoadingDementor(false);
     // return;
-    if (id && userAnky.wallet) fetchDementorData(id);
-  }, [id, userAnky]);
+    console.log('inside here', id, wallet);
+
+    if (id && wallet) fetchDementorData(id);
+  }, [id, wallet]);
 
   async function fetchDementorData(dementorId) {
     console.log('inside the fetch dementor data', userAnky);
-    if (!userAnky && !userAnky.wallet && !userAnky.wallet.getEthersProvider)
-      return;
-    let provider = await userAnky.wallet?.getEthersProvider();
+    if (!wallet.address) return;
+    let provider = await wallet?.getEthersProvider();
     let signer;
 
     if (provider) {
@@ -125,7 +130,8 @@ function DementorById({
         console.log('after the response of writing in the dementor');
 
         setLoadingSavingNewPage(false);
-
+        setUserIsReadyToWrite(false);
+        setDementorWasUpdated(true);
         // ************************** //
       }
     } catch (error) {
@@ -142,12 +148,31 @@ function DementorById({
       </div>
     );
 
+  if (dementorWasUpdated) {
+    return (
+      <div className='text-white my-2'>
+        {/* <p>
+          The dementor was updated. The new page of lunamaria&apos;s story is:
+        </p> */}
+        <p>
+          come back tomorrow and keep the inquiry going. this is more powerful
+          than what you can imagine.
+        </p>
+        <div className='my-2 w-36 mx-auto'>
+          <Link passHref href='/library'>
+            <Button buttonText='library' buttonColor='bg-purple-600' />
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   if (userIsReadyToWrite) {
     return (
       <DementorGame
         {...writingGameProps}
         prompts={dementorData.prompts.split('%%')}
-        secondsPerPrompt={180}
+        secondsPerPrompt={3}
         text={text}
         setLifeBarLength={setLifeBarLength}
         lifeBarLength={lifeBarLength}
@@ -163,24 +188,18 @@ function DementorById({
     <div className='md:w-1/2 p-2 mx-auto w-screen text-black md:text-white pt-5'>
       <h2 className='text-3xl'>{dementorData.title}</h2>
       <p className='italic'>{dementorData.description}</p>
-      <div className='my-2 w-48 mx-auto'>
+      <div className='my-2 w-96 max-w-screen justify-center  flex'>
         <Button
           buttonText='im more than ready'
           buttonAction={userIsReadyToWriteTrigger}
           buttonColor='bg-green-600'
         />
+        <Link passHref href='/library'>
+          <Button buttonText='library' buttonColor='bg-purple-600' />
+        </Link>
       </div>
-      {/* <div>
-        {dementorData.prompts.split('%%').map((x, i) => {
-          return (
-            <p className='text-left' key={i}>
-              {i + 1}. {x}
-            </p>
-          );
-        })}
-      </div> */}
     </div>
   );
 }
 
-export default DementorById;
+export default DementorPage;

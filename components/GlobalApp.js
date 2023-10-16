@@ -44,7 +44,7 @@ const GlobalApp = ({ alchemy }) => {
     switch (route) {
       case '/':
         return <LandingPage />;
-      case '/account-setup':
+      case '/dementor':
         return (
           <AnkyDementorPage
             setLifeBarLength={setLifeBarLength}

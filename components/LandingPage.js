@@ -38,7 +38,7 @@ function LandingPage() {
         <div className='absolute inset-0 bg-black opacity-40'></div>
         <div className='relative z-10 flex flex-col items-center justify-center h-full'>
           <h1 className='text-5xl text-gray-400 font-bold mt-32 mb-8'>
-            {authenticated ? 'welcome back, my friend' : 'we are all writers'}
+            {authenticated ? 'welcome back, my friend' : 'tell us who you are'}
           </h1>
 
           {authenticated ? (
@@ -62,6 +62,12 @@ function LandingPage() {
                       <Button
                         buttonText='journal'
                         buttonColor='bg-green-400 text-black'
+                      />
+                    </Link>
+                    <Link href='/dementor' passHref>
+                      <Button
+                        buttonText='dementor'
+                        buttonColor='bg-red-400 text-black'
                       />
                     </Link>
                   </>

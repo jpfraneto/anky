@@ -18,7 +18,7 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
   const [ankyDementorCreated, setAnkyDementorCreated] = useState(false);
   const [userOwnsDementor, setUserOwnsDementor] = useState(false);
   const [writingGameProps, setWritingGameProps] = useState(null);
-  const [loading, setLoading] = useState(false); // Loading state
+  const [loading, setLoading] = useState(true); // Loading state
   const router = useRouter();
   const { wallets } = useWallets();
 
@@ -27,6 +27,7 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
   useEffect(() => {
     async function setup() {
       if (!thisWallet) return;
+      console.log('INSIDE THE SETUP ');
       let fetchedProvider = await thisWallet.getEthersProvider();
       setProvider(fetchedProvider);
 
@@ -37,16 +38,21 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
         AnkyDementorsAbi,
         signer
       );
-
-      const userDementor =
-        await ankyDementorsContract.doesUserOwnAnkyDementor();
-      console.log('the user dementor is: ', userDementor);
-      if (!userDementor) {
-        alert('the user doesnt own an anky dementor');
-      } else {
-        setUserOwnsDementor(true);
+      try {
+        const [ownsDementor, dementorIndex] =
+          await ankyDementorsContract.doesUserOwnAnkyDementor();
+        if (!ownsDementor) {
+          alert('the user doesnt own an anky dementor');
+        } else {
+          setUserOwnsDementor(true);
+          setAnkyDementorId(dementorIndex);
+        }
+        setLoading(false);
+      } catch (error) {
+        console.log('there was an error here: ', error);
+        setUserOwnsDementor(false);
+        setLoading(false);
       }
-      setLoading(false);
     }
     setup();
   }, [thisWallet]);
@@ -112,7 +118,10 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
         AnkyDementorsAbi,
         signer
       );
-
+      console.log(
+        'right before creating the dementor notebook',
+        ankyDementorsContract
+      );
       const tx = await ankyDementorsContract.createAnkyDementorNotebook(
         firstPageCid
       );
@@ -141,10 +150,19 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
         <p className='text-white'>loading...</p>
       </div>
     );
+
   if (userOwnsDementor) {
     return (
-      <div>
+      <div className='text-white'>
         <p>you already own a dementor!</p>
+        <div>
+          <Link href={`/dementor/${ankyDementorId}`} passHref>
+            <Button
+              buttonText='go to my anky dementor'
+              buttonColor='bg-purple-600'
+            />
+          </Link>
+        </div>
       </div>
     );
   }

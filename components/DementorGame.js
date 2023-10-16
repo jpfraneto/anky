@@ -60,7 +60,7 @@ const DementorGame = ({
   const [chosenUpscaledImage, setChosenUpscaledImage] = useState('');
   const [savingTextAnon, setSavingTextAnon] = useState(false);
   const [savedText, setSavedText] = useState(false);
-
+  const [userLostFlag, setUserLostFlag] = useState(false);
   const [generatedImages, setGeneratedImages] = useState('');
   const [loadingAnkyResponse, setLoadingAnkyResponse] = useState(false);
   const [loadButtons, setLoadButtons] = useState(false);
@@ -83,6 +83,7 @@ const DementorGame = ({
   const [thirdLoading, setThirdLoading] = useState(false);
   const [copyText, setCopyText] = useState('copy my writing');
   const [metadata, setMetadata] = useState(null);
+  const [userIsReadyWithDementor, setUserIsReadyWithDementor] = useState(false);
   const [writingSaved, setWritingSaved] = useState(false);
   const [writingSavingLoading, setWritingSavingLoading] = useState(false);
 
@@ -128,8 +129,9 @@ const DementorGame = ({
               document.addEventListener('keydown', handleSpacePress);
             }, 3000);
           } else {
-            alert('you are ready!');
-            readyToUpdateSmartContract();
+            setIsDone(true);
+            setIsActive(false);
+            setUserIsReadyWithDementor(true);
           }
         }
       }, 1000);
@@ -147,7 +149,7 @@ const DementorGame = ({
           // audioRef.current.play();
         }
         if (elapsedTime > 3000 && !isDone) {
-          finishRun();
+          userLost();
         } else {
           // calculate life bar length
           const newLifeBarLength = 100 - elapsedTime / 30; // 100% - (elapsed time in seconds * (100 / 3))
@@ -160,6 +162,12 @@ const DementorGame = ({
 
     return () => clearInterval(keystrokeIntervalRef.current);
   }, [isActive, lastKeystroke]);
+
+  const userLost = async () => {
+    setUserLostFlag(true);
+    startNewRun();
+    setIsActive(false);
+  };
 
   const finishRun = async () => {
     setLifeBarLength(0);
@@ -179,8 +187,10 @@ const DementorGame = ({
   };
 
   async function readyToUpdateSmartContract() {
-    console.log('In here, the user is ready to update to the smart contract');
-    uploadDementorPageToSmartContract(text, prompts);
+    setUploadingWriting(true);
+    await uploadDementorPageToSmartContract(text, prompts);
+    setUploadingWriting(false);
+    setWritingSaved(true);
   }
 
   const copyToClipboard = async () => {
@@ -191,7 +201,7 @@ const DementorGame = ({
   const startNewRun = () => {
     copyToClipboard();
     setCurrentPromptIndex(0);
-    setCopyText('Copy my writing');
+    setCopyText('copy my writing');
     setTime(0);
     setLifeBarLength(100);
     setText('');
@@ -210,11 +220,6 @@ const DementorGame = ({
       setStartTime(Date.now());
     }
     setLastKeystroke(Date.now());
-  };
-
-  const pasteText = async () => {
-    await navigator.clipboard.writeText(text);
-    setCopyText('copied.');
   };
 
   if (errorProblem)
@@ -236,7 +241,7 @@ const DementorGame = ({
         <p>I&apos;m sorry. I&apos;m doing my best to make this thing work.</p>
         <Button
           buttonColor='bg-thegreenbtn'
-          buttonAction={pasteText}
+          buttonAction={copyToClipboard}
           buttonText={copyText}
         />
       </div>
@@ -259,6 +264,69 @@ const DementorGame = ({
       >
         <Spinner />
         <p className='text-white'>loading...</p>
+      </div>
+    );
+  }
+
+  if (userIsReadyWithDementor) {
+    return (
+      <>
+        {writingSaved ? (
+          <>
+            <p>your writing was saved. congratulations.</p>
+          </>
+        ) : (
+          <>
+            {uploadingWriting ? (
+              <div className='text-white my-2'>
+                <Spinner />
+                <p className='text-white'>loading...</p>
+              </div>
+            ) : (
+              <div className='text-white my-2'>
+                <p>you are ready!</p>
+                <p>big congratulations</p>
+                <p>do you want to submit your writing?</p>
+                <Button
+                  buttonText='yes'
+                  buttonColor='bg-green-600'
+                  buttonAction={readyToUpdateSmartContract}
+                />
+              </div>
+            )}
+          </>
+        )}
+      </>
+    );
+  }
+
+  if (userLostFlag) {
+    return (
+      <div className='text-white my-2'>
+        <p>you lost</p>
+        <p>this is extremely hard. better focus more next time.</p>
+        <p>remember: there are no right or wrong answers.</p>
+        <p>just write.</p>
+        <div className='my-2 mx-auto w-98 justify-between flex'>
+          <Button
+            buttonAction={pasteText}
+            buttonColor='bg-green-600 mx-2'
+            buttonText={copyText}
+          />
+          <Button
+            buttonText='start again'
+            buttonColor='bg-green-600 mx-2'
+            buttonAction={() => {
+              setCopyText('copy writing');
+              setUserLostFlag(false);
+            }}
+          />
+          <Button
+            buttonText='library'
+            buttonColor='bg-purple-600 mx-2'
+            buttonAction={cancel}
+          />
+        </div>
       </div>
     );
   }
@@ -329,13 +397,7 @@ const DementorGame = ({
               />
             </div>
           )}
-          {/* <Button
-            buttonAction={() => {
-              uploadDementorPageToSmartContract(theText, prompts);
-            }}
-            buttonText='VAMO CTM'
-            buttonColor='bg-red-400'
-          /> */}
+
           {text && (
             <div
               className={`${
@@ -370,7 +432,7 @@ const DementorGame = ({
                       buttonAction={async () => {
                         setUploadingWriting(true);
                         setSavingTextAnon(true);
-                        await onFinish(text);
+                        await uploadDementorPageToSmartContract(text, prompts);
                         startNewRun();
                         setUploadingWriting(false);
                       }}
@@ -385,17 +447,32 @@ const DementorGame = ({
                   </div>
                 </div>
               ) : (
-                <p
-                  className={`${righteous.className}  ${
-                    time < 3 && 'hidden'
-                  } z-40 ${
-                    newPromptDisplay
-                      ? 'text-yellow-500 text-5xl'
-                      : 'text-yellow-400 text-3xl'
-                  } drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] font-bold`}
-                >
-                  {prompt}
-                </p>
+                <>
+                  <p
+                    className={`${righteous.className}  ${
+                      time < 3 && 'hidden'
+                    } z-40 ${
+                      newPromptDisplay
+                        ? 'text-yellow-500 text-5xl'
+                        : 'text-yellow-400 text-3xl'
+                    } drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] font-bold`}
+                  >
+                    {prompt}
+                  </p>
+                  <div className='flex w-full justify-around my-2'>
+                    {prompts.map((_, i) => {
+                      return (
+                        <div
+                          key={i}
+                          className={`rounded-full w-3 h-3 border border-white opacity-50
+                 ${currentPromptIndex < i && 'transparent'}
+                 ${currentPromptIndex === i && 'bg-yellow-600'}
+                 ${currentPromptIndex > i && 'bg-yellow-400'}`}
+                        ></div>
+                      );
+                    })}
+                  </div>
+                </>
               )}
             </div>
           )}

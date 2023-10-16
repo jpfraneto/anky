@@ -36,11 +36,15 @@ export const UserProvider = ({ children }) => {
   const wallet = wallets.wallets[0];
   console.log('the wallets are: ', wallets);
 
+  function isEmpty(obj) {
+    return Object.keys(obj).length === 0 && obj.constructor === Object;
+  }
+
   // Load stored user data from IndexedDB and set it to state
   useEffect(() => {
+    let aloja;
     async function loadStoredUserData() {
-      console.log('1');
-      if (!userAppInformation) {
+      if (isEmpty(userAppInformation)) {
         const userJournals = await getUserData('userJournals');
         const userNotebooks = await getUserData('userNotebooks');
         const userEulogias = await getUserData('userEulogias');
@@ -70,6 +74,7 @@ export const UserProvider = ({ children }) => {
   // Check initialization and setup status
   useEffect(() => {
     async function handleInitialization() {
+      console.log('inside the handle initialization');
       if (loading) return;
       if (loadingUserStoredData) return;
       if (!authenticated) {
@@ -78,10 +83,12 @@ export const UserProvider = ({ children }) => {
       }
 
       if (shouldInitializeUser() && wallet) {
+        console.log('INSIDEHFELCJALJKSCAJCA');
         if (wallets.length > 1)
           return alert('Please disconnect one of your wallets to proceed');
         await initializeUser();
       } else {
+        setLibraryLoading(false);
         setAppLoading(false);
       }
     }
@@ -110,15 +117,11 @@ export const UserProvider = ({ children }) => {
   }, [finalSetup]);
 
   const shouldInitializeUser = () => {
-    // return authenticated && wallet && false;
-    // !userAppInformation.ankyIndex &&
-    // !userAppInformation.tbaAddress
-    // );
     return (
       authenticated &&
       wallet &&
       !userAppInformation.ankyIndex &&
-      !userAppInformation.tbaAddress
+      !userAppInformation.ankyTbaAddress
     );
   };
 
@@ -188,6 +191,7 @@ export const UserProvider = ({ children }) => {
   };
 
   const initializeUser = async () => {
+    console.log('inside the initialize user function');
     try {
       if (loading) return;
       if (!authenticated) {

@@ -90,6 +90,11 @@ const LibraryPage = ({}) => {
           <Button buttonText='add eulogia' buttonColor='bg-orange-600' />
         </Link>
       </div>
+      <div className='flex my-2 space-x-2 justify-center'>
+        <Link href='/dementor' passHref>
+          <Button buttonText='dementor' buttonColor='bg-red-600' />
+        </Link>
+      </div>
     </div>
   );
 };
