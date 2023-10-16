@@ -4,6 +4,7 @@ import Button from './Button';
 import Image from 'next/image';
 import { saveTextAnon } from '../lib/backend';
 import { ethers } from 'ethers';
+import Link from 'next/link';
 import LoggedInUser from './LoggedInUser';
 import { useRouter } from 'next/router';
 import buildersABI from '../lib/buildersABI.json';
