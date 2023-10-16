@@ -140,9 +140,9 @@ const WritingGameComponent = ({
     await navigator.clipboard.writeText(text);
     setMoreThanMinRound(true);
     setFailureMessage(`You're done! This run lasted ${time}.}`);
-    if (time > 3) {
-      setLoadButtons(true);
-    }
+    // if (time > 3) {
+    //   setLoadButtons(true);
+    // }
   };
 
   const copyToClipboard = async () => {
@@ -324,7 +324,7 @@ const WritingGameComponent = ({
                         />
                         <Button
                           buttonAction={startNewRun}
-                          buttonColor='bg-cyan-200 text-black'
+                          buttonColor='bg-green-600 text-black'
                           buttonText='start again'
                         />
                         <Link passHref href='/library'>
