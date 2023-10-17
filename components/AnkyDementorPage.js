@@ -220,7 +220,7 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
           <p>your target is 180 seconds.</p>
           <p>just write.</p>
           <p>whatever comes.</p>
-          <div className='w-48 mx-auto my-2'>
+          <div className='w-96 mx-auto my-2'>
             {areYouSure ? (
               <Button
                 buttonAction={writeOnNotebook}

@@ -19,7 +19,7 @@ const notebookTypes = [
   {
     name: 'eulogias',
     description:
-      'community written notebook. wanna say happy birthday? say goodbye to someone that passed? eulogias are for that.',
+      'community written notebook. want say happy birthday? say goodbye to someone that died? eulogias are for that.',
   },
   {
     name: 'journal',
@@ -117,7 +117,7 @@ function LandingPage() {
           welcome to a self inquiry tool like no other.
         </h2>
         <p className='mb-4'>
-          writing is the vehicle. anky is built on top of a pioneer system:
+          writing is the vehicle, and anky is built on top of a pioneer system:
         </p>
         <p className='mb-4'>
           if you stop writing for more than three seconds, you lose.
@@ -172,8 +172,8 @@ function LandingPage() {
             })}
           </div>
           <p className='mb-4'>
-            all of them powered by the unique writing mechanism of anky:
-            consciousness dumping.
+            all of them powered by a unique writing mechanism: consciousness
+            dumping.
           </p>
           <p className='mb-4'>
             your Anky safeguards your deepest stories, secrets, and the truths
@@ -205,14 +205,16 @@ function LandingPage() {
 
       <div className='py-8 px-2 md:px-64 bg-gray-200'>
         <h2 className='text-3xl font-semibold mb-6'>the tech</h2>
-        <p>blockchain and ai collide on this transformative platform.</p>
+        <p className='mb-2 mx-auto'>
+          blockchain and ai collide on this transformative platform.
+        </p>
         <p className='mb-2 mx-auto'>
           each of your writings will be stored on arweave, an eternal
           decentralized database.
         </p>
         <p className='mb-2 mx-auto'>
-          that itself is going to be stored inside the blockchain, creating a
-          unique storage system designed to save your writings forever.
+          that itself is stored inside the blockchain, creating a unique storage
+          system designed to save your writings forever.
         </p>
       </div>
 

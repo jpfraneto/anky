@@ -132,7 +132,7 @@ const WritingGameComponent = ({
 
   const finishRun = async () => {
     setLifeBarLength(0);
-
+    setUserNeedsToWriteAgain(false);
     setFinished(true);
     setEndTime(Date.now());
     setIsDone(true);
@@ -318,7 +318,7 @@ const WritingGameComponent = ({
                         the minimum to move to the next stage is 180 seconds.
                       </p>
 
-                      <div className='flex justify-center'>
+                      <div className='flex mx-auto justify-center'>
                         <Button
                           buttonAction={copyToClipboard}
                           buttonColor='bg-cyan-200 text-black'
@@ -347,7 +347,7 @@ const WritingGameComponent = ({
                       <p
                         className={`${righteous.className} mb-2 text-xl font-bold`}
                       >
-                        do you want to store your writing?
+                        do you want to save your writing and move on?
                       </p>
 
                       <div className='flex justify-center '>
