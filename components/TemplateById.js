@@ -4,13 +4,14 @@ import { ethers } from 'ethers';
 import Button from '../components/Button';
 import templatesContractABI from '../lib/templatesABI.json';
 import notebookContractABI from '../lib/notebookABI.json';
+import { setUserData } from '../lib/idbHelper';
 import { useUser } from '../context/UserContext';
 import { processFetchedTemplate } from '../lib/notebooks.js';
 import Spinner from './Spinner';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
 
-function TemplatePage({ userAnky, router, alchemy }) {
-  console.log('alchemy is: ', alchemy);
+function TemplatePage({ wallet, userAnky, router, alchemy }) {
+  console.log('alchemy is: ', alchemy, wallet);
   const { authenticated, login } = usePrivy();
   const [templateData, setTemplateData] = useState(null);
   const [loadingTemplate, setLoadingTemplate] = useState(true);
@@ -20,10 +21,9 @@ function TemplatePage({ userAnky, router, alchemy }) {
   const [notebookInformation, setNotebookInformation] = useState({});
   const { setUserAppInformation } = useUser();
 
-  console.log('the router is: ', router);
   const { id } = router.query;
   useEffect(() => {
-    if (id && userAnky.wallet) fetchTemplateData(id);
+    if (id && wallet) fetchTemplateData(id);
     else {
       console.log('LKSAJOIC', id);
 
@@ -45,9 +45,8 @@ function TemplatePage({ userAnky, router, alchemy }) {
 
   async function fetchTemplateData(templateId) {
     console.log('inside the fetch template data', userAnky);
-    if (!userAnky && !userAnky.wallet && !userAnky.wallet.getEthersProvider)
-      return;
-    let provider = await userAnky.wallet?.getEthersProvider();
+    if (!wallet) return;
+    let provider = await wallet.getEthersProvider();
     let signer;
 
     if (provider) {
@@ -73,9 +72,8 @@ function TemplatePage({ userAnky, router, alchemy }) {
   async function handleMint() {
     setMintingNotebook(true);
     try {
-      if (!userAnky) return alert('You need to login first');
-      console.log('the user anky is: ', userAnky);
-      let provider = await userAnky.wallet.getEthersProvider();
+      if (!wallet) return alert('You need to login first');
+      let provider = await wallet.getEthersProvider();
       let signer = await provider.getSigner();
 
       const notebooksContract = new ethers.Contract(
@@ -86,11 +84,9 @@ function TemplatePage({ userAnky, router, alchemy }) {
 
       const amount = 1;
       const priceInWei = ethers.utils.parseEther(templateData.price);
-      console.log('the user anky is: ', userAnky);
-      console.log('HEREEE', userAnky.wallet.address);
 
       const transaction = await notebooksContract.mintNotebook(
-        userAnky.wallet.address,
+        wallet.address,
         Number(id),
         amount,
         { value: priceInWei }
@@ -116,20 +112,28 @@ function TemplatePage({ userAnky, router, alchemy }) {
       const notebookId = mintedEvents[0].args.instanceId;
       const creatorAmount = ethers.utils.formatEther(transferredAmounts[0]);
       const userAmount = ethers.utils.formatEther(transferredAmounts[1]);
+
+      // {notebookId, template.metadata (template.metadata.prompts.length and template.metadata.title), userPages }
+
       setNotebookInformation({ creatorAmount, userAmount, notebookId });
       setUserAppInformation(x => {
         console.log(
-          'the x in the user app information before adding a new journal is: ',
+          'the x in the user app information before adding a new notebook is: ',
           x
         );
+        setUserData('userNotebooks', [
+          ...x.userNotebooks,
+          { notebookId: notebookId, userPages: [], template: templateData },
+        ]);
         return {
           ...x,
           userNotebooks: [
             ...x.userNotebooks,
-            { notebookId: notebookId, pages: [] },
+            { notebookId: notebookId, userPages: [], template: templateData },
           ],
         };
       });
+
       setMintedNotebookId(notebookId);
       setMintedNotebookSuccess(true);
       setMintingNotebook(false);
@@ -141,7 +145,7 @@ function TemplatePage({ userAnky, router, alchemy }) {
     }
   }
 
-  if (loadingTemplate || mintingNotebook)
+  if (!wallet || loadingTemplate || mintingNotebook)
     return (
       <div>
         <Spinner />

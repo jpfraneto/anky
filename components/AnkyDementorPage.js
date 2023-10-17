@@ -173,6 +173,7 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
       <WritingGameComponent
         {...writingGameProps}
         text={text}
+        minimumWritingTime={180}
         setLifeBarLength={setLifeBarLength}
         lifeBarLength={lifeBarLength}
         setText={setText}

@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ethers } from 'ethers';
+import { setUserData } from '../../lib/idbHelper';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
 import { usePrivyWagmi } from '@privy-io/wagmi-connector';
 import { useContractRead } from 'wagmi';
 import { createTBA } from '../../lib/backend';
 import Button from '../Button';
+import { useUser } from '../../context/UserContext';
 import Link from 'next/link';
 import eulogiaABI from '../../lib/eulogiaABI.json';
 import Spinner from '../Spinner';
@@ -14,7 +16,7 @@ import SuccessfulEulogiaTemplate from './SuccessfulEulogiaTemplate';
 
 const PRICE_FACTOR = 0.0001;
 
-const NewEulogiaPage = ({ userAnky }) => {
+const NewEulogiaPage = ({ wallet }) => {
   const { login } = usePrivy();
   const [loadingEulogiaCreation, setLoadingEulogiaCreation] = useState(false);
   const [eulogiaCreationError, setEulogiaCreationError] = useState(false);
@@ -31,6 +33,8 @@ const NewEulogiaPage = ({ userAnky }) => {
   const [backgroundImage, setBackgroundImage] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userWallet, setUserWallet] = useState(null);
+
+  const { setUserAppInformation } = useUser();
 
   const { wallets } = useWallets();
   console.log('the wallets are: ', wallets);
@@ -124,6 +128,30 @@ const NewEulogiaPage = ({ userAnky }) => {
           setCreatedEulogiaId(eulogiaId.toNumber());
           setSuccess(true);
           setLoadingEulogiaCreation(false);
+
+          setUserAppInformation(x => {
+            console.log(
+              'the x in the user app information before adding a new eulogia is: ',
+              x
+            );
+
+            const newEulogia = {
+              eulogiaID: eulogiaId.toNumber(),
+              pages: maxMsgs,
+              metadata: {
+                // backgroundImageUrl: `https://ipfs.io/ipfs/${metadataCID.backgroundImageCid}`,
+                coverImageUrl: `https://ipfs.io/ipfs/${metadataCID.cid}`,
+              },
+              messages: [], // Initialize with an empty array as no messages have been added yet.
+            };
+
+            setUserData('userEulogias', [...x.userEulogias, newEulogia]);
+
+            return {
+              ...x,
+              userEulogias: [...x.userEulogias, newEulogia],
+            };
+          });
         } else {
           setEulogiaCreationError(true);
         }
@@ -222,7 +250,7 @@ const NewEulogiaPage = ({ userAnky }) => {
     );
   }
 
-  if (!userAnky?.wallet)
+  if (!wallet)
     return (
       <p
         className='text-white hover:text-purple-300 cursor-pointer'
@@ -234,7 +262,7 @@ const NewEulogiaPage = ({ userAnky }) => {
 
   return (
     <div className='my-4 md:w-2/3 text-gray-200 flex items-center justify-center'>
-      {userAnky?.wallet?.address ? (
+      {wallet && wallet?.address ? (
         <form className='bg-black w-full flex flex-col p-6 px-8 rounded shadow-md space-y-2'>
           <h2 className='text-gray-200 text-2xl'>Create Eulogia</h2>
           <p className='mt-0'>

@@ -39,6 +39,8 @@ const GlobalApp = ({ alchemy }) => {
   const router = useRouter();
   const [lifeBarLength, setLifeBarLength] = useState(0);
   const [userWallet, setUserWallet] = useState(null);
+  const wallets = useWallets();
+  const wallet = wallets.wallets[0];
 
   function getComponentForRoute(route) {
     switch (route) {
@@ -72,6 +74,7 @@ const GlobalApp = ({ alchemy }) => {
       case `/template/${route.split('/').pop()}`: // Extracts the template id from the route
         return (
           <TemplatePage
+            wallet={wallet}
             userAnky={userAppInformation}
             alchemy={alchemy}
             router={router}
@@ -89,7 +92,7 @@ const GlobalApp = ({ alchemy }) => {
       case '/journal':
         return <JournalPage userAppInformation={userAppInformation} />;
       case '/eulogias/new':
-        return <NewEulogiaPage userAnky={userAppInformation} />;
+        return <NewEulogiaPage wallet={wallet} />;
       case `/eulogias/${route.split('/').pop()}`:
         return (
           <IndividualEulogiaDisplayPage

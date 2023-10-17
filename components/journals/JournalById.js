@@ -39,6 +39,7 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
   const [writingGameProps, setWritingGameProps] = useState(null);
   const [whoIsWriting, setWhoIsWriting] = useState('');
   const { wallets } = useWallets();
+  const { setUserAppInformation } = useUser();
 
   const thisWallet = wallets[0];
 
@@ -147,6 +148,43 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
       const tx = await journalsContract.writeJournalPage(journalId, cid, true);
       await tx.wait();
       console.log('after the response of writing in the journal', journal);
+      setUserAppInformation(x => {
+        // Find the specific journal index by its id
+        const journalIndex = x.userJournals.findIndex(
+          j => j.notebookId === journalId
+        );
+
+        // If the journal is found
+        if (journalIndex !== -1) {
+          const updatedJournal = {
+            ...x.userJournals[journalIndex],
+            userPages: [
+              ...x.userJournals[journalIndex].userPages,
+              {
+                cid: cid,
+                isPublic: false,
+                text: finishText,
+                timestamp: new Date().getTime(),
+              },
+            ],
+          };
+
+          const updatedUserJournals = [
+            ...x.userJournals.slice(0, journalIndex),
+            updatedJournal,
+            ...x.userJournals.slice(journalIndex + 1),
+          ];
+
+          return {
+            ...x,
+            userJournals: updatedUserJournals,
+          };
+        }
+
+        // Return the original state if the journal isn't found (for safety)
+        return x;
+      });
+
       setJournal(x => {
         return {
           ...x,

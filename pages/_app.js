@@ -2,7 +2,7 @@ import '../styles/globals.css';
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 import { Righteous } from 'next/font/google';
-import { PrivyProvider, useWallets } from '@privy-io/react-auth';
+import { PrivyProvider, useWallets, useLogout } from '@privy-io/react-auth';
 import { PrivyWagmiConnector } from '@privy-io/wagmi-connector';
 import { baseGoerli } from '@wagmi/chains';
 import { configureChains, createConfig } from 'wagmi';
@@ -101,6 +101,13 @@ function MyApp({ Component, pageProps }) {
   }, []);
 
   const handleLogin = async user => {};
+
+  // const { logout } = useLogout({
+  //   onSuccess: () => {
+  //     console.log('User logged out');
+  //     // Any logic you'd like to execute after a user successfully logs out
+  //   },
+  // });
 
   if (mainAppLoading) return <p>Loading...</p>;
 

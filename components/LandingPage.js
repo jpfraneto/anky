@@ -60,13 +60,13 @@ function LandingPage() {
                   />
                 ) : (
                   <>
-                    {/* <Link href='/library' passHref>
+                    <Link href='/library' passHref>
                       <Button
                         buttonText='library'
                         buttonColor='bg-purple-400 text-black'
                       />
                     </Link>
-                    <Link href='/journal' passHref>
+                    {/* <Link href='/journal' passHref>
                       <Button
                         buttonText='journal'
                         buttonColor='bg-green-400 text-black'

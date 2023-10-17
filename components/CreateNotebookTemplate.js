@@ -169,7 +169,7 @@ function CreateNotebookTemplate({ userAnky }) {
     setLoadingNotebookCreation(true);
 
     try {
-      console.log('the user anky is after: ', thisWallet);
+      console.log('not the user anky but this wallet: ', thisWallet);
       let provider = await thisWallet.getEthersProvider();
       let signer = await provider.getSigner();
 
@@ -413,7 +413,7 @@ function CreateNotebookTemplate({ userAnky }) {
     );
   }
 
-  if (!userAnky?.wallet || !authenticated)
+  if (!authenticated)
     return (
       <p
         className='text-white hover:text-purple-300 cursor-pointer'
@@ -422,153 +422,143 @@ function CreateNotebookTemplate({ userAnky }) {
         please login first
       </p>
     );
-
   return (
     <div className='my-4 md:w-2/3 text-gray-200 flex items-center justify-center'>
-      {userAnky?.wallet?.address ? (
-        <form
-          className='bg-black w-full flex flex-col p-6  px-8 rounded shadow-md space-y-4'
-          onSubmit={handleSubmit}
-        >
-          <h2 className='text-gray-200 text-2xl'>New Notebook Template</h2>
+      <form
+        className='bg-black w-full flex flex-col p-6  px-8 rounded shadow-md space-y-4'
+        onSubmit={handleSubmit}
+      >
+        <h2 className='text-gray-200 text-2xl'>New Notebook Template</h2>
 
-          <div className='my-4 md:w-full text-gray-800 flex flex-col items-center justify-center'>
-            <h3 className='text-gray-500'>EXAMPLES</h3>
-            <div className=' flex flex-wrap justify-start'>
-              {EXAMPLE_NOTEBOOKS.map((notebook, idx) => (
-                <SampleButton
-                  key={idx}
-                  notebook={notebook}
-                  setExampleNotebook={setExampleNotebook}
-                />
-              ))}
-            </div>
+        <div className='my-4 md:w-full text-gray-800 flex flex-col items-center justify-center'>
+          <h3 className='text-gray-500'>EXAMPLES</h3>
+          <div className=' flex flex-wrap justify-start'>
+            {EXAMPLE_NOTEBOOKS.map((notebook, idx) => (
+              <SampleButton
+                key={idx}
+                notebook={notebook}
+                setExampleNotebook={setExampleNotebook}
+              />
+            ))}
           </div>
+        </div>
 
-          <div>
-            <p className='text-left text-sm text-gray-500 mt-1'>
-              Title (max 50 characters)
-            </p>
-
-            <input
-              className='border p-2 w-full rounded text-gray-500'
-              value={title}
-              maxlength='50'
-              onChange={e => setTitle(e.target.value)}
-              required
-            />
-          </div>
-
-          <div>
-            <p className='text-left text-sm text-gray-500 mt-1'>
-              Description (max 560 characters)
-            </p>
-
-            <textarea
-              className='border p-2 w-full h-64 rounded text-gray-500'
-              value={description}
-              maxlength='560'
-              onChange={e => setDescription(e.target.value)}
-              required
-            />
-          </div>
-
-          <p className='text-left text-sm text-gray-500 my-0'>Bulk import</p>
-          <textarea
-            className='border p-2 w-full h-96 rounded text-gray-500'
-            placeholder='Enter questions separated by commas...'
-            value={bulkImportString}
-            onChange={e => setBulkImportString(e.target.value)}
-          />
-          <button
-            type='button'
-            className='bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded  w-fit mt-2 mr-auto'
-            onClick={handleBulkImport}
-          >
-            Import All Questions
-          </button>
-
-          <p className='text-left text-sm text-gray-500 mt-1 mb-0'>
-            Notebook Prompts
+        <div>
+          <p className='text-left text-sm text-gray-500 mt-1'>
+            Title (max 50 characters)
           </p>
 
-          <div className='space-y-2 mt-0 text-gray-500'>{renderPrompts()}</div>
+          <input
+            className='border p-2 w-full rounded text-gray-500'
+            value={title}
+            maxlength='50'
+            onChange={e => setTitle(e.target.value)}
+            required
+          />
+        </div>
 
-          <div className='flex mr-auto'>
-            <button
-              type='button'
-              className='bg-blue-500  hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-fit mt-2 mr-2'
-              onClick={handleAddPrompt}
-            >
-              Add Prompt
-            </button>
-            <button
-              type='button'
-              className='bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded w-fit mt-2 mr-auto'
-              onClick={() => {
-                if (confirm('do you want to delete all the prompts?')) {
-                  setPrompts([]);
-                }
-              }}
-            >
-              Clear Prompts
-            </button>
-          </div>
+        <div>
+          <p className='text-left text-sm text-gray-500 mt-1'>
+            Description (max 560 characters)
+          </p>
 
-          <div>
-            <p className='text-left text-sm text-gray-500 mt-1'>
-              Price (in eth - how much will a user pay for minting an instance
-              of this notebook? - you will get 10% of each transaction)
-            </p>
-            <input
-              className='border p-2 w-full rounded text-gray-500'
-              type='number'
-              value={price}
-              onChange={e => setPrice(e.target.value)}
-              required
-            />
-          </div>
+          <textarea
+            className='border p-2 w-full h-64 rounded text-gray-500'
+            value={description}
+            maxlength='560'
+            onChange={e => setDescription(e.target.value)}
+            required
+          />
+        </div>
 
-          <div>
-            <p className='text-left text-sm text-gray-500 mt-1'>
-              Supply (max notebooks that will be available for mint)
-            </p>
-            <input
-              className='border p-2 w-full rounded text-gray-500'
-              type='number'
-              value={supply}
-              min={0}
-              onChange={e => setSupply(e.target.value)}
-              required
-            />
-          </div>
-          <div className='flex space-x-2'>
-            <button
-              className='bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-fit mt-4'
-              type='submit'
-            >
-              {loadingNotebookCreation
-                ? 'loading...'
-                : 'create notebook template'}
-            </button>
-            <button
-              className='bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded w-fit mt-4'
-              type='button'
-              onClick={() => router.back()}
-            >
-              go back
-            </button>
-          </div>
-        </form>
-      ) : (
+        <p className='text-left text-sm text-gray-500 my-0'>Bulk import</p>
+        <textarea
+          className='border p-2 w-full h-96 rounded text-gray-500'
+          placeholder='Enter questions separated by commas...'
+          value={bulkImportString}
+          onChange={e => setBulkImportString(e.target.value)}
+        />
         <button
-          className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
-          onClick={login}
+          type='button'
+          className='bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded  w-fit mt-2 mr-auto'
+          onClick={handleBulkImport}
         >
-          Login with Privy
+          Import All Questions
         </button>
-      )}
-      {renderModal()}
+
+        <p className='text-left text-sm text-gray-500 mt-1 mb-0'>
+          Notebook Prompts
+        </p>
+
+        <div className='space-y-2 mt-0 text-gray-500'>{renderPrompts()}</div>
+
+        <div className='flex mr-auto'>
+          <button
+            type='button'
+            className='bg-blue-500  hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-fit mt-2 mr-2'
+            onClick={handleAddPrompt}
+          >
+            Add Prompt
+          </button>
+          <button
+            type='button'
+            className='bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded w-fit mt-2 mr-auto'
+            onClick={() => {
+              if (confirm('do you want to delete all the prompts?')) {
+                setPrompts([]);
+              }
+            }}
+          >
+            Clear Prompts
+          </button>
+        </div>
+
+        <div>
+          <p className='text-left text-sm text-gray-500 mt-1'>
+            Price (in eth - how much will a user pay for minting an instance of
+            this notebook? - you will get 10% of each transaction)
+          </p>
+          <input
+            className='border p-2 w-full rounded text-gray-500'
+            type='number'
+            value={price}
+            onChange={e => setPrice(e.target.value)}
+            required
+          />
+        </div>
+
+        <div>
+          <p className='text-left text-sm text-gray-500 mt-1'>
+            Supply (max notebooks that will be available for mint)
+          </p>
+          <input
+            className='border p-2 w-full rounded text-gray-500'
+            type='number'
+            value={supply}
+            min={0}
+            onChange={e => setSupply(e.target.value)}
+            required
+          />
+        </div>
+        <div className='flex space-x-2'>
+          <button
+            className='bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-fit mt-4'
+            type='submit'
+          >
+            {loadingNotebookCreation
+              ? 'loading...'
+              : 'create notebook template'}
+          </button>
+          <button
+            className='bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded w-fit mt-4'
+            type='button'
+            onClick={() => router.back()}
+          >
+            go back
+          </button>
+        </div>
+      </form>
+      ){renderModal()}
     </div>
   );
 }

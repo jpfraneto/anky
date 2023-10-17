@@ -5,6 +5,7 @@ import {
   fetchUserEulogias,
   fetchUserNotebooks,
   fetchUserJournals,
+  fetchUserDementors,
 } from '../lib/notebooks';
 import AccountSetupModal from '../components/AccountSetupModal';
 import { setUserData, getUserData } from '../lib/idbHelper';
@@ -48,6 +49,7 @@ export const UserProvider = ({ children }) => {
         const userJournals = await getUserData('userJournals');
         const userNotebooks = await getUserData('userNotebooks');
         const userEulogias = await getUserData('userEulogias');
+        const userDementors = await getUserData('userDementors');
         const ankyIndex = await getUserData('ankyIndex');
         const ankyTbaAddress = await getUserData('ankyTbaAddress');
         console.log(
@@ -74,9 +76,10 @@ export const UserProvider = ({ children }) => {
   // Check initialization and setup status
   useEffect(() => {
     async function handleInitialization() {
-      console.log('inside the handle initialization');
       if (loading) return;
       if (loadingUserStoredData) return;
+      if (wallet && !wallet.chainId.includes('84531')) await changeChain();
+
       if (!authenticated) {
         setAppLoading(false);
         return;
@@ -111,6 +114,7 @@ export const UserProvider = ({ children }) => {
       setUserData('userJournals', userAppInformation.userJournals);
       setUserData('userNotebooks', userAppInformation.userNotebooks);
       setUserData('userEulogias', userAppInformation.userEulogias);
+      setUserData('userDementors', userAppInformation.userDementors);
       setUserData('ankyIndex', userAppInformation.ankyIndex);
       setUserData('ankyTbaAddress', userAppInformation.tbaAddress);
     }
@@ -177,6 +181,17 @@ export const UserProvider = ({ children }) => {
 
           setUserAppInformation(x => {
             return { ...x, userEulogias: userEulogias };
+          });
+        }
+
+        if (!userAppInformation.userDementors) {
+          console.log('before fetching the dementors');
+
+          const userDementors = await fetchUserDementors(signer);
+          console.log('the user dementors are: ', userDementors);
+
+          setUserAppInformation(x => {
+            return { ...x, userDementors: userDementors };
           });
         }
         setLibraryLoading(false);

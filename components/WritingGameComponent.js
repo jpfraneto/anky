@@ -30,6 +30,7 @@ const WritingGameComponent = ({
   preloadedBackground,
   prompt,
   musicUrl,
+  minimumWritingTime = 3,
   fullDisplay,
   text,
   setText,
@@ -108,7 +109,7 @@ const WritingGameComponent = ({
           // audioRef.current.play();
         }
         if (elapsedTime > 3000 && !isDone) {
-          if (time > 180) {
+          if (time > minimumWritingTime) {
             finishRun();
           } else {
             setFinished(true);
@@ -315,7 +316,8 @@ const WritingGameComponent = ({
                       <p
                         className={`${righteous.className} mb-2 text-xl font-bold`}
                       >
-                        the minimum to move to the next stage is 180 seconds.
+                        the minimum to move to the next stage is{' '}
+                        {minimumWritingTime} seconds.
                       </p>
 
                       <div className='flex mx-auto justify-center'>

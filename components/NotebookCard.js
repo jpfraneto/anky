@@ -2,7 +2,6 @@ import React from 'react';
 import Link from 'next/link';
 
 const NotebookCard = ({ notebook }) => {
-  console.log('in here', notebook);
   // CHANGE THIS
   return (
     <Link href={`/notebook/${notebook.notebookId}`}>
