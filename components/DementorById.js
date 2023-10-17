@@ -216,6 +216,18 @@ function DementorPage({
           <p className='mt-2'>3 minutes per prompt.</p>
           <p className='mt-2'>each one a journey into yourself.</p>
           <p className='mt-2'>bringing out everything that you have inside.</p>
+          <h2 className='text-xl my-2'>instructions</h2>
+          <p className='mt-2'>
+            just write, doing the best you can to answer the prompt at hand.
+          </p>
+          <p className='mt-2'>
+            when you reach the 180 second mark, the time will stop, the
+            container will block, and youll have time to read the next one.
+          </p>
+          <p className='mt-2'>
+            when you are ready, just press the space bar and continue writing.
+          </p>
+          <p className='mt-2'>you&apos;ll understand the mechanics fast.</p>
         </div>
       )}
     </div>
