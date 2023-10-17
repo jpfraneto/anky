@@ -186,7 +186,7 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
       {ankyDementorCreated ? (
         <div className='py-2 mt-8'>
           <p className='mb-2'>
-            wow, congratulations. your anky dementor was created.
+            wow, congratulations. your anky dementor is ready.
           </p>
           <p className='mb-2'>
             with what you just wrote, a new writing container was created.

@@ -191,19 +191,17 @@ function DementorPage({
       <h2 className='text-3xl'>{dementorData.title}</h2>
       <p className='italic'>{dementorData.description}</p>
       <div className='my-2 w-96 mx-auto max-w-screen justify-center flex'>
-        {setIsUserSureThatUserIsReady ? (
-          <div className='flex flex-col items-center'>
-            <Button
-              buttonText='im ready to write'
-              buttonAction={() => setIsUserSureThatUserIsReady(true)}
-              buttonColor='bg-green-600'
-            />
-          </div>
+        {!isUserSureThatUserIsReady ? (
+          <Button
+            buttonText='im ready to write'
+            buttonAction={() => setIsUserSureThatUserIsReady(true)}
+            buttonColor='bg-green-700 mx-2'
+          />
         ) : (
           <Button
             buttonText='lets do this'
             buttonAction={userIsReadyToWriteTrigger}
-            buttonColor='bg-green-600'
+            buttonColor='bg-green-600 mx-2'
           />
         )}
 
@@ -211,7 +209,7 @@ function DementorPage({
           <Button buttonText='library' buttonColor='bg-purple-600' />
         </Link>
       </div>
-      {setIsUserSureThatUserIsReady && (
+      {isUserSureThatUserIsReady && (
         <div className=''>
           <p className='mt-2'>each page in a dementor has 8 prompts.</p>
           <p className='mt-2'>each writing session lasts 24 minutes.</p>
