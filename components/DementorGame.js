@@ -309,7 +309,7 @@ const DementorGame = ({
         <p>just write.</p>
         <div className='my-2 mx-auto w-98 justify-between flex'>
           <Button
-            buttonAction={pasteText}
+            buttonAction={copyToClipboard}
             buttonColor='bg-green-600 mx-2'
             buttonText={copyText}
           />

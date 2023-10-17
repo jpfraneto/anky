@@ -112,6 +112,8 @@ const WritingGameComponent = ({
             finishRun();
           } else {
             setFinished(true);
+            clearInterval(intervalRef.current);
+            clearInterval(keystrokeIntervalRef.current);
             setCopyText('copy what i wrote');
             setUserNeedsToWriteAgain(true);
           }
@@ -313,10 +315,10 @@ const WritingGameComponent = ({
                       <p
                         className={`${righteous.className} mb-2 text-xl font-bold`}
                       >
-                        the minimum time to write is 180 seconds.
+                        the minimum to move to the next stage is 180 seconds.
                       </p>
 
-                      <div className='flex justify-center '>
+                      <div className='flex justify-center'>
                         <Button
                           buttonAction={copyToClipboard}
                           buttonColor='bg-cyan-200 text-black'

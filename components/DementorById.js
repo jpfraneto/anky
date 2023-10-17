@@ -32,6 +32,8 @@ function DementorPage({
   const [loadingSavingNewPage, setLoadingSavingNewPage] = useState(false);
   const [loadingDementor, setLoadingDementor] = useState(true);
   const [dementorsContract, setDementorsContract] = useState(null);
+  const [isUserSureThatUserIsReady, setIsUserSureThatUserIsReady] =
+    useState(false);
   const [writingGameProps, setWritingGameProps] = useState(null);
   const [dementorWasUpdated, setDementorWasUpdated] = useState(false);
   const [mintingNotebook, setMintingNotebook] = useState(false);
@@ -188,16 +190,36 @@ function DementorPage({
     <div className='md:w-1/2 p-2 mx-auto w-screen text-black md:text-white pt-5'>
       <h2 className='text-3xl'>{dementorData.title}</h2>
       <p className='italic'>{dementorData.description}</p>
-      <div className='my-2 w-96 max-w-screen justify-center  flex'>
-        <Button
-          buttonText='im more than ready'
-          buttonAction={userIsReadyToWriteTrigger}
-          buttonColor='bg-green-600'
-        />
+      <div className='my-2 w-96 mx-auto max-w-screen justify-center flex'>
+        {setIsUserSureThatUserIsReady ? (
+          <div className='flex flex-col items-center'>
+            <Button
+              buttonText='im ready to write'
+              buttonAction={() => setIsUserSureThatUserIsReady(true)}
+              buttonColor='bg-green-600'
+            />
+          </div>
+        ) : (
+          <Button
+            buttonText='lets do this'
+            buttonAction={userIsReadyToWriteTrigger}
+            buttonColor='bg-green-600'
+          />
+        )}
+
         <Link passHref href='/library'>
           <Button buttonText='library' buttonColor='bg-purple-600' />
         </Link>
       </div>
+      {setIsUserSureThatUserIsReady && (
+        <div className=''>
+          <p className='mt-2'>each page in a dementor has 8 prompts.</p>
+          <p className='mt-2'>each writing session lasts 24 minutes.</p>
+          <p className='mt-2'>3 minutes per prompt.</p>
+          <p className='mt-2'>each one a journey into yourself.</p>
+          <p className='mt-2'>bringing out everything that you have inside.</p>
+        </div>
+      )}
     </div>
   );
 }

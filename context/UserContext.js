@@ -193,6 +193,7 @@ export const UserProvider = ({ children }) => {
   const initializeUser = async () => {
     console.log('inside the initialize user function');
     try {
+      if (setupIsReady) return;
       if (loading) return;
       if (!authenticated) {
         setAppLoading(false);

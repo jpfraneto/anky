@@ -7,7 +7,10 @@ const steps = [
     id: 'changeChain',
     label: 'Changing the blockchain network to base goerli',
   },
-  { id: 'sendEther', label: 'Sending you some test Ether to explore the app' },
+  {
+    id: 'sendEther',
+    label: 'Sending you some monopoly money to explore the app',
+  },
   { id: 'airdrop', label: 'Looking for your companion in the Ankyverse' },
   {
     id: 'getTBA',

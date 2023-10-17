@@ -12,6 +12,7 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
   const [response, setResponse] = useState(null); // Response from API
   const [time, setTime] = useState(0);
   const [text, setText] = useState('');
+  const [areYouSure, setAreYouSure] = useState(false);
   const [loadWritingGame, setLoadWritingGame] = useState(false);
   const [provider, setProvider] = useState(null);
   const [ankyDementorId, setAnkyDementorId] = useState(null);
@@ -183,15 +184,33 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
   return (
     <div className='text-white md:w-3/5 mx-auto'>
       {ankyDementorCreated ? (
-        <div>
-          <p>holy shit, your anky dementor was created.</p>
-          <p>you can check its first page here:</p>
-          <Link href={`/dementor/${ankyDementorId}`} passHref>
-            <Button
-              buttonText='go to my anky dementor'
-              buttonColor='bg-purple-600'
-            />
-          </Link>
+        <div className='py-2 mt-8'>
+          <p className='mb-2'>
+            wow, congratulations. your anky dementor was created.
+          </p>
+          <p className='mb-2'>
+            with what you just wrote, a new writing container was created.
+          </p>
+          <p className='mb-2'>
+            inside it, there are 8 prompts. each one of them designed to take
+            you deeper into the process of self inquiry.
+          </p>
+          <p className='mb-2'>
+            treat coming here as the most important meditation practice of your
+            life.
+          </p>
+          <p className='mb-2'>
+            this is for those who really want to get to the bottom of their
+            relationship with themselves.
+          </p>
+          <div className='w-96 mx-auto'>
+            <Link href={`/dementor/${ankyDementorId}`} passHref>
+              <Button
+                buttonText='go to my anky dementor'
+                buttonColor='bg-purple-600'
+              />
+            </Link>
+          </div>
         </div>
       ) : (
         <div className='my-2'>
@@ -200,12 +219,21 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
           <p>write as if there was no tomorrow.</p>
           <p>your target is 180 seconds.</p>
           <p>just write.</p>
+          <p>whatever comes.</p>
           <div className='w-48 mx-auto my-2'>
-            <Button
-              buttonAction={writeOnNotebook}
-              buttonText='LFG'
-              buttonColor='bg-purple-600'
-            />
+            {areYouSure ? (
+              <Button
+                buttonAction={writeOnNotebook}
+                buttonText='breathe deep and lets go'
+                buttonColor='bg-green-600'
+              />
+            ) : (
+              <Button
+                buttonAction={() => setAreYouSure(true)}
+                buttonText='im ready'
+                buttonColor='bg-purple-600'
+              />
+            )}
           </div>
         </div>
       )}
