@@ -9,9 +9,13 @@ import { useUser } from '../context/UserContext';
 const notebookTypes = [
   {
     name: 'dementor',
-    description: 'designed to help you realize your true nature.',
+    description:
+      'your anky prompts you on a ongoing journey of self discovery.',
   },
-  { name: 'notebook', description: 'minted from a template. limited supply.' },
+  {
+    name: 'notebook',
+    description: 'created by others, you can buy and write on them.',
+  },
   {
     name: 'eulogias',
     description:
@@ -19,7 +23,7 @@ const notebookTypes = [
   },
   {
     name: 'journal',
-    description: 'designed to allow you to just write streams of consciousness',
+    description: 'write without any direction. just do it.',
   },
 ];
 
@@ -112,12 +116,13 @@ function LandingPage() {
         <h2 className='text-3xl font-semibold mb-6'>
           welcome to a self inquiry tool like no other.
         </h2>
-        <p>
-          writing is the vehicle here. time is your friend. anky is built on top
-          of a pioneed system:
+        <p className='mb-4'>
+          writing is the vehicle. anky is built on top of a pioneer system:
         </p>
-        <p>if you stop writing for more than three seconds, you lose.</p>
-        <p>as simple as that.</p>
+        <p className='mb-4'>
+          if you stop writing for more than three seconds, you lose.
+        </p>
+        <p className='mb-4'>as simple as that.</p>
 
         <p className='mb-4'>
           as soon as you create an account here, you are assigned a unique
@@ -130,7 +135,7 @@ function LandingPage() {
           built on top of blockchain technolgy, your anky will store your
           writings forever.
         </p>
-        <p className='mb-4'>this is how they look:</p>
+        <p className='mb-4'>this is how some of them look:</p>
         <div className='flex flex-wrap justify-center'>
           <div className='relative w-1/3 h-1/3 md:w-48 md:h-48 m-2 rounded-xl overflow-hidden'>
             <Image src='/ankys/1.png' alt='anky' layout='fill' />
@@ -151,7 +156,7 @@ function LandingPage() {
       <div className='p-8 bg-gray-200 flex flex-row'>
         <div className='px-2 md:w-3/5 mx-auto'>
           <h2 className='text-3xl font-semibold mb-6'>
-            in here, there are four types of writing containers
+            four types of writing containers
           </h2>
           <div className='flex flex-wrap mx-auto justify-center mb-4'>
             {notebookTypes.map((x, i) => {
@@ -201,20 +206,22 @@ function LandingPage() {
       <div className='py-8 px-2 md:px-64 bg-gray-200'>
         <h2 className='text-3xl font-semibold mb-6'>the tech</h2>
         <p>blockchain and ai collide on this transformative platform.</p>
-        <p className='md:w-48 mx-auto'>
-          each of your writings will be stored on arweave, and the cid of that
-          writing will be stored on the smart contract associated with that
-          particular writing container instance.
+        <p className='mb-2 mx-auto'>
+          each of your writings will be stored on arweave, an eternal
+          decentralized database.
+        </p>
+        <p className='mb-2 mx-auto'>
+          that itself is going to be stored inside the blockchain, creating a
+          unique storage system designed to save your writings forever.
         </p>
       </div>
 
-      <div className='p-8 bg-white flex flex-row mb-8'>
+      <div className='p-8 bg-white flex flex-row'>
         <div className='px-2 md:w-3/5 mx-auto'>
-          <p className='mb-4'>i need help</p>
-          <p className='mb-4'>all your feedback is gold</p>
-          <p className='mb-4'>@kithkui on x</p>
-          <p className='mb-4'>@jpfraneto on farcaster</p>
-          <p className='mb-4'>
+          <p className='mb-2'>all your feedback is gold</p>
+          <p className='mb-2'>@kithkui on x</p>
+          <p className='mb-2'>@jpfraneto on farcaster</p>
+          <p className='mb-2'>
             its all open source https://www.github.com/ankylat
           </p>
         </div>

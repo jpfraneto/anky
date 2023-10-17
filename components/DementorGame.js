@@ -334,16 +334,6 @@ const DementorGame = ({
   return (
     <div
       className={`${righteous.className} text-black relative overflow-y-scroll flex flex-col items-center  w-full bg-cover bg-center`}
-      style={{
-        boxSizing: 'border-box',
-        height: 'calc(100vh - 33px)',
-        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(${
-          preloadedBackground || '/images/mintbg.jpg'
-        })`,
-        backgroundPosition: 'center center',
-        backgroundSize: 'cover',
-        backgroundRepeat: 'no-repeat',
-      }}
     >
       <audio ref={audioRef}>
         <source src='/sounds/bell.mp3' />
