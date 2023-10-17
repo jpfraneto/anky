@@ -162,7 +162,14 @@ const LibraryPage = ({}) => {
               <div className='my-2 bg-red-300 rounded-xl p-4 flex flex-wrap'>
                 {dementors.length > 0 ? (
                   dementors.map((x, i) => {
-                    return <DementorCard dementor={x} key={i} />;
+                    return (
+                      <Link href={`dementor/${x.dementorId}`}>
+                        {dementorId}
+                      </Link>
+                    );
+                    {
+                      /* return <DementorCard dementor={x} key={i} />; */
+                    }
                   })
                 ) : (
                   <p className='text-black'>you dont have a dementor yet</p>
