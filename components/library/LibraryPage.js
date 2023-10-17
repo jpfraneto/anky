@@ -163,7 +163,7 @@ const LibraryPage = ({}) => {
                 {dementors.length > 0 ? (
                   dementors.map((x, i) => {
                     return (
-                      <Link href={`dementor/${x.dementorId}`}>
+                      <Link key={i} href={`dementor/${x.dementorId}`}>
                         {dementorId}
                       </Link>
                     );
