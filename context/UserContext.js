@@ -297,8 +297,10 @@ export const UserProvider = ({ children }) => {
         !userAppInformation.userJournals ||
         (userAppInformation.userJournals.length !== 0 && wallet)
       ) {
-        const journaltx = await airdropFirstJournal(wallet.address, authToken);
-        const receipt = await journaltx.wait();
+        const tx = await airdropFirstJournal(wallet.address, authToken);
+        console.log('the tx is: ', tx);
+        const receipt = await tx.wait();
+        console.log('the receipt is: ', receipt);
         const eventTopic = ethers.utils.id(
           'JournalAirdropped(tokenId, usersAnkyAddress)'
         );
