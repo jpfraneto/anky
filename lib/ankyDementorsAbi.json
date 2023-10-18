@@ -226,7 +226,67 @@
         "internalType": "struct AnkyDementor.DementorPage",
         "name": "",
         "type": "tuple"
+      },
+      { "internalType": "uint256", "name": "", "type": "uint256" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "tokenId", "type": "uint256" }
+    ],
+    "name": "getDementor",
+    "outputs": [
+      {
+        "components": [
+          { "internalType": "string", "name": "introCID", "type": "string" },
+          {
+            "components": [
+              {
+                "internalType": "uint256",
+                "name": "creationTimestamp",
+                "type": "uint256"
+              },
+              {
+                "internalType": "string",
+                "name": "promptCID",
+                "type": "string"
+              },
+              {
+                "internalType": "string",
+                "name": "userWritingCID",
+                "type": "string"
+              },
+              {
+                "internalType": "uint256",
+                "name": "writingTimestamp",
+                "type": "uint256"
+              }
+            ],
+            "internalType": "struct AnkyDementor.DementorPage[]",
+            "name": "pages",
+            "type": "tuple[]"
+          },
+          {
+            "internalType": "uint256",
+            "name": "currentPage",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct AnkyDementor.DementorNotebook",
+        "name": "",
+        "type": "tuple"
       }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getUserDementors",
+    "outputs": [
+      { "internalType": "uint256[]", "name": "", "type": "uint256[]" }
     ],
     "stateMutability": "view",
     "type": "function"
@@ -373,6 +433,16 @@
     "name": "transferOwnership",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "", "type": "address" },
+      { "internalType": "uint256", "name": "", "type": "uint256" }
+    ],
+    "name": "userDementorIds",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
     "type": "function"
   },
   {

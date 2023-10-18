@@ -213,7 +213,7 @@ function TemplatePage({ wallet, userAnky, router, alchemy }) {
                 using here.
               </p>
               <p>10% of it will go to who created the template as royalties.</p>
-              <div className='w-96 mx-auto md:text-black text-white flex justify-center my-4'>
+              <div className='w-96 mx-auto  text-white flex justify-center my-4'>
                 {authenticated ? (
                   <Button
                     buttonColor='bg-purple-600'

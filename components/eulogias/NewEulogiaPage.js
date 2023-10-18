@@ -17,7 +17,7 @@ import SuccessfulEulogiaTemplate from './SuccessfulEulogiaTemplate';
 const PRICE_FACTOR = 0.0001;
 
 const NewEulogiaPage = ({ wallet }) => {
-  const { login } = usePrivy();
+  const { login, getAccessToken } = usePrivy();
   const [loadingEulogiaCreation, setLoadingEulogiaCreation] = useState(false);
   const [eulogiaCreationError, setEulogiaCreationError] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -75,12 +75,14 @@ const NewEulogiaPage = ({ wallet }) => {
       formData.append('price', price);
       formData.append('coverImage', coverImage);
       formData.append('maxPages', pages);
-      // formData.append('backgroundImage', backgroundImage);
-
+      const authToken = await getAccessToken();
       const serverResponse = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/notebooks/eulogia`,
         {
           method: 'POST',
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
           body: formData,
           credentials: 'include',
         }

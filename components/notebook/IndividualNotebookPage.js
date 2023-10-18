@@ -3,12 +3,14 @@ import { useRouter } from 'next/router';
 import { ethers } from 'ethers';
 import Button from '../Button';
 import Link from 'next/link';
+import { useUser } from '../../context/UserContext';
 import {
   processFetchedTemplate,
   fetchArweaveContent,
 } from '../../lib/notebooks.js';
 import templatesContractABI from '../../lib/templatesABI.json';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
+import { setUserData } from '../../lib/idbHelper';
 import Image from 'next/image';
 import WritingGameComponent from '../WritingGameComponent';
 import Spinner from '../Spinner';
@@ -31,6 +33,7 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
   const [whoIsWriting, setWhoIsWriting] = useState('');
   const [failed, setFailed] = useState(false);
   const { wallets } = useWallets();
+  const { setUserAppInformation } = useUser();
 
   const thisWallet = wallets[0];
 
@@ -135,10 +138,10 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
       console.log('the page number is :0', pageNumber);
       console.log('the notebook is: ', notebook);
       console.log('the provider is: ', provider);
-      const notebookID = router.query.id;
-      console.log('the notebook id is: ', notebookID);
+      const notebookId = router.query.id;
+      console.log('the notebook id is: ', notebookId);
       const tx = await notebooksContract.writeNotebookPage(
-        notebookID,
+        notebookId,
         pageNumber,
         cid,
         true
@@ -146,25 +149,55 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
       await tx.wait();
       console.log('after the response of writing in the notebook');
       console.log('the notebook pages are: ', notebookPages);
-      if (notebookPages.length === 0) {
-        console.log('setting the first notebook page');
-        setNotebookPages([
-          {
-            text: finishText,
-            pageIndex: 1,
-            written: true,
-          },
-        ]);
-      } else {
-        setNotebookPages(x => [
-          ...x,
-          {
-            text: finishText,
-            pageIndex: notebookPages.length,
-            written: true,
-          },
-        ]);
-      }
+
+      setUserAppInformation(x => {
+        // Find the specific journal index by its id
+        const notebookIndex = x.userNotebooks.findIndex(
+          j => j.notebookId == notebookId
+        );
+
+        // If the journal is found
+        if (notebookIndex !== -1) {
+          console.log('the notebook index is: ', notebookIndex);
+          const updatedNotebook = {
+            ...x.userNotebooks[notebookIndex],
+            userPages: [
+              ...x.userNotebooks[notebookIndex].userPages,
+              {
+                text: finishText,
+                pageIndex: notebookPages.length,
+                written: true,
+              },
+            ],
+          };
+
+          const updatedUserNotebooks = [
+            ...x.userNotebooks.slice(0, notebookIndex),
+            updatedNotebook,
+            ...x.userNotebooks.slice(notebookIndex + 1),
+          ];
+          console.log('the updated user notebooks are: ', updatedUserNotebooks);
+          setUserData('userNotebooks', updatedUserNotebooks);
+
+          setNotebookPages(x => [
+            ...x,
+            {
+              text: finishText,
+              pageIndex: notebookPages.length,
+              written: true,
+            },
+          ]);
+
+          return {
+            ...x,
+            userNotebooks: updatedUserNotebooks,
+          };
+        }
+
+        // Return the original state if the journal isn't found (for safety)
+        return x;
+      });
+
       setLoadWritingGame(false);
     } catch (error) {
       console.error('Failed to write to notebook:', error);

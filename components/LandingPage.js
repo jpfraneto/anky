@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePrivy } from '@privy-io/react-auth';
 import Image from 'next/image';
 import { useUser } from '../context/UserContext';
+import Spinner from './Spinner';
 
 const notebookTypes = [
   {
@@ -28,7 +29,7 @@ const notebookTypes = [
 ];
 
 function LandingPage() {
-  const { login, authenticated } = usePrivy();
+  const { login, authenticated, loading } = usePrivy();
   const { userAppInformation, libraryLoading } = useUser();
   const router = useRouter();
   const [startJourney, setStartJourney] = useState(false);
@@ -49,63 +50,51 @@ function LandingPage() {
             {authenticated ? 'welcome back, my friend' : 'tell me who you are'}
           </h1>
 
-          {authenticated ? (
-            <div className='text-gray-400'>
-              <div className='mt-2 flex space-x-2'>
-                {libraryLoading ? (
-                  <Button
-                    disabled
-                    buttonText='loading your library...'
-                    buttonColor='bg-purple-400 text-black'
-                  />
-                ) : (
-                  <>
+          {loading ? (
+            <Spinner />
+          ) : (
+            <>
+              {authenticated ? (
+                <div className='text-gray-400'>
+                  <div className='mt-2 flex space-x-2'>
                     <Link href='/library' passHref>
                       <Button
                         buttonText='library'
                         buttonColor='bg-purple-400 text-black'
                       />
                     </Link>
-                    {/* <Link href='/journal' passHref>
-                      <Button
-                        buttonText='journal'
-                        buttonColor='bg-green-400 text-black'
-                      />
-                    </Link> */}
                     <Link href='/dementor' passHref>
                       <Button
                         buttonText='dementor'
                         buttonColor='bg-red-400 text-black'
                       />
                     </Link>
-                  </>
-                )}
-              </div>
-            </div>
-          ) : (
-            <>
-              <div className='text-gray-400'>
-                <div className='mt-2 w-96 flex mx-auto'>
-                  {startJourney ? (
-                    <Button
-                      buttonText='login with any email'
-                      buttonAction={login}
-                      buttonColor='bg-purple-400 mx-1 text-black'
-                    />
-                  ) : (
-                    <Button
-                      buttonText='start journey'
-                      buttonColor='bg-purple-500 mx-1 text-black'
-                      buttonAction={() => setStartJourney(true)}
-                    />
-                  )}
-                  <Button
-                    buttonText='prompt of the day'
-                    buttonAction={() => router.push('/ankyverse')}
-                    buttonColor='bg-green-400 text-black mx-1'
-                  />
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className='text-gray-400'>
+                  <div className='mt-2 w-96 flex mx-auto'>
+                    {startJourney ? (
+                      <Button
+                        buttonText='login with any email'
+                        buttonAction={login}
+                        buttonColor='bg-purple-400 mx-1 text-black'
+                      />
+                    ) : (
+                      <Button
+                        buttonText='start journey'
+                        buttonColor='bg-purple-500 mx-1 text-black'
+                        buttonAction={() => setStartJourney(true)}
+                      />
+                    )}
+                    <Button
+                      buttonText='prompt of the day'
+                      buttonAction={() => router.push('/ankyverse')}
+                      buttonColor='bg-green-400 text-black mx-1'
+                    />
+                  </div>
+                </div>
+              )}
             </>
           )}
         </div>

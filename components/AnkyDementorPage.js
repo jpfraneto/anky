@@ -4,11 +4,12 @@ import Button from './Button';
 import Spinner from './Spinner';
 import Link from 'next/link';
 import { ethers } from 'ethers';
-import { useWallets } from '@privy-io/react-auth';
+import { useWallets, usePrivy } from '@privy-io/react-auth';
 import WritingGameComponent from './WritingGameComponent';
 import AnkyDementorsAbi from '../lib/ankyDementorsAbi.json'; // Assuming you have the ABI
 
 const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
+  const { getAccessToken, authenticated, user } = usePrivy();
   const [response, setResponse] = useState(null); // Response from API
   const [time, setTime] = useState(0);
   const [text, setText] = useState('');
@@ -58,31 +59,6 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
     setup();
   }, [thisWallet]);
 
-  const submitWriting = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/ai/tell-me-who-you-are`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ text }),
-        }
-      );
-
-      const responseData = await response.json();
-      console.log('the response data is: ', responseData);
-
-      setResponse(responseData); // Set parsed data directly to state
-      setLoading(false);
-    } catch (error) {
-      console.error('Failed to submit writing:', error);
-      setLoading(false);
-    }
-  };
-
   const writeOnNotebook = async () => {
     const writingGameParameters = {
       notebookType: 'anky-dementor',
@@ -99,15 +75,21 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
 
   const createFirstUserAnkyDementor = async finishText => {
     try {
-      console.log('inside the update notebook with page function');
+      console.log('sending this thing.');
+      const authToken = await getAccessToken();
+
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/ai/tell-me-who-you-are`,
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            Authorization: `Bearer ${authToken}`,
           },
-          body: JSON.stringify({ finishText }),
+          body: JSON.stringify({
+            finishText,
+            userDid: user.id.split('did:privy:')[1],
+          }),
         }
       );
       const { firstPageCid } = await response.json();
@@ -135,7 +117,31 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
         // Extract the tokenId from the event and set it to state
         const tokenId = event.args.tokenId;
         setAnkyDementorId(tokenId.toString());
+
+        const newDementor = {
+          dementorId: tokenId.toString(),
+          currentPage: 0,
+          introCID: firstPageCid,
+          pages: [
+            {
+              promptCID: firstPageCid,
+              userWritingCID: '',
+              creationTimestamp: new Date().getTime(),
+              writingTimestamp: 0,
+            },
+          ],
+        };
+
+        setUserAppInformation(x => {
+          setUserData('userDementors', [newDementor]);
+
+          return {
+            ...x,
+            userDementors: [newDementor],
+          };
+        });
       }
+
       console.log('after the response of creating the anky dementor notebook');
       setAnkyDementorCreated(true);
       setLoadWritingGame(false);
@@ -173,7 +179,7 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
       <WritingGameComponent
         {...writingGameProps}
         text={text}
-        minimumWritingTime={180}
+        minimumWritingTime={3}
         setLifeBarLength={setLifeBarLength}
         lifeBarLength={lifeBarLength}
         setText={setText}

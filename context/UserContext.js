@@ -19,6 +19,8 @@ import {
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
+  const { authenticated, loading, getAccessToken } = usePrivy();
+
   const [userAppInformation, setUserAppInformation] = useState({});
   const [appLoading, setAppLoading] = useState(true);
   const [userIsReadyNow, setUserIsReadyNow] = useState(false);
@@ -31,8 +33,9 @@ export const UserProvider = ({ children }) => {
   const [libraryLoading, setLibraryLoading] = useState(true);
   const [setupIsReady, setSetupIsReady] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
+  const [checkIfUserIsTheSame, setCheckIfUserIsTheSame] = useState(false);
+  const [reloadData, setReloadData] = useState(true);
 
-  const { authenticated, loading } = usePrivy();
   const wallets = useWallets();
   const wallet = wallets.wallets[0];
   console.log('the wallets are: ', wallets);
@@ -52,20 +55,26 @@ export const UserProvider = ({ children }) => {
         const userDementors = await getUserData('userDementors');
         const ankyIndex = await getUserData('ankyIndex');
         const ankyTbaAddress = await getUserData('ankyTbaAddress');
+        const userWalletAddress = await getUserData('userWalletAddress');
+
         console.log(
           '------------ BEFORE THE SET USER APP INFORMATION --------------------',
           userJournals,
           userNotebooks,
           userEulogias,
           ankyIndex,
-          ankyTbaAddress
+          ankyTbaAddress,
+          userWalletAddress,
+          userDementors
         );
         setUserAppInformation({
           userJournals,
           userNotebooks,
           userEulogias,
+          userDementors,
           ankyIndex,
           ankyTbaAddress,
+          userWalletAddress,
         });
       }
       setLoadingUserStoredData(false);
@@ -78,15 +87,21 @@ export const UserProvider = ({ children }) => {
     async function handleInitialization() {
       if (loading) return;
       if (loadingUserStoredData) return;
+      console.log('inside hereaasc213');
       if (wallet && !wallet.chainId.includes('84531')) await changeChain();
 
       if (!authenticated) {
         setAppLoading(false);
         return;
       }
+      console.log('the wallet is: ', wallet);
+      console.log('the wallets are: ', wallets);
+      const isUserTheSame =
+        wallet?.address == userAppInformation?.wallet?.address;
+      console.log('user is the same', isUserTheSame);
+      setCheckIfUserIsTheSame(isUserTheSame);
 
-      if (shouldInitializeUser() && wallet) {
-        console.log('INSIDEHFELCJALJKSCAJCA');
+      if ((shouldInitializeUser() && wallet) || isUserTheSame) {
         if (wallets.length > 1)
           return alert('Please disconnect one of your wallets to proceed');
         await initializeUser();
@@ -117,10 +132,12 @@ export const UserProvider = ({ children }) => {
       setUserData('userDementors', userAppInformation.userDementors);
       setUserData('ankyIndex', userAppInformation.ankyIndex);
       setUserData('ankyTbaAddress', userAppInformation.tbaAddress);
+      setUserData('userWalletAddress', userAppInformation.userWalletAddress);
     }
   }, [finalSetup]);
 
   const shouldInitializeUser = () => {
+    // return authenticated && wallet && true;
     return (
       authenticated &&
       wallet &&
@@ -144,7 +161,7 @@ export const UserProvider = ({ children }) => {
       ) {
         console.log('loading the users library');
         const { tba } = await callTba(wallet.address, setUserAppInformation);
-        let provider = await wallet.getEthersProvider();
+        let provider = await wallet?.getEthersProvider();
         const signer = await provider.getSigner();
         let userTba = userAppInformation?.tbaAddress || tba;
 
@@ -153,7 +170,7 @@ export const UserProvider = ({ children }) => {
             return { ...x, wallet };
           });
 
-        if (!userAppInformation.userJournals) {
+        if (reloadData || !userAppInformation.userJournals) {
           console.log('before fetching the journals');
           const userJournals = await fetchUserJournals(signer);
           console.log('the user journals are: ', userJournals);
@@ -162,7 +179,7 @@ export const UserProvider = ({ children }) => {
           });
         }
 
-        if (!userAppInformation.userNotebooks) {
+        if (reloadData || !userAppInformation.userNotebooks) {
           console.log('before fetching the notebooks');
 
           const userNotebooks = await fetchUserNotebooks(signer, userTba);
@@ -173,7 +190,7 @@ export const UserProvider = ({ children }) => {
           });
         }
 
-        if (!userAppInformation.userEulogias) {
+        if (reloadData || !userAppInformation.userEulogias) {
           console.log('before fetching the eulogias');
 
           const userEulogias = await fetchUserEulogias(signer);
@@ -184,7 +201,7 @@ export const UserProvider = ({ children }) => {
           });
         }
 
-        if (!userAppInformation.userDementors) {
+        if (reloadData || !userAppInformation.userDementors) {
           console.log('before fetching the dementors');
 
           const userDementors = await fetchUserDementors(signer);
@@ -214,6 +231,7 @@ export const UserProvider = ({ children }) => {
         setAppLoading(false);
         return setShowProgressModal(false);
       }
+      if (!wallet?.address) return;
       console.log('in hereAKHCKSA', userAppInformation);
       setShowProgressModal(true);
 
@@ -222,8 +240,8 @@ export const UserProvider = ({ children }) => {
       await changeChain();
       setCurrentStep(1);
 
-      let provider = await wallet.getEthersProvider();
-      if (!userAppInformation.ankyIndex) {
+      let provider = await wallet?.getEthersProvider();
+      if (checkIfUserIsTheSame || !userAppInformation.ankyIndex) {
         const testEthResponse = await sendTestEth(wallet, provider);
         if (!testEthResponse.success) {
           setErrorMessage('There was an error sending you the test eth');
@@ -239,6 +257,7 @@ export const UserProvider = ({ children }) => {
             ...x,
             tokenUri: airdropCallResponse.tokenUri,
             ankyIndex: airdropCallResponse.ankyIndex,
+            userWalletAddress: wallet.address,
           };
         });
         if (!airdropCallResponse.success) {
@@ -251,7 +270,7 @@ export const UserProvider = ({ children }) => {
       setCurrentStep(2);
       setCurrentStep(3);
 
-      if (!userAppInformation.tbaAddress) {
+      if (checkIfUserIsTheSame || (!userAppInformation.tbaAddress && wallet)) {
         const callTbaResponse = await callTba(
           wallet.address,
           setUserAppInformation
@@ -272,8 +291,9 @@ export const UserProvider = ({ children }) => {
       setCurrentStep(4);
 
       if (
+        checkIfUserIsTheSame ||
         !userAppInformation.userJournals ||
-        userAppInformation.userJournals.length !== 0
+        (userAppInformation.userJournals.length !== 0 && wallet)
       ) {
         const journalCallResponse = await airdropFirstJournal(wallet.address);
         if (!journalCallResponse.success) {
@@ -294,12 +314,14 @@ export const UserProvider = ({ children }) => {
   };
 
   const postAPI = async (endpoint, body) => {
+    const authToken = await getAccessToken();
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_SERVER_URL}${endpoint}`,
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${authToken}`,
         },
         body: JSON.stringify(body),
       }

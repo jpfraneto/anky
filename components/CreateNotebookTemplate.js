@@ -136,7 +136,7 @@ const EXAMPLE_NOTEBOOKS = [
 ];
 
 function CreateNotebookTemplate({ userAnky }) {
-  const { login, authenticated } = usePrivy();
+  const { login, authenticated, getAccessToken } = usePrivy();
   const router = useRouter();
   const [loadingNotebookCreation, setLoadingNotebookCreation] = useState(false);
   const [templateCreationError, setTemplateCreationError] = useState(false);
@@ -172,13 +172,14 @@ function CreateNotebookTemplate({ userAnky }) {
       console.log('not the user anky but this wallet: ', thisWallet);
       let provider = await thisWallet.getEthersProvider();
       let signer = await provider.getSigner();
-
+      const authToken = await getAccessToken();
       const serverResponse = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/notebooks`,
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            Authorization: `Bearer ${authToken}`,
           },
           body: JSON.stringify({
             title: title,

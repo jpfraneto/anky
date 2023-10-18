@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { ethers } from 'ethers';
 import Button from '../Button';
+import { setUserData } from '../../lib/idbHelper';
 import { formatUserJournal } from '../../lib/notebooks.js';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
 import Image from 'next/image';
@@ -26,13 +27,14 @@ const BuyNewJournal = () => {
   const router = useRouter();
   const [journal, setJournal] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [thereWasAnError, setThereWasAnError] = useState(false);
   const [mintingNewJournal, setMintingNewJournal] = useState(false);
   const [mintedJournalId, setMintedJournalId] = useState(null);
   const [successfullyMintedJournal, setSuccessfullyMintedJournal] =
     useState(false);
   const [journalPrices, setJournalPrices] = useState({}); // Store journal prices
   const [displayJournalOption, setDisplayJournalOption] = useState(null);
-  const { userAppInformation, setUserAppInformation, appLoading } = useUser();
+  const {  setUserAppInformation, appLoading } = useUser();
 
   const { wallets } = useWallets();
 
@@ -76,6 +78,7 @@ const BuyNewJournal = () => {
         });
         setLoading(false);
       } catch (error) {
+        setThereWasAnError(true);
         console.error('Failed to fetch journal prices:', error);
       }
     }
@@ -125,17 +128,22 @@ const BuyNewJournal = () => {
         if (log.topics[0] === eventTopic) {
           const decodedLog = journalsContract.interface.parseLog(log);
           const { tokenId } = decodedLog.args;
+          const newJournalElement = {
+            journalId: tokenId.toString(),
+            entries: [],
+            journalType: size,
+            metadataCID: '',
+          };
+
           setUserAppInformation(x => {
             console.log(
               'the x in the user app information before adding a new journal is: ',
               x
             );
+            setUserData('userJournals', [...x.userJournals, newJournalElement]);
             return {
               ...x,
-              userJournals: [
-                ...x.userJournals,
-                { journalId: tokenId, entries: [] },
-              ],
+              userJournals: [...x.userJournals, newJournalElement],
             };
           });
           setMintedJournalId(tokenId.toString()); // Save the tokenId to state
@@ -148,6 +156,7 @@ const BuyNewJournal = () => {
 
       console.log('after the journal was minted');
     } catch (error) {
+      setThereWasAnError(true);
       console.error('Failed to write to notebook:', error);
     }
   };
@@ -160,6 +169,24 @@ const BuyNewJournal = () => {
       </div>
     );
 
+  if (thereWasAnError) {
+    return (
+      <div className='text-white my-4'>
+        <p className='mb-2'>oops, there was an error</p>
+        <div className='w-48 flex justify-center'>
+          <Button
+            buttonAction={() => {
+              setMintingNewJournal(false);
+              setThereWasAnError(false);
+            }}
+            buttonText='try again'
+            buttonColor='bg-purple-600'
+          />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className='text-white pt-4'>
       {successfullyMintedJournal ? (
@@ -168,25 +195,24 @@ const BuyNewJournal = () => {
             you now have a new journal where to download your consciousness
           </p>
           <p className='my-2'>the id of it is {mintedJournalId}</p>
-          <Link
-            href={`/journal/${mintedJournalId}`}
-            className='p-2 bg-green-600 rounded-xl'
-          >
-            go to journal
-          </Link>
+          <div className='mt-2 w-48 mx-auto'>
+            <Link passHref href={`/journal/${mintedJournalId}`}>
+              <Button buttonColor='bg-green-600' buttonText='go to journal' />
+            </Link>
+          </div>
         </div>
       ) : (
         <>
           {mintingNewJournal ? (
             <div>
               <Spinner />
-              <p className='text-white'>minting your new journal</p>
+              <p className='text-white'>processing your purchase</p>
             </div>
           ) : (
             <div>
-              <p className='mb-2'>mint new journal</p>
+              <p className='mb-2 text-3xl'>buy new journal</p>
               <p className='mb-4'>how many pages do you want?</p>
-              <div className='flex'>
+              <div className='flex justify-center mb-4'>
                 {[0, 1, 2].map((x, i) => {
                   return (
                     <div
@@ -210,6 +236,17 @@ const BuyNewJournal = () => {
                   );
                 })}
               </div>
+              <h2 className='mb-2'>important information</h2>
+              <p className='mb-2'>what you will write here is PRIVATE.</p>
+              <p className='mb-2'>
+                yes, it is stored on the blockchain, but the information inside
+                it is not public.
+              </p>
+              <p className='mb-2'>
+                it will be stored forever, but you need to access through this
+                wallet in order to read what is inside.
+              </p>
+
               <div className='mt-4 w-36 mx-auto'>
                 <Link href='/library' passHref>
                   <Button buttonText='go back' buttonColor='bg-red-600' />

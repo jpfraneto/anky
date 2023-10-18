@@ -109,7 +109,7 @@ const WritingGameComponent = ({
           // audioRef.current.play();
         }
         if (elapsedTime > 3000 && !isDone) {
-          if (time > minimumWritingTime) {
+          if (time >= minimumWritingTime - 5) {
             finishRun();
           } else {
             setFinished(true);
@@ -280,7 +280,7 @@ const WritingGameComponent = ({
             onChange={handleTextChange}
           ></textarea>
           {!text && (
-            <div className='w-48 mx-auto mt-4'>
+            <div className='w-48 mx-auto mt-8'>
               <Button
                 buttonText='Cancel'
                 buttonColor='bg-red-600'

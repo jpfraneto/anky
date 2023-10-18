@@ -26,13 +26,13 @@ const LibraryPage = ({}) => {
 
   useEffect(() => {
     console.log('the user journals are: ', userAppInformation.userJournals);
-    setJournals(userAppInformation.userJournals || []);
+    setJournals(userAppInformation.userJournals);
     console.log('the user notebooks are: ', userAppInformation.userNotebooks);
-    setNotebooks(userAppInformation.userNotebooks || []);
+    setNotebooks(userAppInformation.userNotebooks);
     console.log('the user eulogias are: ', userAppInformation.userEulogias);
-    setEulogias(userAppInformation.userEulogias || []);
+    setEulogias(userAppInformation.userEulogias);
     console.log('the user dementors are: ', userAppInformation.userDementors);
-    setEulogias(userAppInformation.userDementors || []);
+    // setEulogias(userAppInformation.userDementors);
   }, [appLoading, userAppInformation]);
 
   if (appLoading) {
@@ -59,7 +59,7 @@ const LibraryPage = ({}) => {
           </button>
         </div>
         <div className='w-3/5 '>
-          <div className='flex w-full mb-4 h-12'>
+          <div className='flex w-full mb-4 h-12 rounded-xl'>
             <button
               className={`px-4 w-1/4 py-2 ${
                 activeTab === 'journals' ? 'bg-green-600' : 'bg-green-300'
@@ -80,7 +80,9 @@ const LibraryPage = ({}) => {
               className={`px-4 w-1/4 py-2 ${
                 activeTab === 'eulogias' ? 'bg-orange-600' : 'bg-orange-300'
               }`}
-              onClick={() => setActiveTab('eulogias')}
+              onClick={() => {
+                setActiveTab('eulogias');
+              }}
             >
               Eulogias
             </button>
@@ -139,7 +141,6 @@ const LibraryPage = ({}) => {
               <div className='my-2 bg-orange-300 rounded-xl p-4 flex flex-wrap'>
                 {eulogias.length > 0 ? (
                   eulogias.map((x, i) => {
-                    console.log('the eulogia is: ', eulogia);
                     return <EulogiaCard eulogia={x} key={i} />;
                   })
                 ) : (

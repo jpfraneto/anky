@@ -25,7 +25,7 @@ function DementorPage({
   setLifeBarLength,
   lifeBarLength,
 }) {
-  const { authenticated, login } = usePrivy();
+  const { authenticated, login, getAccessToken } = usePrivy();
   const [dementorData, setDementorData] = useState(null);
   const [text, setText] = useState('');
   const [time, setTime] = useState(0);
@@ -44,9 +44,6 @@ function DementorPage({
 
   const { id } = router.query;
   useEffect(() => {
-    // setDementorData(dummyDementorData);
-    // setLoadingDementor(false);
-    // return;
     console.log('inside here', id, wallet);
 
     if (id && wallet) fetchDementorData(id);
@@ -98,27 +95,26 @@ function DementorPage({
     );
     setLoadingSavingNewPage(true);
     try {
+      const authToken = await getAccessToken();
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/ai/get-subsequent-page`,
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            Authorization: `Bearer ${authToken}`,
           },
           body: JSON.stringify({ finishText, prompts }),
         }
       );
-      console.log('before here', response);
       const responseData = await response.json();
-      console.log('the response data is: ', responseData);
       const { thisWritingCid, newPageCid } = responseData;
 
-      // HERE I NEED TO UPDATE THE USERS DEMENTOR WITH THIS NEW CID.
+      if (!thisWritingCid || !newPageCid)
+        throw new Error('There was an error getting the cids for this.');
+
       console.log('this writing cid is: ', thisWritingCid);
       console.log('this new page cid is: ', newPageCid);
-
-      //     function writeDementorPage(uint256 dementorNotebookId, string memory userWritingCID, string memory nextPromptCID) external onlyAnkyHolder {
-      // ************************** //
 
       console.log('the dementors contract is: ', dementorsContract);
       console.log('this dementors id is: ', id);
@@ -129,7 +125,6 @@ function DementorPage({
           newPageCid
         );
         await tx.wait();
-        console.log('after the response of writing in the dementor');
 
         setLoadingSavingNewPage(false);
         setUserIsReadyToWrite(false);
@@ -140,6 +135,14 @@ function DementorPage({
       console.error('Failed to submit writing:', error);
       setLoadingSavingNewPage(false);
     }
+  }
+
+  if (!authenticated) {
+    return (
+      <div className='text-white mt-3'>
+        <p>you need to login first</p>
+      </div>
+    );
   }
 
   if (loadingDementor)
@@ -190,18 +193,18 @@ function DementorPage({
     <div className='md:w-1/2 p-2 mx-auto w-screen text-black md:text-white pt-5'>
       <h2 className='text-3xl'>{dementorData.title}</h2>
       <p className='italic'>{dementorData.description}</p>
-      <div className='my-2 w-96 mx-auto max-w-screen justify-center flex'>
+      <div className='my-2 w-96 flex'>
         {!isUserSureThatUserIsReady ? (
           <Button
             buttonText='im ready to write'
             buttonAction={() => setIsUserSureThatUserIsReady(true)}
-            buttonColor='bg-green-700 mx-2'
+            buttonColor='bg-green-700'
           />
         ) : (
           <Button
             buttonText='lets do this'
             buttonAction={userIsReadyToWriteTrigger}
-            buttonColor='bg-green-600 mx-2'
+            buttonColor='bg-green-600'
           />
         )}
 

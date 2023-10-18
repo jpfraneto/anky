@@ -41,7 +41,7 @@ const AccountSetupModal = ({
                 {currentStep > idx ? (
                   <span className='text-green-500'>✔️</span>
                 ) : currentStep === idx ? (
-                  <span className='text-yellow-500 animateSpin'>⏳</span>
+                  <span className='text-yellow-500 animate-spin'>⏳</span>
                 ) : (
                   <span className='text-gray-400'>⏺</span>
                 )}

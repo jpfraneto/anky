@@ -10,6 +10,7 @@ import WritingGameComponent from '../WritingGameComponent';
 import Spinner from '../Spinner';
 import AnkyJournalsAbi from '../../lib/journalsABI.json'; // Assuming you have the ABI
 import { useUser } from '../../context/UserContext';
+import { setUserData } from '../../lib/idbHelper';
 
 function transformJournalType(index) {
   switch (index) {
@@ -151,15 +152,15 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
       setUserAppInformation(x => {
         // Find the specific journal index by its id
         const journalIndex = x.userJournals.findIndex(
-          j => j.notebookId === journalId
+          j => j.journalId == journalId
         );
 
         // If the journal is found
         if (journalIndex !== -1) {
           const updatedJournal = {
             ...x.userJournals[journalIndex],
-            userPages: [
-              ...x.userJournals[journalIndex].userPages,
+            entries: [
+              ...x.userJournals[journalIndex].entries,
               {
                 cid: cid,
                 isPublic: false,
@@ -174,6 +175,8 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
             updatedJournal,
             ...x.userJournals.slice(journalIndex + 1),
           ];
+
+          setUserData('userJournals', updatedUserJournals);
 
           return {
             ...x,
@@ -321,9 +324,9 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
           buttonAction={() => router.push('/journal/new')}
         />
         <Button
-          buttonText='back to my journals'
+          buttonText='library'
           buttonColor='bg-green-600'
-          buttonAction={() => router.push('/journal')}
+          buttonAction={() => router.push('/library')}
         />
       </div>
       {renderModal()}

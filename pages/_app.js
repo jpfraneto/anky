@@ -7,6 +7,7 @@ import { PrivyWagmiConnector } from '@privy-io/wagmi-connector';
 import { baseGoerli } from '@wagmi/chains';
 import { configureChains, createConfig } from 'wagmi';
 import { publicProvider } from 'wagmi/providers/public';
+import { Transition } from 'react-transition-group';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 import BottomNavbar from '../components/BottomNavbar';
 import Head from 'next/head';
@@ -102,14 +103,23 @@ function MyApp({ Component, pageProps }) {
 
   const handleLogin = async user => {};
 
-  // const { logout } = useLogout({
-  //   onSuccess: () => {
-  //     console.log('User logged out');
-  //     // Any logic you'd like to execute after a user successfully logs out
-  //   },
-  // });
-
-  if (mainAppLoading) return <p>Loading...</p>;
+  if (mainAppLoading)
+    return (
+      <Transition in={mainAppLoading} timeout={500} mountOnEnter unmountOnExit>
+        {state => (
+          <div
+            className={`flex-col text-white h-screen w-screen bg-black flex justify-center items-center fade-${state}`}
+          >
+            <h1 className='text-5xl text-center '>anky</h1>
+            <p className='text-sm mb-3'>(don&apos;t try to understand)</p>
+            <div class='lds-ripple'>
+              <div></div>
+              <div></div>
+            </div>
+          </div>
+        )}
+      </Transition>
+    );
 
   return (
     <main className={`${righteous.className}`}>

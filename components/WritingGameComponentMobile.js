@@ -257,7 +257,7 @@ const WritingGameComponentMobile = ({
             onChange={handleTextChange}
           ></textarea>
           {!text && (
-            <div className='w-48 mx-auto'>
+            <div className='w-48 mt-2 mx-auto'>
               <Button
                 buttonText='Cancel'
                 buttonColor='bg-red-600'

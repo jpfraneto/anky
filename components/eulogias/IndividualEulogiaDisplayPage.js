@@ -5,13 +5,14 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { processFetchedEulogia } from '../../lib/notebooks.js';
 import { ethers } from 'ethers';
+import { useUser } from '../../context/UserContext';
 import Button from '../Button';
 import Image from 'next/image';
 import WritingGameComponent from '../WritingGameComponent';
 import Spinner from '../Spinner';
 
 const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
-  const { login, authenticated, loading } = usePrivy();
+  const { login, authenticated, loading, getAccessToken } = usePrivy();
   const router = useRouter();
   const [eulogia, setEulogia] = useState(null);
   const [eulogiaLoading, setEulogiaLoading] = useState(true);
@@ -29,6 +30,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
   const [userHasWritten, setUserHasWritten] = useState(false);
   const { wallets } = useWallets();
   const thisWallet = wallets[0];
+  const { setUserAppInformation } = useUser();
 
   const closeModal = useCallback(() => {
     setIsModalOpen(false);
@@ -82,7 +84,6 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
           const formattedEulogia = await processFetchedEulogia(thisEulogia);
           formattedEulogia.eulogiaID = eulogiaID;
 
-          console.log('the formatted euloogi231a is: ', formattedEulogia);
           formattedEulogia.metadata.backgroundImageUrl = `https://ipfs.io/ipfs/${formattedEulogia.metadata.backgroundImageCid}`;
           formattedEulogia.metadata.coverImageUrl = `https://ipfs.io/ipfs/${formattedEulogia.metadata.coverImageCid}`;
 
@@ -152,12 +153,15 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
 
   const onFinish = async finishText => {
     try {
-      // Step 1: Send the text to the backend to be stored on Arweave.
+      const authToken = await getAccessToken();
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/notebooks/eulogia/writing`,
         {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${authToken}`,
+          },
           credentials: 'include',
           body: JSON.stringify({ text: finishText }),
         }
@@ -183,15 +187,49 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
       );
       await tx.wait();
       console.log('after the transaction');
-      setMessages(x => [
-        ...x,
-        {
-          writer: thisWallet.address,
-          whoWroteIt: whoIsWriting,
-          content: finishText,
-          timestamp: new Date().getTime(),
-        },
-      ]);
+      const newEulogiaWriting = {
+        writer: thisWallet.address,
+        whoWroteIt: whoIsWriting,
+        content: finishText,
+        timestamp: new Date().getTime(),
+      };
+
+      setUserAppInformation(x => {
+        // Find the specific journal index by its id
+        const eulogiaIndex = x.userEulogias.findIndex(
+          j => j.eulogiaID == eulogia.eulogiaID
+        );
+
+        // If the journal is found
+        if (eulogiaIndex !== -1) {
+          console.log('the eulogia index is: ', eulogiaIndex);
+          const updatedEulogia = {
+            ...x.userEulogias[eulogiaIndex],
+            messages: [
+              ...x.userEulogias[eulogiaIndex].messages,
+              newEulogiaWriting,
+            ],
+          };
+
+          const updatedUserEulogias = [
+            ...x.userEulogias.slice(0, eulogiaIndex),
+            updatedEulogia,
+            ...x.userEulogias.slice(eulogiaIndex + 1),
+          ];
+          console.log('the updated user eulogias are: ', updatedUserEulogias);
+          setUserData('userEulogias', updatedUserEulogias);
+
+          setMessages(x => [...x, newEulogiaWriting]);
+
+          return {
+            ...x,
+            userEulogias: updatedUserEulogias,
+          };
+        }
+
+        return x;
+      });
+
       setUserHasWritten(true); // Update the state to reflect the user has written.
       setLoadWritingGame(false);
     } catch (error) {
