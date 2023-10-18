@@ -298,38 +298,38 @@ export const UserProvider = ({ children }) => {
         (userAppInformation.userJournals.length !== 0 && wallet)
       ) {
         const tx = await airdropFirstJournal(wallet.address, authToken);
-        console.log('the tx is: ', tx);
-        const receipt = await tx.wait();
-        console.log('the receipt is: ', receipt);
-        const eventTopic = ethers.utils.id(
-          'JournalAirdropped(tokenId, usersAnkyAddress)'
-        );
+        // console.log('the tx is: ', tx);
+        // const receipt = await tx.wait();
+        // console.log('the receipt is: ', receipt);
+        // const eventTopic = ethers.utils.id(
+        //   'JournalAirdropped(tokenId, usersAnkyAddress)'
+        // );
 
-        for (const log of receipt.logs) {
-          if (log.topics[0] === eventTopic) {
-            const decodedLog = journalsContract.interface.parseLog(log);
-            const { tokenId } = decodedLog.args;
-            const newJournalElement = {
-              journalId: tokenId.toString(),
-              entries: [],
-              journalType: 0,
-              metadataCID: '',
-            };
+        // for (const log of receipt.logs) {
+        //   if (log.topics[0] === eventTopic) {
+        //     const decodedLog = journalsContract.interface.parseLog(log);
+        //     const { tokenId } = decodedLog.args;
+        //     const newJournalElement = {
+        //       journalId: tokenId.toString(),
+        //       entries: [],
+        //       journalType: 0,
+        //       metadataCID: '',
+        //     };
 
-            setUserAppInformation(x => {
-              setUserData('userJournals', [newJournalElement]);
-              return {
-                ...x,
-                userJournals: [newJournalElement],
-              };
-            });
-            break; // Exit loop once you find the first event that matches
-          }
-        }
+        //     setUserAppInformation(x => {
+        //       setUserData('userJournals', [newJournalElement]);
+        //       return {
+        //         ...x,
+        //         userJournals: [newJournalElement],
+        //       };
+        //     });
+        //     break; // Exit loop once you find the first event that matches
+        //   }
+        // }
 
-        if (!journaltx.success) {
-          setErrorMessage('There was an en error with your journal.');
-        }
+        // if (!journaltx.success) {
+        //   setErrorMessage('There was an en error with your journal.');
+        // }
       }
       setCurrentStep(5);
 
