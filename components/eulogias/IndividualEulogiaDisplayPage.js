@@ -8,6 +8,7 @@ import { ethers } from 'ethers';
 import { useUser } from '../../context/UserContext';
 import Button from '../Button';
 import Image from 'next/image';
+import { setUserData } from '../../lib/idbHelper';
 import WritingGameComponent from '../WritingGameComponent';
 import Spinner from '../Spinner';
 

@@ -20,6 +20,7 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
   const router = useRouter();
   const [notebook, setNotebook] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { getAccessToken } = usePrivy();
   const [time, setTime] = useState(0);
   const [text, setText] = useState('');
   const [uploadingWriting, setUploadingWriting] = useState(false);
@@ -114,12 +115,15 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
 
   const updateNotebookWithPage = async finishText => {
     try {
-      console.log('inside the update notebook with page function');
+      const authToken = await getAccessToken();
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/notebooks/upload-writing`,
         {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${authToken}`,
+          },
           body: JSON.stringify({ text: finishText }),
         }
       );

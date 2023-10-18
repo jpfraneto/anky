@@ -7,6 +7,7 @@ import { ethers } from 'ethers';
 import { useWallets, usePrivy } from '@privy-io/react-auth';
 import WritingGameComponent from './WritingGameComponent';
 import AnkyDementorsAbi from '../lib/ankyDementorsAbi.json'; // Assuming you have the ABI
+import { useUser } from '../context/UserContext';
 
 const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
   const { getAccessToken, authenticated, user } = usePrivy();
@@ -21,6 +22,7 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
   const [userOwnsDementor, setUserOwnsDementor] = useState(false);
   const [writingGameProps, setWritingGameProps] = useState(null);
   const [loading, setLoading] = useState(true); // Loading state
+  const { setUserAppInformation } = useUser();
   const router = useRouter();
   const { wallets } = useWallets();
 
@@ -146,7 +148,7 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
       setAnkyDementorCreated(true);
       setLoadWritingGame(false);
     } catch (error) {
-      console.error('Failed to write to notebook:', error);
+      console.error('Failed to write to dementor:', error);
     }
   };
 

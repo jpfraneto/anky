@@ -25,6 +25,7 @@ function transformJournalType(index) {
 
 const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
   const router = useRouter();
+  const { getAccessToken } = usePrivy();
   const { userAppInformation } = useUser();
   const [journal, setJournal] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -119,11 +120,15 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
   const updateJournalWithPage = async finishText => {
     try {
       console.log('inside the update journal with page function');
+      const authToken = await getAccessToken();
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/notebooks/upload-writing`,
         {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${authToken}`,
+          },
           body: JSON.stringify({ text: finishText }),
         }
       );

@@ -297,11 +297,35 @@ export const UserProvider = ({ children }) => {
         !userAppInformation.userJournals ||
         (userAppInformation.userJournals.length !== 0 && wallet)
       ) {
-        const journalCallResponse = await airdropFirstJournal(
-          wallet.address,
-          authToken
+        const journaltx = await airdropFirstJournal(wallet.address, authToken);
+        const receipt = await journaltx.wait();
+        const eventTopic = ethers.utils.id(
+          'JournalAirdropped(tokenId, usersAnkyAddress)'
         );
-        if (!journalCallResponse.success) {
+
+        for (const log of receipt.logs) {
+          if (log.topics[0] === eventTopic) {
+            const decodedLog = journalsContract.interface.parseLog(log);
+            const { tokenId } = decodedLog.args;
+            const newJournalElement = {
+              journalId: tokenId.toString(),
+              entries: [],
+              journalType: 0,
+              metadataCID: '',
+            };
+
+            setUserAppInformation(x => {
+              setUserData('userJournals', [newJournalElement]);
+              return {
+                ...x,
+                userJournals: [newJournalElement],
+              };
+            });
+            break; // Exit loop once you find the first event that matches
+          }
+        }
+
+        if (!journaltx.success) {
           setErrorMessage('There was an error retrieving your tba.');
           throw new Error('There was an error with the tba call.');
           return;
