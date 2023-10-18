@@ -236,20 +236,21 @@ export const UserProvider = ({ children }) => {
       setShowProgressModal(true);
 
       setSettingThingsUp(true);
-
+      const authToken = await getAccessToken();
       await changeChain();
       setCurrentStep(1);
 
       let provider = await wallet?.getEthersProvider();
       if (checkIfUserIsTheSame || !userAppInformation.ankyIndex) {
-        const testEthResponse = await sendTestEth(wallet, provider);
+        const testEthResponse = await sendTestEth(wallet, provider, authToken);
         if (!testEthResponse.success) {
           setErrorMessage('There was an error sending you the test eth');
           throw new Error('There was an error sending the test eth.');
         }
         const airdropCallResponse = await airdropCall(
           wallet,
-          setUserAppInformation
+          setUserAppInformation,
+          authToken
         );
         console.log('the airdrop call response is: ', airdropCallResponse);
         setUserAppInformation(x => {
@@ -295,7 +296,10 @@ export const UserProvider = ({ children }) => {
         !userAppInformation.userJournals ||
         (userAppInformation.userJournals.length !== 0 && wallet)
       ) {
-        const journalCallResponse = await airdropFirstJournal(wallet.address);
+        const journalCallResponse = await airdropFirstJournal(
+          wallet.address,
+          authToken
+        );
         if (!journalCallResponse.success) {
           setErrorMessage('There was an error retrieving your tba.');
           throw new Error('There was an error with the tba call.');
