@@ -139,10 +139,11 @@ export const UserProvider = ({ children }) => {
   const shouldInitializeUser = () => {
     // return authenticated && wallet && true;
     return (
-      authenticated &&
-      wallet &&
-      !userAppInformation.ankyIndex &&
-      !userAppInformation.ankyTbaAddress
+      localStorage.getItem('firstTimeUser132') ||
+      (authenticated &&
+        wallet &&
+        !userAppInformation.ankyIndex &&
+        !userAppInformation.ankyTbaAddress)
     );
   };
 
@@ -309,7 +310,7 @@ export const UserProvider = ({ children }) => {
       setCurrentStep(5);
 
       console.log('all the setup is ready');
-      localStorage.setItem('firstTimeUser122', 'done');
+      localStorage.setItem('firstTimeUser132', 'done');
       setUserIsReadyNow(true);
       return setSetupIsReady(true);
     } catch (error) {
