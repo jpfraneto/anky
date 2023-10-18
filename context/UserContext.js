@@ -139,7 +139,7 @@ export const UserProvider = ({ children }) => {
   const shouldInitializeUser = () => {
     // return authenticated && wallet && true;
     return (
-      localStorage.getItem('firstTimeUser132') ||
+      localStorage.getItem('firstTimeUser134') ||
       (authenticated &&
         wallet &&
         !userAppInformation.ankyIndex &&
@@ -326,15 +326,13 @@ export const UserProvider = ({ children }) => {
         }
 
         if (!journaltx.success) {
-          setErrorMessage('There was an error retrieving your tba.');
-          throw new Error('There was an error with the tba call.');
-          return;
+          setErrorMessage('There was an en error with your journal.');
         }
       }
       setCurrentStep(5);
 
       console.log('all the setup is ready');
-      localStorage.setItem('firstTimeUser132', 'done');
+      localStorage.setItem('firstTimeUser134', 'done');
       setUserIsReadyNow(true);
       return setSetupIsReady(true);
     } catch (error) {
