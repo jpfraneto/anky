@@ -7,7 +7,7 @@ import { useUser } from '../context/UserContext';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { getUserData } from '../lib/idbHelper';
-
+import { fetchUserDementors } from '../lib/notebooks';
 import { Transition } from 'react-transition-group';
 import NotebooksPage from './NotebooksPage';
 import NewTemplatePage from './NewTemplatePage';
@@ -130,23 +130,12 @@ const GlobalApp = ({ alchemy }) => {
     }
   }
 
-  if (appLoading)
-    return (
-      <Transition in={appLoading} timeout={500} mountOnEnter unmountOnExit>
-        {state => (
-          <div
-            className={`flex-col text-white h-screen w-screen bg-black flex justify-center items-center fade-${state}`}
-          >
-            <h1 className='text-5xl text-center '>anky</h1>
-            <p className='text-sm mb-3'>(don&apos;t try to understand)</p>
-            <div class='lds-ripple'>
-              <div></div>
-              <div></div>
-            </div>
-          </div>
-        )}
-      </Transition>
-    );
+  async function getDementors() {
+    if (!wallet && !wallet?.provider) return;
+    const provider = await wallet.getEthersProvider();
+    const signer = await provider.getSigner();
+    fetchUserDementors(signer);
+  }
 
   return (
     <div className='text-center w-screen text-white'>
@@ -166,6 +155,8 @@ const GlobalApp = ({ alchemy }) => {
             }}
           ></div>
         </div>
+
+        <button onClick={getDementors}>dementors</button>
         {/* <button onClick={() => console.log(userAppInformation)}>print</button> */}
         <div className='px-2 w-36 flex justify-center space-x-2'>
           {authenticated ? (

@@ -145,7 +145,7 @@ function TemplatePage({ wallet, userAnky, router, alchemy }) {
     }
   }
 
-  if (!wallet || loadingTemplate || mintingNotebook)
+  if (loadingTemplate || mintingNotebook)
     return (
       <div>
         <Spinner />
@@ -213,10 +213,10 @@ function TemplatePage({ wallet, userAnky, router, alchemy }) {
                 using here.
               </p>
               <p>10% of it will go to who created the template as royalties.</p>
-              <div className='w-96 mx-auto  text-white flex justify-center my-4'>
+              <div className='w-96 mx-auto  text-white flex items-start justify-center my-4'>
                 {authenticated ? (
                   <Button
-                    buttonColor='bg-purple-600'
+                    buttonColor='bg-purple-600 '
                     buttonText={
                       mintingNotebook
                         ? `Minting...`
@@ -225,11 +225,16 @@ function TemplatePage({ wallet, userAnky, router, alchemy }) {
                     buttonAction={handleMint}
                   />
                 ) : (
-                  <Button
-                    buttonColor='bg-purple-400'
-                    buttonText='login to mint'
-                    buttonAction={login}
-                  />
+                  <div className='flex flex-col space-y-2'>
+                    <Button
+                      buttonColor='bg-purple-400'
+                      buttonText='login to mint'
+                      buttonAction={login}
+                    />
+                    <small className='text-white text-sm'>
+                      (use an anon email)
+                    </small>
+                  </div>
                 )}
 
                 <Button

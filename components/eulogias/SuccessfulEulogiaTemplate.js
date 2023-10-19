@@ -33,9 +33,9 @@ const SuccessfulEulogiaTemplate = ({ eulogia }) => {
           </p>
           <p>All feedback is gold.</p>
           <p>Thank you.</p>
-          <div className='bg-purple-600 active:translate-x-1 active:translate-y-1 px-4 py-2 rounded-xl mt-4 mx-auto w-48 border-black border hover:opacity-70'>
-            <Link href={`/eulogias/${eulogia.createdEulogiaId}`}>
-              Visit Eulogia
+          <div className='w-48 mx-auto mt-2'>
+            <Link href={`/eulogias/${eulogia.createdEulogiaId}`} passHref>
+              <Button buttonColor='bg-orange-600' buttonText='visit eulogia' />
             </Link>
           </div>
         </>

@@ -200,35 +200,39 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
         const eulogiaIndex = x.userEulogias.findIndex(
           j => j.eulogiaID == eulogia.eulogiaID
         );
-
+        console.log('the eulogia index is: ', eulogiaIndex);
+        const updatedEulogia = {
+          ...x.userEulogias[eulogiaIndex],
+          messages: [
+            ...x.userEulogias[eulogiaIndex].messages,
+            newEulogiaWriting,
+          ],
+        };
         // If the journal is found
         if (eulogiaIndex !== -1) {
-          console.log('the eulogia index is: ', eulogiaIndex);
-          const updatedEulogia = {
-            ...x.userEulogias[eulogiaIndex],
-            messages: [
-              ...x.userEulogias[eulogiaIndex].messages,
-              newEulogiaWriting,
-            ],
-          };
-
           const updatedUserEulogias = [
             ...x.userEulogias.slice(0, eulogiaIndex),
             updatedEulogia,
             ...x.userEulogias.slice(eulogiaIndex + 1),
           ];
           console.log('the updated user eulogias are: ', updatedUserEulogias);
+          console.log('the new eulogia writing is: ', newEulogiaWriting);
           setUserData('userEulogias', updatedUserEulogias);
 
-          setMessages(x => [...x, newEulogiaWriting]);
+          setEulogia(updatedEulogia);
 
           return {
             ...x,
             userEulogias: updatedUserEulogias,
           };
+        } else {
+          const updatedUserEulogias = [...x.userEulogias, updatedEulogia];
+          setUserData('userEulogias', updatedUserEulogias);
+          return {
+            ...x,
+            userEulogias: updatedUserEulogias,
+          };
         }
-
-        return x;
       });
 
       setUserHasWritten(true); // Update the state to reflect the user has written.
@@ -441,10 +445,10 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
                   buttonColor='bg-amber-600 mb-2'
                   buttonAction={() => router.push('/library')}
                 />
-              </Link>{' '}
+              </Link>
               <Button
-                buttonText='my library'
-                buttonColor='bg-orange-600 mb-2'
+                buttonText='library'
+                buttonColor='bg-purple-600 mb-2'
                 buttonAction={() => router.push('/library')}
               />
             </>

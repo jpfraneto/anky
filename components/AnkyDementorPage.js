@@ -229,7 +229,7 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
           <p>your target is 180 seconds.</p>
           <p>just write.</p>
           <p>whatever comes.</p>
-          <div className='w-96 mx-auto my-2'>
+          <div className='w-96 mx-auto my-2 flex justify-around'>
             {areYouSure ? (
               <Button
                 buttonAction={writeOnNotebook}
@@ -240,9 +240,12 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
               <Button
                 buttonAction={() => setAreYouSure(true)}
                 buttonText='im ready'
-                buttonColor='bg-purple-600'
+                buttonColor='bg-green-400'
               />
             )}
+            <Link href='/library' passHref>
+              <Button buttonText='library' buttonColor='bg-purple-600' />
+            </Link>
           </div>
         </div>
       )}

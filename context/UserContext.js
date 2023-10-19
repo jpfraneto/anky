@@ -138,6 +138,13 @@ export const UserProvider = ({ children }) => {
 
   const shouldInitializeUser = () => {
     // return authenticated && wallet && true;
+    console.log(
+      'inside the should initialize user',
+      localStorage.getItem('firstTimeUser134'),
+      authenticated,
+      wallet,
+      userAppInformation
+    );
     return (
       localStorage.getItem('firstTimeUser134') ||
       (authenticated &&

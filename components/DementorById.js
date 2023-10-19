@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { ethers } from 'ethers';
 import Link from 'next/link';
@@ -29,11 +29,15 @@ function DementorPage({
   const [dementorData, setDementorData] = useState(null);
   const [text, setText] = useState('');
   const [time, setTime] = useState(0);
+  const [dementorPageForDisplay, setDementorPageForDisplay] = useState(null);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [loadingSavingNewPage, setLoadingSavingNewPage] = useState(false);
   const [loadingDementor, setLoadingDementor] = useState(true);
   const [dementorsContract, setDementorsContract] = useState(null);
   const [isUserSureThatUserIsReady, setIsUserSureThatUserIsReady] =
     useState(false);
+  const [showInformation, setShowInformation] = useState(false);
   const [writingGameProps, setWritingGameProps] = useState(null);
   const [dementorWasUpdated, setDementorWasUpdated] = useState(false);
   const [mintingNotebook, setMintingNotebook] = useState(false);
@@ -48,6 +52,10 @@ function DementorPage({
 
     if (id && wallet) fetchDementorData(id);
   }, [id, wallet]);
+
+  const closeModal = useCallback(() => {
+    setIsModalOpen(false);
+  }, []);
 
   async function fetchDementorData(dementorId) {
     console.log('inside the fetch dementor data', userAnky);
@@ -68,14 +76,18 @@ function DementorPage({
     );
     setDementorsContract(ankyDementorsContract);
     console.log('the dementor id', dementorId);
-    const data = await ankyDementorsContract.getCurrentPage(dementorId);
-    console.log(
-      'in here, the data of the page that comes in the dementor is, ',
-      data
-    );
-    const processedData = await processFetchedDementor(data);
-    console.log('the data is:', processedData);
-    setDementorData(processedData);
+
+    const dementorData = await ankyDementorsContract.getDementor(dementorId);
+    const processedDementor = await processFetchedDementor(dementorData);
+    processedDementor.dementorId = Number(dementorId);
+    processedDementor.intro = JSON.parse(processedDementor.intro);
+    processedDementor.pages = processedDementor.pages.map(x => {
+      console.log('IN HERE, THE X IS: 0, ', x);
+      return { ...x, prompts: JSON.parse(x.prompts) };
+    });
+    console.log('the processed dementor is :', processedDementor);
+
+    setDementorData(processedDementor);
     setLoadingDementor(false);
   }
 
@@ -137,6 +149,17 @@ function DementorPage({
     }
   }
 
+  function renderModal() {
+    console.log(dementorPageForDisplay);
+    return (
+      isModalOpen && (
+        <div className='fixed top-0 left-0 bg-black w-full h-full flex items-center justify-center z-50'>
+          <div className='bg-purple-200 relative overflow-y-scroll text-black rounded  p-6 w-1/2 h-2/3'></div>
+        </div>
+      )
+    );
+  }
+
   if (!authenticated) {
     return (
       <div className='text-white mt-3'>
@@ -191,12 +214,37 @@ function DementorPage({
 
   return (
     <div className='md:w-1/2 p-2 mx-auto w-screen text-black md:text-white pt-5'>
-      <h2 className='text-3xl'>{dementorData.title}</h2>
-      <p className='italic'>{dementorData.description}</p>
-      <div className='my-2 w-96 flex'>
+      <h2 className='text-3xl'>{dementorData.intro.title}</h2>
+      <p className='italic'>{dementorData.intro.description}</p>
+      <h2>pages</h2>
+      <div className='flex space-x-2'>
+        {dementorData.pages.map((x, i) => {
+          return (
+            <p
+              className={`p-3 w-8 flex items-center justify-center hover:opacity-70 cursor-pointer h-8 rounded-full ${
+                dementorData.currentPage == i
+                  ? 'bg-purple-400'
+                  : 'bg-purple-600'
+              }`}
+              key={i}
+              onClick={() => {
+                if (dementorData.currentPage == i) {
+                  return alert('This is the page that comes now');
+                } else {
+                  setDementorPageForDisplay(x);
+                  setIsModalOpen(true);
+                }
+              }}
+            >
+              {i}
+            </p>
+          );
+        })}
+      </div>
+      <div className='my-2 w-96 flex justify-center'>
         {!isUserSureThatUserIsReady ? (
           <Button
-            buttonText='im ready to write'
+            buttonText={`im ready to write page ${dementorData.currentPage}`}
             buttonAction={() => setIsUserSureThatUserIsReady(true)}
             buttonColor='bg-green-700'
           />
@@ -211,8 +259,9 @@ function DementorPage({
         <Link passHref href='/library'>
           <Button buttonText='library' buttonColor='bg-purple-600' />
         </Link>
+        <Button buttonAction={() => setShowInformation(x => !x)} />
       </div>
-      {isUserSureThatUserIsReady && (
+      {showInformation && (
         <div className=''>
           <p className='mt-2'>each page in a dementor has 8 prompts.</p>
           <p className='mt-2'>each writing session lasts 24 minutes.</p>
@@ -233,6 +282,7 @@ function DementorPage({
           <p className='mt-2'>you&apos;ll understand the mechanics fast.</p>
         </div>
       )}
+      {isModalOpen && renderModal()}
     </div>
   );
 }

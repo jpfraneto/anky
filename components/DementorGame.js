@@ -379,9 +379,9 @@ const DementorGame = ({
             onChange={handleTextChange}
           ></textarea>
           {!text && (
-            <div className='w-48 mx-auto'>
+            <div className='w-48 mt-2 mx-auto'>
               <Button
-                buttonText='Cancel'
+                buttonText='cancel'
                 buttonColor='bg-red-600'
                 buttonAction={cancel}
               />

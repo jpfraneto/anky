@@ -33,6 +33,7 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
   const [text, setText] = useState('');
   const [noJournals, setNoJournals] = useState(false);
   const [uploadingWriting, setUploadingWriting] = useState(false);
+  const [thereWasAnError, setThereWasAnError] = useState(false);
   const [entryForDisplay, setEntryForDisplay] = useState(null);
   const [chosenPrompt, setChosenPrompt] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -211,6 +212,8 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
       setLoadWritingGame(false);
       console.log('after the setloadwrtinggame put into false');
     } catch (error) {
+      setLoadWritingGame(false);
+      setThereWasAnError(true);
       console.error('Failed to write to notebook:', error);
     }
   };
@@ -284,6 +287,34 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
         cancel={() => setLoadWritingGame(false)}
       />
     );
+
+  if (thereWasAnError) {
+    <div className='text-white'>
+      <p>there was an error, but here is your writing:</p>
+      <div className='p-2 bg-green-100'>
+        {text.includes('\n')
+          ? text.split('\n').map((x, i) => {
+              return (
+                <p key={i} className='my-2'>
+                  {x}
+                </p>
+              );
+            })
+          : text.map((x, i) => {
+              return (
+                <p key={i} className='my-2'>
+                  {x}
+                </p>
+              );
+            })}
+      </div>
+      <Button
+        buttonText='upload again'
+        buttonColor='bg-green-600'
+        buttonAction={() => updateJournalWithPage(text)}
+      />
+    </div>;
+  }
   return (
     <div className='text-white pt-4'>
       <h2 className='text-2xl mb-4'>This is journal {journal.journalId}</h2>

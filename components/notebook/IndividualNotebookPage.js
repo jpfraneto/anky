@@ -250,12 +250,14 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
       <small className='italic'>{notebookTemplate.metadata.description}</small>
       <div className='text-left my-4 '>
         {notebookTemplate.metadata.prompts.map((x, i) => {
+          console.log('IN HEREREE', x, notebookPages[i]);
           return (
             <div key={i}>
               <p
                 className={`${
                   notebookPages[i] &&
                   notebookPages[i].pageIndex &&
+                  notebookPages[i].written &&
                   'line-through cursor-pointer hover:text-amber-500'
                 }`}
                 onClick={() => {
@@ -292,17 +294,18 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
           </Link>
         </div>
       ) : (
-        <div className='flex'>
+        <div className='flex justify-around '>
           <Button
             buttonText={`Answer prompt #${notebookPages.length + 1}`}
-            buttonColor='bg-purple-500 w-48 mx-auto mb-3'
+            buttonColor='bg-purple-500 mb-3'
             buttonAction={writeOnNotebook}
           />
-          <Button
-            buttonAction={() => router.back()}
-            buttonText={`Go Back`}
-            buttonColor='bg-red-600 w-48 mx-auto mb-3'
-          />
+          <Link href='/library' passHref>
+            <Button
+              buttonText={`library`}
+              buttonColor='bg-purple-600 mx-auto mb-3'
+            />
+          </Link>
         </div>
       )}
     </div>
