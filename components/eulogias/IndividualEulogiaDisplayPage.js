@@ -206,40 +206,47 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
 
       setUserAppInformation(x => {
         // Find the specific journal index by its id
-        const eulogiaIndex = x.userEulogias.findIndex(
-          j => j.eulogiaID == eulogia.eulogiaID
-        );
-        console.log('the eulogia index is: ', eulogiaIndex);
-        const updatedEulogia = {
-          ...x.userEulogias[eulogiaIndex],
-          messages: [
-            ...x.userEulogias[eulogiaIndex].messages,
-            newEulogiaWriting,
-          ],
-        };
-        // If the journal is found
-        if (eulogiaIndex !== -1) {
-          const updatedUserEulogias = [
-            ...x.userEulogias.slice(0, eulogiaIndex),
-            updatedEulogia,
-            ...x.userEulogias.slice(eulogiaIndex + 1),
-          ];
-          console.log('the updated user eulogias are: ', updatedUserEulogias);
-          console.log('the new eulogia writing is: ', newEulogiaWriting);
-          setUserData('userEulogias', updatedUserEulogias);
-
-          setEulogia(updatedEulogia);
-
-          return {
-            ...x,
-            userEulogias: updatedUserEulogias,
+        if (x && x.userEulogias && x.userEulogias.length > 0) {
+          const eulogiaIndex = x.userEulogias.findIndex(
+            j => j.eulogiaID == eulogia.eulogiaID
+          );
+          console.log('the eulogia index is: ', eulogiaIndex);
+          const updatedEulogia = {
+            ...x.userEulogias[eulogiaIndex],
+            messages: [
+              ...x.userEulogias[eulogiaIndex].messages,
+              newEulogiaWriting,
+            ],
           };
+          // If the journal is found
+          if (eulogiaIndex !== -1) {
+            const updatedUserEulogias = [
+              ...x.userEulogias.slice(0, eulogiaIndex),
+              updatedEulogia,
+              ...x.userEulogias.slice(eulogiaIndex + 1),
+            ];
+            console.log('the updated user eulogias are: ', updatedUserEulogias);
+            console.log('the new eulogia writing is: ', newEulogiaWriting);
+            setUserData('userEulogias', updatedUserEulogias);
+
+            setEulogia(updatedEulogia);
+
+            return {
+              ...x,
+              userEulogias: updatedUserEulogias,
+            };
+          } else {
+            const updatedUserEulogias = [...x.userEulogias, updatedEulogia];
+            setUserData('userEulogias', updatedUserEulogias);
+            return {
+              ...x,
+              userEulogias: updatedUserEulogias,
+            };
+          }
         } else {
-          const updatedUserEulogias = [...x.userEulogias, updatedEulogia];
-          setUserData('userEulogias', updatedUserEulogias);
           return {
             ...x,
-            userEulogias: updatedUserEulogias,
+            userEulogias: [thisEulogia],
           };
         }
       });
