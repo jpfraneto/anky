@@ -197,12 +197,19 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
         false
       );
       await tx.wait();
+
       console.log('after the transaction');
       const newEulogiaWriting = {
         writer: thisWallet.address,
         whoWroteIt: whoIsWriting,
         content: finishText,
         timestamp: new Date().getTime(),
+      };
+
+      const updatedEulogia = {
+        ...eulogia,
+        eulogiaID: router.query.id,
+        messages: [...eulogia.messages, newEulogiaWriting],
       };
 
       setUserAppInformation(x => {
@@ -212,13 +219,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
             j => j.eulogiaID == eulogia.eulogiaID
           );
           console.log('the eulogia index is: ', eulogiaIndex);
-          const updatedEulogia = {
-            ...x.userEulogias[eulogiaIndex],
-            messages: [
-              ...x.userEulogias[eulogiaIndex].messages,
-              newEulogiaWriting,
-            ],
-          };
+
           // If the journal is found
           if (eulogiaIndex !== -1) {
             const updatedUserEulogias = [
