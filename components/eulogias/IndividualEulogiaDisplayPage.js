@@ -154,7 +154,9 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
 
   const onFinish = async finishText => {
     try {
+      console.log('before getting the auth token');
       const authToken = await getAccessToken();
+      console.log('the auth token is: ', authToken);
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/notebooks/eulogia/writing`,
         {
@@ -167,8 +169,9 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
           body: JSON.stringify({ text: finishText }),
         }
       );
-
+      console.log('out here');
       const { cid } = await response.json();
+      console.log('the cid is: ', cid);
       let signer = await provider.getSigner();
       // Step 2: Send the CID to the smart contract.
       const eulogiasContract = new ethers.Contract(
