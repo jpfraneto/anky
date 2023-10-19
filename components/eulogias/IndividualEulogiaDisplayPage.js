@@ -227,8 +227,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
               updatedEulogia,
               ...x.userEulogias.slice(eulogiaIndex + 1),
             ];
-            console.log('the updated user eulogias are: ', updatedUserEulogias);
-            console.log('the new eulogia writing is: ', newEulogiaWriting);
+
             setUserData('userEulogias', updatedUserEulogias);
 
             setEulogia(updatedEulogia);
@@ -248,7 +247,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
         } else {
           return {
             ...x,
-            userEulogias: [thisEulogia],
+            userEulogias: [updatedEulogia],
           };
         }
       });
