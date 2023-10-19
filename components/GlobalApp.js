@@ -156,7 +156,7 @@ const GlobalApp = ({ alchemy }) => {
           ></div>
         </div>
 
-        <button onClick={getDementors}>dementors</button>
+        {/* <button onClick={getDementors}>dementors</button> */}
         {/* <button onClick={() => console.log(userAppInformation)}>print</button> */}
         <div className='px-2 w-36 flex justify-center space-x-2'>
           {authenticated ? (
