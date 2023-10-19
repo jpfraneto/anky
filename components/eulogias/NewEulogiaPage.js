@@ -126,9 +126,11 @@ const NewEulogiaPage = ({ wallet }) => {
           e => e.event === 'EulogiaCreated'
         ); // Find the event in the logs
         if (event) {
-          const eulogiaId = event.args[0]; // Based on the order in your emit statement
-          console.log('Eulogia ID:', eulogiaId.toNumber());
-          setCreatedEulogiaId(eulogiaId.toNumber());
+          const rawEulogiaId = event.args[0]; // Based on the order in your emit statement
+          const eulogiaId = ethers.utils.formatUnits(rawEulogiaId, 0);
+          console.log('Eulogia ID:', eulogiaId);
+
+          setCreatedEulogiaId(eulogiaId);
           setSuccess(true);
           setLoadingEulogiaCreation(false);
 
@@ -140,7 +142,7 @@ const NewEulogiaPage = ({ wallet }) => {
             );
 
             const newEulogia = {
-              eulogiaID: eulogiaId.toNumber(),
+              eulogiaID: eulogiaId,
               maxMessages: maxMsgs,
               messageCount: 0,
 
