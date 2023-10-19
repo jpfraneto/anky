@@ -188,8 +188,9 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
 
       console.log('the eulogias contract is: ', eulogiasContract);
       console.log('eulog', eulogia, cid, whoIsWriting);
+      const eulogiaID = router.query.id;
       const tx = await eulogiasContract.writeEulogiaPage(
-        eulogia.eulogiaID,
+        eulogiaID,
         cid,
         whoIsWriting,
         true,
