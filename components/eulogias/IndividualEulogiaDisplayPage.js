@@ -172,7 +172,13 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
       console.log('out here');
       const { cid } = await response.json();
       console.log('the cid is: ', cid);
-      let signer = await provider.getSigner();
+      let signer;
+      if (!provider) {
+        const newProvider = await thisWallet.getEthersProvider();
+        signer = await newProvider.getSigner();
+      } else {
+        signer = await provider.getSigner();
+      }
       // Step 2: Send the CID to the smart contract.
       const eulogiasContract = new ethers.Contract(
         process.env.NEXT_PUBLIC_EULOGIAS_CONTRACT_ADDRESS,
