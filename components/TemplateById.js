@@ -154,7 +154,7 @@ function TemplatePage({ wallet, userAnky, router, alchemy }) {
     );
 
   return (
-    <div className='md:w-1/2 p-2 mx-auto w-screen text-black md:text-white pt-5'>
+    <div className='md:w-1/2 p-2 mx-auto w-screen text-white pt-5'>
       {templateData ? (
         <>
           {mintedNotebookSuccess ? (

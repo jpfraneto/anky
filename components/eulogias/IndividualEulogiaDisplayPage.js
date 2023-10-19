@@ -379,10 +379,10 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
     <div className='text-white'>
       <div className='flex flex-col'>
         <div className='p-2'>
-          <h2 className='text-6xl my-2 text-purple-200'>
+          <h2 className='text-2xl md:text-6xl my-2 text-purple-200'>
             {eulogia.metadata.title}
           </h2>
-          <p className='italic text-2xl mb-2 w-96 mx-auto'>
+          <p className='italic text-lg md:text-2xl mb-2 w-96 mx-auto'>
             {eulogia.metadata.description}
           </p>
           <div className='mb-4'>
@@ -453,7 +453,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
           )}
         </div>
       </div>
-      <div className='w-96 mx-auto'>
+      <div className='w-96 mx-auto mb-16'>
         <div className='flex justify-center'>
           {authenticated && (
             <>
