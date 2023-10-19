@@ -245,6 +245,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
             };
           }
         } else {
+          setEulogia(updatedEulogia);
           return {
             ...x,
             userEulogias: [updatedEulogia],
