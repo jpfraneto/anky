@@ -49,14 +49,11 @@ const LibraryPage = ({}) => {
       <h2 className='text-white text-2xl mt-2'>library</h2>
       <div className='text-white py-4 flex w-screen px-4'>
         <div className='w-2/5 aspect-square p-2 text-white flex flex-col items-center'>
-          <div className='relative w-3/5 aspect-square rounded-xl overflow-hidden'>
+          <div className='relative w-3/5 aspect-square rounded-2xl border-2 border-white overflow-hidden'>
             <Image fill src={`/ankys/elmasmejor.png`} />
           </div>
           <p className='mt-2'>welcome back,</p>
           <p className='mt-2'>are you ready to keep writing?</p>
-          <button onClick={() => console.log(userAppInformation, eulogias)}>
-            sacl
-          </button>
         </div>
         <div className='w-3/5 '>
           <div className='flex w-full mb-4 h-12 rounded-xl'>

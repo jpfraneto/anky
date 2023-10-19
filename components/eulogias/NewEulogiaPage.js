@@ -116,10 +116,7 @@ const NewEulogiaPage = ({ wallet }) => {
         );
 
         const transactionReceipt = await transactionResponse.wait(); // Wait for the transaction to be mined
-        console.log(
-          'Eulogia template created successfully',
-          transactionResponse
-        );
+        console.log('Eulogia created successfully', transactionResponse);
         const eulogiaCreatedEvent = eulogiaContract.filters.EulogiaCreated();
         const event = transactionReceipt.events?.find(
           e => e.event === 'EulogiaCreated'
@@ -131,6 +128,7 @@ const NewEulogiaPage = ({ wallet }) => {
           setSuccess(true);
           setLoadingEulogiaCreation(false);
 
+          console.log('the eulgoia that was created is: ');
           setUserAppInformation(x => {
             console.log(
               'the x in the user app information before adding a new eulogia is: ',
@@ -139,10 +137,17 @@ const NewEulogiaPage = ({ wallet }) => {
 
             const newEulogia = {
               eulogiaID: eulogiaId.toNumber(),
-              pages: maxMsgs,
+              maxMessages: maxMsgs,
+              messageCount: 0,
+
               metadata: {
-                // backgroundImageUrl: `https://ipfs.io/ipfs/${metadataCID.backgroundImageCid}`,
-                coverImageUrl: `https://ipfs.io/ipfs/${metadataCID.cid}`,
+                backgroundImageCid: metadataCID.backgroundImageCid,
+                backgroundImageUrl: `https://ipfs.io/ipfs/${metadataCID.backgroundImageCid}`,
+                coverImageCid: metadataCID.coverImageCid,
+                coverImageUrl: `https://ipfs.io/ipfs/${metadataCID.coverImageCid}`,
+                description: description,
+                title: title,
+                maxPages: maxMsgs,
               },
               messages: [], // Initialize with an empty array as no messages have been added yet.
             };
