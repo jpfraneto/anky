@@ -232,7 +232,7 @@ function TemplatePage({ wallet, userAnky, router, alchemy }) {
                       buttonAction={login}
                     />
                     <small className='text-white text-sm'>
-                      (use an anon email)
+                      (its all on base goerli for now)
                     </small>
                   </div>
                 )}

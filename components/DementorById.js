@@ -179,7 +179,7 @@ function DementorPage({
             </p>
             {dementorPagePromptsForDisplay.map((prompt, index) => {
               return (
-                <div className='my-2 p-2 bg-slate-200 rounded-xl'>
+                <div className='my-2 p-2 bg-slate-200 rounded-xl' key={index}>
                   <h2 className='mb-2 text-left text-2xl text-yellow-800'>
                     {prompt}
                   </h2>
