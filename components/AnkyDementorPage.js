@@ -162,8 +162,8 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
 
   if (userOwnsDementor) {
     return (
-      <div className='text-white'>
-        <p>you already own a dementor!</p>
+      <div className='text-white mt-2'>
+        <p className='mb-2'>you already own a dementor!</p>
         <div>
           <Link href={`/dementor/${ankyDementorId}`} passHref>
             <Button

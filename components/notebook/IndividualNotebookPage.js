@@ -28,6 +28,7 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
   const [notebookTemplate, setNotebookTemplate] = useState(null);
   const [notebookPages, setNotebookPages] = useState([]);
   const [chosenPrompt, setChosenPrompt] = useState('');
+  const [openPages, setOpenPages] = useState([]);
   const [loadWritingGame, setLoadWritingGame] = useState(false);
   const [writingForDisplay, setWritingForDisplay] = useState(null);
   const [writingGameProps, setWritingGameProps] = useState(null);
@@ -111,6 +112,14 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
 
     setWritingGameProps(writingGameParameters);
     setLoadWritingGame(true);
+  };
+
+  const togglePage = i => {
+    if (openPages.includes(i)) {
+      setOpenPages(prevPages => prevPages.filter(page => page !== i));
+    } else {
+      setOpenPages(prevPages => [...prevPages, i]);
+    }
   };
 
   const updateNotebookWithPage = async finishText => {
@@ -250,7 +259,6 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
       <small className='italic'>{notebookTemplate.metadata.description}</small>
       <div className='text-left my-4 '>
         {notebookTemplate.metadata.prompts.map((x, i) => {
-          console.log('IN HEREREE', x, notebookPages[i]);
           return (
             <div key={i}>
               <p
@@ -260,38 +268,46 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
                   notebookPages[i].written &&
                   'line-through cursor-pointer hover:text-amber-500'
                 }`}
-                onClick={() => {
-                  if (writingForDisplay?.pageIndex === i + 1) {
-                    setWritingForDisplay(null);
-                  } else {
-                    setWritingForDisplay({
-                      ...notebookPages[i],
-                      pageIndex: i + 1,
-                    });
-                  }
-                }}
+                onClick={() => togglePage(i)} // Use the new togglePage function
               >
                 {i + 1}. {x}
               </p>
-              {writingForDisplay && writingForDisplay.pageIndex === i + 1 && (
+              {openPages.includes(i) && notebookPages[i] && (
                 <div className='my-2 text-white p-2 bg-purple-600 rounded-xl'>
-                  {writingForDisplay.text}
+                  {notebookPages[i].text}
                 </div>
               )}
             </div>
           );
         })}
       </div>
+      <div className='w-48 mx-auto mb-4'>
+        {openPages.length > 1 && (
+          <Button
+            buttonText='close all pages'
+            buttonColor='bg-green-600'
+            buttonAction={() => setOpenPages([])}
+          />
+        )}
+      </div>
       {notebookPages.length === notebookTemplate.metadata.prompts.length ? (
         <div>
           <p>Congratulations, you finished writing this notebook</p>
-          <p className='mb-4'>Time to mint another one!</p>
-          <Link href='/templates' passHref>
-            <Button
-              buttonText={`Browse notebooks`}
-              buttonColor='bg-purple-500 w-48 mx-auto'
-            />
-          </Link>
+          <p className='mb-4'>Time to mint create another one.</p>
+          <div className='flex justify-center space-x-2'>
+            <Link href='/templates/new' passHref>
+              <Button
+                buttonText={`create template`}
+                buttonColor='bg-green-600 w-48 mx-auto'
+              />
+            </Link>
+            <Link href='/library' passHref>
+              <Button
+                buttonText={`library`}
+                buttonColor='bg-purple-600 mx-auto mb-3'
+              />
+            </Link>
+          </div>
         </div>
       ) : (
         <div className='flex justify-around '>

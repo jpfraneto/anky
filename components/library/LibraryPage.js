@@ -7,6 +7,8 @@ import NotebookCard from '../NotebookCard';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
 import EulogiaCard from '../eulogias/EulogiaCard';
 import JournalCard from '../journals/JournalCard';
+import TemplateCard from '../TemplateCard';
+
 import Button from '../Button';
 import Spinner from '../Spinner';
 
@@ -18,6 +20,7 @@ const LibraryPage = ({}) => {
 
   const [notebooks, setNotebooks] = useState([]);
   const [journals, setJournals] = useState([]);
+  const [templates, setTemplates] = useState([]);
   const [dementors, setDementors] = useState([]);
   const [eulogias, setEulogias] = useState([]);
   const [activeTab, setActiveTab] = useState('journals');
@@ -25,6 +28,8 @@ const LibraryPage = ({}) => {
   const { authenticated } = usePrivy();
 
   useEffect(() => {
+    console.log('the user templates are: ', userAppInformation.userTemplates);
+    setTemplates(userAppInformation.userTemplates);
     console.log('the user journals are: ', userAppInformation.userJournals);
     setJournals(userAppInformation.userJournals);
     console.log('the user notebooks are: ', userAppInformation.userNotebooks);
@@ -56,7 +61,7 @@ const LibraryPage = ({}) => {
           <p className='mt-2'>are you ready to keep writing?</p>
         </div>
         <div className='w-3/5 '>
-          <div className='flex w-full mb-4 h-12 rounded-xl'>
+          <div className='flex w-full mb-4 h-12 rounded-xl text-black'>
             <button
               className={`px-4 w-1/4 py-2 ${
                 activeTab === 'journals' ? 'bg-green-600' : 'bg-green-300'
@@ -64,6 +69,14 @@ const LibraryPage = ({}) => {
               onClick={() => setActiveTab('journals')}
             >
               Journals
+            </button>
+            <button
+              className={`px-4 w-1/4 py-2 ${
+                activeTab === 'templates' ? 'bg-cyan-600' : 'bg-cyan-300'
+              }`}
+              onClick={() => setActiveTab('templates')}
+            >
+              Templates
             </button>
             <button
               className={`px-4 w-1/4 py-2 ${
@@ -111,6 +124,24 @@ const LibraryPage = ({}) => {
             </>
           )}
 
+          {activeTab === 'templates' && (
+            <>
+              <div className='my-2 flex flex-wrap bg-cyan-300 rounded-xl p-4'>
+                {templates &&
+                  templates.map((x, i) => {
+                    return <TemplateCard template={x} key={i} />;
+                  })}
+              </div>
+              <div className='flex space-x-2'>
+                <Button
+                  buttonAction={() => router.push('/templates/new')}
+                  buttonText='new template'
+                  buttonColor='bg-cyan-600'
+                />
+              </div>
+            </>
+          )}
+
           {activeTab === 'notebooks' && (
             <>
               <div className='my-2 bg-purple-300 rounded-xl p-4 flex flex-wrap'>
@@ -121,14 +152,6 @@ const LibraryPage = ({}) => {
                 ) : (
                   <p className='text-black'>you dont have notebooks yet</p>
                 )}
-              </div>
-              <div className='flex space-x-2 justify-center'>
-                <Link href='/templates/new' passHref>
-                  <Button
-                    buttonText='new notebook template'
-                    buttonColor='bg-purple-600'
-                  />
-                </Link>
               </div>
             </>
           )}
@@ -180,58 +203,6 @@ const LibraryPage = ({}) => {
               </div>
             </>
           )}
-          {/* <div className='w-3/5 p-4 bg-gray-800'>
-          <h2 className='text-3xl mb-4'>your journals</h2>
-          <div className='my-2 flex flex-wrap bg-green-300 rounded-xl p-4'>
-            {journals &&
-              journals.map((x, i) => {
-                return <JournalCard journal={x} key={i} />;
-              })}
-          </div>
-          <div className='flex space-x-2'>
-            <Button
-              buttonAction={() => router.push('/journal/new')}
-              buttonText='new journal'
-              buttonColor='bg-purple-600'
-            />
-          </div>
-          <h2 className='text-3xl my-4'>your notebooks</h2>
-          <div className='my-2 bg-purple-300 rounded-xl p-4 flex flex-wrap'>
-            {notebooks &&
-              notebooks.map((x, i) => {
-                console.log('HEIFHAKSJHCA', x);
-                return <NotebookCard notebook={x} key={i} />;
-              })}
-          </div>
-          <div className='flex space-x-2 justify-center'>
-            <Link href='/notebooks' passHref>
-              <Button buttonText='find notebooks' buttonColor='bg-purple-600' />
-            </Link>
-            <Link href='/templates/new' passHref>
-              <Button
-                buttonText='new notebook template'
-                buttonColor='bg-green-600'
-              />
-            </Link>
-          </div>
-          <h2 className='text-3xl my-4'>your eulogias</h2>
-          <div className='my-2 bg-orange-300 rounded-xl p-4 flex flex-wrap'>
-            {eulogias &&
-              eulogias.map((x, i) => {
-                return <EulogiaCard eulogia={x} key={i} />;
-              })}
-          </div>
-          <div className='flex space-x-2 justify-center'>
-            <Link href='/eulogias/new' passHref>
-              <Button buttonText='add eulogia' buttonColor='bg-orange-600' />
-            </Link>
-          </div>
-          <div className='flex my-2 space-x-2 justify-center'>
-            <Link href='/dementor' passHref>
-              <Button buttonText='dementor' buttonColor='bg-red-600' />
-            </Link>
-          </div>
-        </div> */}
         </div>{' '}
       </div>
     </div>

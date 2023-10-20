@@ -42,20 +42,41 @@ function DementorPage({
   const [dementorWasUpdated, setDementorWasUpdated] = useState(false);
   const [mintingNotebook, setMintingNotebook] = useState(false);
   const [userIsReadyToWrite, setUserIsReadyToWrite] = useState(false);
+
+  const [dementorPagePromptsForDisplay, setDementorPagePromptsForDisplay] =
+    useState([]);
+  const [dementorPageAnswersForDisplay, setDementorPageAnswersForDisplay] =
+    useState([]);
+
   const wallets = useWallets();
   console.log('the wallets are: ', wallets);
   const wallet = wallets.wallets[0];
 
   const { id } = router.query;
-  useEffect(() => {
-    console.log('inside here', id, wallet);
-
-    if (id && wallet) fetchDementorData(id);
-  }, [id, wallet]);
 
   const closeModal = useCallback(() => {
     setIsModalOpen(false);
+    setDementorPageAnswersForDisplay([]);
+    setDementorPagePromptsForDisplay([]);
   }, []);
+
+  useEffect(() => {
+    const handleKeyPress = event => {
+      if (event.key === 'Escape' && isModalOpen) {
+        closeModal();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress);
+    };
+  }, [isModalOpen, closeModal]);
+
+  useEffect(() => {
+    if (id && wallet) fetchDementorData(id);
+  }, [id, wallet]);
 
   async function fetchDementorData(dementorId) {
     console.log('inside the fetch dementor data', userAnky);
@@ -81,11 +102,6 @@ function DementorPage({
     const processedDementor = await processFetchedDementor(dementorData);
     processedDementor.dementorId = Number(dementorId);
     processedDementor.intro = JSON.parse(processedDementor.intro);
-    processedDementor.pages = processedDementor.pages.map(x => {
-      console.log('IN HERE, THE X IS: 0, ', x);
-      return { ...x, prompts: JSON.parse(x.prompts) };
-    });
-    console.log('the processed dementor is :', processedDementor);
 
     setDementorData(processedDementor);
     setLoadingDementor(false);
@@ -150,11 +166,37 @@ function DementorPage({
   }
 
   function renderModal() {
-    console.log(dementorPageForDisplay);
+    if (!dementorPageForDisplay || !dementorPageForDisplay.prompts) return;
     return (
       isModalOpen && (
         <div className='fixed top-0 left-0 bg-black w-full h-full flex items-center justify-center z-50'>
-          <div className='bg-purple-200 relative overflow-y-scroll text-black rounded  p-6 w-1/2 h-2/3'></div>
+          <div className='bg-purple-200 relative overflow-y-scroll text-black rounded  p-6 w-1/2 h-2/3'>
+            <p
+              onClick={() => setIsModalOpen(false)}
+              className='absolute top-1 cursor-pointer right-2 text-red-600 hover:text-red-800'
+            >
+              close
+            </p>
+            {dementorPagePromptsForDisplay.map((prompt, index) => {
+              return (
+                <div className='my-2 p-2 bg-slate-200 rounded-xl'>
+                  <h2 className='mb-2 text-left text-2xl text-yellow-800'>
+                    {prompt}
+                  </h2>
+                  <p className='mb-2 text-sm text-left'>
+                    {dementorPageAnswersForDisplay[index]}
+                  </p>
+                </div>
+              );
+            })}
+            <div className='flex  mx-auto  w-96 justify-center'>
+              <Button
+                buttonAction={() => setIsModalOpen(false)}
+                buttonColor='bg-red-600'
+                buttonText='close'
+              />
+            </div>
+          </div>
         </div>
       )
     );
@@ -196,10 +238,11 @@ function DementorPage({
   }
 
   if (userIsReadyToWrite) {
+    console.log('in here, the dementor data is: ', dementorData);
     return (
       <DementorGame
         {...writingGameProps}
-        prompts={dementorData.prompts.split('%%')}
+        prompts={dementorData.pages[dementorData.currentPage].prompts}
         secondsPerPrompt={180}
         text={text}
         setLifeBarLength={setLifeBarLength}
@@ -231,6 +274,12 @@ function DementorPage({
                 if (dementorData.currentPage == i) {
                   return alert('This is the page that comes now');
                 } else {
+                  setDementorPageAnswersForDisplay(
+                    dementorData.pages[i].writings
+                  );
+                  setDementorPagePromptsForDisplay(
+                    dementorData.pages[i].prompts
+                  );
                   setDementorPageForDisplay(x);
                   setIsModalOpen(true);
                 }
@@ -241,7 +290,7 @@ function DementorPage({
           );
         })}
       </div>
-      <div className='my-2 w-96 flex justify-center'>
+      <div className='my-2 w-96 flex justify-center mx-auto'>
         {!isUserSureThatUserIsReady ? (
           <Button
             buttonText={`im ready to write page ${dementorData.currentPage}`}
@@ -259,7 +308,11 @@ function DementorPage({
         <Link passHref href='/library'>
           <Button buttonText='library' buttonColor='bg-purple-600' />
         </Link>
-        <Button buttonAction={() => setShowInformation(x => !x)} />
+        <Button
+          buttonAction={() => setShowInformation(x => !x)}
+          buttonText='?'
+          buttonColor='bg-transparent border border-white text-white hover:bg-purple-200 hover:text-black'
+        />
       </div>
       {showInformation && (
         <div className=''>

@@ -139,9 +139,9 @@ const GlobalApp = ({ alchemy }) => {
 
   return (
     <div className='text-center w-screen text-white'>
-      <div className='text-white w-full h-8 flex justify-between items-center px-2'>
+      <div className='text-gray-400 w-full h-8 flex justify-between items-center pl-4'>
         <div
-          className='hover:text-red-300 hover:cursor-pointer px-2 active:text-red-400'
+          className='hover:text-red-300 hover:cursor-pointer  active:text-red-400'
           onClick={() => router.push('/')}
         >
           anky
@@ -156,15 +156,28 @@ const GlobalApp = ({ alchemy }) => {
           ></div>
         </div>
 
-        {/* <button onClick={getDementors}>dementors</button> */}
         {/* <button onClick={() => console.log(userAppInformation)}>print</button> */}
-        <div className='px-2 w-36 flex justify-center space-x-2'>
+        <div className='pr-4 w-fit flex justify-center '>
+          <a
+            href='https://docs.google.com/document/d/18vHnmZRSwV-bzK6avTIFn3Q3LlcEf3HvwHccAvoDBkg/edit?usp=sharing  '
+            target='_blank'
+            rel='noopener noreferrer'
+            className={` cursor-pointer hover:text-gray-200 mr-2`}
+          >
+            whitepaper
+          </a>
           {authenticated ? (
-            <button className='hover:text-purple-600' onClick={logout}>
+            <button
+              className='hover:text-purple-600 cursor-pointer'
+              onClick={logout}
+            >
               logout
             </button>
           ) : (
-            <button className='hover:text-purple-600' onClick={login}>
+            <button
+              className='hover:text-purple-600 cursor-pointer'
+              onClick={login}
+            >
               login
             </button>
           )}

@@ -3,6 +3,7 @@ import { usePrivy, useWallets } from '@privy-io/react-auth';
 import { ethers } from 'ethers';
 import {
   fetchUserEulogias,
+  fetchUserTemplates,
   fetchUserNotebooks,
   fetchUserJournals,
   fetchUserDementors,
@@ -50,6 +51,7 @@ export const UserProvider = ({ children }) => {
     async function loadStoredUserData() {
       if (isEmpty(userAppInformation)) {
         const userJournals = await getUserData('userJournals');
+        const userTemplates = await getUserData('userTemplates');
         const userNotebooks = await getUserData('userNotebooks');
         const userEulogias = await getUserData('userEulogias');
         const userDementors = await getUserData('userDementors');
@@ -60,6 +62,7 @@ export const UserProvider = ({ children }) => {
         console.log(
           '------------ BEFORE THE SET USER APP INFORMATION --------------------',
           userJournals,
+          userTemplates,
           userNotebooks,
           userEulogias,
           ankyIndex,
@@ -69,6 +72,7 @@ export const UserProvider = ({ children }) => {
         );
         setUserAppInformation({
           userJournals,
+          userTemplates,
           userNotebooks,
           userEulogias,
           userDementors,
@@ -127,6 +131,7 @@ export const UserProvider = ({ children }) => {
         userAppInformation
       );
       setUserData('userJournals', userAppInformation.userJournals);
+      setUserData('userTemplates', userAppInformation.userTemplates);
       setUserData('userNotebooks', userAppInformation.userNotebooks);
       setUserData('userEulogias', userAppInformation.userEulogias);
       setUserData('userDementors', userAppInformation.userDementors);
@@ -195,6 +200,20 @@ export const UserProvider = ({ children }) => {
 
           setUserAppInformation(x => {
             return { ...x, userNotebooks: userNotebooks };
+          });
+        }
+
+        if (reloadData || !userAppInformation.userTemplates) {
+          console.log('before fetching the templates');
+
+          const userTemplates = await fetchUserTemplates(
+            signer,
+            wallet.address
+          );
+          console.log('the user templates are: ', userTemplates);
+
+          setUserAppInformation(x => {
+            return { ...x, userTemplates: userTemplates };
           });
         }
 

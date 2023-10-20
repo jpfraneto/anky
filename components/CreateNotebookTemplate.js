@@ -3,6 +3,7 @@ import axios from 'axios';
 import { ethers } from 'ethers';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
 import { usePrivyWagmi } from '@privy-io/wagmi-connector';
+import Link from 'next/link';
 import { useContractRead } from 'wagmi';
 import { createTBA } from '../lib/backend';
 import Button from './Button';
@@ -143,6 +144,7 @@ function CreateNotebookTemplate({ userAnky }) {
   const [templateCreationErrorMessage, setTemplateCreationErrorMessage] =
     useState('');
   const [success, setSuccess] = useState(false);
+  const [handlePromptsError, setHandlePromptsError] = useState(false);
   const [title, setTitle] = useState('the process of being');
   const [description, setDescription] = useState('96 days of exploration');
   const [numPages, setNumPages] = useState(4);
@@ -292,6 +294,13 @@ function CreateNotebookTemplate({ userAnky }) {
   };
 
   const renderPrompts = () => {
+    if (prompts.length === 0) {
+      return (
+        <p className='mr-auto text-red-400 text-left'>
+          please add the first prompt to this notebook.
+        </p>
+      );
+    }
     return prompts.map((prompt, index) => (
       <div key={index} className='relative mt-0'>
         <p className='absolute -left-9 top-0 mt-2 ml-2'>{index + 1}.</p>
@@ -320,10 +329,18 @@ function CreateNotebookTemplate({ userAnky }) {
   };
 
   const handleBulkImport = () => {
-    const importedPrompts = bulkImportString.split(',').map(s => s.trim());
-    setPrompts([...importedPrompts]);
-    setNumPages(importedPrompts.length);
-    setBulkImportString(''); // Clear the bulk import input
+    if (
+      bulkImportString.length > 0 &&
+      bulkImportString.includes(';') &&
+      bulkImportString.split(';').length > 0
+    ) {
+      const importedPrompts = bulkImportString.split(';').map(s => s.trim());
+      setPrompts([...importedPrompts]);
+      setNumPages(importedPrompts.length);
+      setBulkImportString('');
+    } else {
+      setHandlePromptsError(true);
+    }
   };
 
   function renderModal() {
@@ -477,7 +494,10 @@ function CreateNotebookTemplate({ userAnky }) {
           className='border p-2 w-full h-96 rounded text-gray-500'
           placeholder='Enter questions separated by commas...'
           value={bulkImportString}
-          onChange={e => setBulkImportString(e.target.value)}
+          onChange={e => {
+            setHandlePromptsError(false);
+            setBulkImportString(e.target.value);
+          }}
         />
         <button
           type='button'
@@ -486,6 +506,12 @@ function CreateNotebookTemplate({ userAnky }) {
         >
           Import All Questions
         </button>
+        {handlePromptsError && (
+          <p className='mr-auto text-red-400 text-left'>
+            please add a long string with each question separated by a
+            semicolon.
+          </p>
+        )}
 
         <p className='text-left text-sm text-gray-500 mt-1 mb-0'>
           Notebook Prompts
@@ -543,20 +569,19 @@ function CreateNotebookTemplate({ userAnky }) {
         </div>
         <div className='flex space-x-2'>
           <button
-            className='bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-fit mt-4'
+            className='bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-fit mt-4'
             type='submit'
           >
             {loadingNotebookCreation
               ? 'loading...'
               : 'create notebook template'}
           </button>
-          <button
+          <Link
             className='bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded w-fit mt-4'
-            type='button'
-            onClick={() => router.back()}
+            href='/library'
           >
-            go back
-          </button>
+            back to library
+          </Link>
         </div>
       </form>
       ){renderModal()}
