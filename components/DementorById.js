@@ -316,23 +316,24 @@ function DementorPage({
       </div>
       {showInformation && (
         <div className=''>
-          <p className='mt-2'>each page in a dementor has 8 prompts.</p>
-          <p className='mt-2'>each writing session lasts 24 minutes.</p>
-          <p className='mt-2'>3 minutes per prompt.</p>
-          <p className='mt-2'>each one a journey into yourself.</p>
-          <p className='mt-2'>bringing out everything that you have inside.</p>
-          <h2 className='text-xl my-2'>instructions</h2>
-          <p className='mt-2'>
+          <p className='mt-2  '>each page in a dementor has 8 prompts.</p>
+          <p className='mt-1'>each writing session lasts 24 minutes.</p>
+          <p className='mt-1'>3 minutes per prompt.</p>
+          <p className='mt-1'>each one a journey into yourself.</p>
+          <p className='mt-1'>bringing out everything that you have inside.</p>
+          <p className='mt-1'>*****</p>
+          <h2 className='text-xl my-1'>instructions</h2>
+          <p className='mt-1'>
             just write, doing the best you can to answer the prompt at hand.
           </p>
-          <p className='mt-2'>
+          <p className='mt-1'>
             when you reach the 180 second mark, the time will stop, the
             container will block, and youll have time to read the next one.
           </p>
-          <p className='mt-2'>
+          <p className='mt-1'>
             when you are ready, just press the space bar and continue writing.
           </p>
-          <p className='mt-2'>you&apos;ll understand the mechanics fast.</p>
+          <p className='mt-1'>you&apos;ll understand the mechanics fast.</p>
         </div>
       )}
       {isModalOpen && renderModal()}

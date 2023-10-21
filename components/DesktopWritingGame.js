@@ -26,6 +26,8 @@ const DesktopWritingGame = ({
   setLoadButtons,
   ankyverseDate,
   userAppInformation,
+  setDisplayWritingGameLanding,
+  displayWritingGameLanding,
 }) => {
   const router = useRouter();
   const { setMusicPlaying, setIsAnkyLoading } = usePWA();
@@ -294,7 +296,13 @@ const DesktopWritingGame = ({
               <Button
                 buttonText='cancel'
                 buttonColor='bg-red-600'
-                buttonAction={() => router.back()}
+                buttonAction={() => {
+                  if (displayWritingGameLanding) {
+                    setDisplayWritingGameLanding(false);
+                  } else {
+                    router.back();
+                  }
+                }}
               />
             </div>
           </div>

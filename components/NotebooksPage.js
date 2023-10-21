@@ -7,7 +7,6 @@ import Button from './Button';
 import { TokenboundClient } from '@tokenbound/sdk';
 import { usePWA } from '../context/pwaContext';
 import CreateNotebookTemplate from './CreateNotebookTemplate';
-import TemplatesList from './TemplatesList';
 
 const NotebooksPage = () => {
   const { login, ready, authenticated } = usePrivy();
@@ -76,44 +75,6 @@ const NotebooksPage = () => {
 
       <h2 className='mt-24'>The mission is to make crypto invisible.</h2>
       <h2>To build something that the world has not seen before.</h2>
-      <Link href='/templates'>templates</Link>
-      {/* <h2 className='text-white'>Templates</h2>
-      <div>
-        <TemplatesList />
-      </div>
-      <h2 className='text-white'>Notebooks</h2> */}
-
-      {/* {userAppInformation?.wallet?.address && (
-          <p>
-            Your embedded wallet address is:{' '}
-            {userAppInformation?.wallet?.address}
-          </p>
-        )}
-
-        {userAppInformation?.ankyIndex && (
-          <p>The index of your anky is: {userAppInformation?.ankyIndex}</p>
-        )} */}
-      {/* {userAppInformation?.tbaAddress && (
-          <>
-            <p>
-              The address of the Token Bound Account associated with your anky
-              is: {userAppInformation?.tbaAddress}
-            </p>
-            <div className='w-48 mt-4 mx-auto'>
-              <Button
-                buttonAction={() => {
-                  setDisplayCreateNotebook(x => !x);
-                }}
-                buttonColor={
-                  displayCreateNotebook ? 'bg-red-300' : 'bg-green-300'
-                }
-                buttonText={
-                  displayCreateNotebook ? 'cancel' : 'create notebook template'
-                }
-              />
-            </div>
-          </>
-        )} */}
 
       {displayCreateNotebook && (
         <CreateNotebookTemplate userAnky={userAppInformation} />

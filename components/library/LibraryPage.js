@@ -60,8 +60,8 @@ const LibraryPage = ({}) => {
           <p className='mt-2'>welcome back,</p>
           <p className='mt-2'>are you ready to keep writing?</p>
         </div>
-        <div className='w-3/5 '>
-          <div className='flex w-full mb-4 h-12 rounded-xl text-black'>
+        <div className='w-3/5 rounded-xl overflow-hidden'>
+          <div className='flex w-full  h-12 rounded-xl text-black'>
             <button
               className={`px-4 w-1/4 py-2 ${
                 activeTab === 'journals' ? 'bg-green-600' : 'bg-green-300'
@@ -108,13 +108,13 @@ const LibraryPage = ({}) => {
 
           {activeTab === 'journals' && (
             <>
-              <div className='my-2 flex flex-wrap bg-green-300 rounded-xl p-4'>
+              <div className='flex flex-wrap bg-green-300 rounded-b-xl p-4'>
                 {journals &&
                   journals.map((x, i) => {
                     return <JournalCard journal={x} key={i} />;
                   })}
               </div>
-              <div className='flex space-x-2'>
+              <div className='flex justify-center mt-4'>
                 <Button
                   buttonAction={() => router.push('/journal/new')}
                   buttonText='new journal'
@@ -126,13 +126,31 @@ const LibraryPage = ({}) => {
 
           {activeTab === 'templates' && (
             <>
-              <div className='my-2 flex flex-wrap bg-cyan-300 rounded-xl p-4'>
-                {templates &&
+              <div className=' flex flex-wrap bg-cyan-300 rounded-b-xl p-4'>
+                {templates ? (
                   templates.map((x, i) => {
                     return <TemplateCard template={x} key={i} />;
-                  })}
+                  })
+                ) : (
+                  <div className='text-black w-full p-2'>
+                    <p>you haven&apos;t created templates yet.</p>
+                    <p>a template is the blueprint of a notebook.</p>
+                    <p>an invitation for you or others to write.</p>
+                    <p>each page with a specific prompt.</p>
+                    <p>designed by you to take the writer on a journey.</p>
+                    <p>you set a specific supply, and a price for it.</p>
+                    <p>
+                      the market will eventually tell how valuable they are.
+                    </p>
+                    <p>
+                      ps: people can only disover templates if they get the
+                      link.
+                    </p>
+                    <p>there is no directory for them.</p>
+                  </div>
+                )}
               </div>
-              <div className='flex space-x-2'>
+              <div className='flex justify-center mt-4'>
                 <Button
                   buttonAction={() => router.push('/templates/new')}
                   buttonText='new template'
@@ -144,30 +162,49 @@ const LibraryPage = ({}) => {
 
           {activeTab === 'notebooks' && (
             <>
-              <div className='my-2 bg-purple-300 rounded-xl p-4 flex flex-wrap'>
+              <div className=' bg-purple-300 rounded-b-xl p-4 flex flex-wrap'>
                 {notebooks.length > 0 ? (
                   notebooks.map((x, i) => {
                     return <NotebookCard notebook={x} key={i} />;
                   })
                 ) : (
-                  <p className='text-black'>you dont have notebooks yet</p>
+                  <div className='text-black w-full p-2'>
+                    <p>you dont own notebooks yet</p>
+                    <p>you can buy one if you get the link</p>
+                    <p>or even create it yourself</p>
+                    <p>one page, one prompt</p>
+                    <p>to explore the journey designed by who created it</p>
+                  </div>
                 )}
+              </div>
+              <div className='flex justify-center mt-4'>
+                <Button
+                  buttonAction={() => router.push('/templates/new')}
+                  buttonText='new template'
+                  buttonColor='bg-purple-600'
+                />
               </div>
             </>
           )}
 
           {activeTab === 'eulogias' && (
             <>
-              <div className='my-2 bg-orange-300 rounded-xl p-4 flex flex-wrap'>
+              <div className=' bg-orange-300 rounded-b-xl p-4 flex flex-wrap'>
                 {eulogias.length > 0 ? (
                   eulogias.map((x, i) => {
                     return <EulogiaCard eulogia={x} key={i} />;
                   })
                 ) : (
-                  <p className='text-black'>you dont have eulogias yet</p>
+                  <div className='text-black w-full p-2'>
+                    <p>you haven&apos;t created eulogias yet</p>
+                    <p>they are community written notebooks</p>
+                    <p>on which people with the link can write</p>
+                    <p>what they write will stay there forever</p>
+                    <p>as a memory of that point in history</p>
+                  </div>
                 )}
               </div>
-              <div className='flex space-x-2 justify-center'>
+              <div className='flex justify-center mt-4'>
                 <Link href='/eulogias/new' passHref>
                   <Button
                     buttonText='add eulogia'
@@ -180,7 +217,7 @@ const LibraryPage = ({}) => {
 
           {activeTab === 'dementor' && (
             <>
-              <div className='my-2 bg-red-300 rounded-xl p-4 flex flex-wrap'>
+              <div className=' bg-red-300 rounded-b-xl p-4 flex flex-wrap'>
                 {dementors.length > 0 ? (
                   dementors.map((x, i) => {
                     return (
@@ -188,15 +225,23 @@ const LibraryPage = ({}) => {
                         {dementorId}
                       </Link>
                     );
-                    {
-                      /* return <DementorCard dementor={x} key={i} />; */
-                    }
                   })
                 ) : (
-                  <p className='text-black'>you dont have a dementor yet</p>
+                  <div className='text-black w-full p-2'>
+                    <p>you don&apos;t own a dementor yet</p>
+                    <p>this is a special notebook</p>
+                    <p>created by anky, as a quest into yourself</p>
+                    <p>with each chapter going deeper and deeper</p>
+                    <p>into the process of self inquiry</p>
+                    <p>
+                      treat it as the most important meditation practice of your
+                      life
+                    </p>
+                    <p>write as if you wanted to know the truth</p>
+                  </div>
                 )}
               </div>
-              <div className='flex space-x-2 justify-center'>
+              <div className='flex justify-center mt-4'>
                 <Link href='/dementor' passHref>
                   <Button buttonText='add dementor' buttonColor='bg-red-600' />
                 </Link>

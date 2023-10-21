@@ -9,9 +9,7 @@ import { useRouter } from 'next/router';
 import { getUserData } from '../lib/idbHelper';
 import { fetchUserDementors } from '../lib/notebooks';
 import { Transition } from 'react-transition-group';
-import NotebooksPage from './NotebooksPage';
 import NewTemplatePage from './NewTemplatePage';
-import TemplatesPage from './TemplatesPage';
 import LandingPage from './LandingPage';
 import DementorPage from './DementorById';
 import ProfilePage from './ProfilePage';
@@ -37,6 +35,8 @@ const GlobalApp = ({ alchemy }) => {
   const { userAppInformation, setUserAppInformation, appLoading } = useUser();
   const router = useRouter();
   const [lifeBarLength, setLifeBarLength] = useState(0);
+  const [displayWritingGameLanding, setDisplayWritingGameLanding] =
+    useState(false);
   const [userWallet, setUserWallet] = useState(null);
   const wallets = useWallets();
   const wallet = wallets.wallets[0];
@@ -44,7 +44,11 @@ const GlobalApp = ({ alchemy }) => {
   function getComponentForRoute(route) {
     switch (route) {
       case '/':
-        return <LandingPage />;
+        return (
+          <LandingPage
+            setDisplayWritingGameLanding={setDisplayWritingGameLanding}
+          />
+        );
       case '/dementor':
         return (
           <AnkyDementorPage
@@ -62,10 +66,6 @@ const GlobalApp = ({ alchemy }) => {
             lifeBarLength={lifeBarLength}
           />
         );
-      case '/notebooks':
-        return <TemplatesPage />;
-      case '/templates':
-        return <TemplatesPage />;
       case '/profile':
         return <ProfilePage />;
       case '/templates/new':
@@ -88,6 +88,7 @@ const GlobalApp = ({ alchemy }) => {
         return <EulogiasListPage />;
       case '/library':
         return <LibraryPage />;
+
       case '/journal':
         return <JournalPage userAppInformation={userAppInformation} />;
       case '/eulogias/new':
@@ -137,11 +138,85 @@ const GlobalApp = ({ alchemy }) => {
     fetchUserDementors(signer);
   }
 
+  if (displayWritingGameLanding) {
+    return (
+      <div className='text-center w-screen text-white'>
+        <div className='text-gray-400 w-full h-8 flex justify-between items-center'>
+          <div
+            className='hover:text-red-300 hover:cursor-pointer px-4 active:text-red-400'
+            onClick={() => router.push('/')}
+          >
+            anky
+          </div>
+          <div className='h-full w-full'>
+            <div
+              className='h-full opacity-50'
+              style={{
+                width: `${lifeBarLength}%`,
+                backgroundColor: lifeBarLength > 30 ? 'green' : 'red',
+              }}
+            ></div>
+          </div>
+
+          {/* <button onClick={() => console.log(userAppInformation)}>print</button> */}
+          <div className='px-4 w-fit flex justify-center '>
+            <a
+              href='https://docs.google.com/document/d/18vHnmZRSwV-bzK6avTIFn3Q3LlcEf3HvwHccAvoDBkg/edit?usp=sharing  '
+              target='_blank'
+              rel='noopener noreferrer'
+              className={` cursor-pointer hover:text-gray-200 mr-2`}
+            >
+              whitepaper
+            </a>
+            {authenticated ? (
+              <button
+                className='hover:text-purple-600 cursor-pointer'
+                onClick={logout}
+              >
+                logout
+              </button>
+            ) : (
+              <button
+                className='hover:text-purple-600 cursor-pointer'
+                onClick={login}
+              >
+                login
+              </button>
+            )}
+          </div>
+        </div>
+        <div
+          className={`${righteous.className} text-black relative overflow-y-scroll flex flex-col items-center  w-full bg-cover bg-center`}
+          style={{
+            boxSizing: 'border-box',
+            height: 'calc(100vh - 33px)',
+            backgroundImage:
+              "linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/images/mintbg.jpg')",
+            backgroundPosition: 'center center',
+            backgroundSize: 'cover',
+            backgroundRepeat: 'no-repeat',
+          }}
+        >
+          <DesktopWritingGame
+            ankyverseDate={`sojourn ${ankyverseToday.currentSojourn} - wink ${
+              ankyverseToday.wink
+            } - ${ankyverseToday.currentKingdom.toLowerCase()}`}
+            userPrompt={ankyverseQuestion}
+            userAppInformation={userAppInformation}
+            setLifeBarLength={setLifeBarLength}
+            displayWritingGameLanding={displayWritingGameLanding}
+            setDisplayWritingGameLanding={setDisplayWritingGameLanding}
+          />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className='text-center w-screen text-white'>
-      <div className='text-gray-400 w-full h-8 flex justify-between items-center pl-4'>
+      <div className='text-gray-400 w-full h-8 flex justify-between items-center'>
         <div
-          className='hover:text-red-300 hover:cursor-pointer  active:text-red-400'
+          className='hover:text-red-300 hover:cursor-pointer px-4 active:text-red-400'
           onClick={() => router.push('/')}
         >
           anky
@@ -157,7 +232,7 @@ const GlobalApp = ({ alchemy }) => {
         </div>
 
         {/* <button onClick={() => console.log(userAppInformation)}>print</button> */}
-        <div className='pr-4 w-fit flex justify-center '>
+        <div className='px-4 w-fit flex justify-center '>
           <a
             href='https://docs.google.com/document/d/18vHnmZRSwV-bzK6avTIFn3Q3LlcEf3HvwHccAvoDBkg/edit?usp=sharing  '
             target='_blank'

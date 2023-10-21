@@ -35,7 +35,7 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
   const [whoIsWriting, setWhoIsWriting] = useState('');
   const [failed, setFailed] = useState(false);
   const { wallets } = useWallets();
-  const { setUserAppInformation } = useUser();
+  const { setUserAppInformation, userAppInformation } = useUser();
 
   const thisWallet = wallets[0];
 
@@ -45,42 +45,58 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
         if (!thisWallet) return;
         const notebookID = router.query.id;
         if (notebookID === undefined || !notebookID) {
-          console.log('IN EHREEEE');
           return setFailed(true);
         }
-        let fetchedProvider = await thisWallet.getEthersProvider();
-        setProvider(fetchedProvider);
-        console.log('the provider is: ', fetchedProvider);
-        let signer = await fetchedProvider.getSigner();
-        const notebooksContract = new ethers.Contract(
-          process.env.NEXT_PUBLIC_NOTEBOOKS_CONTRACT,
-          AnkyNotebooksAbi,
-          signer
-        );
-        console.log('this notebook id is: ');
-        console.log('the notebooks contract is: ', notebooksContract);
-        const thisNotebook = await notebooksContract.getFullNotebook(
-          Number(notebookID)
-        );
-        console.log('this notebook is: ', thisNotebook);
-        const fetchedPages = await fetchArweaveContent(thisNotebook.userPages);
-        setNotebookPages(fetchedPages);
-        console.log('the notebook is: ', thisNotebook);
-        const templatesContract = new ethers.Contract(
-          process.env.NEXT_PUBLIC_TEMPLATES_CONTRACT_ADDRESS,
-          templatesContractABI,
-          signer
-        );
-        const templateId = ethers.utils.formatUnits(thisNotebook.templateId, 0);
-        const thisTemplate = await templatesContract.getTemplate(templateId);
-        const formattedTemplate = await processFetchedTemplate(thisTemplate);
-        console.log('the formatted template is: ', formattedTemplate);
-        if (thisNotebook && formattedTemplate) {
-          setNotebook(thisNotebook);
-          setNotebookTemplate(formattedTemplate);
+        const thisNotebookInUser = userAppInformation.userNotebooks.filter(
+          x => x.notebookId == notebookID
+        )[0];
+        console.log('this notebook in user', thisNotebookInUser);
+        if (thisNotebookInUser) {
+          setNotebook(thisNotebookInUser);
+          setNotebookPages(thisNotebookInUser.userPages);
+          setNotebookTemplate(thisNotebookInUser.template);
           setLoading(false);
+          return;
         } else {
-          throw Error('No notebook found');
+          let fetchedProvider = await thisWallet.getEthersProvider();
+          setProvider(fetchedProvider);
+          console.log('the provider is: ', fetchedProvider);
+          let signer = await fetchedProvider.getSigner();
+          const notebooksContract = new ethers.Contract(
+            process.env.NEXT_PUBLIC_NOTEBOOKS_CONTRACT,
+            AnkyNotebooksAbi,
+            signer
+          );
+          console.log('this notebook id is: ');
+          console.log('the notebooks contract is: ', notebooksContract);
+          const thisNotebook = await notebooksContract.getFullNotebook(
+            Number(notebookID)
+          );
+          console.log('this notebook is: ', thisNotebook);
+          const fetchedPages = await fetchArweaveContent(
+            thisNotebook.userPages
+          );
+          setNotebookPages(fetchedPages);
+          console.log('the notebook is: ', thisNotebook);
+          const templatesContract = new ethers.Contract(
+            process.env.NEXT_PUBLIC_TEMPLATES_CONTRACT_ADDRESS,
+            templatesContractABI,
+            signer
+          );
+          const templateId = ethers.utils.formatUnits(
+            thisNotebook.templateId,
+            0
+          );
+          const thisTemplate = await templatesContract.getTemplate(templateId);
+          const formattedTemplate = await processFetchedTemplate(thisTemplate);
+          console.log('the formatted template is: ', formattedTemplate);
+          if (thisNotebook && formattedTemplate) {
+            setNotebook(thisNotebook);
+            setNotebookTemplate(formattedTemplate);
+            setLoading(false);
+          } else {
+            throw Error('No notebook found');
+          }
         }
       } catch (error) {
         console.error(error);
@@ -264,17 +280,23 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
               <p
                 className={`${
                   notebookPages[i] &&
-                  notebookPages[i].pageIndex &&
-                  notebookPages[i].written &&
+                  (notebookPages[i].pageContent || notebookPages[i].text) &&
                   'line-through cursor-pointer hover:text-amber-500'
                 }`}
-                onClick={() => togglePage(i)} // Use the new togglePage function
+                onClick={() => {
+                  if (
+                    notebookPages[i] &&
+                    (notebookPages[i].pageContent || notebookPages[i].text)
+                  ) {
+                    togglePage(i);
+                  }
+                }} // Use the new togglePage function
               >
                 {i + 1}. {x}
               </p>
               {openPages.includes(i) && notebookPages[i] && (
                 <div className='my-2 text-white p-2 bg-purple-600 rounded-xl'>
-                  {notebookPages[i].text}
+                  {notebookPages[i].text || notebookPages[i].pageContent}
                 </div>
               )}
             </div>
@@ -290,40 +312,42 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
           />
         )}
       </div>
-      {notebookPages.length === notebookTemplate.metadata.prompts.length ? (
-        <div>
-          <p>Congratulations, you finished writing this notebook</p>
-          <p className='mb-4'>Time to mint create another one.</p>
-          <div className='flex justify-center space-x-2'>
-            <Link href='/templates/new' passHref>
-              <Button
-                buttonText={`create template`}
-                buttonColor='bg-green-600 w-48 mx-auto'
-              />
-            </Link>
+      <div className='flex justify-center'>
+        {notebookPages.length === notebookTemplate.metadata.prompts.length ? (
+          <div>
+            <p>Congratulations, you finished writing this notebook</p>
+            <p className='mb-4'>Time to mint create another one.</p>
+            <div className='flex justify-center space-x-2'>
+              <Link href='/templates/new' passHref>
+                <Button
+                  buttonText={`create template`}
+                  buttonColor='bg-green-600 w-48 mx-auto'
+                />
+              </Link>
+              <Link href='/library' passHref>
+                <Button
+                  buttonText={`library`}
+                  buttonColor='bg-purple-600 mx-auto mb-3'
+                />
+              </Link>
+            </div>
+          </div>
+        ) : (
+          <div className='flex space-x-2'>
+            <Button
+              buttonText={`answer prompt #${notebookPages.length + 1}`}
+              buttonColor='bg-green-500 mx-2 mb-3'
+              buttonAction={writeOnNotebook}
+            />
             <Link href='/library' passHref>
               <Button
                 buttonText={`library`}
-                buttonColor='bg-purple-600 mx-auto mb-3'
+                buttonColor='bg-purple-600 mx-2 mb-3'
               />
             </Link>
           </div>
-        </div>
-      ) : (
-        <div className='flex justify-around '>
-          <Button
-            buttonText={`Answer prompt #${notebookPages.length + 1}`}
-            buttonColor='bg-purple-500 mb-3'
-            buttonAction={writeOnNotebook}
-          />
-          <Link href='/library' passHref>
-            <Button
-              buttonText={`library`}
-              buttonColor='bg-purple-600 mx-auto mb-3'
-            />
-          </Link>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };

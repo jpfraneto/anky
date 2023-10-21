@@ -28,7 +28,10 @@ const notebookTypes = [
   },
 ];
 
-function LandingPage() {
+function LandingPage({
+  setDisplayWritingGameLanding,
+  displayWritingGameLanding,
+}) {
   const { login, authenticated, loading } = usePrivy();
   const { userAppInformation, libraryLoading } = useUser();
   const router = useRouter();
@@ -44,7 +47,7 @@ function LandingPage() {
             "linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('/images/librarian.png')",
         }}
       >
-        <div className='absolute inset-0 bg-black opacity-40'></div>
+        <div className='absolute inset-0 h-screen bg-black opacity-40'></div>
         <div className='relative z-10 flex flex-col items-center justify-center h-full'>
           <h1 className='text-5xl text-gray-400 font-bold mt-32 mb-8'>
             {authenticated ? 'welcome back, my friend' : 'tell me who you are'}
@@ -63,12 +66,11 @@ function LandingPage() {
                         buttonColor='bg-purple-400 text-black'
                       />
                     </Link>
-                    <Link href='/dementor' passHref>
-                      <Button
-                        buttonText='dementor'
-                        buttonColor='bg-red-400 text-black'
-                      />
-                    </Link>
+                    <Button
+                      buttonAction={() => setDisplayWritingGameLanding(true)}
+                      buttonText='prompt of the day'
+                      buttonColor='bg-gradient-to-r from-red-500 via-yellow-600 to-violet-500 text-black'
+                    />
                   </div>
                 </div>
               ) : (
@@ -89,8 +91,8 @@ function LandingPage() {
                     )}
                     <Button
                       buttonText='prompt of the day'
-                      buttonAction={() => router.push('/ankyverse')}
-                      buttonColor='bg-green-400 text-black mx-1'
+                      buttonAction={() => setDisplayWritingGameLanding(true)}
+                      buttonColor='bg-gradient-to-r from-red-500 via-yellow-600 to-violet-500 text-black'
                     />
                   </div>
                 </div>

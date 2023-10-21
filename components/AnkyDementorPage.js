@@ -21,45 +21,12 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
   const [ankyDementorCreated, setAnkyDementorCreated] = useState(false);
   const [userOwnsDementor, setUserOwnsDementor] = useState(false);
   const [writingGameProps, setWritingGameProps] = useState(null);
-  const [loading, setLoading] = useState(true); // Loading state
+  const [loading, setLoading] = useState(false); // Loading state
   const { setUserAppInformation } = useUser();
   const router = useRouter();
   const { wallets } = useWallets();
 
   const thisWallet = wallets[0];
-
-  useEffect(() => {
-    async function setup() {
-      if (!thisWallet) return;
-      console.log('INSIDE THE SETUP ');
-      let fetchedProvider = await thisWallet.getEthersProvider();
-      setProvider(fetchedProvider);
-
-      let signer = await fetchedProvider.getSigner();
-
-      const ankyDementorsContract = new ethers.Contract(
-        process.env.NEXT_PUBLIC_ANKY_DEMENTORS_CONTRACT,
-        AnkyDementorsAbi,
-        signer
-      );
-      try {
-        const [ownsDementor, dementorIndex] =
-          await ankyDementorsContract.doesUserOwnAnkyDementor();
-        if (!ownsDementor) {
-          alert('the user doesnt own an anky dementor');
-        } else {
-          setUserOwnsDementor(true);
-          setAnkyDementorId(dementorIndex);
-        }
-        setLoading(false);
-      } catch (error) {
-        console.log('there was an error here: ', error);
-        setUserOwnsDementor(false);
-        setLoading(false);
-      }
-    }
-    setup();
-  }, [thisWallet]);
 
   const writeOnNotebook = async () => {
     const writingGameParameters = {
@@ -68,16 +35,15 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
       backgroundImage: null, // You can modify this if you have an image.
       prompt: 'tell me who you are', // You need to fetch and set the correct prompt.
       musicUrl: 'https://www.youtube.com/watch?v=HcKBDY64UN8',
-      onFinish: createFirstUserAnkyDementor,
+      onFinish: createAnkyDementor,
     };
 
     setWritingGameProps(writingGameParameters);
     setLoadWritingGame(true);
   };
 
-  const createFirstUserAnkyDementor = async finishText => {
+  const createAnkyDementor = async finishText => {
     try {
-      console.log('sending this thing.');
       const authToken = await getAccessToken();
 
       const response = await fetch(
@@ -160,22 +126,6 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
       </div>
     );
 
-  if (userOwnsDementor) {
-    return (
-      <div className='text-white mt-2'>
-        <p className='mb-2'>you already own a dementor!</p>
-        <div>
-          <Link href={`/dementor/${ankyDementorId}`} passHref>
-            <Button
-              buttonText='go to my anky dementor'
-              buttonColor='bg-purple-600'
-            />
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
   if (loadWritingGame)
     return (
       <WritingGameComponent
@@ -229,23 +179,26 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
           <p>your target is 180 seconds.</p>
           <p>just write.</p>
           <p>whatever comes.</p>
-          <div className='w-96 mx-auto my-2 flex justify-around'>
-            {areYouSure ? (
-              <Button
-                buttonAction={writeOnNotebook}
-                buttonText='breathe deep and lets go'
-                buttonColor='bg-green-600'
-              />
-            ) : (
-              <Button
-                buttonAction={() => setAreYouSure(true)}
-                buttonText='im ready'
-                buttonColor='bg-green-400'
-              />
-            )}
-            <Link href='/library' passHref>
-              <Button buttonText='library' buttonColor='bg-purple-600' />
-            </Link>
+
+          <div className='w-full flex justify-center bg-red-200 my-2'>
+            <div className='flex space-x-2 justify-center'>
+              {areYouSure ? (
+                <Button
+                  buttonAction={writeOnNotebook}
+                  buttonText='breathe deep and lets go'
+                  buttonColor='bg-green-600 mx-2 '
+                />
+              ) : (
+                <Button
+                  buttonAction={() => setAreYouSure(true)}
+                  buttonText='im ready'
+                  buttonColor='bg-green-400 text-black mx-2'
+                />
+              )}
+              <Link href='/library' passHref>
+                <Button buttonText='library' buttonColor='bg-purple-600' />
+              </Link>
+            </div>
           </div>
         </div>
       )}

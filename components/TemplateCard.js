@@ -6,7 +6,7 @@ const TemplateCard = ({ template }) => {
   console.log('inside the template card', template);
   return (
     <Link href={`/template/${template.templateId}`}>
-      <div className='p-2 m-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-black'>
+      <div className='p-2 m-2 rounded-xl bg-cyan-400 hover:bg-cyan-500 text-black'>
         <h2 className='text-xl'>{template.metadata.title}</h2>
         {/* <p>
           {notebook.userPages.length}/

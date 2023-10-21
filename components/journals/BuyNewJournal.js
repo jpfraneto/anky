@@ -34,7 +34,7 @@ const BuyNewJournal = () => {
     useState(false);
   const [journalPrices, setJournalPrices] = useState({}); // Store journal prices
   const [displayJournalOption, setDisplayJournalOption] = useState(null);
-  const {  setUserAppInformation, appLoading } = useUser();
+  const { setUserAppInformation, appLoading } = useUser();
 
   const { wallets } = useWallets();
 
@@ -161,14 +161,6 @@ const BuyNewJournal = () => {
     }
   };
 
-  if (loading)
-    return (
-      <div className='text-white'>
-        <Spinner />
-        <p>loading...</p>
-      </div>
-    );
-
   if (thereWasAnError) {
     return (
       <div className='text-white my-4'>
@@ -189,72 +181,91 @@ const BuyNewJournal = () => {
 
   return (
     <div className='text-white pt-4'>
-      {successfullyMintedJournal ? (
+      {loading ? (
         <div>
-          <p className='my-2'>
-            you now have a new journal where to download your consciousness
-          </p>
-          <p className='my-2'>the id of it is {mintedJournalId}</p>
-          <div className='mt-2 w-48 mx-auto'>
-            <Link passHref href={`/journal/${mintedJournalId}`}>
-              <Button buttonColor='bg-green-600' buttonText='go to journal' />
-            </Link>
-          </div>
+          <Spinner />
+          <p>loading...</p>
         </div>
       ) : (
-        <>
-          {mintingNewJournal ? (
+        <div>
+          {successfullyMintedJournal ? (
             <div>
-              <Spinner />
-              <p className='text-white'>processing your purchase</p>
-            </div>
-          ) : (
-            <div>
-              <p className='mb-2 text-3xl'>buy new journal</p>
-              <p className='mb-4'>how many pages do you want?</p>
-              <div className='flex justify-center mb-4'>
-                {[0, 1, 2].map((x, i) => {
-                  return (
-                    <div
-                      key={i}
-                      className='mx-4 text-center flex flex-col items-center rounded-xl bg-red-200 p-2 text-black'
-                    >
-                      <span
-                        key={i}
-                        onClick={() => mintNewJournal(x)}
-                        className='m-2 bg-red-400 cursor-pointer hover:bg-red-600 shadow-lg shadow-black p-2 w-8 h-8 rounded-xl flex justify-center items-center'
-                      >
-                        {x}
-                      </span>
-                      <p>{transformJournalType(x)} pages</p>
-                      <p>
-                        {journalPrices[x] !== undefined
-                          ? `${journalPrices[x]} ETH`
-                          : ''}
-                      </p>
-                    </div>
-                  );
-                })}
-              </div>
-              <h2 className='mb-2'>important information</h2>
-              <p className='mb-2'>what you will write here is PRIVATE.</p>
-              <p className='mb-2'>
-                yes, it is stored on the blockchain, but the information inside
-                it is not public.
+              <p className='my-2'>
+                you now have a new journal where to download your consciousness
               </p>
-              <p className='mb-2'>
-                it will be stored forever, but you need to access through this
-                wallet in order to read what is inside.
-              </p>
-
-              <div className='mt-4 w-36 mx-auto'>
-                <Link href='/library' passHref>
-                  <Button buttonText='go back' buttonColor='bg-red-600' />
+              <p className='my-2'>the id of it is {mintedJournalId}</p>
+              <div className='mt-2 w-48 mx-auto'>
+                <Link passHref href={`/journal/${mintedJournalId}`}>
+                  <Button
+                    buttonColor='bg-green-600'
+                    buttonText='go to journal'
+                  />
                 </Link>
               </div>
             </div>
+          ) : (
+            <>
+              {mintingNewJournal ? (
+                <div>
+                  <Spinner />
+                  <p className='text-white'>processing your purchase</p>
+                </div>
+              ) : (
+                <div>
+                  <p className='mb-2 text-3xl'>buy new journal</p>
+                  <p className='mb-4'>how many pages do you want?</p>
+                  <div className='flex justify-center mb-4'>
+                    {[
+                      { name: 'sm', size: 0 },
+                      { name: 'md', size: 1 },
+                      { name: 'lg', size: 2 },
+                    ].map((x, i) => {
+                      return (
+                        <div
+                          key={i}
+                          className='mx-4 text-center flex flex-col items-center rounded-xl bg-green-200 p-2 text-black'
+                        >
+                          <span
+                            key={i}
+                            onClick={() => mintNewJournal(x.size)}
+                            className='m-2 bg-green-400 cursor-pointer hover:bg-green-600 shadow-lg shadow-black p-2 w-8 h-8 rounded-xl flex justify-center items-center'
+                          >
+                            {x.name}
+                          </span>
+                          <p>{transformJournalType(x)} pages</p>
+                          <p>
+                            {journalPrices[x.size] !== undefined
+                              ? `${journalPrices[x.size]} ETH`
+                              : ''}
+                          </p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <h2 className='mb-2'>important information</h2>
+                  <p className='mb-2'>what you will write here is PRIVATE.</p>
+                  <p className='mb-2'>
+                    yes, it is stored on the blockchain, but the information
+                    inside it is not public.
+                  </p>
+                  <p className='mb-2'>
+                    it will be stored forever, but you need to access through
+                    this wallet in order to read what is inside.
+                  </p>
+
+                  <div className='mt-4 w-36 mx-auto'>
+                    <Link href='/library' passHref>
+                      <Button
+                        buttonText='library'
+                        buttonColor='bg-purple-600'
+                      />
+                    </Link>
+                  </div>
+                </div>
+              )}
+            </>
           )}
-        </>
+        </div>
       )}
     </div>
   );

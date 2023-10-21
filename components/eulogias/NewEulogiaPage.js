@@ -25,7 +25,7 @@ const NewEulogiaPage = ({ wallet }) => {
   const [title, setTitle] = useState('the monument game');
   const [description, setDescription] = useState('what do you see?');
   const [pages, setPages] = useState(24);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [fileError, setFileError] = useState('');
   const [price, setPrice] = useState((24 * PRICE_FACTOR).toFixed(4));
   const [maxMsgs, setMaxMsgs] = useState(null);
@@ -40,12 +40,6 @@ const NewEulogiaPage = ({ wallet }) => {
   console.log('the wallets are: ', wallets);
 
   const thisWallet = wallets[0];
-
-  useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-    }, 888);
-  }, []);
 
   const imageChange = (event, f) => {
     const file = event.target.files[0];
@@ -135,13 +129,14 @@ const NewEulogiaPage = ({ wallet }) => {
           setLoadingEulogiaCreation(false);
 
           console.log('the eulgoia that was created is: ');
+          let newEulogia;
           setUserAppInformation(x => {
             console.log(
               'the x in the user app information before adding a new eulogia is: ',
               x
             );
 
-            const newEulogia = {
+            newEulogia = {
               eulogiaID: eulogiaId,
               maxMessages: maxMsgs,
               messageCount: 0,
@@ -158,13 +153,12 @@ const NewEulogiaPage = ({ wallet }) => {
               messages: [], // Initialize with an empty array as no messages have been added yet.
             };
 
-            setUserData('userEulogias', [...x.userEulogias, newEulogia]);
-
             return {
               ...x,
               userEulogias: [...x.userEulogias, newEulogia],
             };
           });
+          setUserData('userEulogias', [...x.userEulogias, newEulogia]);
         } else {
           setEulogiaCreationError(true);
         }

@@ -7,11 +7,13 @@ import Link from 'next/link';
 import { useContractRead } from 'wagmi';
 import { createTBA } from '../lib/backend';
 import Button from './Button';
+import { setUserData } from '../lib/idbHelper';
 import templatesContractABI from '../lib/templatesABI.json';
 import Spinner from './Spinner';
 import SampleButton from './SampleButton';
 import SuccessfulNotebookTemplate from './SuccessfulNotebookTemplate';
 import { useRouter } from 'next/router';
+import { useUser } from '../context/UserContext';
 
 const EXAMPLE_NOTEBOOKS = [
   {
@@ -161,6 +163,7 @@ function CreateNotebookTemplate({ userAnky }) {
   const [userWallet, setUserWallet] = useState(null);
   const [price, setPrice] = useState(0.001);
   const [supply, setSupply] = useState(88);
+  const { setUserAppInformation } = useUser();
 
   const { wallets } = useWallets();
   console.log('the wallets are: ', wallets);
@@ -232,10 +235,40 @@ function CreateNotebookTemplate({ userAnky }) {
         const event = transactionReceipt.events?.find(
           e => e.event === 'TemplateCreated'
         ); // Find the event in the logs
+        let newTemplate, newUserTemplates;
         if (event) {
-          const templateId = event.args[0]; // Based on the order in your emit statement
-          console.log('Template ID:', templateId.toNumber());
-          setCreatedTemplateId(templateId.toNumber());
+          const templateId = event.args[0].toNumber(); // Based on the order in your emit statement
+          setCreatedTemplateId(templateId);
+
+          setUserAppInformation(x => {
+            console.log(
+              'the x in the user app information before adding a new template is: ',
+              x
+            );
+
+            newTemplate = {
+              templateId: templateId,
+              creator: thisWallet.address,
+              metadata: {
+                description: description,
+                price: price,
+                prompts: prompts,
+                supply: supply,
+                title: title,
+              },
+              numberOfPrompts: prompts.length,
+              price: price,
+              supply: supply,
+            };
+            if (!x.userTemplates) {
+              newUserTemplates = [newTemplate];
+            } else {
+              newUserTemplates = [...x.userTemplates, newTemplate];
+            }
+            return { ...x, userTemplates: newUserTemplates };
+          });
+          setUserData('userTemplates', [newUserTemplates]);
+
           setSuccess(true);
           setLoadingNotebookCreation(false);
         } else {
@@ -359,7 +392,7 @@ function CreateNotebookTemplate({ userAnky }) {
                     {!templateCreationError ? (
                       <div>
                         <p>
-                          The template for this notebook is being created...
+                          the template for this notebook is being created...
                         </p>
                         <Spinner />
                       </div>
@@ -383,7 +416,7 @@ function CreateNotebookTemplate({ userAnky }) {
                 ) : (
                   <>
                     <h3 className='text-sm'>
-                      You are about to create a notebook template:
+                      you are about to create a notebook template:
                     </h3>
                     <p className='text-3xl my-1'> {title}</p>
                     <p className='italic'>{description}</p>
@@ -398,15 +431,15 @@ function CreateNotebookTemplate({ userAnky }) {
                       </ol>
                     </div>
                     <p>
-                      People will be able to buy this notebook and write inside
+                      people will be able to buy this notebook and write inside
                       it.
                     </p>
                     <p className='bg-purple-500 p-2 rounded-xl border border-black w-fit mx-auto'>
-                      <strong>Price:</strong> {price} ETH | Supply: {supply}
+                      supply: {supply} | <strong>price:</strong> {price} eth
                     </p>
 
                     <p className='mt-2'>
-                      What they will write in there will be forever stored on
+                      what they will write in there will be forever stored on
                       the blockchain.
                     </p>
                     <div className='flex left-0 mt-2'>
@@ -446,7 +479,7 @@ function CreateNotebookTemplate({ userAnky }) {
         className='bg-black w-full flex flex-col p-6  px-8 rounded shadow-md space-y-4'
         onSubmit={handleSubmit}
       >
-        <h2 className='text-gray-200 text-2xl'>New Notebook Template</h2>
+        <h2 className='text-gray-200 text-2xl'>new Notebook Template</h2>
 
         <div className='my-4 md:w-full text-gray-800 flex flex-col items-center justify-center'>
           <h3 className='text-gray-500'>EXAMPLES</h3>
@@ -463,7 +496,7 @@ function CreateNotebookTemplate({ userAnky }) {
 
         <div>
           <p className='text-left text-sm text-gray-500 mt-1'>
-            Title (max 50 characters)
+            title (max 50 characters)
           </p>
 
           <input
@@ -477,7 +510,7 @@ function CreateNotebookTemplate({ userAnky }) {
 
         <div>
           <p className='text-left text-sm text-gray-500 mt-1'>
-            Description (max 560 characters)
+            description (max 560 characters)
           </p>
 
           <textarea
@@ -489,7 +522,7 @@ function CreateNotebookTemplate({ userAnky }) {
           />
         </div>
 
-        <p className='text-left text-sm text-gray-500 my-0'>Bulk import</p>
+        <p className='text-left text-sm text-gray-500 my-0'>bulk import</p>
         <textarea
           className='border p-2 w-full h-96 rounded text-gray-500'
           placeholder='Enter questions separated by commas...'
@@ -504,7 +537,7 @@ function CreateNotebookTemplate({ userAnky }) {
           className='bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded  w-fit mt-2 mr-auto'
           onClick={handleBulkImport}
         >
-          Import All Questions
+          import All Questions
         </button>
         {handlePromptsError && (
           <p className='mr-auto text-red-400 text-left'>
@@ -514,7 +547,7 @@ function CreateNotebookTemplate({ userAnky }) {
         )}
 
         <p className='text-left text-sm text-gray-500 mt-1 mb-0'>
-          Notebook Prompts
+          notebook prompts
         </p>
 
         <div className='space-y-2 mt-0 text-gray-500'>{renderPrompts()}</div>
@@ -525,7 +558,7 @@ function CreateNotebookTemplate({ userAnky }) {
             className='bg-blue-500  hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-fit mt-2 mr-2'
             onClick={handleAddPrompt}
           >
-            Add Prompt
+            add Prompt
           </button>
           <button
             type='button'
@@ -536,13 +569,13 @@ function CreateNotebookTemplate({ userAnky }) {
               }
             }}
           >
-            Clear Prompts
+            clear Prompts
           </button>
         </div>
 
         <div>
           <p className='text-left text-sm text-gray-500 mt-1'>
-            Price (in eth - how much will a user pay for minting an instance of
+            price (in eth - how much will a user pay for minting an instance of
             this notebook? - you will get 10% of each transaction)
           </p>
           <input
@@ -556,7 +589,7 @@ function CreateNotebookTemplate({ userAnky }) {
 
         <div>
           <p className='text-left text-sm text-gray-500 mt-1'>
-            Supply (max notebooks that will be available for mint)
+            supply (max notebooks that will be available for mint)
           </p>
           <input
             className='border p-2 w-full rounded text-gray-500'

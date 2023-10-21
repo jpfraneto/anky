@@ -145,13 +145,13 @@ export const UserProvider = ({ children }) => {
     // return authenticated && wallet && true;
     console.log(
       'inside the should initialize user',
-      localStorage.getItem('firstTimeUser134'),
+      localStorage.getItem('firstTimeUser188'),
       authenticated,
       wallet,
       userAppInformation
     );
     return (
-      localStorage.getItem('firstTimeUser134') ||
+      !localStorage.getItem('firstTimeUser188') ||
       (authenticated &&
         wallet &&
         !userAppInformation.ankyIndex &&
@@ -360,7 +360,7 @@ export const UserProvider = ({ children }) => {
       setCurrentStep(5);
 
       console.log('all the setup is ready');
-      localStorage.setItem('firstTimeUser134', 'done');
+      localStorage.setItem('firstTimeUser188', 'done');
       setUserIsReadyNow(true);
       return setSetupIsReady(true);
     } catch (error) {

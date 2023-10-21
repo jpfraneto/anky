@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { ethers } from 'ethers';
 import Button from '../components/Button';
+import Link from 'next/link';
 import templatesContractABI from '../lib/templatesABI.json';
 import notebookContractABI from '../lib/notebookABI.json';
 import { setUserData } from '../lib/idbHelper';
@@ -113,7 +114,9 @@ function TemplatePage({ wallet, userAnky, router, alchemy }) {
       const creatorAmount = ethers.utils.formatEther(transferredAmounts[0]);
       const userAmount = ethers.utils.formatEther(transferredAmounts[1]);
 
-      // {notebookId, template.metadata (template.metadata.prompts.length and template.metadata.title), userPages }
+      setMintedNotebookId(notebookId);
+      setMintedNotebookSuccess(true);
+      setMintingNotebook(false);
 
       setNotebookInformation({ creatorAmount, userAmount, notebookId });
       setUserAppInformation(x => {
@@ -134,9 +137,6 @@ function TemplatePage({ wallet, userAnky, router, alchemy }) {
         };
       });
 
-      setMintedNotebookId(notebookId);
-      setMintedNotebookSuccess(true);
-      setMintingNotebook(false);
       // Implement post-mint logic if needed
     } catch (error) {
       setMintingNotebook(false);
@@ -145,7 +145,7 @@ function TemplatePage({ wallet, userAnky, router, alchemy }) {
     }
   }
 
-  if (loadingTemplate || mintingNotebook)
+  if (loadingTemplate)
     return (
       <div>
         <Spinner />
@@ -159,21 +159,22 @@ function TemplatePage({ wallet, userAnky, router, alchemy }) {
         <>
           {mintedNotebookSuccess ? (
             <>
-              <h2 className='text-3xl mb-3'>
-                Congratulations, you minted the following notebook:
+              <h2 className=' mb-3'>
+                congratulations, you minted the following notebook:
               </h2>
               <h2 className='text-3xl mb-3'>
                 {templateData.metadata.title || 'undefined'}
               </h2>
 
               <p>
-                {notebookInformation.creatorAmount} ETH was transferred to the
+                {notebookInformation.creatorAmount} eth was transferred to the
                 notebook creator as royalties.
               </p>
               <p>
-                {notebookInformation.userAmount} ETH was returned to you as
+                {notebookInformation.userAmount} eth was returned to you as
                 in-app credits.
               </p>
+              <p>the rest goes to the dao that makes this place exist.</p>
               <div className='w-fit mx-auto mt-2'>
                 <Button
                   buttonColor='bg-purple-600'
@@ -194,7 +195,7 @@ function TemplatePage({ wallet, userAnky, router, alchemy }) {
                 {templateData.metadata.description || 'undefined'}
               </p>
               <small className='text-sm'>
-                this is a template. to write on it, you have to mint it so that
+                this is a template. to write on it, you have to buy it so that
                 it is transformed into a notebook.
               </small>
               <ol className='text-left text-black p-4 bg-slate-200 rounded-xl  my-4'>
@@ -204,9 +205,14 @@ function TemplatePage({ wallet, userAnky, router, alchemy }) {
                   </li>
                 ))}
               </ol>
-              <p className='bg-purple-600 p-2 text-white rounded-xl border my-2 border-black w-fit mx-auto'>
-                {templateData.supply} units left
-              </p>
+              <div className='flex justify-center'>
+                <p className='bg-purple-600 p-2 text-white rounded-xl border my-2 border-black w-fit mx-2'>
+                  {templateData.supply} units left
+                </p>
+                <p className='bg-purple-600 p-2 text-white rounded-xl border my-2 border-black w-fit mx-2'>
+                  {templateData.price} eth
+                </p>
+              </div>
 
               <p>
                 70% of what you pay will go back to your wallet as credits for
@@ -215,15 +221,23 @@ function TemplatePage({ wallet, userAnky, router, alchemy }) {
               <p>10% of it will go to who created the template as royalties.</p>
               <div className='w-96 mx-auto  text-white flex items-start justify-center my-4'>
                 {authenticated ? (
-                  <Button
-                    buttonColor='bg-purple-600 '
-                    buttonText={
-                      mintingNotebook
-                        ? `Minting...`
-                        : `Mint Into Notebook ${templateData.price} eth`
-                    }
-                    buttonAction={handleMint}
-                  />
+                  <div className='flex justify-center space-x-2'>
+                    <Button
+                      buttonColor='bg-green-600 mx-2'
+                      buttonText={
+                        mintingNotebook
+                          ? `transforming...`
+                          : `transform into notebook`
+                      }
+                      buttonAction={handleMint}
+                    />
+                    <Link href='/library' passHref>
+                      <Button
+                        buttonColor='bg-purple-600 mx-2'
+                        buttonText='library'
+                      />
+                    </Link>
+                  </div>
                 ) : (
                   <div className='flex flex-col space-y-2'>
                     <Button
@@ -236,12 +250,6 @@ function TemplatePage({ wallet, userAnky, router, alchemy }) {
                     </small>
                   </div>
                 )}
-
-                <Button
-                  buttonColor='bg-red-600'
-                  buttonText='Back'
-                  buttonAction={() => router.push('/templates')}
-                />
               </div>
             </>
           )}

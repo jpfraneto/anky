@@ -31,7 +31,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
   const [userHasWritten, setUserHasWritten] = useState(false);
   const { wallets } = useWallets();
   const thisWallet = wallets[0];
-  const { setUserAppInformation } = useUser();
+  const { setUserAppInformation, userAppInformation } = useUser();
 
   const closeModal = useCallback(() => {
     setIsModalOpen(false);
@@ -68,46 +68,59 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
         } else {
           if (!thisWallet) return;
           console.log('in hereeeee', thisWallet);
-          let fetchedProvider = await thisWallet.getEthersProvider();
-          setProvider(fetchedProvider);
-          let signer = await fetchedProvider.getSigner();
-
-          const eulogiasContract = new ethers.Contract(
-            process.env.NEXT_PUBLIC_EULOGIAS_CONTRACT_ADDRESS,
-            AnkyEulogiasAbi,
-            signer
-          );
-          console.log('the router query is: ', router.query.id);
-          const eulogiaID = router.query.id;
-          const thisEulogia = await eulogiasContract.getEulogia(eulogiaID);
-          console.log('this eulogia is: ', thisEulogia);
-          if (thisEulogia.metadataURI === '') return setEulogiaLoading(false);
-          const formattedEulogia = await processFetchedEulogia(thisEulogia);
-          formattedEulogia.eulogiaID = eulogiaID;
-
-          formattedEulogia.metadata.backgroundImageUrl = `https://ipfs.io/ipfs/${formattedEulogia.metadata.backgroundImageCid}`;
-          formattedEulogia.metadata.coverImageUrl = `https://ipfs.io/ipfs/${formattedEulogia.metadata.coverImageCid}`;
-
-          const response = await fetch(
-            formattedEulogia.metadata.backgroundImageUrl
-          );
-          const imageBlob = await response.blob();
-          const imageUrl = URL.createObjectURL(imageBlob);
-          setPreloadedBackground(imageUrl);
-
-          if (formattedEulogia) {
-            console.log('right before the set eulogia', formattedEulogia);
-            setEulogia(formattedEulogia);
-
-            setMessages(formattedEulogia.messages);
-
-            const userMessage = formattedEulogia.messages.find(
+          console.log('the user app information is: ', userAppInformation);
+          const thisEulogiaInUser = userAppInformation.userEulogias.filter(
+            x => x.eulogiaID === router.query.id
+          )[0];
+          if (thisEulogiaInUser) {
+            const userMessage = thisEulogiaInUser.messages.find(
               msg => msg.writer === thisWallet.address
             );
             setUserHasWritten(Boolean(userMessage));
             setEulogiaLoading(false);
+            setEulogia(thisEulogiaInUser);
           } else {
-            throw Error('No eulogia');
+            let fetchedProvider = await thisWallet.getEthersProvider();
+            setProvider(fetchedProvider);
+            let signer = await fetchedProvider.getSigner();
+
+            const eulogiasContract = new ethers.Contract(
+              process.env.NEXT_PUBLIC_EULOGIAS_CONTRACT_ADDRESS,
+              AnkyEulogiasAbi,
+              signer
+            );
+            console.log('the router query is: ', router.query.id);
+            const eulogiaID = router.query.id;
+            const thisEulogia = await eulogiasContract.getEulogia(eulogiaID);
+            console.log('this eulogia is: ', thisEulogia);
+            if (thisEulogia.metadataURI === '') return setEulogiaLoading(false);
+            const formattedEulogia = await processFetchedEulogia(thisEulogia);
+            formattedEulogia.eulogiaID = eulogiaID;
+
+            formattedEulogia.metadata.backgroundImageUrl = `https://ipfs.io/ipfs/${formattedEulogia.metadata.backgroundImageCid}`;
+            formattedEulogia.metadata.coverImageUrl = `https://ipfs.io/ipfs/${formattedEulogia.metadata.coverImageCid}`;
+
+            const response = await fetch(
+              formattedEulogia.metadata.backgroundImageUrl
+            );
+            const imageBlob = await response.blob();
+            const imageUrl = URL.createObjectURL(imageBlob);
+            setPreloadedBackground(imageUrl);
+
+            if (formattedEulogia) {
+              console.log('right before the set eulogia', formattedEulogia);
+              setEulogia(formattedEulogia);
+
+              setMessages(formattedEulogia.messages);
+
+              const userMessage = formattedEulogia.messages.find(
+                msg => msg.writer === thisWallet.address
+              );
+              setUserHasWritten(Boolean(userMessage));
+              setEulogiaLoading(false);
+            } else {
+              throw Error('No eulogia');
+            }
           }
         }
       } catch (error) {
@@ -212,6 +225,8 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
         messages: [...eulogia.messages, newEulogiaWriting],
       };
 
+      let updatedUserEulogias;
+
       setUserAppInformation(x => {
         // Find the specific journal index by its id
         if (x && x.userEulogias && x.userEulogias.length > 0) {
@@ -222,13 +237,11 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
 
           // If the journal is found
           if (eulogiaIndex !== -1) {
-            const updatedUserEulogias = [
+            updatedUserEulogias = [
               ...x.userEulogias.slice(0, eulogiaIndex),
               updatedEulogia,
               ...x.userEulogias.slice(eulogiaIndex + 1),
             ];
-
-            setUserData('userEulogias', updatedUserEulogias);
 
             setEulogia(updatedEulogia);
 
@@ -237,8 +250,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
               userEulogias: updatedUserEulogias,
             };
           } else {
-            const updatedUserEulogias = [...x.userEulogias, updatedEulogia];
-            setUserData('userEulogias', updatedUserEulogias);
+            updatedUserEulogias = [...x.userEulogias, updatedEulogia];
             return {
               ...x,
               userEulogias: updatedUserEulogias,
@@ -252,7 +264,8 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
           };
         }
       });
-
+      console.log('setting the user data', updatedUserEulogias);
+      setUserData('userEulogias', updatedUserEulogias);
       setUserHasWritten(true); // Update the state to reflect the user has written.
       setLoadWritingGame(false);
     } catch (error) {
