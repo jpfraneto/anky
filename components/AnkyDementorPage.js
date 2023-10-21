@@ -180,7 +180,7 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
           <p>just write.</p>
           <p>whatever comes.</p>
 
-          <div className='w-full flex justify-center bg-red-200 my-2'>
+          <div className='w-full flex justify-center  my-2'>
             <div className='flex space-x-2 justify-center'>
               {areYouSure ? (
                 <Button

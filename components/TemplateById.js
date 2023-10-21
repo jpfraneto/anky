@@ -18,6 +18,7 @@ function TemplatePage({ wallet, userAnky, router, alchemy }) {
   const [loadingTemplate, setLoadingTemplate] = useState(true);
   const [mintingNotebook, setMintingNotebook] = useState(false);
   const [mintedNotebookId, setMintedNotebookId] = useState(null);
+  const [linkCopied, setLinkCopied] = useState(false);
   const [mintedNotebookSuccess, setMintedNotebookSuccess] = useState(false);
   const [notebookInformation, setNotebookInformation] = useState({});
   const { setUserAppInformation } = useUser();
@@ -43,6 +44,11 @@ function TemplatePage({ wallet, userAnky, router, alchemy }) {
       setLoadingTemplate(false);
     }
   }, [id, userAnky]);
+
+  const copyToClipboard = async () => {
+    await navigator.clipboard.writeText(`https://www.anky.lat/template/${id}`);
+    setLinkCopied(true);
+  };
 
   async function fetchTemplateData(templateId) {
     console.log('inside the fetch template data', userAnky);
@@ -229,6 +235,11 @@ function TemplatePage({ wallet, userAnky, router, alchemy }) {
                           ? `transforming...`
                           : `transform into notebook`
                       }
+                      buttonAction={handleMint}
+                    />
+                    <Button
+                      buttonColor='bg-blue-600 mx-2'
+                      buttonText={linkCopied ? `copied` : `copy invite link`}
                       buttonAction={handleMint}
                     />
                     <Link href='/library' passHref>

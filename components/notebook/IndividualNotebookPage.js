@@ -51,6 +51,10 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
           x => x.notebookId == notebookID
         )[0];
         console.log('this notebook in user', thisNotebookInUser);
+        let fetchedProvider = await thisWallet.getEthersProvider();
+        setProvider(fetchedProvider);
+        console.log('the provider is: ', fetchedProvider);
+        let signer = await fetchedProvider.getSigner();
         if (thisNotebookInUser) {
           setNotebook(thisNotebookInUser);
           setNotebookPages(thisNotebookInUser.userPages);
@@ -58,10 +62,6 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
           setLoading(false);
           return;
         } else {
-          let fetchedProvider = await thisWallet.getEthersProvider();
-          setProvider(fetchedProvider);
-          console.log('the provider is: ', fetchedProvider);
-          let signer = await fetchedProvider.getSigner();
           const notebooksContract = new ethers.Contract(
             process.env.NEXT_PUBLIC_NOTEBOOKS_CONTRACT,
             AnkyNotebooksAbi,
