@@ -41,12 +41,37 @@ const GlobalApp = ({ alchemy }) => {
   const wallets = useWallets();
   const wallet = wallets.wallets[0];
 
-  function getComponentForRoute(route) {
+  function getComponentForRoute(route, router) {
     switch (route) {
       case '/':
         return (
           <LandingPage
             setDisplayWritingGameLanding={setDisplayWritingGameLanding}
+          />
+        );
+      case '/write':
+        if (!router.isReady) return null;
+        if (router.query.p == undefined || !router.query.p.length > 0)
+          return (
+            <DesktopWritingGame
+              ankyverseDate={`sojourn ${ankyverseToday.currentSojourn} - wink ${
+                ankyverseToday.wink
+              } - ${ankyverseToday.currentKingdom.toLowerCase()}`}
+              userPrompt='just write what comes'
+              userAppInformation={userAppInformation}
+              setLifeBarLength={setLifeBarLength}
+            />
+          );
+        let formattedPrompt = router.query.p.replaceAll('-', ' ');
+        if (!formattedPrompt) formattedPrompt = 'tell me who you are';
+        return (
+          <DesktopWritingGame
+            ankyverseDate={`sojourn ${ankyverseToday.currentSojourn} - wink ${
+              ankyverseToday.wink
+            } - ${ankyverseToday.currentKingdom.toLowerCase()}`}
+            userPrompt={formattedPrompt}
+            userAppInformation={userAppInformation}
+            setLifeBarLength={setLifeBarLength}
           />
         );
       case '/dementor':
@@ -66,6 +91,7 @@ const GlobalApp = ({ alchemy }) => {
             lifeBarLength={lifeBarLength}
           />
         );
+      case ``:
       case '/profile':
         return <ProfilePage />;
       case '/templates/new':
@@ -87,6 +113,8 @@ const GlobalApp = ({ alchemy }) => {
       case '/eulogias':
         return <EulogiasListPage />;
       case '/library':
+        return <LibraryPage />;
+      case '/write?':
         return <LibraryPage />;
 
       case '/journal':
@@ -270,7 +298,7 @@ const GlobalApp = ({ alchemy }) => {
           backgroundRepeat: 'no-repeat',
         }}
       >
-        {getComponentForRoute(router.pathname)}
+        {getComponentForRoute(router.pathname, router)}
       </div>
     </div>
   );

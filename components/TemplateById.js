@@ -92,10 +92,15 @@ function TemplatePage({ wallet, userAnky, router, alchemy }) {
       const amount = 1;
       const priceInWei = ethers.utils.parseEther(templateData.price);
 
+      const array = new Uint32Array(1);
+      window.crypto.getRandomValues(array);
+      const newCID = array[0];
+
       const transaction = await notebooksContract.mintNotebook(
         wallet.address,
         Number(id),
         amount,
+        newCID,
         { value: priceInWei }
       );
 
@@ -212,10 +217,10 @@ function TemplatePage({ wallet, userAnky, router, alchemy }) {
                 ))}
               </ol>
               <div className='flex justify-center'>
-                <p className='bg-purple-600 p-2 text-white rounded-xl border my-2 border-black w-fit mx-2'>
+                <p className='bg-green-600 p-2 text-white rounded-xl border my-2 border-black w-fit mx-2'>
                   {templateData.supply} units left
                 </p>
-                <p className='bg-purple-600 p-2 text-white rounded-xl border my-2 border-black w-fit mx-2'>
+                <p className='bg-green-600 p-2 text-white rounded-xl border my-2 border-black w-fit mx-2'>
                   {templateData.price} eth
                 </p>
               </div>
@@ -230,17 +235,13 @@ function TemplatePage({ wallet, userAnky, router, alchemy }) {
                   <div className='flex justify-center space-x-2'>
                     <Button
                       buttonColor='bg-green-600 mx-2'
-                      buttonText={
-                        mintingNotebook
-                          ? `transforming...`
-                          : `transform into notebook`
-                      }
+                      buttonText={mintingNotebook ? `buying...` : `buy`}
                       buttonAction={handleMint}
                     />
                     <Button
-                      buttonColor='bg-blue-600 mx-2'
+                      buttonColor='bg-blue-400 mx-2'
                       buttonText={linkCopied ? `copied` : `copy invite link`}
-                      buttonAction={handleMint}
+                      buttonAction={copyToClipboard}
                     />
                     <Link href='/library' passHref>
                       <Button

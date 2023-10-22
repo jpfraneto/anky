@@ -178,7 +178,7 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
       await tx.wait();
       console.log('after the response of writing in the notebook');
       console.log('the notebook pages are: ', notebookPages);
-
+      let updatedUserNotebooks;
       setUserAppInformation(x => {
         // Find the specific journal index by its id
         const notebookIndex = x.userNotebooks.findIndex(
@@ -200,13 +200,12 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
             ],
           };
 
-          const updatedUserNotebooks = [
+          updatedUserNotebooks = [
             ...x.userNotebooks.slice(0, notebookIndex),
             updatedNotebook,
             ...x.userNotebooks.slice(notebookIndex + 1),
           ];
           console.log('the updated user notebooks are: ', updatedUserNotebooks);
-          setUserData('userNotebooks', updatedUserNotebooks);
 
           setNotebookPages(x => [
             ...x,
@@ -222,6 +221,7 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
             userNotebooks: updatedUserNotebooks,
           };
         }
+        setUserData('userNotebooks', updatedUserNotebooks);
 
         // Return the original state if the journal isn't found (for safety)
         return x;

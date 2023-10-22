@@ -300,6 +300,8 @@ const DesktopWritingGame = ({
                   if (displayWritingGameLanding) {
                     setDisplayWritingGameLanding(false);
                   } else {
+                    if (router.pathname.includes('write'))
+                      return router.push('/');
                     router.back();
                   }
                 }}

@@ -127,7 +127,7 @@ const LibraryPage = ({}) => {
           {activeTab === 'templates' && (
             <>
               <div className=' flex flex-wrap bg-cyan-300 rounded-b-xl p-4'>
-                {templates ? (
+                {templates && templates.length > 0 ? (
                   templates.map((x, i) => {
                     return <TemplateCard template={x} key={i} />;
                   })
@@ -190,7 +190,7 @@ const LibraryPage = ({}) => {
           {activeTab === 'eulogias' && (
             <>
               <div className=' bg-orange-300 rounded-b-xl p-4 flex flex-wrap'>
-                {eulogias.length > 0 ? (
+                {eulogias && eulogias.length > 0 ? (
                   eulogias.map((x, i) => {
                     return <EulogiaCard eulogia={x} key={i} />;
                   })

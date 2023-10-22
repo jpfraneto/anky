@@ -216,11 +216,16 @@ function CreateNotebookTemplate({ userAnky }) {
         const userEnteredPriceInWei = ethers.utils.parseEther(price.toString());
         // Call the contract's method and send the transaction
         console.log('before the create template', metadataCID);
+        const array = new Uint32Array(1);
+        window.crypto.getRandomValues(array);
+        const newCID = array[0];
+
         const transactionResponse = await templatesContract.createTemplate(
           userEnteredPriceInWei,
           metadataCID.metadataCID,
           supply,
-          prompts.length
+          prompts.length,
+          newCID
         );
 
         console.log('the transaction response is: ', transactionResponse);
@@ -230,14 +235,14 @@ function CreateNotebookTemplate({ userAnky }) {
           'Notebook template created successfully',
           transactionResponse
         );
-        const templateCreatedEvent =
-          templatesContract.filters.TemplateCreated();
+
         const event = transactionReceipt.events?.find(
           e => e.event === 'TemplateCreated'
         ); // Find the event in the logs
         let newTemplate, newUserTemplates;
         if (event) {
-          const templateId = event.args[0].toNumber(); // Based on the order in your emit statement
+          console.log('in here, the event is: ', event);
+          const templateId = event.args[0]; // Based on the order in your emit statement
           setCreatedTemplateId(templateId);
 
           setUserAppInformation(x => {

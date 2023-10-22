@@ -114,10 +114,14 @@ const BuyNewJournal = () => {
         return;
       }
 
+      const array = new Uint32Array(1);
+      window.crypto.getRandomValues(array);
+      const newCID = array[0];
+
       const priceWei = ethers.utils.parseUnits(price, 'ether');
 
       // Send the correct amount of Ether when minting
-      const tx = await journalsContract.mintJournal(size, {
+      const tx = await journalsContract.mintJournal(size, newCID, {
         value: priceWei,
       });
       const receipt = await tx.wait();
@@ -181,39 +185,35 @@ const BuyNewJournal = () => {
 
   return (
     <div className='text-white pt-4'>
-      {loading ? (
-        <div>
-          <Spinner />
-          <p>loading...</p>
-        </div>
-      ) : (
-        <div>
-          {successfullyMintedJournal ? (
-            <div>
-              <p className='my-2'>
-                you now have a new journal where to download your consciousness
-              </p>
-              <p className='my-2'>the id of it is {mintedJournalId}</p>
-              <div className='mt-2 w-48 mx-auto'>
-                <Link passHref href={`/journal/${mintedJournalId}`}>
-                  <Button
-                    buttonColor='bg-green-600'
-                    buttonText='go to journal'
-                  />
-                </Link>
-              </div>
+      <div>
+        {successfullyMintedJournal ? (
+          <div>
+            <p className='my-2'>
+              you now have a new journal where to download your consciousness
+            </p>
+            <p className='my-2'>the id of it is {mintedJournalId}</p>
+            <div className='mt-2 w-48 mx-auto'>
+              <Link passHref href={`/journal/${mintedJournalId}`}>
+                <Button buttonColor='bg-green-600' buttonText='go to journal' />
+              </Link>
             </div>
-          ) : (
-            <>
-              {mintingNewJournal ? (
-                <div>
-                  <Spinner />
-                  <p className='text-white'>processing your purchase</p>
-                </div>
-              ) : (
-                <div>
-                  <p className='mb-2 text-3xl'>buy new journal</p>
-                  <p className='mb-4'>how many pages do you want?</p>
+          </div>
+        ) : (
+          <>
+            {mintingNewJournal ? (
+              <div>
+                <Spinner />
+                <p className='text-white'>processing your purchase</p>
+              </div>
+            ) : (
+              <div>
+                <p className='mb-2 text-3xl'>buy new journal</p>
+                <p className='mb-4'>how many pages do you want?</p>
+                {loading ? (
+                  <div>
+                    <Spinner /> <p>loading...</p>
+                  </div>
+                ) : (
                   <div className='flex justify-center mb-4'>
                     {[
                       { name: 'sm', size: 0 },
@@ -242,31 +242,35 @@ const BuyNewJournal = () => {
                       );
                     })}
                   </div>
-                  <h2 className='mb-2'>important information</h2>
-                  <p className='mb-2'>what you will write here is PRIVATE.</p>
-                  <p className='mb-2'>
-                    yes, it is stored on the blockchain, but the information
-                    inside it is not public.
-                  </p>
-                  <p className='mb-2'>
-                    it will be stored forever, but you need to access through
-                    this wallet in order to read what is inside.
-                  </p>
+                )}
 
-                  <div className='mt-4 w-36 mx-auto'>
-                    <Link href='/library' passHref>
-                      <Button
-                        buttonText='library'
-                        buttonColor='bg-purple-600'
-                      />
-                    </Link>
-                  </div>
+                <h2 className='mb-2'>important information</h2>
+                <p className='mb-2'>
+                  the mission is to make what you will write here PRIVATE.
+                </p>
+                <p className='mb-2'>
+                  encrypted using your wallet, so that only you can read the
+                  contents of your notebook.
+                </p>
+                <p className='mb-2'>
+                  yes, it is stored on the blockchain, but the information
+                  inside it is not public.
+                </p>
+                <p className='mb-2'>
+                  it will be stored forever, but you need to access through this
+                  wallet in order to read what is inside.
+                </p>
+
+                <div className='mt-4 w-36 mx-auto'>
+                  <Link href='/library' passHref>
+                    <Button buttonText='library' buttonColor='bg-purple-600' />
+                  </Link>
                 </div>
-              )}
-            </>
-          )}
-        </div>
-      )}
+              </div>
+            )}
+          </>
+        )}
+      </div>
     </div>
   );
 };

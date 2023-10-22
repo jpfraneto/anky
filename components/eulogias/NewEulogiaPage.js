@@ -93,8 +93,7 @@ const NewEulogiaPage = ({ wallet }) => {
       if (thisWallet && signer) {
         const array = new Uint32Array(1);
         window.crypto.getRandomValues(array);
-        const newID = array[0];
-        // The thing here is that I'm trying to send this transaction from the wallet of the user, not from the erc6551 token.
+        const newCID = array[0];
 
         const eulogiaContract = new ethers.Contract(
           process.env.NEXT_PUBLIC_EULOGIAS_CONTRACT_ADDRESS,
@@ -110,7 +109,7 @@ const NewEulogiaPage = ({ wallet }) => {
         const transactionResponse = await eulogiaContract.createEulogia(
           metadataCID.cid,
           maxMsgs,
-          newID
+          newCID
         );
 
         const transactionReceipt = await transactionResponse.wait(); // Wait for the transaction to be mined

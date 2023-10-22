@@ -353,7 +353,7 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
         </button>
       )}
 
-      <div className='flex space-x-2'>
+      <div className='flex space-x-2 justify-center'>
         <Button
           buttonText='buy new journal'
           buttonColor='bg-purple-600'
