@@ -50,7 +50,7 @@ function LandingPage({
         <div className='absolute inset-0 h-screen bg-black opacity-40'></div>
         <div className='relative z-10 flex flex-col items-center justify-center h-full'>
           <h1 className='text-5xl text-gray-400 font-bold mt-32 mb-8'>
-            {authenticated ? 'welcome back, my friend' : 'tell me who you are'}
+            {authenticated ? 'welcome back, my friend' : 'tell us who you are'}
           </h1>
 
           {loading ? (
@@ -99,6 +99,31 @@ function LandingPage({
               )}
             </>
           )}
+        </div>
+      </div>
+
+      <div className='py-8 px-2 w-full md:px-64 bg-gray-200'>
+        <p className='mb-4'>You are reading.</p>
+        <p className='mb-4'>
+          I understand. You want to know what this thing is about.
+        </p>
+        <p className='mb-4'>Let me tell you something:</p>
+        <p className='mb-4'>This is not a place for reading.</p>
+        <p className='mb-4'>
+          It is the most important tool that you will ever experience to get
+          your writing done.
+        </p>
+        <p className='mb-4'>Are you ready?</p>
+        <p className='mb-4'>Just write.</p>
+        <p className='mb-4'>
+          Everything that takes you away from that is resistance.
+        </p>
+        <div className='flex justify-center w-48 mx-auto my-4'>
+          <Button
+            buttonText='im ready'
+            buttonAction={() => setDisplayWritingGameLanding(true)}
+            buttonColor='bg-gradient-to-r from-red-500 via-yellow-600 to-violet-500 text-black'
+          />
         </div>
       </div>
 
