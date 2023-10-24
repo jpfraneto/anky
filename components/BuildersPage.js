@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 import Spinner from './Spinner';
 import Button from './Button';
+import Link from 'next/link';
 import { Dancing_Script } from 'next/font/google';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
 import buildersABI from '../lib/buildersABI.json';
@@ -85,11 +86,9 @@ function BuildersPage() {
             }
           })}
         </div>
-        <Button
-          buttonAction={() => router.push('/templates')}
-          buttonColor='bg-green-600'
-          buttonText='add notebook template'
-        />
+        <Link href='/library' passHref>
+          <Button buttonColor='bg-green-600' buttonText='my library' />
+        </Link>
       </div>
     </div>
   );
