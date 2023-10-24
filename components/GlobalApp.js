@@ -29,7 +29,7 @@ const ankyverseToday = getAnkyverseDay(new Date());
 const ankyverseQuestion = getAnkyverseQuestion(ankyverseToday.wink);
 
 const GlobalApp = ({ alchemy }) => {
-  const { login, authenticated, ready, logout } = usePrivy();
+  const { login, authenticated, ready, loading, logout } = usePrivy();
   const { userAppInformation } = useUser();
   const router = useRouter();
   const [lifeBarLength, setLifeBarLength] = useState(0);
@@ -40,12 +40,16 @@ const GlobalApp = ({ alchemy }) => {
   const wallets = useWallets();
   const wallet = wallets.wallets[0];
   useEffect(() => {
-    if (ready || !loading) {
+    console.log('out hereeee');
+    if (ready) {
+      console.log('IN EHEEEREREE');
       setMainAppLoading(false);
     }
-  }, [loading]);
+  }, [ready]);
 
   function getComponentForRoute(route, router) {
+    if (!ready) return;
+    console.log('inside the get component for route');
     switch (route) {
       case '/':
         return (
@@ -171,7 +175,7 @@ const GlobalApp = ({ alchemy }) => {
           >
             <h1 className='text-5xl text-center '>anky</h1>
             <p className='text-sm mb-3'>(don&apos;t try to understand)</p>
-            <div class='lds-ripple'>
+            <div className='lds-ripple'>
               <div></div>
               <div></div>
             </div>

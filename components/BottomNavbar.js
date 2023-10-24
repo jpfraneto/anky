@@ -2,19 +2,8 @@ import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePrivy } from '@privy-io/react-auth';
-import { usePWA } from '../context/pwaContext';
 
 const BottomNavbar = () => {
-  const {
-    isAnkyReady,
-    setIsAnkyReady,
-    isAnkyLoading,
-    meditationReady,
-    setMeditationReady,
-    writingReady,
-    setWritingReady,
-    enteredTheAnkyverse,
-  } = usePWA();
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const { login, user, authenticated, logout } = usePrivy();
 

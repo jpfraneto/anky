@@ -9,7 +9,6 @@ import { useRouter } from 'next/router';
 import buildersABI from '../lib/buildersABI.json';
 
 import { usePrivy } from '@privy-io/react-auth';
-import { usePWA } from '../context/pwaContext';
 import Spinner from './Spinner';
 
 function sleep(ms) {

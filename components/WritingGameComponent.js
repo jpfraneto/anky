@@ -10,7 +10,6 @@ import { useRouter } from 'next/router';
 import buildersABI from '../lib/buildersABI.json';
 
 import { usePrivy } from '@privy-io/react-auth';
-import { usePWA } from '../context/pwaContext';
 import Spinner from './Spinner';
 
 function sleep(ms) {
@@ -42,7 +41,6 @@ const WritingGameComponent = ({
   setTime,
 }) => {
   const router = useRouter();
-  const { setMusicPlaying, setIsAnkyLoading } = usePWA();
   const { login, authenticated, user } = usePrivy();
   const audioRef = useRef();
   const [preparing, setPreparing] = useState(true);

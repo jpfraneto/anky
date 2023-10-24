@@ -9,7 +9,6 @@ import { useRouter } from 'next/router';
 import buildersABI from '../lib/buildersABI.json';
 
 import { usePrivy } from '@privy-io/react-auth';
-import { usePWA } from '../context/pwaContext';
 
 function sleep(ms) {
   return new Promise(resolve => {
@@ -30,7 +29,6 @@ const DesktopWritingGame = ({
   displayWritingGameLanding,
 }) => {
   const router = useRouter();
-  const { setMusicPlaying, setIsAnkyLoading } = usePWA();
   const { login, authenticated, user } = usePrivy();
   const audioRef = useRef();
   const [text, setText] = useState('');

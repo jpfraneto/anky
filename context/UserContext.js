@@ -20,7 +20,7 @@ import {
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-  const { authenticated, loading, getAccessToken } = usePrivy();
+  const { authenticated, loading, getAccessToken, ready } = usePrivy();
 
   const [userAppInformation, setUserAppInformation] = useState({});
   const [appLoading, setAppLoading] = useState(true);
@@ -47,7 +47,7 @@ export const UserProvider = ({ children }) => {
   useEffect(() => {
     let aloja;
     async function loadStoredUserData() {
-      if (loadingUserStoredData && isEmpty(userAppInformation)) {
+      if (ready && isEmpty(userAppInformation)) {
         const userJournals = await getUserData('userJournals');
         const userTemplates = await getUserData('userTemplates');
         const userNotebooks = await getUserData('userNotebooks');
@@ -78,25 +78,27 @@ export const UserProvider = ({ children }) => {
           ankyTbaAddress,
           userWalletAddress,
         });
+        setLoadingUserStoredData(false);
       }
-      setLoadingUserStoredData(false);
     }
     loadStoredUserData();
-  }, []);
+  }, [ready]);
 
   // Check initialization and setup status
   useEffect(() => {
     async function handleInitialization() {
-      if (loading) return;
-      if (loadingUserStoredData) return;
-      console.log('inside hereaasc213');
+      if (loading && !ready) return;
+      console.log('BEFORE', loadingUserStoredData);
       if (!authenticated) {
         setAppLoading(false);
         return;
       }
+      if (loadingUserStoredData) return;
+      console.log('inside hereaasc213');
+
       if (wallet && !wallet.chainId.includes('84531')) await changeChain();
       console.log('the wallet is: ', wallet);
-      console.log('the wallets are: ', wallets);
+      console.log('the wallets are: ', wallets, userAppInformation?.wallet);
       const isUserTheSame =
         wallet?.address == userAppInformation?.wallet?.address;
       console.log('user is the same', isUserTheSame);
@@ -152,7 +154,8 @@ export const UserProvider = ({ children }) => {
       (authenticated &&
         wallet &&
         !userAppInformation?.ankyIndex &&
-        !userAppInformation?.ankyTbaAddress.length > 0)
+        !userAppInformation?.ankyTbaAddress &&
+        !userAppInformation?.ankyTbaAddress?.length > 0)
     );
   };
 
@@ -286,39 +289,43 @@ export const UserProvider = ({ children }) => {
       return;
     }
   }
-  async function airdropUsersFirstJournal(address, authToken) {
-    const tx = await airdropFirstJournal(address, authToken);
-    console.log('the tx is: ', tx);
-    const receipt = await tx.wait();
-    console.log('the receipt is: ', receipt);
-    const eventTopic = ethers.utils.id(
-      'JournalAirdropped(tokenId, usersAnkyAddress)'
-    );
+  async function airdropUsersFirstJournal(address, authToken, provider) {
+    const response = await airdropFirstJournal(address, authToken);
+    console.log('the response is: ', response);
 
-    for (const log of receipt.logs) {
-      if (log.topics[0] === eventTopic) {
-        const decodedLog = journalsContract.interface.parseLog(log);
-        const { tokenId } = decodedLog.args;
-        const newJournalElement = {
-          journalId: tokenId,
-          entries: [],
-          journalType: 0,
-          metadataCID: '',
-        };
+    if (response && response.success) {
+      const txHash = response.txHash;
+      // Assuming you have a provider instance to query the Ethereum network
+      const txReceipt = await provider.getTransactionReceipt(txHash);
+      console.log('the tx receipt is: ', txReceipt);
 
-        setUserAppInformation(x => {
-          return {
-            ...x,
-            userJournals: [newJournalElement],
+      const eventTopic = ethers.utils.id(
+        'JournalAirdropped(tokenId, usersAnkyAddress)'
+      );
+
+      for (const log of txReceipt.logs) {
+        if (log.topics[0] === eventTopic) {
+          const decodedLog = journalsContract.interface.parseLog(log);
+          const { tokenId } = decodedLog.args;
+          const newJournalElement = {
+            journalId: tokenId,
+            entries: [],
+            journalType: 0,
+            metadataCID: '',
           };
-        });
-        setUserData('userJournals', [newJournalElement]);
-        break;
-      }
-    }
 
-    if (!journaltx.success) {
-      setErrorMessage('There was an en error with your journal.');
+          setUserAppInformation(x => {
+            return {
+              ...x,
+              userJournals: [newJournalElement],
+            };
+          });
+          setUserData('userJournals', [newJournalElement]);
+          break;
+        }
+      }
+    } else {
+      setErrorMessage('There was an error with your journal.');
     }
   }
 
@@ -327,16 +334,18 @@ export const UserProvider = ({ children }) => {
     try {
       if (setupIsReady) return;
       if (loading) return;
-      if (!wallet?.address) return;
+      if (!wallet && !wallet?.address) return;
       console.log('in hereAKHCKSA', userAppInformation);
+      console.log('THE WALLET IS: ', wallet);
       setShowProgressModal(true);
       setSettingThingsUp(true);
       const authToken = await getAccessToken();
       await changeChain();
       setCurrentStep(1);
 
-      let provider = await wallet?.getEthersProvider();
+      let provider = await wallet.getEthersProvider();
       if (checkIfUserIsTheSame || !userAppInformation.ankyIndex) {
+        console.log('in here, the provider is: ', provider);
         await getTestEthAndAidropAnky(wallet, provider, authToken);
       }
       setCurrentStep(2);
@@ -352,7 +361,15 @@ export const UserProvider = ({ children }) => {
         !userAppInformation.userJournals ||
         (userAppInformation.userJournals.length === 0 && wallet)
       ) {
-        await airdropUsersFirstJournal(wallet.address, authToken);
+        try {
+          const airdropJournalResponse = await airdropUsersFirstJournal(
+            wallet.address,
+            authToken,
+            provider
+          );
+        } catch (error) {
+          console.log('there was an error airdropping her ');
+        }
       }
       setCurrentStep(5);
 

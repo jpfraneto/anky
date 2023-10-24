@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import journalsABI from '../../lib/journalsABI.json';
 import Link from 'next/link';
-import { usePWA } from '../../context/pwaContext';
 import Button from '../Button';
 import {
   fetchAllEntriesContent,

@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Button from './Button';
-import { usePWA } from '../context/pwaContext';
 
 const WritingGame = ({
   onSubmit,
@@ -14,7 +13,6 @@ const WritingGame = ({
   messageForUser,
   fullDisplay,
 }) => {
-  const { setWritingReady, setEnteredTheAnkyverse } = usePWA();
   const [timeLeft, setTimeLeft] = useState(3);
   const [isActive, setIsActive] = useState(false);
   const [time, setTime] = useState(0);

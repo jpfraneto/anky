@@ -11,7 +11,6 @@ import { useUser } from '../../context/UserContext';
 import Link from 'next/link';
 import eulogiaABI from '../../lib/eulogiaABI.json';
 import Spinner from '../Spinner';
-import SampleButton from '../SampleButton';
 import SuccessfulEulogiaTemplate from './SuccessfulEulogiaTemplate';
 
 const PRICE_FACTOR = 0.0001;

@@ -15,7 +15,7 @@ const notebookTypes = [
   },
   {
     name: 'notebook',
-    description: 'created by others, you can buy and write on them.',
+    description: 'created by users, you can buy and write on them.',
   },
   {
     name: 'eulogias',
@@ -24,7 +24,8 @@ const notebookTypes = [
   },
   {
     name: 'journal',
-    description: 'write without any direction. just do it.',
+    description:
+      'write without any direction. just allow it to happen through you.',
   },
 ];
 
@@ -110,8 +111,8 @@ function LandingPage({
         <p className='mb-4'>Let me tell you something:</p>
         <p className='mb-4'>This is not a place for reading.</p>
         <p className='mb-4'>
-          It is the most important tool that you will ever experience to get
-          your writing done.
+          It is the most important tool that you have found to get to know
+          yourself through writing.
         </p>
         <p className='mb-4'>Are you ready?</p>
         <p className='mb-4'>Just write.</p>
@@ -122,7 +123,7 @@ function LandingPage({
           <Button
             buttonText='im ready'
             buttonAction={() => setDisplayWritingGameLanding(true)}
-            buttonColor='bg-gradient-to-r from-red-500 via-yellow-600 to-violet-500 text-black'
+            buttonColor='bg-green-400 text-black'
           />
         </div>
       </div>
@@ -130,16 +131,12 @@ function LandingPage({
       {/* Journey with Anky Section */}
       <div className='py-8 px-2 w-full md:px-64 bg-white'>
         <h2 className='text-3xl font-semibold mb-6'>
-          welcome to a self inquiry tool like no other.
+          when there is no time to think, your truth comes forth
         </h2>
-        <p className='mb-4'>
-          writing is the vehicle, and anky is built on top of a pioneer system:
-        </p>
+        <p className='mb-4'>anky is built on top of a pioneer interface:</p>
         <p className='mb-4'>
           if you stop writing for more than three seconds, you lose.
         </p>
-        <p className='mb-4'>as simple as that.</p>
-
         <p className='mb-4'>
           as soon as you create an account here, you are assigned a unique
           character: your anky
@@ -187,10 +184,7 @@ function LandingPage({
               );
             })}
           </div>
-          <p className='mb-4'>
-            all of them powered by a unique writing mechanism: consciousness
-            dumping.
-          </p>
+
           <p className='mb-4'>
             your Anky safeguards your deepest stories, secrets, and the truths
             you write.
@@ -208,7 +202,6 @@ function LandingPage({
 
       {/* Join the Ankyverse Section */}
       <div className='py-8 px-2 md:px-64 bg-white'>
-        <h2 className='text-3xl font-semibold mb-6'>the goal</h2>
         <p className='mb-4'>
           what is happening here is designed to be a powerful meditation
           practice.
@@ -216,7 +209,6 @@ function LandingPage({
         <p className='mb-4'>if you want to experience how you think.</p>
         <p className='mb-4'>if you want to see yourself with more clarity.</p>
         <p className='mb-4'>if you want to know who you are.</p>
-        <p className='mb-4'>welcome to the ankyverse.</p>
       </div>
 
       <div className='py-8 px-2 md:px-64 bg-gray-200'>
@@ -229,8 +221,8 @@ function LandingPage({
           decentralized database.
         </p>
         <p className='mb-2 mx-auto'>
-          that itself is stored inside the blockchain, creating a unique storage
-          system designed to save your writings forever.
+          the pointer to it is stored inside the blockchain, creating a unique
+          storage system designed to save your writings forever.
         </p>
       </div>
 

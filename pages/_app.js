@@ -10,7 +10,6 @@ import { publicProvider } from 'wagmi/providers/public';
 import { Transition } from 'react-transition-group';
 import BottomNavbar from '../components/BottomNavbar';
 import Head from 'next/head';
-import { PWAProvider, usePWA } from '../context/pwaContext';
 import { UserProvider } from '../context/UserContext';
 import { initializeDB } from '../lib/idbHelper';
 

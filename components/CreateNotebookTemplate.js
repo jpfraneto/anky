@@ -10,7 +10,6 @@ import Button from './Button';
 import { setUserData } from '../lib/idbHelper';
 import templatesContractABI from '../lib/templatesABI.json';
 import Spinner from './Spinner';
-import SampleButton from './SampleButton';
 import SuccessfulNotebookTemplate from './SuccessfulNotebookTemplate';
 import { useRouter } from 'next/router';
 import { useUser } from '../context/UserContext';

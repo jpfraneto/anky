@@ -1,10 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { PWAProvider, usePWA } from '../context/pwaContext';
 import CircularPlayer from './CircularPlayer';
 import Button from './Button';
 
 const MeditationComponent = () => {
-  const { meditationReady, setMeditationReady } = usePWA();
   const [isPlaying, setIsPlaying] = useState(false);
   const [timeLeft, setTimeLeft] = useState(null);
   const [isStarted, setIsStarted] = useState(false);
@@ -22,7 +20,6 @@ const MeditationComponent = () => {
         <div className='flex h-fit flex-col'>
           <div className='w-full flex justify-center'>
             <CircularPlayer
-              setMeditationReady={setMeditationReady}
               image='/ankys/elmasmejor.png'
               audio='/assets/meditation26.mp3'
             />
