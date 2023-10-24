@@ -4,11 +4,8 @@ import { usePrivy, useWallets } from '@privy-io/react-auth';
 import { Righteous, Dancing_Script } from 'next/font/google';
 import { getAnkyverseDay, getAnkyverseQuestion } from '../lib/ankyverse';
 import { useUser } from '../context/UserContext';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { getUserData } from '../lib/idbHelper';
 import { fetchUserDementors } from '../lib/notebooks';
-import { Transition } from 'react-transition-group';
 import NewTemplatePage from './NewTemplatePage';
 import LandingPage from './LandingPage';
 import DementorPage from './DementorById';
@@ -31,15 +28,21 @@ const ankyverseToday = getAnkyverseDay(new Date());
 const ankyverseQuestion = getAnkyverseQuestion(ankyverseToday.wink);
 
 const GlobalApp = ({ alchemy }) => {
-  const { login, ready, authenticated, logout } = usePrivy();
-  const { userAppInformation, setUserAppInformation, appLoading } = useUser();
+  const { login, authenticated, ready, logout } = usePrivy();
+  const { userAppInformation } = useUser();
   const router = useRouter();
   const [lifeBarLength, setLifeBarLength] = useState(0);
+  const [mainAppLoading, setMainAppLoading] = useState(true);
   const [displayWritingGameLanding, setDisplayWritingGameLanding] =
     useState(false);
   const [userWallet, setUserWallet] = useState(null);
   const wallets = useWallets();
   const wallet = wallets.wallets[0];
+  useEffect(() => {
+    if (ready || !loading) {
+      setMainAppLoading(false);
+    }
+  }, [loading]);
 
   function getComponentForRoute(route, router) {
     switch (route) {
@@ -63,7 +66,7 @@ const GlobalApp = ({ alchemy }) => {
             />
           );
         let formattedPrompt = router.query.p.replaceAll('-', ' ');
-        if (!formattedPrompt) formattedPrompt = 'tell me who you are';
+        if (!formattedPrompt) formattedPrompt = 'tell us who you are';
         return (
           <DesktopWritingGame
             ankyverseDate={`sojourn ${ankyverseToday.currentSojourn} - wink ${
@@ -91,7 +94,6 @@ const GlobalApp = ({ alchemy }) => {
             lifeBarLength={lifeBarLength}
           />
         );
-      case ``:
       case '/profile':
         return <ProfilePage />;
       case '/templates/new':
@@ -159,12 +161,23 @@ const GlobalApp = ({ alchemy }) => {
     }
   }
 
-  async function getDementors() {
-    if (!wallet && !wallet?.provider) return;
-    const provider = await wallet.getEthersProvider();
-    const signer = await provider.getSigner();
-    fetchUserDementors(signer);
-  }
+  if (mainAppLoading)
+    return (
+      <Transition in={mainAppLoading} timeout={500} mountOnEnter unmountOnExit>
+        {state => (
+          <div
+            className={`flex-col text-white h-screen w-screen bg-black flex justify-center items-center fade-${state}`}
+          >
+            <h1 className='text-5xl text-center '>anky</h1>
+            <p className='text-sm mb-3'>(don&apos;t try to understand)</p>
+            <div class='lds-ripple'>
+              <div></div>
+              <div></div>
+            </div>
+          </div>
+        )}
+      </Transition>
+    );
 
   if (displayWritingGameLanding) {
     return (
@@ -188,14 +201,6 @@ const GlobalApp = ({ alchemy }) => {
 
           {/* <button onClick={() => console.log(userAppInformation)}>print</button> */}
           <div className='px-4 w-fit flex justify-center '>
-            <a
-              href='https://docs.google.com/document/d/18vHnmZRSwV-bzK6avTIFn3Q3LlcEf3HvwHccAvoDBkg/edit?usp=sharing  '
-              target='_blank'
-              rel='noopener noreferrer'
-              className={` cursor-pointer hover:text-gray-200 mr-2`}
-            >
-              whitepaper
-            </a>
             {authenticated ? (
               <button
                 className='hover:text-purple-600 cursor-pointer'
@@ -261,14 +266,6 @@ const GlobalApp = ({ alchemy }) => {
 
         {/* <button onClick={() => console.log(userAppInformation)}>print</button> */}
         <div className='px-4 w-fit flex justify-center '>
-          <a
-            href='https://docs.google.com/document/d/18vHnmZRSwV-bzK6avTIFn3Q3LlcEf3HvwHccAvoDBkg/edit?usp=sharing  '
-            target='_blank'
-            rel='noopener noreferrer'
-            className={` cursor-pointer hover:text-gray-200 mr-2`}
-          >
-            whitepaper
-          </a>
           {authenticated ? (
             <button
               className='hover:text-purple-600 cursor-pointer'

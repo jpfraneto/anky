@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { getAvailableTemplates } from '../lib/notebooks';
 
 function NotebookTemplatesList() {
   const [templates, setTemplates] = useState([]);

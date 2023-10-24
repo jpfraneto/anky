@@ -11,8 +11,7 @@ import { processFetchedTemplate } from '../lib/notebooks.js';
 import Spinner from './Spinner';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
 
-function TemplatePage({ wallet, userAnky, router, alchemy }) {
-  console.log('alchemy is: ', alchemy, wallet);
+function TemplatePage({ wallet, userAnky, router }) {
   const { authenticated, login } = usePrivy();
   const [templateData, setTemplateData] = useState(null);
   const [loadingTemplate, setLoadingTemplate] = useState(true);
@@ -27,10 +26,7 @@ function TemplatePage({ wallet, userAnky, router, alchemy }) {
   useEffect(() => {
     if (id && wallet) fetchTemplateData(id);
     else {
-      console.log('LKSAJOIC', id);
-
       if (id) {
-        console.log('salhcasiljñla');
         fetchTemplateFromServer();
       }
     }
@@ -51,7 +47,6 @@ function TemplatePage({ wallet, userAnky, router, alchemy }) {
   };
 
   async function fetchTemplateData(templateId) {
-    console.log('inside the fetch template data', userAnky);
     if (!wallet) return;
     let provider = await wallet.getEthersProvider();
     let signer;
@@ -128,27 +123,19 @@ function TemplatePage({ wallet, userAnky, router, alchemy }) {
       setMintedNotebookId(notebookId);
       setMintedNotebookSuccess(true);
       setMintingNotebook(false);
-
+      let newNotebooksArray;
       setNotebookInformation({ creatorAmount, userAmount, notebookId });
       setUserAppInformation(x => {
-        console.log(
-          'the x in the user app information before adding a new notebook is: ',
-          x
-        );
-        setUserData('userNotebooks', [
+        newNotebooksArray = [
           ...x.userNotebooks,
           { notebookId: notebookId, userPages: [], template: templateData },
-        ]);
+        ];
         return {
           ...x,
-          userNotebooks: [
-            ...x.userNotebooks,
-            { notebookId: notebookId, userPages: [], template: templateData },
-          ],
+          userNotebooks: newNotebooksArray,
         };
       });
-
-      // Implement post-mint logic if needed
+      setUserData('userNotebooks', newNotebooksArray);
     } catch (error) {
       setMintingNotebook(false);
       console.error('Error during minting: ', error.message);

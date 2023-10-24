@@ -8,13 +8,8 @@ import { baseGoerli } from '@wagmi/chains';
 import { configureChains, createConfig } from 'wagmi';
 import { publicProvider } from 'wagmi/providers/public';
 import { Transition } from 'react-transition-group';
-import { InjectedConnector } from 'wagmi/connectors/injected';
 import BottomNavbar from '../components/BottomNavbar';
 import Head from 'next/head';
-import Button from '../components/Button';
-import Image from 'next/image';
-import Link from 'next/link';
-import Navbar from '../components/Navbar';
 import { PWAProvider, usePWA } from '../context/pwaContext';
 import { UserProvider } from '../context/UserContext';
 import { initializeDB } from '../lib/idbHelper';
@@ -24,8 +19,8 @@ import { Network, Alchemy } from 'alchemy-sdk';
 const configureChainsConfig = configureChains([baseGoerli], [publicProvider()]);
 
 const settings = {
-  apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY, // Replace with your Alchemy API Key.
-  network: Network.BASE_GOERLI, // Replace with your network.
+  apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY,
+  network: Network.BASE_GOERLI,
 };
 
 const alchemy = new Alchemy(settings);
@@ -34,19 +29,7 @@ const righteous = Righteous({ subsets: ['latin'], weight: ['400'] });
 const GlobalApp = dynamic(() => import('../components/GlobalApp'));
 
 function MyApp({ Component, pageProps }) {
-  const {
-    isAnkyReady,
-    setAnkyImages,
-    setIsAnkyReady,
-    setIsAnkyLoading,
-    writingReady,
-    enteredTheAnkyverse,
-    meditationReady,
-    setMeditationReady,
-  } = usePWA();
-
   const [isDesktop, setIsDesktop] = useState(false);
-  const [mainAppLoading, setMainAppLoading] = useState(true);
 
   useEffect(() => {
     // const isStandalone = window.matchMedia(
@@ -65,7 +48,6 @@ function MyApp({ Component, pageProps }) {
     if (window.innerWidth > 768) {
       setIsDesktop(true);
     }
-    setMainAppLoading(false);
   }, []);
 
   useEffect(() => {
@@ -103,29 +85,14 @@ function MyApp({ Component, pageProps }) {
 
   const handleLogin = async user => {};
 
-  if (mainAppLoading)
-    return (
-      <Transition in={mainAppLoading} timeout={500} mountOnEnter unmountOnExit>
-        {state => (
-          <div
-            className={`flex-col text-white h-screen w-screen bg-black flex justify-center items-center fade-${state}`}
-          >
-            <h1 className='text-5xl text-center '>anky</h1>
-            <p className='text-sm mb-3'>(don&apos;t try to understand)</p>
-            <div class='lds-ripple'>
-              <div></div>
-              <div></div>
-            </div>
-          </div>
-        )}
-      </Transition>
-    );
-
   return (
     <main className={`${righteous.className}`}>
       <Head>
         <title>Anky</title>
-        <meta name='description' content='Anky is you' />
+        <meta
+          name='description'
+          content='Transform writing into a meditation practice like no other.'
+        />
         <link rel='icon' href='/favicon.ico' />
         <link rel='manifest' href='/manifest.json' />
         <meta
