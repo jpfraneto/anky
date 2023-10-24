@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { useContractRead } from 'wagmi';
 import { createTBA } from '../lib/backend';
 import Button from './Button';
+import SampleButton from './SampleButton';
 import { setUserData } from '../lib/idbHelper';
 import templatesContractABI from '../lib/templatesABI.json';
 import Spinner from './Spinner';
