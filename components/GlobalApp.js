@@ -6,6 +6,7 @@ import { getAnkyverseDay, getAnkyverseQuestion } from '../lib/ankyverse';
 import { useUser } from '../context/UserContext';
 import { useRouter } from 'next/router';
 import { fetchUserDementors } from '../lib/notebooks';
+import { Transition } from 'react-transition-group';
 import NewTemplatePage from './NewTemplatePage';
 import LandingPage from './LandingPage';
 import DementorPage from './DementorById';
