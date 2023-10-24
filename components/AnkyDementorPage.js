@@ -11,15 +11,14 @@ import { useUser } from '../context/UserContext';
 
 const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
   const { getAccessToken, authenticated, user } = usePrivy();
-  const [response, setResponse] = useState(null); // Response from API
   const [time, setTime] = useState(0);
   const [text, setText] = useState('');
   const [areYouSure, setAreYouSure] = useState(false);
   const [loadWritingGame, setLoadWritingGame] = useState(false);
-  const [provider, setProvider] = useState(null);
   const [ankyDementorId, setAnkyDementorId] = useState(null);
   const [ankyDementorCreated, setAnkyDementorCreated] = useState(false);
   const [userOwnsDementor, setUserOwnsDementor] = useState(false);
+  const [responseFromAnkyReady, setResponseFromAnkyReady] = useState(false);
   const [writingGameProps, setWritingGameProps] = useState(null);
   const [loading, setLoading] = useState(false); // Loading state
   const { setUserAppInformation } = useUser();
@@ -45,6 +44,7 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
   const createAnkyDementor = async finishText => {
     try {
       const authToken = await getAccessToken();
+      const provider = await thisWallet.getEthersProvider();
 
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/ai/tell-me-who-you-are`,
@@ -60,6 +60,7 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
           }),
         }
       );
+      setResponseFromAnkyReady(true);
       const { firstPageCid } = await response.json();
       console.log('in here, the cid is: ', firstPageCid);
 
@@ -124,6 +125,14 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
       <div>
         <Spinner />
         <p className='text-white'>loading...</p>
+        {responseFromAnkyReady && (
+          <div className=''>
+            <p className='text-white mt-2'>anky already has your notebook</p>
+            <p className='text-white mt-2'>
+              now it is going to store it on the eternal library
+            </p>
+          </div>
+        )}
       </div>
     );
 
