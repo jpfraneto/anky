@@ -5,7 +5,7 @@ import Link from 'next/link';
 const EulogiaCard = ({ eulogia }) => {
   console.log('the eulogia inside the card is: ', eulogia);
   return (
-    <Link href={`/eulogias/${eulogia.eulogiaID}`} passHref>
+    <Link href={`/eulogias/${eulogia.eulogiaId}`} passHref>
       <div className='text-black flex m-2 flex-col space-y-2 w-fit p-2 bg-orange-500 rounded-xl hover:bg-orange-600 cursor-pointer'>
         <div className='w-36 h-36 rounded-xl overflow-hidden mx-auto relative'>
           <Image

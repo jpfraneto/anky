@@ -113,7 +113,7 @@ const GlobalApp = ({ alchemy }) => {
           />
         );
 
-      case '/100builders':
+      case '/community-notebook':
         return <BuildersPage />;
       case '/user':
         return <UserPage />;

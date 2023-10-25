@@ -466,8 +466,8 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
           )}
         </div>
       </div>
-      <div className='w-96 mx-auto mb-16'>
-        <div className='flex justify-center'>
+      <div className='w-full mx-auto mb-16'>
+        <div className='flex w-4/5 mx-auto justify-center'>
           {authenticated && (
             <>
               <Link passHref href='/eulogias/new'>

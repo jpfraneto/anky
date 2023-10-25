@@ -270,7 +270,7 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
     );
 
   return (
-    <div className='text-white md:w-3/5 mx-auto'>
+    <div className='text-white md:w-3/5 mx-auto p-4'>
       <h2 className='text-4xl my-2'>{notebookTemplate.metadata.title}</h2>{' '}
       <small className='italic'>{notebookTemplate.metadata.description}</small>
       <div className='text-left my-4 '>

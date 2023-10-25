@@ -9,6 +9,7 @@ import { useRouter } from 'next/router';
 import buildersABI from '../lib/buildersABI.json';
 
 import { usePrivy } from '@privy-io/react-auth';
+import Spinner from './Spinner';
 
 function sleep(ms) {
   return new Promise(resolve => {
@@ -173,13 +174,13 @@ const DesktopWritingGame = ({
         const arweaveLink = `https://arweave.net/${response.bundlrResponseId}`;
         await callSmartContract(arweaveLink);
         setSavedText(true);
-        setIsAnkyLoading(true);
-        router.push('/100builders');
+        router.push('/community-notebook');
       } else {
         alert('There was an error, contact jp asap.');
       }
     } catch (error) {
       alert('There was an error fetching the api route. Contact jp asap.');
+      console.log('the error was:', error);
     }
   };
 
@@ -246,6 +247,14 @@ const DesktopWritingGame = ({
       </div>
     );
 
+  if (savingTextAnon)
+    return (
+      <div>
+        <p>loading...</p>
+        <Spinner />
+      </div>
+    );
+
   return (
     <>
       <audio ref={audioRef}>
@@ -263,7 +272,7 @@ const DesktopWritingGame = ({
                 {ankyverseDate}
               </small>
               <p
-                className={`${righteous.className} text-5xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]   mb-4 font-bold text-center`}
+                className={`${righteous.className} text-2xl mt-16 md:mt-0 md:text-5xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]   mb-4 font-bold text-center`}
               >
                 {userPrompt}
               </p>
@@ -281,7 +290,9 @@ const DesktopWritingGame = ({
               transition: 'top 1s, bottom 1s, left 1s, right 1s', // smooth transition over 1 second
             }}
             className={`${dancingScript.className} ${text && 'absolute'} ${
-              text ? 'md:aspect-video md:flex w-full h-full' : ' w-3/5 h-64'
+              text
+                ? 'md:aspect-video md:flex w-full h-full'
+                : 'w-4/5 md:w-3/5 h-64'
             } p-4 text-white ${
               time > 2 && 'opacity-80'
             } placeholder-white  text-2xl border border-white rounded-md  bg-opacity-10 bg-black`}
@@ -289,23 +300,26 @@ const DesktopWritingGame = ({
             placeholder='just write...'
             onChange={handleTextChange}
           ></textarea>
-          <div>
-            <div className='flex w-48 justify-center mx-auto mt-4'>
-              <Button
-                buttonText='cancel'
-                buttonColor='bg-red-600'
-                buttonAction={() => {
-                  if (displayWritingGameLanding) {
-                    setDisplayWritingGameLanding(false);
-                  } else {
-                    if (router.pathname.includes('write'))
-                      return router.push('/');
-                    router.back();
-                  }
-                }}
-              />
+          {time === 0 && (
+            <div>
+              <div className='flex w-48 justify-center mx-auto mt-4'>
+                <Button
+                  buttonText='cancel'
+                  buttonColor='bg-red-600'
+                  buttonAction={() => {
+                    if (displayWritingGameLanding) {
+                      setDisplayWritingGameLanding(false);
+                    } else {
+                      if (router.pathname.includes('write'))
+                        return router.push('/');
+                      router.back();
+                    }
+                  }}
+                />
+              </div>
             </div>
-          </div>
+          )}
+
           {text && (
             <div
               className={`${

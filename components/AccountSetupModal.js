@@ -26,7 +26,7 @@ const AccountSetupModal = ({
 }) => {
   const { logout } = usePrivy();
   return (
-    <div className='fixed top-0 left-0 w-full h-full bg-opacity-70 bg-gray-900 flex justify-center items-center z-50'>
+    <div className='fixed top-0 left-0 w-full h-full bg-opacity-70 bg-gray-900 flex justify-center items-center z-100'>
       <div className='bg-white p-8 rounded-lg shadow-md space-y-4'>
         {/* <p onClick={logout}>logout</p> */}
         <h2 className='text-xl font-semibold'>Setting up your account...</h2>

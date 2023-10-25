@@ -251,7 +251,7 @@ const WritingGameComponent = ({
               }`}
             >
               <p
-                className={`${righteous.className} text-5xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]   my-4 font-bold text-center`}
+                className={`${righteous.className} text-2xl mt-12 md:mt-0 md:text-5xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]   my-4 font-bold text-center`}
               >
                 {prompt}
               </p>
@@ -269,7 +269,9 @@ const WritingGameComponent = ({
               transition: 'top 1s, bottom 1s, left 1s, right 1s', // smooth transition over 1 second
             }}
             className={`${dancingScript.className} ${text && 'absolute'} ${
-              text ? 'md:aspect-video md:flex w-full h-full' : 'w-3/5 h-48'
+              text
+                ? 'md:aspect-video md:flex w-full h-full'
+                : 'w-4/5 md:w-3/5 h-48'
             } p-4 text-white ${
               time > 2 && 'opacity-80'
             } placeholder-white  text-2xl border border-white rounded-md  bg-opacity-10 bg-black`}

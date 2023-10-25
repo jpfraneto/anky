@@ -227,7 +227,7 @@ function TemplatePage({ wallet, userAnky, router }) {
                     />
                     <Button
                       buttonColor='bg-blue-400 mx-2'
-                      buttonText={linkCopied ? `copied` : `copy invite link`}
+                      buttonText={linkCopied ? `copied` : `copy link`}
                       buttonAction={copyToClipboard}
                     />
                     <Link href='/library' passHref>

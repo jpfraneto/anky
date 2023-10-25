@@ -52,16 +52,16 @@ const LibraryPage = ({}) => {
   return (
     <div>
       <h2 className='text-white text-2xl mt-2'>library</h2>
-      <div className='text-white py-4 flex w-screen px-4'>
-        <div className='w-2/5 aspect-square p-2 text-white flex flex-col items-center'>
-          <div className='relative w-3/5 aspect-square rounded-2xl border-2 border-white overflow-hidden'>
+      <div className='text-white py-4 flex flex-col md:flex-row w-screen px-4'>
+        <div className='w-full md:w-2/5 aspect-square p-2 text-white flex flex-col items-center'>
+          <div className='relative w-4/5 md:w-3/5 aspect-square rounded-2xl border-2 border-white overflow-hidden'>
             <Image fill src={`/ankys/elmasmejor.png`} />
           </div>
           <p className='mt-2'>welcome back,</p>
           <p className='mt-2'>are you ready to keep writing?</p>
         </div>
-        <div className='w-3/5 rounded-xl overflow-hidden'>
-          <div className='flex w-full  h-12 rounded-xl text-black'>
+        <div className='w-full md:w-3/5 rounded-xl overflow-hidden'>
+          <div className='flex overflow-x-scroll w-fit overflow-x-scroll md:w-full  md:h-12 rounded-t-xl md:rounded-xl text-black'>
             <button
               className={`px-4 w-1/4 py-2 ${
                 activeTab === 'journals' ? 'bg-green-600' : 'bg-green-300'

@@ -385,7 +385,7 @@ function CreateNotebookTemplate({ userAnky }) {
     return (
       isModalOpen && (
         <div className='fixed top-0 left-0 bg-black w-full h-full flex items-center justify-center z-50'>
-          <div className='bg-purple-300 overflow-y-scroll text-black rounded relative p-6 w-2/3 h-2/3'>
+          <div className='bg-purple-300 overflow-y-scroll text-black rounded relative p-6 w-4/5 md:w-2/3 h-4/5 md:h-2/3'>
             {success ? (
               <SuccessfulNotebookTemplate
                 template={{ title, prompts, createdTemplateId }}
@@ -451,12 +451,12 @@ function CreateNotebookTemplate({ userAnky }) {
                       <Button
                         buttonAction={finalSubmit}
                         buttonColor='bg-green-600'
-                        buttonText='Confirm and Create'
+                        buttonText='create'
                       />
                       <Button
                         buttonAction={() => setIsModalOpen(false)}
                         buttonColor='bg-red-600'
-                        buttonText='Cancel'
+                        buttonText='cancel'
                       />
                     </div>
                   </>
@@ -481,10 +481,10 @@ function CreateNotebookTemplate({ userAnky }) {
   return (
     <div className='my-4 md:w-2/3 text-gray-200 flex items-center justify-center'>
       <form
-        className='bg-black w-full flex flex-col p-6  px-8 rounded shadow-md space-y-4'
+        className='bg-black w-full flex flex-col p-2 md:p-6 rounded shadow-md space-y-4'
         onSubmit={handleSubmit}
       >
-        <h2 className='text-gray-200 text-2xl'>new Notebook Template</h2>
+        <h2 className='text-gray-200 text-2xl'>new notebook template</h2>
 
         <div className='my-4 md:w-full text-gray-800 flex flex-col items-center justify-center'>
           <h3 className='text-gray-500'>EXAMPLES</h3>
@@ -610,9 +610,7 @@ function CreateNotebookTemplate({ userAnky }) {
             className='bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-fit mt-4'
             type='submit'
           >
-            {loadingNotebookCreation
-              ? 'loading...'
-              : 'create notebook template'}
+            {loadingNotebookCreation ? 'loading...' : 'create template'}
           </button>
           <Link
             className='bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded w-fit mt-4'

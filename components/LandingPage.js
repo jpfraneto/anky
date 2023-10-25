@@ -186,8 +186,9 @@ function LandingPage({
           </div>
 
           <p className='mb-4'>
-            your Anky safeguards your deepest stories, secrets, and the truths
-            you write.
+            your Anky is the keeper of everything that you write, and i&apos;m
+            understanding how to encrypt your writings using it so that only you
+            can read it later.
           </p>
           <div className='w-48 mx-auto'>
             <Link href='/ankyverse' passHref>
@@ -213,16 +214,17 @@ function LandingPage({
 
       <div className='py-8 px-2 md:px-64 bg-gray-200'>
         <h2 className='text-3xl font-semibold mb-6'>the tech</h2>
+
         <p className='mb-2 mx-auto'>
-          blockchain and ai collide on this transformative platform.
+          each of your writings is on arweave, an eternal decentralized
+          database.
         </p>
         <p className='mb-2 mx-auto'>
-          each of your writings will be stored on arweave, an eternal
-          decentralized database.
+          each writing container is an NFT, which has different entries where
+          the address to retrieve that is stored.
         </p>
         <p className='mb-2 mx-auto'>
-          the pointer to it is stored inside the blockchain, creating a unique
-          storage system designed to save your writings forever.
+          this allows this system to store your writings forever.
         </p>
       </div>
 

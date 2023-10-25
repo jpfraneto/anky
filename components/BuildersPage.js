@@ -23,6 +23,17 @@ function BuildersPage() {
 
   const thisWallet = wallets[0];
 
+  const handleKeyDown = event => {
+    console.log('in here', event.key, displayedPage);
+    if (event.key === 'ArrowLeft') {
+      console.log('going left');
+      setDisplayedPage(prevPage => Math.max(0, prevPage - 1));
+    } else if (event.key === 'ArrowRight') {
+      console.log('going right');
+      setDisplayedPage(prevPage => Math.min(writings.length - 1, prevPage + 1));
+    }
+  };
+
   useEffect(() => {
     async function fetchWritings() {
       if (!thisWallet) return;
@@ -38,11 +49,11 @@ function BuildersPage() {
       );
 
       const allWritings = await writingsContract.getAllWritings();
+      console.log('sen', allWritings.length - 1);
       setDisplayedPage(allWritings.length - 1);
       const writingsContent = await Promise.all(
         allWritings.map(async url => {
           const response = await fetch(url);
-          console.log('in here, the response is: ', response);
           return await response.text();
         })
       );
@@ -52,7 +63,12 @@ function BuildersPage() {
     fetchWritings();
   }, [thisWallet]);
 
-  const changeDisplayedPage = () => {};
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
 
   if (!thisWallet) return <p className='text-white'>Please login first.</p>;
 
@@ -65,11 +81,11 @@ function BuildersPage() {
     );
 
   return (
-    <div className='flex text-white space-x-2  flex-col'>
+    <div className='flex text-white space-x-2 mb-10 flex-col'>
       <h2 className='text-white text-xl mt-2'>community notebook</h2>
       <div className=' flex flex-col text-black'>
         <Notebook text={writings[displayedPage]} />;
-        <div className='flex w-96 mx-auto mb-2 overflow-x-scroll'>
+        <div className='flex flex-nowrap w-96 mx-auto mb-2 overflow-x-scroll'>
           {writings.map((x, i) => {
             {
               return (
@@ -86,15 +102,18 @@ function BuildersPage() {
             }
           })}
         </div>
-        <Link href='/library' passHref>
-          <Button buttonColor='bg-green-600' buttonText='my library' />
-        </Link>
+        <div className='w-48 mx-auto'>
+          <Link href='/library' passHref>
+            <Button buttonColor='bg-green-600' buttonText='my library' />
+          </Link>
+        </div>
       </div>
     </div>
   );
 }
 
 const Notebook = ({ text }) => {
+  console.log('the text is: ', text);
   return (
     <div
       id='notebook-paper'
