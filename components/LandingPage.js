@@ -37,6 +37,9 @@ function LandingPage({
   const { userAppInformation, libraryLoading } = useUser();
   const router = useRouter();
   const [startJourney, setStartJourney] = useState(false);
+  const [promptForTheUser, setPromptForTheUser] = useState(
+    'what makes you happy?'
+  );
 
   return (
     <div className='w-screen'>
@@ -123,7 +126,7 @@ function LandingPage({
           <Button
             buttonText='im ready'
             buttonAction={() => setDisplayWritingGameLanding(true)}
-            buttonColor='bg-green-400 text-black'
+            buttonColor='bg-gradient-to-r from-red-500 via-yellow-600 to-violet-500 text-black'
           />
         </div>
       </div>
@@ -186,15 +189,26 @@ function LandingPage({
           </div>
 
           <p className='mb-4'>
-            your Anky is the keeper of everything that you write, and i&apos;m
-            understanding how to encrypt your writings using it so that only you
-            can read it later.
+            your Anky is the keeper of everything that you write.
           </p>
-          <div className='w-48 mx-auto'>
-            <Link href='/ankyverse' passHref>
+          <p className='mb-4'>
+            i&apos;m understanding how to encrypt your writings so that only you
+            are the one that can access what is inside them.
+          </p>
+          <div className='flex h-12 justify-center items-center '>
+            <input
+              type='text'
+              value={promptForTheUser}
+              onChange={e => setPromptForTheUser(e.target.value)}
+              className=' w-96 text-black mx-4 px-2 py-2 rounded-xl border border-black'
+            />
+            <Link
+              href={`/write?p=${promptForTheUser.replaceAll(' ', '-')}`}
+              passHref
+            >
               <Button
                 buttonText='test it out'
-                buttonColor='bg-green-400 text-black'
+                buttonColor='bg-gradient-to-r from-red-500 via-yellow-600 to-violet-500 text-black'
               />
             </Link>
           </div>
