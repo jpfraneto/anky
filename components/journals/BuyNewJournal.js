@@ -216,9 +216,9 @@ const BuyNewJournal = () => {
                 ) : (
                   <div className='flex justify-center mb-4'>
                     {[
-                      { name: 'sm', size: 0 },
-                      { name: 'md', size: 1 },
-                      { name: 'lg', size: 2 },
+                      { name: 'test', size: 0 },
+                      { name: 'go', size: 1 },
+                      { name: 'zen', size: 2 },
                     ].map((x, i) => {
                       return (
                         <div
@@ -228,11 +228,11 @@ const BuyNewJournal = () => {
                           <span
                             key={i}
                             onClick={() => mintNewJournal(x.size)}
-                            className='m-2 bg-green-400 cursor-pointer hover:bg-green-600 shadow-lg shadow-black p-2 w-8 h-8 rounded-xl flex justify-center items-center'
+                            className='m-2 bg-green-400 cursor-pointer hover:bg-green-600 shadow-lg shadow-black p-2 w-fit rounded-xl flex justify-center items-center'
                           >
                             {x.name}
                           </span>
-                          <p>{transformJournalType(x)} pages</p>
+                          <p>{transformJournalType(i)} pages</p>
                           <p>
                             {journalPrices[x.size] !== undefined
                               ? `${journalPrices[x.size]} ETH`

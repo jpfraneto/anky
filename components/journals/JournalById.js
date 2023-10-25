@@ -75,8 +75,9 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
 
         if (userJournals?.length > 0) {
           const thisJournal = userJournals.filter(
-            x => x.journalId === router.query.id
+            x => x.journalId == router.query.id
           );
+          console.log('this journal is: ', thisJournal);
           if (thisJournal.length > 0) {
             console.log('sajl', thisJournal);
             setJournal(thisJournal[0]);
@@ -352,19 +353,21 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
           write journal
         </button>
       )}
-
-      <div className='flex space-x-2 justify-center'>
-        <Button
-          buttonText='buy new journal'
-          buttonColor='bg-purple-600'
-          buttonAction={() => router.push('/journal/new')}
-        />
-        <Button
-          buttonText='library'
-          buttonColor='bg-green-600'
-          buttonAction={() => router.push('/library')}
-        />
+      <div className='flex justify-center w-96 mx-auto'>
+        <div className='flex space-x-2 justify-center'>
+          <Button
+            buttonText='buy new journal'
+            buttonColor='bg-purple-600'
+            buttonAction={() => router.push('/journal/new')}
+          />
+          <Button
+            buttonText='library'
+            buttonColor='bg-green-600'
+            buttonAction={() => router.push('/library')}
+          />
+        </div>
       </div>
+
       {renderModal()}
     </div>
   );
