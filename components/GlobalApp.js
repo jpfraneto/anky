@@ -49,7 +49,6 @@ const GlobalApp = ({ alchemy }) => {
 
   function getComponentForRoute(route, router) {
     if (!ready) return;
-    console.log('inside the get component for route');
     switch (route) {
       case '/':
         return (
