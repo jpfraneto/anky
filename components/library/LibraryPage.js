@@ -85,9 +85,9 @@ const LibraryPage = ({}) => {
           </div>
         ) : (
           <div className='w-full md:w-3/5 rounded-xl overflow-hidden'>
-            <div className='flex  w-fit overflow-x-scroll md:w-full  md:h-12 rounded-t-xl text-black'>
+            <div className='flex w-full overflow-x-scroll md:w-full text-xs md:h-12 rounded-t-xl text-black'>
               <button
-                className={`px-4 w-1/4 py-2 ${
+                className={`px-1 md:px-4 w-1/5 py-2 ${
                   activeTab === 'journals' ? 'bg-green-600' : 'bg-green-300'
                 }`}
                 onClick={() => setActiveTab('journals')}
@@ -95,7 +95,7 @@ const LibraryPage = ({}) => {
                 Journals
               </button>
               <button
-                className={`px-4 w-1/4 py-2 ${
+                className={`px-1 md:px-4 w-1/5 py-2 ${
                   activeTab === 'templates' ? 'bg-cyan-600' : 'bg-cyan-300'
                 }`}
                 onClick={() => setActiveTab('templates')}
@@ -103,7 +103,7 @@ const LibraryPage = ({}) => {
                 Templates
               </button>
               <button
-                className={`px-4 w-1/4 py-2 ${
+                className={`px-1 md:px-4 w-1/5 py-2 ${
                   activeTab === 'notebooks' ? 'bg-purple-600' : 'bg-purple-300'
                 }`}
                 onClick={() => setActiveTab('notebooks')}
@@ -111,7 +111,7 @@ const LibraryPage = ({}) => {
                 Notebooks
               </button>
               <button
-                className={`px-4 w-1/4 py-2 ${
+                className={`px-1 md:px-4 w-1/5 py-2 ${
                   activeTab === 'eulogias' ? 'bg-orange-600' : 'bg-orange-300'
                 }`}
                 onClick={() => {
@@ -121,7 +121,7 @@ const LibraryPage = ({}) => {
                 Eulogias
               </button>
               <button
-                className={`px-4 w-1/4 py-2 ${
+                className={`px-1 md:px-4 w-1/5 py-2 ${
                   activeTab === 'dementor' ? 'bg-red-600' : 'bg-red-300'
                 }`}
                 onClick={() => setActiveTab('dementor')}
@@ -213,7 +213,7 @@ const LibraryPage = ({}) => {
 
             {activeTab === 'eulogias' && (
               <>
-                <div className=' bg-orange-300 rounded-b-xl p-4 flex flex-wrap'>
+                <div className=' bg-orange-300 rounded-b-xl p-1 md:p-4 flex flex-wrap'>
                   {eulogias && eulogias.length > 0 ? (
                     eulogias.map((x, i) => {
                       return <EulogiaCard eulogia={x} key={i} />;

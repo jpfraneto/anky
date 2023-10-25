@@ -251,6 +251,8 @@ export const UserProvider = ({ children }) => {
       }
     } catch (error) {
       setAppLoading(false);
+      setLoadingLibrary(false);
+      alert('There was an error retrieving your library :(');
       console.log('there was an error retrieving the users library.', error);
     }
   };

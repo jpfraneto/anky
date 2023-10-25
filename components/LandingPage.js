@@ -53,7 +53,7 @@ function LandingPage({
       >
         <div className='absolute inset-0 h-screen bg-black opacity-40'></div>
         <div className='relative z-10 flex flex-col items-center justify-center h-full'>
-          <h1 className='text-5xl text-gray-400 font-bold mt-32 mb-8'>
+          <h1 className='text-5xl text-gray-400 font-bold mt-48 md:mt-32 mb-8'>
             {authenticated ? 'welcome back, my friend' : 'tell us who you are'}
           </h1>
 
@@ -195,7 +195,7 @@ function LandingPage({
             i&apos;m understanding how to encrypt your writings so that only you
             are the one that can access what is inside them.
           </p>
-          <div className='flex h-12 justify-center items-center '>
+          <div className='flex flex-col md:flex-row h-12 justify-center items-center '>
             <input
               type='text'
               value={promptForTheUser}
