@@ -85,7 +85,7 @@ const LibraryPage = ({}) => {
           </div>
         ) : (
           <div className='w-full md:w-3/5 rounded-xl overflow-hidden'>
-            <div className='flex w-full overflow-x-scroll md:w-full text-xs md:h-12 rounded-t-xl text-black'>
+            <div className='flex w-full overflow-x-scroll md:w-full text-xs md:text-lg md:h-12 rounded-t-xl text-black'>
               <button
                 className={`px-1 md:px-4 w-1/5 py-2 ${
                   activeTab === 'journals' ? 'bg-green-600' : 'bg-green-300'
