@@ -16,6 +16,7 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
   const [areYouSure, setAreYouSure] = useState(false);
   const [loadWritingGame, setLoadWritingGame] = useState(false);
   const [ankyDementorId, setAnkyDementorId] = useState(null);
+  const [ankyResponseIsReady, setAnkyResponseIsReady] = useState(false);
   const [ankyDementorCreated, setAnkyDementorCreated] = useState(false);
   const [userOwnsDementor, setUserOwnsDementor] = useState(false);
   const [responseFromAnkyReady, setResponseFromAnkyReady] = useState(false);
@@ -62,6 +63,7 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
       );
       setResponseFromAnkyReady(true);
       const { firstPageCid } = await response.json();
+      setAnkyResponseIsReady(true);
       console.log('in here, the cid is: ', firstPageCid);
 
       let signer = await provider.getSigner();
@@ -72,11 +74,11 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
       );
       const array = new Uint32Array(1);
       window.crypto.getRandomValues(array);
-      const newCID = array[0];
+      const newUID = array[0];
 
       const tx = await ankyDementorsContract.createAnkyDementorNotebook(
         firstPageCid,
-        newCID
+        newUID
       );
       const receipt = await tx.wait();
       const event = receipt.events?.find(
@@ -119,20 +121,28 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
       console.error('Failed to write to dementor:', error);
     }
   };
+  function messagesWhileUploading() {
+    return (
+      <div>
+        {ankyResponseIsReady && (
+          <div className=''>
+            <p className='text-white mt-2'>
+              anky already has your dementor notebook
+            </p>
+            <p className='text-white mt-2'>
+              now it is going to store it on the eternal library
+            </p>
+          </div>
+        )}
+      </div>
+    );
+  }
 
   if (loading)
     return (
       <div>
         <Spinner />
         <p className='text-white'>loading...</p>
-        {responseFromAnkyReady && (
-          <div className=''>
-            <p className='text-white mt-2'>anky already has your notebook</p>
-            <p className='text-white mt-2'>
-              now it is going to store it on the eternal library
-            </p>
-          </div>
-        )}
       </div>
     );
 
@@ -143,6 +153,7 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
         text={text}
         minimumWritingTime={3}
         setLifeBarLength={setLifeBarLength}
+        messagesWhileUploading={messagesWhileUploading}
         lifeBarLength={lifeBarLength}
         setText={setText}
         time={time}

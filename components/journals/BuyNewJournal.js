@@ -125,19 +125,25 @@ const BuyNewJournal = () => {
         value: priceWei,
       });
       const receipt = await tx.wait();
+      console.log('the receipt isss', receipt);
 
       // Process logs from the transaction receipt
       const eventTopic = ethers.utils.id('JournalMinted(uint256,address)');
+      console.log('the event topic is: ', eventTopic);
       for (const log of receipt.logs) {
-        if (log.topics[0] === eventTopic) {
+        console.log('inside the log', log);
+        if (log.topics[0]) {
           const decodedLog = journalsContract.interface.parseLog(log);
+          console.log('the decoded log is: ', decodedLog);
           const { tokenId } = decodedLog.args;
+          console.log('the token iddd is', tokenId);
           const newJournalElement = {
             journalId: tokenId.toString(),
             entries: [],
             journalType: size,
             metadataCID: '',
           };
+          console.log('the new journal element is: ', newJournalElement);
 
           setUserAppInformation(x => {
             console.log(
@@ -214,58 +220,62 @@ const BuyNewJournal = () => {
                     <Spinner /> <p>loading...</p>
                   </div>
                 ) : (
-                  <div className='flex justify-center mb-4'>
-                    {[
-                      { name: 'test', size: 0 },
-                      { name: 'go', size: 1 },
-                      { name: 'zen', size: 2 },
-                    ].map((x, i) => {
-                      return (
-                        <div
-                          key={i}
-                          className='mx-4 text-center flex flex-col items-center rounded-xl bg-green-200 p-2 text-black'
-                        >
-                          <span
+                  <div>
+                    <div className='flex justify-center mb-4'>
+                      {[
+                        { name: 'test', size: 0 },
+                        { name: 'go', size: 1 },
+                        { name: 'zen', size: 2 },
+                      ].map((x, i) => {
+                        return (
+                          <div
                             key={i}
-                            onClick={() => mintNewJournal(x.size)}
-                            className='m-2 bg-green-400 cursor-pointer hover:bg-green-600 shadow-lg shadow-black p-2 w-fit rounded-xl flex justify-center items-center'
+                            className='mx-4 text-center flex flex-col items-center rounded-xl bg-green-200 p-2 text-black'
                           >
-                            {x.name}
-                          </span>
-                          <p>{transformJournalType(i)} pages</p>
-                          <p>
-                            {journalPrices[x.size] !== undefined
-                              ? `${journalPrices[x.size]} ETH`
-                              : ''}
-                          </p>
-                        </div>
-                      );
-                    })}
+                            <span
+                              key={i}
+                              onClick={() => mintNewJournal(x.size)}
+                              className='m-2 bg-green-400 cursor-pointer hover:bg-green-600 shadow-lg shadow-black p-2 w-fit rounded-xl flex justify-center items-center'
+                            >
+                              {x.name}
+                            </span>
+                            <p>{transformJournalType(i)} pages</p>
+                            <p>
+                              {journalPrices[x.size] !== undefined
+                                ? `${journalPrices[x.size]} ETH`
+                                : ''}
+                            </p>
+                          </div>
+                        );
+                      })}
+                    </div>
+                    <h2 className='mb-2'>important information</h2>
+                    <p className='mb-2'>
+                      the mission is to make what you will write here PRIVATE.
+                    </p>
+                    <p className='mb-2'>
+                      encrypted using your wallet, so that only you can read the
+                      contents of your notebook.
+                    </p>
+                    <p className='mb-2'>
+                      yes, it is stored on the blockchain, but the information
+                      inside it is not public.
+                    </p>
+                    <p className='mb-2'>
+                      it will be stored forever, but you need to access through
+                      this wallet in order to read what is inside.
+                    </p>
+
+                    <div className='mt-4 w-36 mx-auto'>
+                      <Link href='/library' passHref>
+                        <Button
+                          buttonText='library'
+                          buttonColor='bg-purple-600'
+                        />
+                      </Link>
+                    </div>
                   </div>
                 )}
-
-                <h2 className='mb-2'>important information</h2>
-                <p className='mb-2'>
-                  the mission is to make what you will write here PRIVATE.
-                </p>
-                <p className='mb-2'>
-                  encrypted using your wallet, so that only you can read the
-                  contents of your notebook.
-                </p>
-                <p className='mb-2'>
-                  yes, it is stored on the blockchain, but the information
-                  inside it is not public.
-                </p>
-                <p className='mb-2'>
-                  it will be stored forever, but you need to access through this
-                  wallet in order to read what is inside.
-                </p>
-
-                <div className='mt-4 w-36 mx-auto'>
-                  <Link href='/library' passHref>
-                    <Button buttonText='library' buttonColor='bg-purple-600' />
-                  </Link>
-                </div>
               </div>
             )}
           </>

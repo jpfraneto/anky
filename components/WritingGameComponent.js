@@ -31,6 +31,7 @@ const WritingGameComponent = ({
   musicUrl,
   minimumWritingTime = 3,
   fullDisplay,
+  messagesWhileUploading = null,
   text,
   setText,
   onFinish,
@@ -221,6 +222,7 @@ const WritingGameComponent = ({
       >
         <Spinner />
         <p className='text-white'>loading...</p>
+        {messagesWhileUploading()}
       </div>
     );
   }

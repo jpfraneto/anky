@@ -24,6 +24,7 @@ export const UserProvider = ({ children }) => {
 
   const [userAppInformation, setUserAppInformation] = useState({});
   const [appLoading, setAppLoading] = useState(true);
+  const [loadingLibrary, setLoadingLibrary] = useState(false);
   const [userIsReadyNow, setUserIsReadyNow] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [loadingUserStoredData, setLoadingUserStoredData] = useState(true);
@@ -144,13 +145,13 @@ export const UserProvider = ({ children }) => {
     // return authenticated && wallet && true;
     console.log(
       'inside the should initialize user',
-      localStorage.getItem('firstTimeUser188'),
+      localStorage.getItem('firstTimeUser189'),
       authenticated,
       wallet,
       userAppInformation
     );
     return (
-      !localStorage.getItem('firstTimeUser188') ||
+      !localStorage.getItem('firstTimeUser189') ||
       (authenticated &&
         wallet &&
         !userAppInformation?.ankyIndex &&
@@ -159,15 +160,23 @@ export const UserProvider = ({ children }) => {
     );
   };
 
-  const loadUserLibrary = async () => {
+  const loadUserLibrary = async (fromOutside = false) => {
+    console.log(
+      'inside the load user library function',
+      setupIsReady,
+      fromOutside,
+      authenticated,
+      wallet
+    );
     try {
       if (
-        setupIsReady &&
+        (setupIsReady || fromOutside) &&
         authenticated &&
         wallet &&
         wallet.address &&
         wallet.address.length > 0
       ) {
+        setLoadingLibrary(true);
         console.log('loading the users library');
         const { tba } = await callTba(wallet.address, setUserAppInformation);
         let provider = await wallet?.getEthersProvider();
@@ -179,7 +188,7 @@ export const UserProvider = ({ children }) => {
             return { ...x, wallet };
           });
 
-        if (reloadData || !userAppInformation.userJournals) {
+        if (fromOutside || reloadData || !userAppInformation.userJournals) {
           console.log('before fetching the journals');
           const userJournals = await fetchUserJournals(signer);
           console.log('the user journals are: ', userJournals);
@@ -188,7 +197,7 @@ export const UserProvider = ({ children }) => {
           });
         }
 
-        if (reloadData || !userAppInformation.userNotebooks) {
+        if (fromOutside || reloadData || !userAppInformation.userNotebooks) {
           console.log('before fetching the notebooks');
 
           const userNotebooks = await fetchUserNotebooks(signer, userTba);
@@ -199,7 +208,7 @@ export const UserProvider = ({ children }) => {
           });
         }
 
-        if (reloadData || !userAppInformation.userTemplates) {
+        if (fromOutside || reloadData || !userAppInformation.userTemplates) {
           console.log('before fetching the templates');
 
           const userTemplates = await fetchUserTemplates(
@@ -213,7 +222,7 @@ export const UserProvider = ({ children }) => {
           });
         }
 
-        if (reloadData || !userAppInformation.userEulogias) {
+        if (fromOutside || reloadData || !userAppInformation.userEulogias) {
           console.log('before fetching the eulogias');
 
           const userEulogias = await fetchUserEulogias(signer);
@@ -224,7 +233,7 @@ export const UserProvider = ({ children }) => {
           });
         }
 
-        if (reloadData || !userAppInformation.userDementors) {
+        if (fromOutside || reloadData || !userAppInformation.userDementors) {
           console.log('before fetching the dementors');
 
           const userDementors = await fetchUserDementors(signer);
@@ -234,6 +243,7 @@ export const UserProvider = ({ children }) => {
             return { ...x, userDementors: userDementors };
           });
         }
+        setLoadingLibrary(false);
         setLibraryLoading(false);
         setFinalSetup(true);
       } else {
@@ -374,8 +384,9 @@ export const UserProvider = ({ children }) => {
       setCurrentStep(5);
 
       console.log('all the initial setup is ready');
-      localStorage.setItem('firstTimeUser188', 'done');
+      localStorage.setItem('firstTimeUser189', 'done');
       setUserIsReadyNow(true);
+      setShowProgressModal(false);
       return setSetupIsReady(true);
     } catch (error) {
       console.log('Error initializing user', error);
@@ -399,7 +410,9 @@ export const UserProvider = ({ children }) => {
         userAppInformation,
         setUserAppInformation,
         appLoading,
+        loadingLibrary,
         libraryLoading,
+        loadUserLibrary,
       }}
     >
       {showProgressModal && (

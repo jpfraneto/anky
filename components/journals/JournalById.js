@@ -51,6 +51,23 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
     setEntryForDisplay(null);
   }, []);
 
+  const handleKeyDown = event => {
+    if (event.key === 'ArrowLeft') {
+      console.log('going left');
+      // setDisplayedPage(prevPage => Math.max(0, prevPage - 1));
+    } else if (event.key === 'ArrowRight') {
+      console.log('going right');
+      // setDisplayedPage(prevPage => Math.min(writings.length - 1, prevPage + 1));
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
   useEffect(() => {
     const handleKeyPress = event => {
       if (event.key === 'Escape' && isModalOpen) {

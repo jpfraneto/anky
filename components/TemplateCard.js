@@ -7,11 +7,12 @@ const TemplateCard = ({ template }) => {
   return (
     <Link href={`/template/${template.templateId}`}>
       <div className='p-2 m-2 rounded-xl bg-cyan-400 hover:bg-cyan-500 text-black'>
-        <h2 className='text-xl'>{template.metadata.title}</h2>
-        {/* <p>
-          {notebook.userPages.length}/
-          {notebook.template.metadata.prompts.length} prompts answered
-        </p> */}
+        <h2 className='text-2xl'>{template.metadata.title}</h2>
+        <p>
+          {template.supply} / {template.metadata.supply} available
+        </p>
+
+        <p className='text-xs'>{template.price} eth</p>
       </div>
     </Link>
   );

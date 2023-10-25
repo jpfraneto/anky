@@ -135,7 +135,7 @@ const NewEulogiaPage = ({ wallet }) => {
             );
 
             newEulogia = {
-              eulogiaID: eulogiaId,
+              eulogiaId: eulogiaId,
               maxMessages: maxMsgs,
               messageCount: 0,
 
