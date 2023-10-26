@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { ethers } from 'ethers';
 import { useWallets, usePrivy } from '@privy-io/react-auth';
 import WritingGameComponent from './WritingGameComponent';
-import AnkyDementorsAbi from '../lib/ankyDementorsAbi.json'; // Assuming you have the ABI
+import AnkyDementorsAbi from '../lib/ankyDementorsAbi.json';
 import { useUser } from '../context/UserContext';
 
 const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
@@ -72,10 +72,12 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
         AnkyDementorsAbi,
         signer
       );
+      console.log('the anky dementors contract is: ', ankyDementorsContract);
       const array = new Uint32Array(1);
+      console.log('the array is:', array);
       window.crypto.getRandomValues(array);
       const newUID = array[0];
-
+      console.log('the newUID is: ', newUID);
       const tx = await ankyDementorsContract.createAnkyDementorNotebook(
         firstPageCid,
         newUID

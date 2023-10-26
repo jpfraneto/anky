@@ -61,9 +61,9 @@
     "inputs": [
       {
         "indexed": true,
-        "internalType": "uint32",
+        "internalType": "uint256",
         "name": "dementorId",
-        "type": "uint32"
+        "type": "uint256"
       },
       {
         "indexed": true,
@@ -158,12 +158,12 @@
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "uint32", "name": "", "type": "uint32" }],
+    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "name": "dementorNotebooks",
     "outputs": [
       { "internalType": "string", "name": "introCID", "type": "string" },
       { "internalType": "uint256", "name": "currentPage", "type": "uint256" },
-      { "internalType": "uint32", "name": "dementorId", "type": "uint32" }
+      { "internalType": "uint256", "name": "dementorId", "type": "uint256" }
     ],
     "stateMutability": "view",
     "type": "function"
@@ -180,7 +180,7 @@
     "name": "doesUserOwnAnkyDementor",
     "outputs": [
       { "internalType": "bool", "name": "", "type": "bool" },
-      { "internalType": "uint32", "name": "", "type": "uint32" }
+      { "internalType": "uint256", "name": "", "type": "uint256" }
     ],
     "stateMutability": "view",
     "type": "function"
@@ -197,9 +197,9 @@
   {
     "inputs": [
       {
-        "internalType": "uint32",
+        "internalType": "uint256",
         "name": "dementorNotebookId",
-        "type": "uint32"
+        "type": "uint256"
       }
     ],
     "name": "getCurrentPage",
@@ -234,7 +234,7 @@
   },
   {
     "inputs": [
-      { "internalType": "uint32", "name": "dementorId", "type": "uint32" }
+      { "internalType": "uint256", "name": "dementorId", "type": "uint256" }
     ],
     "name": "getDementor",
     "outputs": [
@@ -273,7 +273,7 @@
             "name": "currentPage",
             "type": "uint256"
           },
-          { "internalType": "uint32", "name": "dementorId", "type": "uint32" }
+          { "internalType": "uint256", "name": "dementorId", "type": "uint256" }
         ],
         "internalType": "struct AnkyDementor.DementorNotebook",
         "name": "",
@@ -286,7 +286,18 @@
   {
     "inputs": [],
     "name": "getUserDementors",
-    "outputs": [{ "internalType": "uint32[]", "name": "", "type": "uint32[]" }],
+    "outputs": [
+      { "internalType": "uint256[]", "name": "", "type": "uint256[]" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "query", "type": "address" }
+    ],
+    "name": "getUsersAnky",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
     "stateMutability": "view",
     "type": "function"
   },
@@ -449,7 +460,7 @@
       { "internalType": "uint256", "name": "", "type": "uint256" }
     ],
     "name": "userDementorIds",
-    "outputs": [{ "internalType": "uint32", "name": "", "type": "uint32" }],
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
   },
@@ -463,9 +474,9 @@
   {
     "inputs": [
       {
-        "internalType": "uint32",
+        "internalType": "uint256",
         "name": "dementorNotebookId",
-        "type": "uint32"
+        "type": "uint256"
       },
       { "internalType": "string", "name": "userWritingCID", "type": "string" },
       { "internalType": "string", "name": "nextPromptCID", "type": "string" }
