@@ -53,11 +53,12 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
 
   const handleKeyDown = event => {
     if (event.key === 'ArrowLeft') {
-      console.log('going left');
-      // setDisplayedPage(prevPage => Math.max(0, prevPage - 1));
+      setEntryForDisplay(prevPage => Math.max(0, prevPage - 1));
     } else if (event.key === 'ArrowRight') {
-      console.log('going right');
-      // setDisplayedPage(prevPage => Math.min(writings.length - 1, prevPage + 1));
+      console.log('aloja');
+      setEntryForDisplay(prevPage =>
+        Math.min(journal.entries.length - 1, prevPage + 1)
+      );
     }
   };
 
@@ -138,7 +139,7 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
 
   const updateJournalWithPage = async finishText => {
     try {
-      console.log('inside the update journal with page function');
+      console.log('inside the update journal with page function', finishText);
       const authToken = await getAccessToken();
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/notebooks/upload-writing`,
@@ -238,14 +239,17 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
 
   function renderModal() {
     let content;
-    if (entryForDisplay) {
-      console.log('the entry for display is: ', entryForDisplay);
-      content = entryForDisplay.content || entryForDisplay.text;
-    }
+    let thisEntry = journal.entries[entryForDisplay];
+    if (!thisEntry) return;
+    content = thisEntry.content || thisEntry.text;
+
     return (
       isModalOpen && (
         <div className='fixed top-0 left-0 bg-black w-full h-full flex items-center justify-center z-50'>
           <div className='bg-purple-300 overflow-y-scroll text-black rounded relative p-6 w-2/3 h-2/3'>
+            <p className='absolute top-1  cursor-pointer left-2 text-gray-800'>
+              {entryForDisplay + 1}
+            </p>
             <p
               onClick={closeModal}
               className='absolute top-1 cursor-pointer right-2 text-red-600'
@@ -343,7 +347,7 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
               <div
                 key={i}
                 onClick={() => {
-                  setEntryForDisplay(x);
+                  setEntryForDisplay(i);
                   setIsModalOpen(true);
                 }}
                 className='px-2  py-1 m-1 w-8 h-8 flex justify-center items-center hover:bg-blue-600 cursor-pointer bg-blue-400 rounded-xl'
