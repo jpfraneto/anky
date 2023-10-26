@@ -55,7 +55,7 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
     if (event.key === 'ArrowLeft') {
       setEntryForDisplay(prevPage => Math.max(0, prevPage - 1));
     } else if (event.key === 'ArrowRight') {
-      console.log('aloja');
+      console.log('aloja', journal);
       setEntryForDisplay(prevPage =>
         Math.min(journal.entries.length - 1, prevPage + 1)
       );
