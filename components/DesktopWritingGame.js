@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Righteous, Dancing_Script } from 'next/font/google';
 import Button from './Button';
 import Image from 'next/image';
+import { useWallets } from '@privy-io/react-auth';
 import { saveTextAnon } from '../lib/backend';
 import { ethers } from 'ethers';
 import LoggedInUser from './LoggedInUser';
