@@ -219,6 +219,7 @@ const DesktopWritingGame = ({
         await transactionResponse.wait(); // Wait for the transaction to be mined
         console.log('Notebook template created successfully');
         setSavingTextAnon(false);
+        setDisplayWritingGameLanding(false);
       } else {
         console.error('Wallet not connected or not authenticated with Privy');
       }
