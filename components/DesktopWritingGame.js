@@ -71,10 +71,12 @@ const DesktopWritingGame = ({
   const [progress, setProgress] = useState(null);
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
+  const { wallets } = useWallets();
 
   const textareaRef = useRef(null);
   const intervalRef = useRef(null);
   const keystrokeIntervalRef = useRef(null);
+  const thisWallet = wallets[0];
 
   useEffect(() => {
     if (isActive && !isDone) {
@@ -188,12 +190,13 @@ const DesktopWritingGame = ({
     const BUILDERS_NOTEBOOKS_CONTRACT_ADDRESS =
       '0xA06742b4018aec4602C3296D3CAcF0159F5234E8';
     try {
-      let provider = await userAppInformation.wallet.getEthersProvider();
+      if (!thisWallet) return;
+      let provider = await thisWallet.getEthersProvider();
       let signer = await provider.getSigner();
 
       console.log('the user app information is: ', userAppInformation);
 
-      if (userAppInformation.wallet && signer) {
+      if (thisWallet && signer) {
         // The thing here is that I'm trying to send this transaction from the wallet of the user, not from the erc6551 token.
 
         const templatesContract = new ethers.Contract(
@@ -202,7 +205,7 @@ const DesktopWritingGame = ({
           signer
         );
 
-        let addressForMinting = userAppInformation.wallet.address;
+        let addressForMinting = thisWallet.address;
         if (typeof userAppInformation.tbaAddress === 'string') {
           addressForMinting = userAppInformation.tbaAddress;
         }

@@ -74,7 +74,7 @@ function BuildersPage() {
 
   if (writings.length === 0)
     return (
-      <div>
+      <div className='text-white'>
         <Spinner />
         <p>loading...</p>
       </div>
