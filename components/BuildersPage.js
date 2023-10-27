@@ -27,10 +27,17 @@ function BuildersPage() {
     console.log('in here', event.key, displayedPage);
     if (event.key === 'ArrowLeft') {
       console.log('going left');
-      setDisplayedPage(prevPage => Math.max(0, prevPage - 1));
+      setDisplayedPage(prevPage => {
+        console.log('the prev page', prevPage);
+        return Math.max(0, prevPage - 1);
+      });
     } else if (event.key === 'ArrowRight') {
       console.log('going right');
-      setDisplayedPage(prevPage => Math.min(writings.length - 1, prevPage + 1));
+      setDisplayedPage(prevPage => {
+        console.log('the prev page is: ', prevPage);
+        console.log('the writings are: ', writings);
+        return Math.min(writings.length - 1, prevPage + 1);
+      });
     }
   };
 

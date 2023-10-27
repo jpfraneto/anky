@@ -23,6 +23,7 @@ import IndividualEulogiaDisplayPage from './eulogias/IndividualEulogiaDisplayPag
 import IndividualNotebookPage from './notebook/IndividualNotebookPage';
 import JournalById from './journals/JournalById';
 import BuyNewJournal from './journals/BuyNewJournal';
+import LitProtocol from './LitProtocol';
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 const ankyverseToday = getAnkyverseDay(new Date());
@@ -100,6 +101,8 @@ const GlobalApp = ({ alchemy }) => {
         );
       case '/profile':
         return <ProfilePage />;
+      case '/lit':
+        return <LitProtocol />;
       case '/templates/new':
         return <NewTemplatePage userAnky={userAppInformation} />;
       case `/template/${route.split('/').pop()}`: // Extracts the template id from the route

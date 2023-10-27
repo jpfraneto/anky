@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@bundlr-network/client": "^0.11.17",
+    "@lit-protocol/lit-node-client": "^3.0.14",
+    "@monaco-editor/react": "^4.6.0",
     "@prisma/client": "^5.1.1",
     "@privy-io/react-auth": "^1.37.0",
     "@privy-io/wagmi-connector": "^0.1.3",

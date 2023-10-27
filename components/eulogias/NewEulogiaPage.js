@@ -117,6 +117,7 @@ const NewEulogiaPage = ({ wallet }) => {
         const event = transactionReceipt.events?.find(
           e => e.event === 'EulogiaCreated'
         ); // Find the event in the logs
+        let allUserEulogias;
         if (event) {
           const rawEulogiaId = event.args[0]; // Based on the order in your emit statement
           const eulogiaId = ethers.utils.formatUnits(rawEulogiaId, 0);
@@ -150,13 +151,14 @@ const NewEulogiaPage = ({ wallet }) => {
               },
               messages: [], // Initialize with an empty array as no messages have been added yet.
             };
+            allUserEulogias = [...x.userEulogias, newEulogia];
 
             return {
               ...x,
-              userEulogias: [...x.userEulogias, newEulogia],
+              userEulogias: allUserEulogias,
             };
           });
-          setUserData('userEulogias', [...x.userEulogias, newEulogia]);
+          setUserData('userEulogias', allUserEulogias);
         } else {
           setEulogiaCreationError(true);
         }

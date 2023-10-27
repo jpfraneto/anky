@@ -153,7 +153,9 @@ const LibraryPage = ({}) => {
                 <div className=' flex flex-wrap bg-cyan-300 rounded-b-xl p-4'>
                   {templates && templates.length > 0 ? (
                     templates.map((x, i) => {
-                      return <TemplateCard template={x} key={i} />;
+                      if (x && x.templateId) {
+                        return <TemplateCard template={x} key={i} />;
+                      }
                     })
                   ) : (
                     <div className='text-black w-full p-2'>
