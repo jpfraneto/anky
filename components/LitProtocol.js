@@ -18,157 +18,103 @@ const LitProtocol = () => {
   const [str, setStr] = useState('The test is working!');
   const { wallets } = useWallets();
   const wallet = wallets[0];
-  console.log('this wallet is: ', wallet);
 
   const go = async () => {
     if (!wallet) return alert('please connect your privy wallet');
-    console.log('inside the go, the wallet is: ', wallet);
     const provider = await wallet.getEthersProvider();
-    console.log('the provider is: ', provider);
-    let code = `import * as LitJsSdk from '@lit-protocol/lit-node-client';
-
-      const litNodeClient = new LitJsSdk.LitNodeClient({
-        litNetwork: 'cayenne',
-      });
-      await litNodeClient.connect();
-
-      // { ms }
-      // { Loading... }
-      const authSig = await ethConnect.signAndSaveAuthMessage({
-        web3: provider,
-        account: wallet.address,
-        chainId: 84531,
-        expiration: new Date(Date.now() + 1000 * 60 * 60 * 24).toISOString(),
-      });
-
-      const accs = [
-        {
-          contractAddress: '0xc8d33EdFDD29CCe3eC58D6AD47582B1E38529634',
-          standardContractType: '',
-          chain: 'baseGoerli',
-          method: 'members',
-          parameters: [':userAddress'],
-          returnValueTest: {
-            comparator: "=",
-            value: "true",
-          },
-        },
-      ];
-
-      // { ms }
-      const res = await LitJsSdk.encryptString({
-        accessControlConditions: accs,
-        authSig,
-        chain: 'baseGoerli',
-        dataToEncrypt: '${str}',
-      }, litNodeClient);
-
-      // { Loading... }
-      const ciphertext = res.ciphertext;
-      setPrimero(ciphertext);
-
-      // { Loading... }
-      const dataToEncryptHash = res.dataToEncryptHash;
-      setSegundo(dataToEncryptHash);
-
-      // { ms }
-      // { Loading... }
-      const decryptedString = await LitJsSdk.decryptToString({
-        accessControlConditions: accs,
-        ciphertext,
-        dataToEncryptHash,
-        authSig: authSig,
-        chain: 'baseGoerli',
-      });
-
-      console.log("decryptedString:", "Loading...");
-
-      `;
-    setLang('javascript');
-    setData(code);
 
     const litNodeClient = new LitJsSdk.LitNodeClient({
       litNetwork: 'cayenne',
     });
     await litNodeClient.connect();
 
-    const authRes = await benchmark(async () => {
-      return LitJsSdk.checkAndSignAuthMessage({
-        chain: 'baseGoerli',
-      });
+    const authSig = await LitJsSdk.ethConnect.signAndSaveAuthMessage({
+      web3: provider,
+      account: wallet.address,
+      chainId: 84531,
+      expiration: new Date(Date.now() + 1000 * 60 * 60 * 24).toISOString(),
     });
-    code = code.replace('// { ms }', `// { ${authRes.duration} }`);
-    code = code.replace(
-      '// { Loading... }',
-      `// { ${JSON.stringify(authRes.result)} }`
-    );
-    setData(code);
+    console.log('the auth sig is: ', authSig);
+
     const accs = [
       {
-        contractAddress: '',
-        standardContractType: '',
-        chain: 'ethereum',
-        method: 'members',
+        contractAddress: '0xc8d33EdFDD29CCe3eC58D6AD47582B1E38529634',
+        standardContractType: 'ERC721',
+        chain: 'baseGoerli',
+        method: 'ownerOf',
         parameters: [':userAddress'],
         returnValueTest: {
-          comparator: '=',
-          value: 'true',
+          comparator: '>',
+          value: '0',
         },
       },
     ];
 
     console.log('NETWORK PUB KEY:', litNodeClient.networkPubKey);
-
     // --------- NEXT STEP ---------
-    const encryptRes = await benchmark(async () => {
-      return LitJsSdk.encryptString(
-        {
-          accessControlConditions: accs,
-          authSig: authRes.result,
-          chain: 'ethereum',
-          dataToEncrypt: str,
-        },
-        litNodeClient
-      );
-    });
-
-    code = code.replace('// { ms }', `// { ${encryptRes.duration} }`);
-    code = code.replace(
-      '// { Loading... }',
-      `// [string] { ${encryptRes.result.ciphertext} }`
+    const { ciphertext, dataToEncryptHash } = await LitJsSdk.encryptString(
+      {
+        accessControlConditions: accs,
+        authSig: authSig,
+        chain: 'baseGoerli',
+        dataToEncrypt: str,
+      },
+      litNodeClient
     );
-    code = code.replace(
-      '// { Loading... }',
-      `// [Uint8Array] { ${JSON.stringify(
-        encryptRes.result.dataToEncryptHash
-      )} }`
-    );
-    setData(code);
-
+    console.log('THE ENCRYPT RES IS: ', ciphertext, dataToEncryptHash);
     // --------- NEXT STEP ---------
-    const decryptRes = await benchmark(async () => {
-      return LitJsSdk.decryptToString(
-        {
-          accessControlConditions: accs,
-          ciphertext: encryptRes.result.ciphertext,
-          dataToEncryptHash: encryptRes.result.dataToEncryptHash,
-          authSig: authRes.result,
-          chain: 'ethereum',
-        },
-        litNodeClient
-      );
-    });
-
-    code = code.replace('// { ms }', `// { ${decryptRes.duration} }`);
-    code = code.replace(
-      '// { Loading... }',
-      `// [string] ${decryptRes.result}`
+    const decryptRes = await LitJsSdk.decryptToString(
+      {
+        accessControlConditions: accs,
+        ciphertext: ciphertext,
+        dataToEncryptHash: dataToEncryptHash,
+        authSig: authSig,
+        chain: 'baseGoerli',
+      },
+      litNodeClient
     );
-    code = code.replace('"Loading..."', `"${decryptRes.result}"`);
-    setData(code);
-    setPrimero(ciphertext);
-    setSegundo(dataToEncryptHash);
+    console.log('THE DECRYPT RESSSSSS IS: ', decryptRes);
   };
+
+  const decryptString = async () => {
+    const provider = await wallet.getEthersProvider();
+
+    const litNodeClient = new LitJsSdk.LitNodeClient({
+      litNetwork: 'cayenne',
+    });
+    await litNodeClient.connect();
+    const authSig = await ethConnect.signAndSaveAuthMessage({
+      web3: provider,
+      account: wallet.address,
+      chainId: 84531,
+      expiration: new Date(Date.now() + 1000 * 60 * 60 * 24).toISOString(),
+    });
+    const accs = [
+      {
+        contractAddress: '0xc8d33EdFDD29CCe3eC58D6AD47582B1E38529634',
+        standardContractType: 'ERC721',
+        chain: 'baseGoerli',
+        method: 'ownerOf',
+        parameters: [':userAddress'],
+        returnValueTest: {
+          comparator: '>',
+          value: '0',
+        },
+      },
+    ];
+    const decryptRes = await LitJsSdk.decryptToString(
+      {
+        accessControlConditions: accs,
+        ciphertext: cypherTEXT,
+        dataToEncryptHash: otherData,
+        authSig: authSig,
+        chain: 'baseGoerli',
+      },
+      litNodeClient
+    );
+    console.log('THE DECRYPTED ISsssss IS: ', decryptRes);
+  };
+
   return (
     <div className='w-4/5 mx-auto h-4/5 text-white'>
       <header>
@@ -176,6 +122,7 @@ const LitProtocol = () => {
           React Demo for: {appName}
           <br />
         </h4>
+        <button onClick={decryptString}>decrypt</button>
         {primero && <p className='text-white'>PRIMERO: {primero}</p>}
         {segundo && <p className='text-white'>SEGUNDO: {segundo}</p>}
         <table>
@@ -188,7 +135,7 @@ const LitProtocol = () => {
             <td>
               <input
                 type='text'
-                className='text-black'
+                className='text-black p-2 rounded-xl'
                 value={str}
                 onChange={newStr => {
                   setStr(newStr.target.value);
@@ -201,10 +148,10 @@ const LitProtocol = () => {
         <button onClick={go}>Encrypt & Decrypt String!</button>
       </header>
 
-      <div className='editor'>
+      <div className='editor mt-4'>
         <Editor
           theme='vs-dark'
-          height='100vh'
+          height='30vh'
           language={lang}
           value={lang === 'json' ? JSON.stringify(data, null, 2) : `${data}`}
           options={{

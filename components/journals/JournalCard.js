@@ -13,15 +13,25 @@ const JournalCard = ({ journal }) => {
         return 32;
     }
   }
+  let timestamp;
+  if (journal.entries && journal.entries.length > 0) {
+    timestamp = journal?.entries[journal?.entries?.length - 1].timestamp;
+  }
+
+  console.log('the timestamp is: ', timestamp);
   return (
     // ChANGE THIS
     <Link href={`/journal/${journal.journalId}`}>
-      <div className='p-2 m-2 rounded-xl bg-green-600 hover:bg-green-700 text-black'>
-        <h2 className='text-2xl'>Journal #{journal.journalId}</h2>
-        <p>
-          {journal.entries.length} / {transformJournalType(journal.journalType)}{' '}
-          (pages written)
+      <div className='py-2 px-4 m-2 rounded-xl text-left flex flex-col bg-green-600 hover:bg-green-700 text-black'>
+        <h2 className='text-2xl'>#{journal.journalId}</h2>
+        <p className='-my-1'>
+          {journal.entries.length} / {transformJournalType(journal.journalType)}
         </p>
+        {timestamp && (
+          <p className='my-0'>
+            last update: {new Date(timestamp * 1000).toLocaleString()}
+          </p>
+        )}
       </div>
     </Link>
   );

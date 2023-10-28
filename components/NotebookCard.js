@@ -3,11 +3,12 @@ import Link from 'next/link';
 
 const NotebookCard = ({ notebook }) => {
   // CHANGE THIS
+  console.log('the notebook is: ', notebook);
   return (
     <Link href={`/notebook/${notebook.notebookId}`}>
-      <div className='p-2 m-2 rounded-xl bg-purple-400 hover:bg-purple-500 text-black'>
-        <h2 className='text-xl'>{notebook.template.metadata.title}</h2>
-        <p>
+      <div className='py-2 px-4 text-left m-2  rounded-xl bg-purple-400 hover:bg-purple-500 text-black'>
+        <h2 className='text-2xl'>{notebook.template.metadata.title}</h2>
+        <p className='-my-1'>
           {notebook.userPages.length}/
           {notebook.template.metadata.prompts.length} prompts answered
         </p>

@@ -29,15 +29,51 @@ const LibraryPage = ({}) => {
   const wallets = useWallets();
   const { authenticated } = usePrivy();
 
+  function sortJournalsByLastUpdated(a, b) {
+    if (a.entries.length === 0 && b.entries.length === 0) return 0;
+    if (a.entries.length === 0) return 1;
+    if (b.entries.length === 0) return -1;
+    const timestampA = a.entries[a.entries.length - 1].timestamp;
+    const timestampB = b.entries[b.entries.length - 1].timestamp;
+    return timestampB - timestampA;
+  }
+
+  function sortEulogiasByLastUpdated(a, b) {
+    if (a.messages.length === 0 && b.messages.length === 0) return 0;
+    if (a.messages.length === 0) return 1;
+    if (b.messages.length === 0) return -1;
+    const timestampA = a.messages[a.messages.length - 1].timestamp;
+    const timestampB = b.messages[b.messages.length - 1].timestamp;
+    return timestampB - timestampA;
+  }
+
   useEffect(() => {
     console.log('the user templates are: ', userAppInformation.userTemplates);
     setTemplates(userAppInformation.userTemplates);
     console.log('the user journals are: ', userAppInformation.userJournals);
-    setJournals(userAppInformation.userJournals);
+    let sortedJournals;
+    if (
+      userAppInformation.userJournals &&
+      userAppInformation.userJournals.length > 0
+    ) {
+      sortedJournals = userAppInformation.userJournals.sort(
+        sortJournalsByLastUpdated
+      );
+    }
+    setJournals(sortedJournals);
     console.log('the user notebooks are: ', userAppInformation.userNotebooks);
     setNotebooks(userAppInformation.userNotebooks);
+    let sortedEulogias;
+    if (
+      userAppInformation.userEulogias &&
+      userAppInformation.userEulogias.length > 0
+    ) {
+      sortedEulogias = userAppInformation.userEulogias.sort(
+        sortEulogiasByLastUpdated
+      );
+    }
     console.log('the user eulogias are: ', userAppInformation.userEulogias);
-    setEulogias(userAppInformation.userEulogias);
+    setEulogias(sortedEulogias);
     console.log('the user dementors are: ', userAppInformation.userDementors);
     // setEulogias(userAppInformation.userDementors);
   }, [appLoading, userAppInformation]);
@@ -87,7 +123,7 @@ const LibraryPage = ({}) => {
           <div className='w-full md:w-3/5 rounded-xl overflow-hidden'>
             <div className='flex w-full overflow-x-scroll md:w-full text-xs md:text-lg md:h-12 rounded-t-xl text-black'>
               <button
-                className={`px-1 md:px-4 w-1/5 py-2 ${
+                className={`px-1 md:px-4 w-1/4 py-2 ${
                   activeTab === 'journals' ? 'bg-green-600' : 'bg-green-300'
                 }`}
                 onClick={() => setActiveTab('journals')}
@@ -95,7 +131,7 @@ const LibraryPage = ({}) => {
                 Journals
               </button>
               <button
-                className={`px-1 md:px-4 w-1/5 py-2 ${
+                className={`px-1 md:px-4 w-1/4 py-2 ${
                   activeTab === 'templates' ? 'bg-cyan-600' : 'bg-cyan-300'
                 }`}
                 onClick={() => setActiveTab('templates')}
@@ -103,7 +139,7 @@ const LibraryPage = ({}) => {
                 Templates
               </button>
               <button
-                className={`px-1 md:px-4 w-1/5 py-2 ${
+                className={`px-1 md:px-4 w-1/4 py-2 ${
                   activeTab === 'notebooks' ? 'bg-purple-600' : 'bg-purple-300'
                 }`}
                 onClick={() => setActiveTab('notebooks')}
@@ -111,7 +147,7 @@ const LibraryPage = ({}) => {
                 Notebooks
               </button>
               <button
-                className={`px-1 md:px-4 w-1/5 py-2 ${
+                className={`px-1 md:px-4 w-1/4 py-2 ${
                   activeTab === 'eulogias' ? 'bg-orange-600' : 'bg-orange-300'
                 }`}
                 onClick={() => {
@@ -120,19 +156,19 @@ const LibraryPage = ({}) => {
               >
                 Eulogias
               </button>
-              <button
+              {/* <button
                 className={`px-1 md:px-4 w-1/5 py-2 ${
                   activeTab === 'dementor' ? 'bg-red-600' : 'bg-red-300'
                 }`}
                 onClick={() => setActiveTab('dementor')}
               >
                 Dementor
-              </button>
+              </button> */}
             </div>
 
             {activeTab === 'journals' && (
               <>
-                <div className='flex flex-wrap bg-green-300 rounded-b-xl p-4'>
+                <div className='flex flex-wrap bg-green-300 w-full flex-col rounded-b-xl p-4'>
                   {journals &&
                     journals.map((x, i) => {
                       return <JournalCard journal={x} key={i} />;
@@ -150,7 +186,7 @@ const LibraryPage = ({}) => {
 
             {activeTab === 'templates' && (
               <>
-                <div className=' flex flex-wrap bg-cyan-300 rounded-b-xl p-4'>
+                <div className=' flex flex-wrap flex-col bg-cyan-300 rounded-b-xl p-4'>
                   {templates && templates.length > 0 ? (
                     templates.map((x, i) => {
                       if (x && x.templateId) {
@@ -188,7 +224,7 @@ const LibraryPage = ({}) => {
 
             {activeTab === 'notebooks' && (
               <>
-                <div className=' bg-purple-300 rounded-b-xl p-4 flex flex-wrap'>
+                <div className=' bg-purple-300 rounded-b-xl p-4 flex flex-col flex-wrap'>
                   {notebooks.length > 0 ? (
                     notebooks.map((x, i) => {
                       return <NotebookCard notebook={x} key={i} />;
@@ -215,7 +251,7 @@ const LibraryPage = ({}) => {
 
             {activeTab === 'eulogias' && (
               <>
-                <div className=' bg-orange-300 rounded-b-xl p-1 md:p-4 flex flex-wrap'>
+                <div className=' bg-orange-300 rounded-b-xl p-1 md:p-4 flex flex-col flex-wrap'>
                   {eulogias && eulogias.length > 0 ? (
                     eulogias.map((x, i) => {
                       return <EulogiaCard eulogia={x} key={i} />;

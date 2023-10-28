@@ -24,6 +24,7 @@ import IndividualNotebookPage from './notebook/IndividualNotebookPage';
 import JournalById from './journals/JournalById';
 import BuyNewJournal from './journals/BuyNewJournal';
 import LitProtocol from './LitProtocol';
+import Irys from './Irys';
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 const ankyverseToday = getAnkyverseDay(new Date());
@@ -99,6 +100,8 @@ const GlobalApp = ({ alchemy }) => {
             lifeBarLength={lifeBarLength}
           />
         );
+      case '/irys':
+        return <Irys />;
       case '/profile':
         return <ProfilePage />;
       case '/lit':

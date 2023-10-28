@@ -53,12 +53,9 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
 
   const handleKeyDown = event => {
     if (event.key === 'ArrowLeft') {
-      setEntryForDisplay(prevPage => Math.max(0, prevPage - 1));
+      setEntryForDisplay(prevPage => prevPage - 1);
     } else if (event.key === 'ArrowRight') {
-      console.log('aloja', journal);
-      setEntryForDisplay(prevPage =>
-        Math.min(journal.entries.length - 1, prevPage + 1)
-      );
+      setEntryForDisplay(prevPage => prevPage + 1);
     }
   };
 
@@ -240,6 +237,12 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
   function renderModal() {
     let content;
     let thisEntry = journal.entries[entryForDisplay];
+    if (entryForDisplay > journal.entries.length) {
+      setEntryForDisplay(journal.entries.length);
+    }
+    if (entryForDisplay < 0) {
+      setEntryForDisplay(0);
+    }
     if (!thisEntry) return;
     content = thisEntry.content || thisEntry.text;
 

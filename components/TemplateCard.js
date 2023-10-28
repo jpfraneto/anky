@@ -6,9 +6,9 @@ const TemplateCard = ({ template }) => {
   console.log('inside the template card', template);
   return (
     <Link href={`/template/${template.templateId}`}>
-      <div className='p-2 m-2 rounded-xl bg-cyan-400 hover:bg-cyan-500 text-black'>
+      <div className='px-4 py-2 m-2 rounded-xl text-left bg-cyan-400 hover:bg-cyan-500 text-black'>
         <h2 className='text-2xl'>{template.metadata.title}</h2>
-        <p>
+        <p className='-my-1'>
           {template.supply} / {template.metadata.supply} available
         </p>
 
