@@ -56,6 +56,7 @@ const IrysPage = () => {
       author: thisWallet.address,
       text: text,
     });
+    let thisPagePassword = '1234567890';
     const tags = [
       { name: 'Content-Type', value: 'text/plain' },
       { name: 'application-id', value: 'Anky Dementors' },
@@ -65,6 +66,7 @@ const IrysPage = () => {
       { name: 'author', value: thisWallet.address },
       { name: 'version', value: version.toString() },
       { name: 'previous-page', value: bundlrResponseId },
+      { name: 'password', value: thisPagePassword },
     ];
     try {
       const receipt = await webIrys.upload(dataToUpload, { tags });

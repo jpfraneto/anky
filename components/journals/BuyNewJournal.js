@@ -12,28 +12,16 @@ import Spinner from '../Spinner';
 import AnkyJournalsAbi from '../../lib/journalsABI.json'; // Assuming you have the ABI
 import Link from 'next/link';
 
-function transformJournalType(index) {
-  switch (index) {
-    case 0:
-      return 8;
-    case 1:
-      return 32;
-    case 2:
-      return 64;
-  }
-}
-
 const BuyNewJournal = () => {
   const router = useRouter();
   const [journal, setJournal] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [journalPrice, setJournalPrice] = useState(null);
   const [thereWasAnError, setThereWasAnError] = useState(false);
   const [mintingNewJournal, setMintingNewJournal] = useState(false);
   const [mintedJournalId, setMintedJournalId] = useState(null);
   const [successfullyMintedJournal, setSuccessfullyMintedJournal] =
     useState(false);
-  const [journalPrices, setJournalPrices] = useState({}); // Store journal prices
-  const [displayJournalOption, setDisplayJournalOption] = useState(null);
   const { setUserAppInformation, appLoading } = useUser();
 
   const { wallets } = useWallets();
@@ -50,32 +38,8 @@ const BuyNewJournal = () => {
           provider
         );
 
-        // Fetch journal prices
-        const [smallJournalPrice, mediumJournalPrice, largeJournalPrice] =
-          await Promise.all([
-            journalsContract.smallJournalPrice(),
-            journalsContract.mediumJournalPrice(),
-            journalsContract.largeJournalPrice(),
-          ]);
-
-        const smallJournalPriceEth = ethers.utils.formatUnits(
-          smallJournalPrice,
-          'ether'
-        );
-        const mediumJournalPriceEth = ethers.utils.formatUnits(
-          mediumJournalPrice,
-          'ether'
-        );
-        const largeJournalPriceEth = ethers.utils.formatUnits(
-          largeJournalPrice,
-          'ether'
-        );
-
-        setJournalPrices({
-          0: smallJournalPriceEth,
-          1: mediumJournalPriceEth,
-          2: largeJournalPriceEth,
-        });
+        const fetchedJournalPrice = await journalsContract.journalPrice();
+        setJournalPrice(fetchedJournalPrice);
         setLoading(false);
       } catch (error) {
         setThereWasAnError(true);
@@ -106,9 +70,8 @@ const BuyNewJournal = () => {
       );
 
       // Get the price for the selected journal size
-      const price = journalPrices[size];
 
-      if (!price) {
+      if (!journalPrice) {
         // Handle the case where the price is not available
         console.error('Price not available for size', size);
         return;
@@ -116,14 +79,20 @@ const BuyNewJournal = () => {
 
       const array = new Uint32Array(1);
       window.crypto.getRandomValues(array);
-      const newCID = array[0];
+      const newUID = array[0];
 
-      const priceWei = ethers.utils.parseUnits(price, 'ether');
+      const priceWei = ethers.utils.parseUnits(journalPrice, 'ether');
+
+      // WHAT IS THE METADATA FOR THE JOURNAL?
+      // Here i need to fetch bundlr with the information of the journal and update that metadata, which will be the starting thread of this particular journal... page 0
+      // It can be a title, a description, a timecreated, an image associated, a starting point in the form of an UID.z
+      const metadataCID = '';
 
       // Send the correct amount of Ether when minting
-      const tx = await journalsContract.mintJournal(size, newCID, {
+      const tx = await journalsContract.mintJournal(newUID, metadataCID, {
         value: priceWei,
       });
+
       const receipt = await tx.wait();
       console.log('the receipt isss', receipt);
 
