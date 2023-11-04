@@ -34,6 +34,9 @@ const LitProtocol = () => {
       chainId: 84531,
       expiration: new Date(Date.now() + 1000 * 60 * 60 * 24).toISOString(),
     });
+    // const authSig = await LitJsSdk.checkAndSignAuthMessage({
+    //   chain: 'baseGoerli',
+    // });
     console.log('the auth sig is: ', authSig);
 
     const accs = [
@@ -61,9 +64,15 @@ const LitProtocol = () => {
       },
       litNodeClient
     );
-    console.log('THE ENCRYPT RES IS: ', ciphertext, dataToEncryptHash);
     // --------- NEXT STEP ---------
-    const decryptRes = await LitJsSdk.decryptToString(
+    console.log('*****************before the decryption************');
+    console.log(accs);
+    console.log(ciphertext);
+    console.log(dataToEncryptHash);
+    console.log(authSig);
+    console.log(litNodeClient);
+
+    const decryptedText = await LitJsSdk.decryptToString(
       {
         accessControlConditions: accs,
         ciphertext: ciphertext,
@@ -73,7 +82,18 @@ const LitProtocol = () => {
       },
       litNodeClient
     );
-    console.log('THE DECRYPT RESSSSSS IS: ', decryptRes);
+    console.log('the decrypted text is: ', decryptedText);
+    // const decryptRes = await LitJsSdk.decryptToString(
+    //   {
+    //     accessControlConditions: accs,
+    //     ciphertext: ciphertext,
+    //     dataToEncryptHash: dataToEncryptHash,
+    //     authSig: authSig,
+    //     chain: 'baseGoerli',
+    //   },
+    //   litNodeClient
+    // );
+    // console.log('THE DECRYPT RESSSSSS IS: ', decryptRes);
   };
 
   const decryptString = async () => {
@@ -83,12 +103,15 @@ const LitProtocol = () => {
       litNetwork: 'cayenne',
     });
     await litNodeClient.connect();
-    const authSig = await ethConnect.signAndSaveAuthMessage({
+    const authSig = await LitJsSdk.ethConnect.signAndSaveAuthMessage({
       web3: provider,
       account: wallet.address,
       chainId: 84531,
       expiration: new Date(Date.now() + 1000 * 60 * 60 * 24).toISOString(),
     });
+    // const authSig = await LitJsSdk.checkAndSignAuthMessage({
+    //   chain: 'baseGoerli',
+    // });
     const accs = [
       {
         contractAddress: '0xc8d33EdFDD29CCe3eC58D6AD47582B1E38529634',

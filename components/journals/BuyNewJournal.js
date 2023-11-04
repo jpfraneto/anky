@@ -4,6 +4,9 @@ import { ethers } from 'ethers';
 import Button from '../Button';
 import { setUserData } from '../../lib/idbHelper';
 import { formatUserJournal } from '../../lib/notebooks.js';
+import { encryptData } from '../../lib/encryption';
+import { generatePagePasswords } from '../../lib/helpers';
+import { uploadToIrys } from '../../lib/irys';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
 import Image from 'next/image';
 import WritingGameComponent from '../WritingGameComponent';
@@ -70,6 +73,7 @@ const BuyNewJournal = () => {
       );
 
       // Get the price for the selected journal size
+      console.log('in heeere');
 
       if (!journalPrice) {
         // Handle the case where the price is not available
@@ -77,21 +81,27 @@ const BuyNewJournal = () => {
         return;
       }
 
-      const array = new Uint32Array(1);
-      window.crypto.getRandomValues(array);
-      const newUID = array[0];
-
-      const priceWei = ethers.utils.parseUnits(journalPrice, 'ether');
-
       // WHAT IS THE METADATA FOR THE JOURNAL?
       // Here i need to fetch bundlr with the information of the journal and update that metadata, which will be the starting thread of this particular journal... page 0
       // It can be a title, a description, a timecreated, an image associated, a starting point in the form of an UID.z
       const metadataCID = '';
+      const rawPasswords = generatePagePasswords(96);
+      console.log('the raw passwords are: ', rawPasswords);
+      const encryptedRawPasswords = await encryptData(
+        thisWallet,
+        provider,
+        JSON.stringify(rawPasswords)
+      );
+      console.log('the encrypted raw passwords are: ', encryptedRawPasswords);
 
+      const passwordsCID = await uploadToIrys(
+        thisWallet,
+        encryptedRawPasswords
+      );
+      console.log('outside here, the passwords cid is: ', passwordsCID);
       // Send the correct amount of Ether when minting
-      const tx = await journalsContract.mintJournal(newUID, metadataCID, {
-        value: priceWei,
-      });
+      // function mintJournal(uint256 randomUID, string memory metadataCID, string memory passwordsCID) external onlyAnkyOwner {
+      const tx = await journalsContract.mintJournal(metadataCID, passwordsCID);
 
       const receipt = await tx.wait();
       console.log('the receipt isss', receipt);
@@ -108,8 +118,6 @@ const BuyNewJournal = () => {
           console.log('the token iddd is', tokenId);
           const newJournalElement = {
             journalId: tokenId.toString(),
-            entries: [],
-            journalType: size,
             metadataCID: '',
           };
           console.log('the new journal element is: ', newJournalElement);
@@ -119,11 +127,22 @@ const BuyNewJournal = () => {
               'the x in the user app information before adding a new journal is: ',
               x
             );
-            setUserData('userJournals', [...x.userJournals, newJournalElement]);
-            return {
-              ...x,
-              userJournals: [...x.userJournals, newJournalElement],
-            };
+            if (x.userJournals) {
+              setUserData('userJournals', [
+                ...x.userJournals,
+                newJournalElement,
+              ]);
+              return {
+                ...x,
+                userJournals: [...x.userJournals, newJournalElement],
+              };
+            } else {
+              setUserData('userJournals', [newJournalElement]);
+              return {
+                ...x,
+                userJournals: [newJournalElement],
+              };
+            }
           });
           setMintedJournalId(tokenId.toString()); // Save the tokenId to state
           setSuccessfullyMintedJournal(true);
@@ -183,7 +202,7 @@ const BuyNewJournal = () => {
             ) : (
               <div>
                 <p className='mb-2 text-3xl'>buy new journal</p>
-                <p className='mb-4'>how many pages do you want?</p>
+                <p className='mb-4'>it has 96 pages.</p>
                 {loading ? (
                   <div>
                     <Spinner /> <p>loading...</p>
@@ -191,32 +210,12 @@ const BuyNewJournal = () => {
                 ) : (
                   <div>
                     <div className='flex justify-center mb-4'>
-                      {[
-                        { name: 'test', size: 0 },
-                        { name: 'go', size: 1 },
-                        { name: 'zen', size: 2 },
-                      ].map((x, i) => {
-                        return (
-                          <div
-                            key={i}
-                            className='mx-4 text-center flex flex-col items-center rounded-xl bg-green-200 p-2 text-black'
-                          >
-                            <span
-                              key={i}
-                              onClick={() => mintNewJournal(x.size)}
-                              className='m-2 bg-green-400 cursor-pointer hover:bg-green-600 shadow-lg shadow-black p-2 w-fit rounded-xl flex justify-center items-center'
-                            >
-                              {x.name}
-                            </span>
-                            <p>{transformJournalType(i)} pages</p>
-                            <p>
-                              {journalPrices[x.size] !== undefined
-                                ? `${journalPrices[x.size]} ETH`
-                                : ''}
-                            </p>
-                          </div>
-                        );
-                      })}
+                      <span
+                        onClick={() => mintNewJournal()}
+                        className='m-2 bg-green-400 cursor-pointer hover:bg-green-600 shadow-lg shadow-black p-2 w-fit rounded-xl flex justify-center items-center'
+                      >
+                        buy new journal
+                      </span>
                     </div>
                     <h2 className='mb-2'>important information</h2>
                     <p className='mb-2'>

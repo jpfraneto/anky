@@ -30,6 +30,7 @@ const LibraryPage = ({}) => {
   const { authenticated } = usePrivy();
 
   function sortJournalsByLastUpdated(a, b) {
+    if (!a.entries || !b.entries) return;
     if (a.entries.length === 0 && b.entries.length === 0) return 0;
     if (a.entries.length === 0) return 1;
     if (b.entries.length === 0) return -1;
@@ -39,6 +40,8 @@ const LibraryPage = ({}) => {
   }
 
   function sortEulogiasByLastUpdated(a, b) {
+    if (!a.messages || !b.messages) return;
+
     if (a.messages.length === 0 && b.messages.length === 0) return 0;
     if (a.messages.length === 0) return 1;
     if (b.messages.length === 0) return -1;
@@ -123,23 +126,16 @@ const LibraryPage = ({}) => {
           <div className='w-full md:w-3/5 rounded-xl overflow-hidden'>
             <div className='flex w-full overflow-x-scroll md:w-full text-xs md:text-lg md:h-12 rounded-t-xl text-black'>
               <button
-                className={`px-1 md:px-4 w-1/4 py-2 ${
+                className={`px-1 md:px-4 w-1/3 py-2 ${
                   activeTab === 'journals' ? 'bg-green-600' : 'bg-green-300'
                 }`}
                 onClick={() => setActiveTab('journals')}
               >
                 Journals
               </button>
+
               <button
-                className={`px-1 md:px-4 w-1/4 py-2 ${
-                  activeTab === 'templates' ? 'bg-cyan-600' : 'bg-cyan-300'
-                }`}
-                onClick={() => setActiveTab('templates')}
-              >
-                Templates
-              </button>
-              <button
-                className={`px-1 md:px-4 w-1/4 py-2 ${
+                className={`px-1 md:px-4 w-1/3 py-2 ${
                   activeTab === 'notebooks' ? 'bg-purple-600' : 'bg-purple-300'
                 }`}
                 onClick={() => setActiveTab('notebooks')}
@@ -147,7 +143,7 @@ const LibraryPage = ({}) => {
                 Notebooks
               </button>
               <button
-                className={`px-1 md:px-4 w-1/4 py-2 ${
+                className={`px-1 md:px-4 w-1/3 py-2 ${
                   activeTab === 'eulogias' ? 'bg-orange-600' : 'bg-orange-300'
                 }`}
                 onClick={() => {
@@ -184,44 +180,6 @@ const LibraryPage = ({}) => {
               </>
             )}
 
-            {activeTab === 'templates' && (
-              <>
-                <div className=' flex flex-wrap flex-col bg-cyan-300 rounded-b-xl p-4'>
-                  {templates && templates.length > 0 ? (
-                    templates.map((x, i) => {
-                      if (x && x.templateId) {
-                        return <TemplateCard template={x} key={i} />;
-                      }
-                    })
-                  ) : (
-                    <div className='text-black w-full p-2'>
-                      <p>you haven&apos;t created templates yet.</p>
-                      <p>a template is the blueprint of a notebook.</p>
-                      <p>an invitation for you or others to write.</p>
-                      <p>each page with a specific prompt.</p>
-                      <p>designed by you to take the writer on a journey.</p>
-                      <p>you set a specific supply, and a price for it.</p>
-                      <p>
-                        the market will eventually tell how valuable they are.
-                      </p>
-                      <p>
-                        ps: people can only disover templates if they get the
-                        link.
-                      </p>
-                      <p>there is no directory for them.</p>
-                    </div>
-                  )}
-                </div>
-                <div className='flex justify-center mt-4'>
-                  <Button
-                    buttonAction={() => router.push('/templates/new')}
-                    buttonText='new template'
-                    buttonColor='bg-cyan-600'
-                  />
-                </div>
-              </>
-            )}
-
             {activeTab === 'notebooks' && (
               <>
                 <div className=' bg-purple-300 rounded-b-xl p-4 flex flex-col flex-wrap'>
@@ -241,7 +199,7 @@ const LibraryPage = ({}) => {
                 </div>
                 <div className='flex justify-center mt-4'>
                   <Button
-                    buttonAction={() => router.push('/templates/new')}
+                    buttonAction={() => router.push('/notebooks/new')}
                     buttonText='new template'
                     buttonColor='bg-purple-600'
                   />

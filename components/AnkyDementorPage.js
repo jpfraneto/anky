@@ -73,14 +73,9 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
         signer
       );
       console.log('the anky dementors contract is: ', ankyDementorsContract);
-      const array = new Uint32Array(1);
-      console.log('the array is:', array);
-      window.crypto.getRandomValues(array);
-      const newUID = array[0];
-      console.log('the newUID is: ', newUID);
+
       const tx = await ankyDementorsContract.createAnkyDementorNotebook(
-        firstPageCid,
-        newUID
+        firstPageCid
       );
       const receipt = await tx.wait();
       const event = receipt.events?.find(

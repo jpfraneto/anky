@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@bundlr-network/client": "^0.11.17",
+    "@crossmint/client-sdk-react-ui": "^1.1.2-alpha.0",
     "@irys/query": "^0.0.2",
     "@irys/sdk": "^0.0.4",
     "@lit-protocol/lit-node-client": "^3.0.14",

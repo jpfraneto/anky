@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { ethers } from 'ethers';
-import Button from '../components/Button';
+import Button from './Button';
 import Link from 'next/link';
-import templatesContractABI from '../lib/templatesABI.json';
 import notebookContractABI from '../lib/notebookABI.json';
 import { setUserData } from '../lib/idbHelper';
 import { useUser } from '../context/UserContext';
-import { processFetchedTemplate } from '../lib/notebooks.js';
+import { newProcessFetchedNotebook } from '../lib/notebooks.js';
 import Spinner from './Spinner';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
 
-function TemplatePage({ wallet, userAnky, router }) {
+function NotebookPage({ router, wallet }) {
   const { authenticated, login } = usePrivy();
-  const [templateData, setTemplateData] = useState(null);
-  const [loadingTemplate, setLoadingTemplate] = useState(true);
+  const [notebookData, setNotebookData] = useState(null);
+  const [loadingNotebook, setLoadingNotebook] = useState(true);
   const [mintingNotebook, setMintingNotebook] = useState(false);
+  const [doesntExist, setDoesntExist] = useState(false);
   const [mintedNotebookId, setMintedNotebookId] = useState(null);
   const [linkCopied, setLinkCopied] = useState(false);
   const [mintedNotebookSuccess, setMintedNotebookSuccess] = useState(false);
@@ -24,29 +24,29 @@ function TemplatePage({ wallet, userAnky, router }) {
 
   const { id } = router.query;
   useEffect(() => {
-    if (id && wallet) fetchTemplateData(id);
+    if (id && wallet) fetchNotebookData(id);
     else {
       if (id) {
-        fetchTemplateFromServer();
+        fetchNotebookFromServer();
       }
     }
-    async function fetchTemplateFromServer() {
+    async function fetchNotebookFromServer() {
       const serverResponse = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/notebooks/template/${id}`
       );
       const data = await serverResponse.json();
       console.log('the server response is: ', data);
-      setTemplateData(data.template);
-      setLoadingTemplate(false);
+      setNotebookData(data.template);
+      setLoadingNotebook(false);
     }
-  }, [id, userAnky]);
+  }, [id]);
 
   const copyToClipboard = async () => {
     await navigator.clipboard.writeText(`https://www.anky.lat/template/${id}`);
     setLinkCopied(true);
   };
 
-  async function fetchTemplateData(templateId) {
+  async function fetchNotebookData(notebookId) {
     if (!wallet) return;
     let provider = await wallet.getEthersProvider();
     let signer;
@@ -58,17 +58,29 @@ function TemplatePage({ wallet, userAnky, router }) {
     }
 
     const contract = new ethers.Contract(
-      process.env.NEXT_PUBLIC_TEMPLATES_CONTRACT_ADDRESS,
-      templatesContractABI,
+      process.env.NEXT_PUBLIC_NOTEBOOKS_CONTRACT,
+      notebookContractABI,
       signer
     );
 
-    const data = await contract.getTemplate(templateId);
-    console.log('in here, the data is: 0, ', data);
-    const processedData = await processFetchedTemplate(data);
+    console.log(
+      'right before calling the smart contrwact to get the notebook',
+      contract
+    );
+    console.log(
+      'the provider that is calling is: ',
+      provider,
+      wallet,
+      notebookId
+    );
+
+    const data = await contract.getNotebook(notebookId);
+    console.log('in here, the dataof this notebook is is: 0, ', data);
+    if (data.metadataCID.length < 3) return setDoesntExist(true);
+    const processedData = await newProcessFetchedNotebook(data);
     console.log('the data is:', processedData);
-    setTemplateData(processedData);
-    setLoadingTemplate(false);
+    setNotebookData(processedData);
+    setLoadingNotebook(false);
   }
 
   async function handleMint() {
@@ -85,17 +97,12 @@ function TemplatePage({ wallet, userAnky, router }) {
       );
 
       const amount = 1;
-      const priceInWei = ethers.utils.parseEther(templateData.price);
-
-      const array = new Uint32Array(1);
-      window.crypto.getRandomValues(array);
-      const newCID = array[0];
+      const priceInWei = ethers.utils.parseEther(notebookData.price);
 
       const transaction = await notebooksContract.mintNotebook(
-        wallet.address,
-        Number(id),
+        notebookData.notebookId,
         amount,
-        newCID,
+        'aloja', // this value is not needed anymore because there are no password strings.
         { value: priceInWei }
       );
 
@@ -143,7 +150,7 @@ function TemplatePage({ wallet, userAnky, router }) {
     }
   }
 
-  if (loadingTemplate)
+  if (loadingNotebook)
     return (
       <div>
         <Spinner />
@@ -151,9 +158,20 @@ function TemplatePage({ wallet, userAnky, router }) {
       </div>
     );
 
+  if (doesntExist) {
+    return (
+      <div className='text-white'>
+        <p>this notebook doesnt exist.</p>
+        <Link href='/notebooks/new' passHref>
+          <Button buttonText='create it' buttonColor='bg-green-500' />
+        </Link>
+      </div>
+    );
+  }
+
   return (
     <div className='md:w-1/2 p-2 mx-auto w-screen text-white pt-5'>
-      {templateData ? (
+      {notebookData ? (
         <>
           {mintedNotebookSuccess ? (
             <>
@@ -186,18 +204,19 @@ function TemplatePage({ wallet, userAnky, router }) {
           ) : (
             <>
               <h2 className='text-3xl mb-3'>
-                {templateData.metadata.title || 'undefined'}{' '}
+                {notebookData.metadata.title || 'undefined'}{' '}
               </h2>
 
               <p className='italic text-lg mb-3'>
-                {templateData.metadata.description || 'undefined'}
+                {notebookData.metadata.description || 'undefined'}
               </p>
               <small className='text-sm'>
-                this is a template. to write on it, you have to buy it so that
-                it is transformed into a notebook.
+                this is notebook is closed. solid. in order to write on it and
+                access its magic, you need to buy it for the price that the
+                creator determined.
               </small>
               <ol className='text-left text-black p-4 bg-slate-200 rounded-xl  my-4'>
-                {templateData.metadata.prompts.map((x, i) => (
+                {notebookData.metadata.prompts.map((x, i) => (
                   <li key={i}>
                     {i + 1}. {x}
                   </li>
@@ -205,10 +224,10 @@ function TemplatePage({ wallet, userAnky, router }) {
               </ol>
               <div className='flex justify-center'>
                 <p className='bg-green-600 p-2 text-white rounded-xl border my-2 border-black w-fit mx-2'>
-                  {templateData.supply} units left
+                  {notebookData.supply} units left
                 </p>
                 <p className='bg-green-600 p-2 text-white rounded-xl border my-2 border-black w-fit mx-2'>
-                  {templateData.price} eth
+                  {notebookData.price} eth
                 </p>
               </div>
 
@@ -260,4 +279,4 @@ function TemplatePage({ wallet, userAnky, router }) {
   );
 }
 
-export default TemplatePage;
+export default NotebookPage;

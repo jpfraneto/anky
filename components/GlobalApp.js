@@ -4,15 +4,17 @@ import { usePrivy, useWallets } from '@privy-io/react-auth';
 import { Righteous, Dancing_Script } from 'next/font/google';
 import { getAnkyverseDay, getAnkyverseQuestion } from '../lib/ankyverse';
 import { useUser } from '../context/UserContext';
+import { ethers } from 'ethers';
 import { useRouter } from 'next/router';
 import { fetchUserDementors } from '../lib/notebooks';
 import { Transition } from 'react-transition-group';
-import NewTemplatePage from './NewTemplatePage';
+import airdropABI from '../lib/airdropABI.json';
+import NewNotebookPage from './NewNotebookPage';
 import LandingPage from './LandingPage';
 import DementorPage from './DementorById';
 import ProfilePage from './ProfilePage';
 import BuildersPage from './BuildersPage';
-import TemplatePage from './TemplateById';
+import NotebookPage from './NotebookById';
 import AnkyDementorPage from './AnkyDementorPage';
 import UserPage from './UserPage';
 import JournalPage from './journals/JournalPage';
@@ -24,7 +26,12 @@ import IndividualNotebookPage from './notebook/IndividualNotebookPage';
 import JournalById from './journals/JournalById';
 import BuyNewJournal from './journals/BuyNewJournal';
 import LitProtocol from './LitProtocol';
+import { CrossmintPayButton } from '@crossmint/client-sdk-react-ui';
+import Mint from './MintingComponentBtn';
 import Irys from './Irys';
+import Button from './Button';
+import Spinner from './Spinner';
+import WelcomePage from './WelcomePage';
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 const ankyverseToday = getAnkyverseDay(new Date());
@@ -32,25 +39,89 @@ const ankyverseQuestion = getAnkyverseQuestion(ankyverseToday.wink);
 
 const GlobalApp = ({ alchemy }) => {
   const { login, authenticated, ready, loading, logout } = usePrivy();
-  const { userAppInformation } = useUser();
+  const { userAppInformation, userOwnsAnky, setUserOwnsAnky, mainAppLoading } =
+    useUser();
   const router = useRouter();
   const [lifeBarLength, setLifeBarLength] = useState(0);
-  const [mainAppLoading, setMainAppLoading] = useState(true);
   const [displayWritingGameLanding, setDisplayWritingGameLanding] =
     useState(false);
   const [userWallet, setUserWallet] = useState(null);
+  const [userIsMintingAnky, setUserIsMintingAnky] = useState(false);
   const wallets = useWallets();
   const wallet = wallets.wallets[0];
   useEffect(() => {
     console.log('out hereeee');
     if (ready) {
       console.log('IN EHEEEREREE');
-      setMainAppLoading(false);
     }
   }, [ready]);
 
+  async function mintUsersAnky() {
+    if (!wallet) return alert('you dont have a wallet connected');
+    try {
+      setUserIsMintingAnky(true);
+      let provider = await wallet.getEthersProvider();
+      let signer = await provider.getSigner();
+      const ankyAirdropContract = new ethers.Contract(
+        process.env.NEXT_PUBLIC_ANKY_AIRDROP_SMART_CONTRACT,
+        airdropABI,
+        signer
+      );
+      const usersFirstAnkyTxn = await ankyAirdropContract.mintTo(
+        wallet.address
+      );
+      console.log('users first anky txn', usersFirstAnkyTxn);
+      setUserIsMintingAnky(false);
+      setUserOwnsAnky(true);
+    } catch (error) {
+      console.log('there was an error', error);
+      alert('there was an error, please try again.');
+      setUserIsMintingAnky(false);
+    }
+  }
+
   function getComponentForRoute(route, router) {
     if (!ready) return;
+    console.log(`________________${userOwnsAnky}____________________*****`);
+    if (authenticated && wallet && wallet.address && !userOwnsAnky) {
+      console.log('in heeere');
+      return (
+        <div
+          className={`${righteous.className}  py-24 text-white relative overflow-y-scroll flex flex-col items-center  w-full bg-cover bg-center`}
+          style={{
+            boxSizing: 'border-box',
+            height: 'calc(100vh)',
+            backgroundImage:
+              "linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/images/backgroundankys.png')",
+            backgroundPosition: 'center center',
+            backgroundSize: 'cover',
+            backgroundRepeat: 'no-repeat',
+          }}
+        >
+          <p>you don&apos;t own an anky.</p>
+          <p>it is the starting point of this journey.</p>
+          <p>to get one, you just have to buy it by clicking on this link.</p>
+          <p>it is only 2 usd.</p>
+          <p>and it will guide you into the future.</p>
+          <p>through the present.</p>
+
+          <div className='w-96 my-2'>
+            {userIsMintingAnky ? (
+              <Spinner />
+            ) : (
+              <div className='flex space-x-2 justify-center w-full'>
+                <Button
+                  buttonAction={mintUsersAnky}
+                  buttonText='pay with eth'
+                  buttonColor='bg-purple-600'
+                />
+                <Mint usersWalletAddress={wallet.address} />
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
     switch (route) {
       case '/':
         return (
@@ -83,6 +154,8 @@ const GlobalApp = ({ alchemy }) => {
             setLifeBarLength={setLifeBarLength}
           />
         );
+      case '/welcome':
+        return <WelcomePage />;
       case '/dementor':
         return (
           <AnkyDementorPage
@@ -106,16 +179,11 @@ const GlobalApp = ({ alchemy }) => {
         return <ProfilePage />;
       case '/lit':
         return <LitProtocol />;
-      case '/templates/new':
-        return <NewTemplatePage userAnky={userAppInformation} />;
-      case `/template/${route.split('/').pop()}`: // Extracts the template id from the route
+      case '/notebooks/new':
+        return <NewNotebookPage userAnky={userAppInformation} />;
+      case `/notebook/${route.split('/').pop()}`: // Extracts the template id from the route
         return (
-          <TemplatePage
-            wallet={wallet}
-            userAnky={userAppInformation}
-            alchemy={alchemy}
-            router={router}
-          />
+          <NotebookPage wallet={wallet} alchemy={alchemy} router={router} />
         );
 
       case '/community-notebook':
@@ -131,6 +199,15 @@ const GlobalApp = ({ alchemy }) => {
 
       case '/journal':
         return <JournalPage userAppInformation={userAppInformation} />;
+      case `/journal/new`:
+        return <BuyNewJournal />;
+      case `/journal/${route.split('/').pop()}`:
+        return (
+          <JournalById
+            setLifeBarLength={setLifeBarLength}
+            lifeBarLength={lifeBarLength}
+          />
+        );
       case '/eulogias/new':
         return <NewEulogiaPage wallet={wallet} />;
       case `/eulogias/${route.split('/').pop()}`:
@@ -143,15 +220,6 @@ const GlobalApp = ({ alchemy }) => {
       case `/notebook/${route.split('/').pop()}`:
         return (
           <IndividualNotebookPage
-            setLifeBarLength={setLifeBarLength}
-            lifeBarLength={lifeBarLength}
-          />
-        );
-      case `/journal/new`:
-        return <BuyNewJournal />;
-      case `/journal/${route.split('/').pop()}`:
-        return (
-          <JournalById
             setLifeBarLength={setLifeBarLength}
             lifeBarLength={lifeBarLength}
           />

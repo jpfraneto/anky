@@ -90,10 +90,6 @@ const NewEulogiaPage = ({ wallet }) => {
       console.log('the user wallet is: ', thisWallet);
 
       if (thisWallet && signer) {
-        const array = new Uint32Array(1);
-        window.crypto.getRandomValues(array);
-        const newCID = array[0];
-
         const eulogiaContract = new ethers.Contract(
           process.env.NEXT_PUBLIC_EULOGIAS_CONTRACT_ADDRESS,
           eulogiaABI,
@@ -107,8 +103,7 @@ const NewEulogiaPage = ({ wallet }) => {
         // Call the contract's method and send the transaction
         const transactionResponse = await eulogiaContract.createEulogia(
           metadataCID.cid,
-          maxMsgs,
-          newCID
+          maxMsgs
         );
 
         const transactionReceipt = await transactionResponse.wait(); // Wait for the transaction to be mined

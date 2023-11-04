@@ -3,6 +3,11 @@ import { useRouter } from 'next/router';
 import { ethers } from 'ethers';
 import Button from '../Button';
 import { formatUserJournal } from '../../lib/notebooks.js';
+import {
+  fetchContentFromIrys,
+  getContainerInfoFromIrys,
+} from '../../lib/irys.js';
+import { WebIrys } from '@irys/sdk';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -11,17 +16,6 @@ import Spinner from '../Spinner';
 import AnkyJournalsAbi from '../../lib/journalsABI.json'; // Assuming you have the ABI
 import { useUser } from '../../context/UserContext';
 import { setUserData } from '../../lib/idbHelper';
-
-function transformJournalType(index) {
-  switch (index) {
-    case 0:
-      return 8;
-    case 1:
-      return 32;
-    case 2:
-      return 64;
-  }
-}
 
 const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
   const router = useRouter();
@@ -83,6 +77,7 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
   useEffect(() => {
     async function fetchJournal() {
       try {
+        if (!thisWallet) return;
         const userJournals = userAppInformation.userJournals;
         console.log('the user app information is: ', userAppInformation);
         console.log(router.query);
@@ -95,7 +90,18 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
           console.log('this journal is: ', thisJournal);
           if (thisJournal.length > 0) {
             console.log('sajl', thisJournal);
-            setJournal(thisJournal[0]);
+            const fetchedJournal = thisJournal[0];
+            console.log('the fetched journal is: 0', fetchedJournal);
+
+            const writtenPages = await getContainerInfoFromIrys(
+              'journal',
+              router.query.id,
+              thisWallet.address
+            );
+
+            fetchedJournal.entries = writtenPages;
+            fetchedJournal.updatedFromArweave = true;
+            setJournal(fetchedJournal);
             setLoading(false);
           } else {
             setNoJournals(true);
@@ -117,8 +123,8 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
   const writeOnJournal = async () => {
     const pagesWritten = journal.entries.length;
     console.log('the pages written are:', pagesWritten);
-    if (pagesWritten >= transformJournalType(journal.journalType)) {
-      alert('All pages have been written!');
+    if (pagesWritten == 96) {
+      alert('this journal aint having more space my friend');
       return;
     }
     const writingGameParameters = {
@@ -137,96 +143,102 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
   const updateJournalWithPage = async finishText => {
     try {
       console.log('inside the update journal with page function', finishText);
-      const authToken = await getAccessToken();
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/notebooks/upload-writing`,
+      const getWebIrys = async () => {
+        // Ethers5 provider
+        // await window.ethereum.enable();
+        if (!thisWallet) return;
+        // const provider = new providers.Web3Provider(window.ethereum);
+        console.log('thiiiiis wallet is: ', thisWallet);
+        const provider = await thisWallet.getEthersProvider();
+
+        const url = 'https://node2.irys.xyz';
+        const token = 'ethereum';
+        const rpcURL = 'https://rpc-mumbai.maticvigil.com'; // Optional parameter
+
+        // Create a wallet object
+        const wallet = { rpcUrl: rpcURL, name: 'ethersv5', provider: provider };
+        // Use the wallet object
+        const webIrys = new WebIrys({ url, token, wallet });
+        await webIrys.ready();
+        return webIrys;
+      };
+      const webIrys = await getWebIrys();
+      let previousPageCid = 0;
+      console.log('JHSALCHSAKJHCAS', journal.entries);
+      if (journal.entries.length > 0) {
+        previousPageCid = journal.entries[journal.entries.length - 1].cid;
+      }
+      const tags = [
+        { name: 'Content-Type', value: 'text/plain' },
+        { name: 'application-id', value: 'Anky Dementors' },
+        { name: 'container-type', value: 'journal' },
+        { name: 'container-id', value: router.query.id.toString() },
+        { name: 'page-number', value: journal.entries.length.toString() },
+        // what is the CID from the previous page? this is where the provenance plays an important role and needs to be taken care of.
         {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${authToken}`,
-          },
-          body: JSON.stringify({ text: finishText }),
-        }
-      );
+          name: 'previous-page',
+          value: previousPageCid.toString(),
+        },
+      ];
+      console.log('right after the tags', tags);
+      try {
+        const receipt = await webIrys.upload(finishText, { tags });
+        console.log(`Data uploaded ==> https://gateway.irys.xyz/${receipt.id}`);
+        let newJournalEntry;
+        setUserAppInformation(x => {
+          // Find the specific journal index by its id
+          const journalIndex = x.userJournals.findIndex(
+            j => j.journalId == router.query.id
+          );
 
-      const { cid } = await response.json();
-      console.log('the cid is: ', cid);
-      console.log('the WALLETS are: ', wallets);
-      const provider = await thisWallet.getEthersProvider();
-      let signer = await provider.getSigner();
-      const journalsContract = new ethers.Contract(
-        process.env.NEXT_PUBLIC_JOURNALS_CONTRACT_ADDRESS,
-        AnkyJournalsAbi,
-        signer
-      );
-      console.log('the journals contract is: ', journalsContract);
-
-      const pageNumber = journal.entries.length;
-      console.log('the page number is', pageNumber);
-      console.log('the notebook is: ', journal);
-      const journalId = router.query.id;
-      console.log('the journal id is: ', journalId, cid);
-      console.log('the journals contract is: ', journalsContract);
-      const tx = await journalsContract.writeJournalPage(journalId, cid, true);
-      await tx.wait();
-      console.log('after the response of writing in the journal', journal);
-      setUserAppInformation(x => {
-        // Find the specific journal index by its id
-        const journalIndex = x.userJournals.findIndex(
-          j => j.journalId == journalId
-        );
-
-        // If the journal is found
-        if (journalIndex !== -1) {
-          const updatedJournal = {
-            ...x.userJournals[journalIndex],
-            entries: [
-              ...x.userJournals[journalIndex].entries,
-              {
-                cid: cid,
-                isPublic: false,
-                text: finishText,
-                timestamp: new Date().getTime(),
-              },
-            ],
+          newJournalEntry = {
+            text: finishText,
+            timestamp: new Date().getTime(),
+            pageNumber: journal.entries.length,
+            previousPageCid: previousPageCid,
+            cid: receipt.id,
           };
 
-          const updatedUserJournals = [
-            ...x.userJournals.slice(0, journalIndex),
-            updatedJournal,
-            ...x.userJournals.slice(journalIndex + 1),
-          ];
+          // If the journal is found
+          if (journalIndex !== -1) {
+            const updatedJournal = {
+              ...x.userJournals[journalIndex],
+              entries: [
+                ...x.userJournals[journalIndex].entries,
+                newJournalEntry,
+              ],
+            };
 
-          setUserData('userJournals', updatedUserJournals);
+            const updatedUserJournals = [
+              ...x.userJournals.slice(0, journalIndex),
+              updatedJournal,
+              ...x.userJournals.slice(journalIndex + 1),
+            ];
 
+            setUserData('userJournals', updatedUserJournals);
+
+            return {
+              ...x,
+              userJournals: updatedUserJournals,
+            };
+          }
+
+          // Return the original state if the journal isn't found (for safety)
+          return x;
+        });
+
+        setJournal(x => {
           return {
             ...x,
-            userJournals: updatedUserJournals,
+            entries: [...journal.entries, newJournalEntry],
           };
-        }
-
-        // Return the original state if the journal isn't found (for safety)
-        return x;
-      });
-
-      setJournal(x => {
-        return {
-          ...x,
-          entries: [
-            ...journal.entries,
-            {
-              cid: cid,
-              isPublic: false,
-              text: finishText,
-              timestamp: new Date().getTime(),
-            },
-          ],
-        };
-      });
-      setLifeBarLength(0);
-      setLoadWritingGame(false);
-      console.log('after the setloadwrtinggame put into false');
+        });
+        setLifeBarLength(0);
+        setLoadWritingGame(false);
+        console.log('after the setloadwrtinggame put into false');
+      } catch (e) {
+        console.log('Error uploading data ', e);
+      }
     } catch (error) {
       setLoadWritingGame(false);
       setThereWasAnError(true);
@@ -234,8 +246,26 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
     }
   };
 
+  async function getPasswords() {
+    const provider = await thisWallet.getEthersProvider();
+    let signer = await provider.getSigner();
+    const journalsContract = new ethers.Contract(
+      process.env.NEXT_PUBLIC_JOURNALS_CONTRACT_ADDRESS,
+      AnkyJournalsAbi,
+      signer
+    );
+
+    const tx = await journalsContract.getPasswordCID(router.query.id);
+    // check for the passwords to create the thread that will allow me to write on that page with the provenance chain.
+    // the notebook is the provenance chain itself, and the decryption process happens because of that being real.
+    console.log('the tx is: ', tx);
+    const passwords = await fetchContentFromIrys(tx);
+    return passwords;
+  }
+
   function renderModal() {
     let content;
+    if (!journal.entries) return;
     let thisEntry = journal.entries[entryForDisplay];
     if (entryForDisplay > journal.entries.length) {
       setEntryForDisplay(journal.entries.length);
@@ -317,21 +347,19 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
     <div className='text-white'>
       <p>there was an error, but here is your writing:</p>
       <div className='p-2 bg-green-100'>
-        {text.includes('\n')
-          ? text.split('\n').map((x, i) => {
-              return (
-                <p key={i} className='my-2'>
-                  {x}
-                </p>
-              );
-            })
-          : text.map((x, i) => {
-              return (
-                <p key={i} className='my-2'>
-                  {x}
-                </p>
-              );
-            })}
+        {text.includes('\n') ? (
+          text.split('\n').map((x, i) => {
+            return (
+              <p key={i} className='my-2'>
+                {x}
+              </p>
+            );
+          })
+        ) : (
+          <p key={i} className='my-2'>
+            {text}
+          </p>
+        )}
       </div>
       <Button
         buttonText='upload again'
@@ -343,7 +371,7 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
   return (
     <div className='text-white pt-4'>
       <h2 className='text-2xl mb-4'>This is journal {journal.journalId}</h2>
-      {journal.entries.length !== 0 ? (
+      {journal.entries && journal.entries.length !== 0 ? (
         <div className='p-4 flex rounded-xl bg-yellow-500'>
           {journal.entries.map((x, i) => {
             return (
@@ -370,12 +398,20 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
           you wrote it all
         </p>
       ) : (
-        <button
-          onClick={writeOnJournal}
-          className='text-4xl p-4 bg-red-400 rounded-xl hover:bg-red-600 my-4'
-        >
-          write journal
-        </button>
+        <div>
+          <button
+            onClick={() => console.log(journal)}
+            className='text-4xl p-4 bg-red-400 rounded-xl hover:bg-red-600 my-4'
+          >
+            print journal
+          </button>
+          <button
+            onClick={writeOnJournal}
+            className='text-4xl p-4 bg-red-400 rounded-xl hover:bg-red-600 my-4'
+          >
+            write journal
+          </button>
+        </div>
       )}
       <div className='flex justify-center w-96 mx-auto'>
         <div className='flex space-x-2 justify-center'>
