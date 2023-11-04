@@ -92,11 +92,14 @@ export const UserProvider = ({ children }) => {
     async function handleInitialization() {
       if (loading && !ready) return;
       if (!authenticated) {
+        setMainAppLoading(false);
         setAppLoading(false);
         return;
       }
       const doesUserOwnAnky = await fetchUsersAnky();
-      if (!doesUserOwnAnky) return setMainAppLoading(false);
+      if (!doesUserOwnAnky) {
+        return setMainAppLoading(false);
+      }
       setUserOwnsAnky(true);
       setMainAppLoading(false);
       if (loadingUserStoredData) return;
