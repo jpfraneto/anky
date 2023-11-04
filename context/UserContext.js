@@ -96,7 +96,7 @@ export const UserProvider = ({ children }) => {
         return;
       }
       const doesUserOwnAnky = await fetchUsersAnky();
-      if (!doesUserOwnAnky) return;
+      if (!doesUserOwnAnky) return setMainAppLoading(false);
       setUserOwnsAnky(true);
       setMainAppLoading(false);
       if (loadingUserStoredData) return;
