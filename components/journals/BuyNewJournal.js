@@ -85,23 +85,9 @@ const BuyNewJournal = () => {
       // Here i need to fetch bundlr with the information of the journal and update that metadata, which will be the starting thread of this particular journal... page 0
       // It can be a title, a description, a timecreated, an image associated, a starting point in the form of an UID.z
       const metadataCID = '';
-      const rawPasswords = generatePagePasswords(96);
-      console.log('the raw passwords are: ', rawPasswords);
-      const encryptedRawPasswords = await encryptData(
-        thisWallet,
-        provider,
-        JSON.stringify(rawPasswords)
-      );
-      console.log('the encrypted raw passwords are: ', encryptedRawPasswords);
-
-      const passwordsCID = await uploadToIrys(
-        thisWallet,
-        encryptedRawPasswords
-      );
-      console.log('outside here, the passwords cid is: ', passwordsCID);
       // Send the correct amount of Ether when minting
       // function mintJournal(uint256 randomUID, string memory metadataCID, string memory passwordsCID) external onlyAnkyOwner {
-      const tx = await journalsContract.mintJournal(metadataCID, passwordsCID);
+      const tx = await journalsContract.mintJournal(metadataCID);
 
       const receipt = await tx.wait();
       console.log('the receipt isss', receipt);
