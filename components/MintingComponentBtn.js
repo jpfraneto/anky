@@ -11,8 +11,8 @@ export default function Mint({ usersWalletAddress }) {
       mintConfig={{ totalPrice: '0', _to: '<_TO>' }}
       environment='staging'
       mintTo={usersWalletAddress}
-      //   successCallbackURL='https://anky.lat/welcome'
-      //   failureCallbackURL='https://anky.lat/failure'
+      successCallbackURL='https://anky.lat/welcome'
+      failureCallbackURL='https://anky.lat/failure'
     />
   );
 }
