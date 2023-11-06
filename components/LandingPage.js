@@ -170,7 +170,7 @@ function LandingPage({
 
       {/* Discover your Anky Section */}
       <div className='p-8 bg-gray-200 flex flex-row'>
-        <div className='px-2 md:w-3/5 mx-auto'>
+        <div className='px-2  w-full md:w-3/5 mx-auto'>
           <h2 className='text-3xl font-semibold mb-6'>
             four types of writing containers
           </h2>
@@ -191,16 +191,16 @@ function LandingPage({
           <p className='mb-4'>
             your Anky is the keeper of everything that you write.
           </p>
-          <p className='mb-4'>
+          <p className='mb-1'>
             i&apos;m understanding how to encrypt your writings so that only you
             are the one that can access what is inside them.
           </p>
-          <div className='flex flex-col md:flex-row h-12 justify-center items-center '>
+          <div className='flex flex-col md:flex-row h-fit  justify-center items-center '>
             <input
               type='text'
               value={promptForTheUser}
               onChange={e => setPromptForTheUser(e.target.value)}
-              className=' w-96 text-black mx-4 px-2 py-2 rounded-xl border border-black'
+              className=' w-2/3 my-3 md:w-96 text-black mx-4 px-2 py-2 rounded-xl border border-black'
             />
             <Link
               href={`/write?p=${promptForTheUser.replaceAll(' ', '-')}`}

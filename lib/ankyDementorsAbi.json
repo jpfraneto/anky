@@ -159,8 +159,7 @@
     "name": "dementors",
     "outputs": [
       { "internalType": "uint256", "name": "dementorId", "type": "uint256" },
-      { "internalType": "string", "name": "metadataCID", "type": "string" },
-      { "internalType": "string", "name": "passwordsCID", "type": "string" }
+      { "internalType": "string", "name": "firstPageCid", "type": "string" }
     ],
     "stateMutability": "view",
     "type": "function"
@@ -187,23 +186,13 @@
             "name": "dementorId",
             "type": "uint256"
           },
-          { "internalType": "string", "name": "metadataCID", "type": "string" },
-          { "internalType": "string", "name": "passwordsCID", "type": "string" }
+          { "internalType": "string", "name": "firstPageCid", "type": "string" }
         ],
         "internalType": "struct NewAnkyDementor.Dementor",
         "name": "",
         "type": "tuple"
       }
     ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "uint256", "name": "dementorId", "type": "uint256" }
-    ],
-    "name": "getPasswordCID",
-    "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
     "stateMutability": "view",
     "type": "function"
   },
@@ -228,13 +217,12 @@
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "randomUID", "type": "uint256" },
-      { "internalType": "string", "name": "metadataCID", "type": "string" },
-      { "internalType": "string", "name": "passwordsCID", "type": "string" }
+      { "internalType": "address", "name": "mintTo", "type": "address" },
+      { "internalType": "string", "name": "firstPageCid", "type": "string" }
     ],
     "name": "mintDementor",
     "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "payable",
     "type": "function"
   },
   {

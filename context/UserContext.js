@@ -91,15 +91,19 @@ export const UserProvider = ({ children }) => {
   useEffect(() => {
     async function handleInitialization() {
       if (loading && !ready) return;
-      if (!authenticated) {
+      if (!authenticated && ready) {
+        console.log('running the hereee');
         setMainAppLoading(false);
         setAppLoading(false);
         return;
       }
-      const doesUserOwnAnky = await fetchUsersAnky();
-      if (!doesUserOwnAnky) {
+      const usersAnkyBalance = await fetchUsersAnky();
+      console.log('after fetching the user anky,', usersAnkyBalance);
+      if (usersAnkyBalance == 0) {
+        setUserOwnsAnky(false);
         return setMainAppLoading(false);
       }
+      console.log('after hereee');
       setUserOwnsAnky(true);
       setMainAppLoading(false);
       if (loadingUserStoredData) return;
@@ -366,8 +370,7 @@ export const UserProvider = ({ children }) => {
       ankyAirdropContract
     );
     const usersAnkyBalance = await ankyAirdropContract.balanceOf(userAddress);
-    const userOwnsAnky = ethers.utils.formatUnits(usersAnkyBalance, 0);
-    return userOwnsAnky != 0;
+    return ethers.utils.formatUnits(usersAnkyBalance, 0);
   }
 
   const initializeUser = async () => {

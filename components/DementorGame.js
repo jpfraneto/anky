@@ -27,7 +27,7 @@ const DementorGame = ({
   preloadedBackground,
   text,
   setText,
-  uploadDementorPageToSmartContract,
+  uploadDementorPage,
   lifeBarLength,
   setLifeBarLength,
   time,
@@ -37,7 +37,6 @@ const DementorGame = ({
   prompts,
   secondsPerPrompt,
 }) => {
-  console.log('IN HERE', prompts);
   const router = useRouter();
   const [currentPromptIndex, setCurrentPromptIndex] = useState(0);
   const [prompt, setPrompt] = useState(prompts[0]);
@@ -185,7 +184,7 @@ const DementorGame = ({
 
   async function readyToUpdateSmartContract() {
     setUploadingWriting(true);
-    await uploadDementorPageToSmartContract(text, prompts);
+    await uploadDementorPage(text, prompts);
     setUploadingWriting(false);
     setWritingSaved(true);
   }

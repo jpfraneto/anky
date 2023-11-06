@@ -7,7 +7,7 @@ import NotebookCard from '../NotebookCard';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
 import EulogiaCard from '../eulogias/EulogiaCard';
 import JournalCard from '../journals/JournalCard';
-import TemplateCard from '../TemplateCard';
+import DementorCard from '../DementorCard';
 
 import Button from '../Button';
 import Spinner from '../Spinner';
@@ -50,6 +50,16 @@ const LibraryPage = ({}) => {
     return timestampB - timestampA;
   }
 
+  function sortDementorsByLastUpdated(a, b) {
+    // if (!a.messages || !b.messages) return;
+    // if (a.messages.length === 0 && b.messages.length === 0) return 0;
+    // if (a.messages.length === 0) return 1;
+    // if (b.messages.length === 0) return -1;
+    // const timestampA = a.messages[a.messages.length - 1].timestamp;
+    // const timestampB = b.messages[b.messages.length - 1].timestamp;
+    // return timestampB - timestampA;
+  }
+
   useEffect(() => {
     console.log('the user templates are: ', userAppInformation.userTemplates);
     setTemplates(userAppInformation.userTemplates);
@@ -78,17 +88,28 @@ const LibraryPage = ({}) => {
     console.log('the user eulogias are: ', userAppInformation.userEulogias);
     setEulogias(sortedEulogias);
     console.log('the user dementors are: ', userAppInformation.userDementors);
-    // setEulogias(userAppInformation.userDementors);
+
+    let sortedDementors;
+    if (
+      userAppInformation.userDementors &&
+      userAppInformation.userDementors.length > 0
+    ) {
+      // sortedDementors = userAppInformation.userDementors.sort(
+      //   sortDementorsByLastUpdated
+      // );
+    }
+    console.log('the user dementors are: ', userAppInformation.userDementors);
+    setDementors(userAppInformation.userDementors);
   }, [appLoading, userAppInformation]);
 
-  if (appLoading) {
-    return (
-      <div>
-        <Spinner />
-        <p>loading...</p>
-      </div>
-    );
-  }
+  // if (appLoading) {
+  //   return (
+  //     <div>
+  //       <Spinner />
+  //       <p>loading...</p>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div>
@@ -126,7 +147,7 @@ const LibraryPage = ({}) => {
           <div className='w-full md:w-3/5 rounded-xl overflow-hidden'>
             <div className='flex w-full overflow-x-scroll md:w-full text-xs md:text-lg md:h-12 rounded-t-xl text-black'>
               <button
-                className={`px-1 md:px-4 w-1/3 py-2 ${
+                className={`px-1 md:px-4 w-1/4 py-2 ${
                   activeTab === 'journals' ? 'bg-green-600' : 'bg-green-300'
                 }`}
                 onClick={() => setActiveTab('journals')}
@@ -135,7 +156,7 @@ const LibraryPage = ({}) => {
               </button>
 
               <button
-                className={`px-1 md:px-4 w-1/3 py-2 ${
+                className={`px-1 md:px-4 w-1/4 py-2 ${
                   activeTab === 'notebooks' ? 'bg-purple-600' : 'bg-purple-300'
                 }`}
                 onClick={() => setActiveTab('notebooks')}
@@ -143,7 +164,7 @@ const LibraryPage = ({}) => {
                 Notebooks
               </button>
               <button
-                className={`px-1 md:px-4 w-1/3 py-2 ${
+                className={`px-1 md:px-4 w-1/4 py-2 ${
                   activeTab === 'eulogias' ? 'bg-orange-600' : 'bg-orange-300'
                 }`}
                 onClick={() => {
@@ -152,14 +173,14 @@ const LibraryPage = ({}) => {
               >
                 Eulogias
               </button>
-              {/* <button
-                className={`px-1 md:px-4 w-1/5 py-2 ${
+              <button
+                className={`px-1 md:px-4 w-1/4 py-2 ${
                   activeTab === 'dementor' ? 'bg-red-600' : 'bg-red-300'
                 }`}
                 onClick={() => setActiveTab('dementor')}
               >
                 Dementor
-              </button> */}
+              </button>
             </div>
 
             {activeTab === 'journals' && (
@@ -237,14 +258,10 @@ const LibraryPage = ({}) => {
 
             {activeTab === 'dementor' && (
               <>
-                <div className=' bg-red-300 rounded-b-xl p-4 flex flex-wrap'>
+                <div className=' flex flex-wrap bg-red-300 w-full flex-col rounded-b-xl p-4'>
                   {dementors.length > 0 ? (
                     dementors.map((x, i) => {
-                      return (
-                        <Link key={i} href={`dementor/${x.dementorId}`}>
-                          {dementorId}
-                        </Link>
-                      );
+                      return <DementorCard dementor={x} key={i} />;
                     })
                   ) : (
                     <div className='text-black w-full p-2'>

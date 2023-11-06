@@ -7,6 +7,7 @@ import { ethers } from 'ethers';
 import { useWallets, usePrivy } from '@privy-io/react-auth';
 import WritingGameComponent from './WritingGameComponent';
 import AnkyDementorsAbi from '../lib/ankyDementorsAbi.json';
+import { setUserData } from '../lib/idbHelper';
 import { useUser } from '../context/UserContext';
 
 const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
@@ -22,7 +23,7 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
   const [responseFromAnkyReady, setResponseFromAnkyReady] = useState(false);
   const [writingGameProps, setWritingGameProps] = useState(null);
   const [loading, setLoading] = useState(false); // Loading state
-  const { setUserAppInformation } = useUser();
+  const { userAppInformation, setUserAppInformation } = useUser();
   const router = useRouter();
   const { wallets } = useWallets();
 
@@ -74,40 +75,51 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
       );
       console.log('the anky dementors contract is: ', ankyDementorsContract);
 
-      const tx = await ankyDementorsContract.createAnkyDementorNotebook(
+      const tx = await ankyDementorsContract.mintDementor(
+        thisWallet.address,
         firstPageCid
       );
       const receipt = await tx.wait();
-      const event = receipt.events?.find(
-        e => e.event === 'DementorNotebookCreated'
-      );
+      console.log('the receipt is: ', receipt);
+      const event = receipt.events?.find(e => e.event === 'DementorCreated');
 
       if (event) {
+        console.log('the event is', event);
         // Extract the tokenId from the event and set it to state
-        const tokenId = event.args.tokenId;
-        setAnkyDementorId(tokenId.toString());
+        const newDementorId = event.args.dementorId;
+        setAnkyDementorId(newDementorId.toString());
 
         const newDementor = {
-          dementorId: tokenId.toString(),
+          dementorId: newDementorId.toString(),
           currentPage: 0,
-          introCID: firstPageCid,
+          firstPageCid: firstPageCid,
           pages: [
             {
-              promptCID: firstPageCid,
+              promptsCID: firstPageCid,
               userWritingCID: '',
               creationTimestamp: new Date().getTime(),
               writingTimestamp: 0,
             },
           ],
         };
-
         setUserAppInformation(x => {
-          setUserData('userDementors', [newDementor]);
-
-          return {
-            ...x,
-            userDementors: [newDementor],
-          };
+          console.log(
+            'the x in the user app information before adding a new dementor is: ',
+            x
+          );
+          if (x.userDementors) {
+            setUserData('userDementors', [...x.userDementors, newDementor]);
+            return {
+              ...x,
+              userDementors: [...x.userDementors, newDementor],
+            };
+          } else {
+            setUserData('userDementors', [newDementor]);
+            return {
+              ...x,
+              userDementors: [newDementor],
+            };
+          }
         });
       }
 

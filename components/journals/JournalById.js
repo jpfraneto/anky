@@ -400,12 +400,6 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
       ) : (
         <div>
           <button
-            onClick={() => console.log(journal)}
-            className='text-4xl p-4 bg-red-400 rounded-xl hover:bg-red-600 my-4'
-          >
-            print journal
-          </button>
-          <button
             onClick={writeOnJournal}
             className='text-4xl p-4 bg-red-400 rounded-xl hover:bg-red-600 my-4'
           >

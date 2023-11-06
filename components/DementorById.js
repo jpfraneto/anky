@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import { ethers } from 'ethers';
 import Link from 'next/link';
+import { WebIrys } from '@irys/sdk';
 import Button from '../components/Button';
 import AnkyDementorsAbi from '../lib/ankyDementorsAbi.json'; // Assuming you have the ABI
 import { useUser } from '../context/UserContext';
@@ -50,7 +51,7 @@ function DementorPage({
 
   const wallets = useWallets();
   console.log('the wallets are: ', wallets);
-  const wallet = wallets.wallets[0];
+  const thisWallet = wallets.wallets[0];
 
   const { id } = router.query;
 
@@ -75,13 +76,13 @@ function DementorPage({
   }, [isModalOpen, closeModal]);
 
   useEffect(() => {
-    if (id && wallet) fetchDementorData(id);
-  }, [id, wallet]);
+    if (id && thisWallet) fetchDementorData(id);
+  }, [id, thisWallet]);
 
   async function fetchDementorData(dementorId) {
     console.log('inside the fetch dementor data', userAnky);
-    if (!wallet.address) return;
-    let provider = await wallet?.getEthersProvider();
+    if (!thisWallet.address) return;
+    let provider = await thisWallet?.getEthersProvider();
     let signer;
 
     if (provider) {
@@ -96,12 +97,16 @@ function DementorPage({
       signer
     );
     setDementorsContract(ankyDementorsContract);
+    console.log('the dementors contract is: ', ankyDementorsContract);
     console.log('the dementor id', dementorId);
+    let formattedDementorId = dementorId;
 
-    const dementorData = await ankyDementorsContract.getDementor(dementorId);
+    const dementorData = await ankyDementorsContract.getDementor(
+      formattedDementorId
+    );
+    console.log('the dementor data is: ', dementorData);
     const processedDementor = await processFetchedDementor(dementorData);
-    processedDementor.dementorId = Number(dementorId);
-    processedDementor.intro = JSON.parse(processedDementor.intro);
+    console.log('the processed dementor is: ', processedDementor);
 
     setDementorData(processedDementor);
     setLoadingDementor(false);
@@ -111,13 +116,13 @@ function DementorPage({
     const writingGameParameters = {
       notebookType: 'dementor',
       backgroundImage: null, // You can modify this if you have an image.
-      uploadDementorPageToSmartContract: uploadDementorPageToSmartContract,
+      uploadDementorPage: uploadDementorPage,
     };
     setWritingGameProps(writingGameParameters);
     setUserIsReadyToWrite(true);
   }
 
-  async function uploadDementorPageToSmartContract(finishText, prompts) {
+  async function uploadDementorPage(finishText, prompts) {
     console.log(
       'sending text to chatgtp, and then updating the smart contract with these new cids.'
     );
@@ -136,29 +141,129 @@ function DementorPage({
         }
       );
       const responseData = await response.json();
-      const { thisWritingCid, newPageCid } = responseData;
+      console.log('the response data is: ', responseData);
+      /// now this needs to be sent to irys
 
-      if (!thisWritingCid || !newPageCid)
-        throw new Error('There was an error getting the cids for this.');
+      console.log('inside the update dementor with page function', finishText);
+      const getWebIrys = async () => {
+        // Ethers5 provider
+        // await window.ethereum.enable();
+        if (!thisWallet) return;
+        // const provider = new providers.Web3Provider(window.ethereum);
+        const provider = await thisWallet.getEthersProvider();
 
-      console.log('this writing cid is: ', thisWritingCid);
-      console.log('this new page cid is: ', newPageCid);
+        const url = 'https://node2.irys.xyz';
+        const token = 'ethereum';
+        const rpcURL = 'https://rpc-mumbai.maticvigil.com'; // Optional parameter
 
-      console.log('the dementors contract is: ', dementorsContract);
-      console.log('this dementors id is: ', id);
-      if (dementorsContract) {
-        const tx = await dementorsContract.writeDementorPage(
-          id,
-          thisWritingCid,
-          newPageCid
-        );
-        await tx.wait();
+        // Create a wallet object
+        const wallet = { rpcUrl: rpcURL, name: 'ethersv5', provider: provider };
+        // Use the wallet object
+        const webIrys = new WebIrys({ url, token, wallet });
+        await webIrys.ready();
+        return webIrys;
+      };
+      const webIrys = await getWebIrys();
 
-        setLoadingSavingNewPage(false);
-        setUserIsReadyToWrite(false);
-        setDementorWasUpdated(true);
-        // ************************** //
+      console.log('JHSALCHSAKJHCAS', dementorData.pages);
+      let previousPageCid;
+      if (dementorData.pages.length > 0) {
+        previousPageCid =
+          dementorData.pages[demedementorDatantor.pages.length - 1].cid;
       }
+      const tags = [
+        { name: 'Content-Type', value: 'text/plain' },
+        { name: 'application-id', value: 'Anky Dementors' },
+        { name: 'container-type', value: 'dementor' },
+        { name: 'container-id', value: router.query.id.toString() },
+        { name: 'page-number', value: dementorData.pages.length.toString() },
+        // how can i embed the prompts and answers mechanism in this container? that's tricky. perhaps they don't need to be inside the same page. perhaps the paging mechanism doesn't make sense here. but how can i do it? i'm not sure.
+        { name: 'dementor-prompt', value: 'true' },
+        { name: 'dementor-answer', value: 'false' },
+        // what is the CID from the previous page? this is where the provenance plays an important role and needs to be taken care of.
+        {
+          name: 'previous-page',
+          value: previousPageCid.toString(),
+        },
+      ];
+      console.log('right after the tags', tags);
+      try {
+        const receipt = await webIrys.upload(finishText, { tags });
+        console.log(`Data uploaded ==> https://gateway.irys.xyz/${receipt.id}`);
+        let newDementorPage;
+        setUserAppInformation(x => {
+          // Find the specific journal index by its id
+          const dementorIndex = x.userDementors.findIndex(
+            j => j.dementorId == router.query.id
+          );
+
+          newDementorPage = {
+            timestamp: new Date().getTime(),
+            pageNumber: journal.entries.length,
+            previousPageCid: previousPageCid,
+            cid: receipt.id,
+          };
+
+          // If the journal is found
+          if (dementorIndex !== -1) {
+            const updatedDementor = {
+              ...x.userDementors[dementorIndex],
+              pages: [...x.userDementors[dementorIndex].pages, newDementorPage],
+            };
+
+            const updatedUserDementors = [
+              ...x.userDementors.slice(0, dementorIndex),
+              updatedDementor,
+              ...x.userDementors.slice(dementorIndex + 1),
+            ];
+
+            setUserData('userDementors', updatedUserDementors);
+
+            return {
+              ...x,
+              userDementors: updatedUserDementors,
+            };
+          }
+
+          // Return the original state if the journal isn't found (for safety)
+          return x;
+        });
+
+        setJournal(x => {
+          return {
+            ...x,
+            entries: [...journal.entries, newJournalEntry],
+          };
+        });
+        setLifeBarLength(0);
+        setLoadWritingGame(false);
+        console.log('after the setloadwrtinggame put into false');
+      } catch (e) {
+        console.log('Error uploading data ', e);
+      }
+
+      // const { thisWritingCid, newPageCid } = responseData;
+
+      // if (!thisWritingCid || !newPageCid)
+      //   throw new Error('There was an error getting the cids for this.');
+
+      // console.log('this writing cid is: ', thisWritingCid);
+      // console.log('this new page cid is: ', newPageCid);
+
+      // console.log('the dementors contract is: ', dementorsContract);
+      // console.log('this dementors id is: ', id);
+      // if (dementorsContract) {
+      //   const tx = await dementorsContract.writeDementorPage(
+      //     id,
+      //     thisWritingCid,
+      //     newPageCid
+      //   );
+      //   await tx.wait();
+
+      //   setLoadingSavingNewPage(false);
+      //   setUserIsReadyToWrite(false);
+      //   setDementorWasUpdated(true);
+      // ************************** //
     } catch (error) {
       console.error('Failed to submit writing:', error);
       setLoadingSavingNewPage(false);
@@ -178,10 +283,11 @@ function DementorPage({
               close
             </p>
             {dementorPagePromptsForDisplay.map((prompt, index) => {
+              console.log('the prompt is. ', prompt);
               return (
                 <div className='my-2 p-2 bg-slate-200 rounded-xl' key={index}>
-                  <h2 className='mb-2 text-left text-2xl text-yellow-800'>
-                    {prompt}
+                  <h2 className='mb-2 text-left text-xl text-yellow-800'>
+                    {index}. {prompt}
                   </h2>
                   <p className='mb-2 text-sm text-left'>
                     {dementorPageAnswersForDisplay[index]}
@@ -242,8 +348,8 @@ function DementorPage({
     return (
       <DementorGame
         {...writingGameProps}
-        prompts={dementorData.pages[dementorData.currentPage].prompts}
-        secondsPerPrompt={180}
+        prompts={dementorData.pages[dementorData.pages.length - 1].prompts}
+        secondsPerPrompt={2}
         text={text}
         setLifeBarLength={setLifeBarLength}
         lifeBarLength={lifeBarLength}
@@ -257,9 +363,9 @@ function DementorPage({
 
   return (
     <div className='md:w-1/2 p-2 mx-auto w-screen text-black md:text-white pt-5'>
-      <h2 className='text-3xl'>{dementorData.intro.title}</h2>
-      <p className='italic'>{dementorData.intro.description}</p>
-      <h2>pages</h2>
+      <h2 className='text-3xl'>{dementorData.title}</h2>
+      <p className='italic'>{dementorData.description}</p>
+      <button onClick={() => console.log(dementorData)}>console</button>
       <div className='flex space-x-2'>
         {dementorData.pages.map((x, i) => {
           return (
@@ -275,7 +381,7 @@ function DementorPage({
                   return alert('This is the page that comes now');
                 } else {
                   setDementorPageAnswersForDisplay(
-                    dementorData.pages[i].writings
+                    dementorData.pages[i].writings || []
                   );
                   setDementorPagePromptsForDisplay(
                     dementorData.pages[i].prompts
@@ -293,7 +399,9 @@ function DementorPage({
       <div className='my-2 w-96 flex justify-center mx-auto'>
         {!isUserSureThatUserIsReady ? (
           <Button
-            buttonText={`im ready to write page ${dementorData.currentPage}`}
+            buttonText={`im ready to write page ${
+              dementorData.pages.length - 1
+            }`}
             buttonAction={() => setIsUserSureThatUserIsReady(true)}
             buttonColor='bg-green-700'
           />
