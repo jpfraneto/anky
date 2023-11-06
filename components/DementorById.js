@@ -3,7 +3,9 @@ import { useRouter } from 'next/router';
 import { ethers } from 'ethers';
 import Link from 'next/link';
 import { WebIrys } from '@irys/sdk';
+import { setUserData } from '../lib/idbHelper';
 import Button from '../components/Button';
+import { getDementorInfoFromIrys } from '../lib/irys.js';
 import AnkyDementorsAbi from '../lib/ankyDementorsAbi.json'; // Assuming you have the ABI
 import { useUser } from '../context/UserContext';
 import { processFetchedDementor } from '../lib/notebooks.js';
@@ -30,6 +32,7 @@ function DementorPage({
   const [dementorData, setDementorData] = useState(null);
   const [text, setText] = useState('');
   const [time, setTime] = useState(0);
+  const { setUserAppInformation, userAppInformation } = useUser();
   const [dementorPageForDisplay, setDementorPageForDisplay] = useState(null);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -106,6 +109,13 @@ function DementorPage({
     );
     console.log('the dementor data is: ', dementorData);
     const processedDementor = await processFetchedDementor(dementorData);
+
+    const writtenPages = await getDementorInfoFromIrys(
+      'dementor',
+      router.query.id,
+      thisWallet.address
+    );
+    console.log('the written pages are: ', writtenPages);
     console.log('the processed dementor is: ', processedDementor);
 
     setDementorData(processedDementor);
@@ -128,23 +138,10 @@ function DementorPage({
     );
     setLoadingSavingNewPage(true);
     try {
-      const authToken = await getAccessToken();
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/ai/get-subsequent-page`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${authToken}`,
-          },
-          body: JSON.stringify({ finishText, prompts }),
-        }
-      );
-      const responseData = await response.json();
-      console.log('the response data is: ', responseData);
-      /// now this needs to be sent to irys
-
-      console.log('inside the update dementor with page function', finishText);
+      let previousPageCid;
+      if (dementorData.pages.length > 0) {
+        previousPageCid = dementorData.pages[dementorData.pages.length - 1].cid;
+      }
       const getWebIrys = async () => {
         // Ethers5 provider
         // await window.ethereum.enable();
@@ -165,105 +162,183 @@ function DementorPage({
       };
       const webIrys = await getWebIrys();
 
-      console.log('JHSALCHSAKJHCAS', dementorData.pages);
-      let previousPageCid;
-      if (dementorData.pages.length > 0) {
-        previousPageCid =
-          dementorData.pages[demedementorDatantor.pages.length - 1].cid;
+      async function uploadTheWritingForThisPage(
+        webIrys,
+        finishText,
+        previousCid
+      ) {
+        const tags = [
+          { name: 'Content-Type', value: 'text/plain' },
+          { name: 'application-id', value: 'Anky Dementors' },
+          { name: 'container-type', value: 'dementor' },
+          { name: 'container-id', value: router.query.id.toString() },
+          {
+            name: 'page-number',
+            value: (dementorData.pages.length - 1).toString(),
+          },
+          { name: 'dementor-answer', value: 'true' },
+          {
+            name: 'previous-cid',
+            value: previousCid,
+          },
+          {
+            name: 'smart-contract',
+            value: process.env.NEXT_PUBLIC_ANKY_DEMENTORS_CONTRACT,
+          },
+        ];
+        console.log('the first tags are: ', tags);
+        try {
+          const receipt = await webIrys.upload(finishText, { tags });
+          console.log(
+            'the writing was uploaded, and the receipt is: ',
+            receipt
+          );
+          console.log(
+            `Data uploaded ==> https://gateway.irys.xyz/${receipt.id}`
+          );
+          return {
+            thisWritingCid: receipt.id,
+            pageWritingTimestamp: receipt.timestamp,
+          };
+        } catch (error) {
+          console.log('there was an error uploading the writing to irys');
+          console.log(error);
+        }
       }
-      const tags = [
-        { name: 'Content-Type', value: 'text/plain' },
-        { name: 'application-id', value: 'Anky Dementors' },
-        { name: 'container-type', value: 'dementor' },
-        { name: 'container-id', value: router.query.id.toString() },
-        { name: 'page-number', value: dementorData.pages.length.toString() },
-        // how can i embed the prompts and answers mechanism in this container? that's tricky. perhaps they don't need to be inside the same page. perhaps the paging mechanism doesn't make sense here. but how can i do it? i'm not sure.
-        { name: 'dementor-prompt', value: 'true' },
-        { name: 'dementor-answer', value: 'false' },
-        // what is the CID from the previous page? this is where the provenance plays an important role and needs to be taken care of.
-        {
-          name: 'previous-page',
-          value: previousPageCid.toString(),
-        },
-      ];
-      console.log('right after the tags', tags);
+
+      async function getNewAnkyPrompts(finishText, prompts) {
+        const authToken = await getAccessToken();
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/ai/get-subsequent-page`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${authToken}`,
+            },
+            body: JSON.stringify({ finishText, prompts }),
+          }
+        );
+        const responseData = await response.json();
+        console.log('the response data from anky is: ', responseData);
+        return responseData.newPrompts;
+      }
+
+      async function uploadTheNewPromptsToNewPage(
+        webIrys,
+        newPromptsString,
+        previousAnswersCid
+      ) {
+        const tags = [
+          { name: 'Content-Type', value: 'text/plain' },
+          { name: 'application-id', value: 'Anky Dementors' },
+          { name: 'container-type', value: 'dementor' },
+          { name: 'container-id', value: router.query.id.toString() },
+          { name: 'page-number', value: dementorData.pages.length.toString() },
+          { name: 'dementor-prompts', value: 'true' },
+          {
+            name: 'previous-cid',
+            value: previousAnswersCid,
+          },
+          {
+            name: 'smart-contract',
+            value: process.env.NEXT_PUBLIC_ANKY_DEMENTORS_CONTRACT,
+          },
+        ];
+        console.log('the second tags are: ', tags);
+        console.log(
+          'the prompts that are going to be uploaded now are: ',
+          newPromptsString
+        );
+        if (newPromptsString && newPromptsString.length == 0) {
+          newPromptsString = '1. Lorem ipsum%% 2. aloja%%3. vamo compare';
+        }
+        try {
+          console.log('the new prompts are: ', newPromptsString);
+          const receipt = await webIrys.upload(newPromptsString.toString(), {
+            tags,
+          });
+          console.log(
+            'the new prompts were uploaded, and the receipt is: ',
+            receipt
+          );
+          console.log(
+            `Data uploaded ==> https://gateway.irys.xyz/${receipt.id}`
+          );
+          return {
+            newPromptsCid: receipt.id,
+            newPromptsTimestamp: receipt.timestamp,
+          };
+        } catch (error) {
+          console.log('there was an error uploading the writing to irys');
+          console.log(error);
+        }
+      }
+
+      const thisUserDementors = userAppInformation.userDementors;
+      const dementorIndex = thisUserDementors.findIndex(
+        j => j.dementorId == router.query.id
+      );
+      const thisPresentPage =
+        thisUserDementors[dementorIndex].pages[
+          thisUserDementors[dementorIndex].pages.length - 1
+        ];
+      console.log('this present page is: ', thisPresentPage);
+
+      const { thisWritingCid, pageWritingTimestamp } =
+        await uploadTheWritingForThisPage(webIrys, finishText, previousPageCid);
+
+      thisPresentPage.writingTimestamp = pageWritingTimestamp;
+      thisPresentPage.writings = finishText.split('---');
+      thisPresentPage.writingsCid = thisWritingCid;
+
+      const newPrompts = await getNewAnkyPrompts(finishText, prompts);
+      console.log('after here, the new prompts are: ', newPrompts);
+      const newPage = {
+        prompts: newPrompts,
+      };
+
+      const { newPromptsCid, newPromptsTimestamp } =
+        await uploadTheNewPromptsToNewPage(webIrys, newPrompts, thisWritingCid);
+
+      newPage.promptsTimestamp = newPromptsTimestamp;
+      newPage.promptsCid = newPromptsCid;
+
       try {
-        const receipt = await webIrys.upload(finishText, { tags });
-        console.log(`Data uploaded ==> https://gateway.irys.xyz/${receipt.id}`);
-        let newDementorPage;
+        // update the local state
         setUserAppInformation(x => {
           // Find the specific journal index by its id
-          const dementorIndex = x.userDementors.findIndex(
+          const dementorIndexHere = x.userDementors.findIndex(
             j => j.dementorId == router.query.id
           );
 
-          newDementorPage = {
-            timestamp: new Date().getTime(),
-            pageNumber: journal.entries.length,
-            previousPageCid: previousPageCid,
-            cid: receipt.id,
+          const updatedDementor = {
+            ...dementorData,
+            pages: dementorData.pages,
           };
 
-          // If the journal is found
-          if (dementorIndex !== -1) {
-            const updatedDementor = {
-              ...x.userDementors[dementorIndex],
-              pages: [...x.userDementors[dementorIndex].pages, newDementorPage],
-            };
+          updatedDementor.pages[dementorData.pages.length - 1] =
+            thisPresentPage;
+          updatedDementor.pages[dementorData.pages.length] = newPage;
 
-            const updatedUserDementors = [
-              ...x.userDementors.slice(0, dementorIndex),
-              updatedDementor,
-              ...x.userDementors.slice(dementorIndex + 1),
-            ];
+          setDementorData(updatedDementor);
 
-            setUserData('userDementors', updatedUserDementors);
+          const updatedUserDementors = [
+            ...x.userDementors.slice(0, dementorIndexHere),
+            updatedDementor,
+            ...x.userDementors.slice(dementorIndexHere + 1),
+          ];
 
-            return {
-              ...x,
-              userDementors: updatedUserDementors,
-            };
-          }
+          setUserData('userDementors', updatedUserDementors);
 
-          // Return the original state if the journal isn't found (for safety)
-          return x;
-        });
-
-        setJournal(x => {
           return {
             ...x,
-            entries: [...journal.entries, newJournalEntry],
+            userDementors: updatedUserDementors,
           };
         });
         setLifeBarLength(0);
         setLoadWritingGame(false);
-        console.log('after the setloadwrtinggame put into false');
-      } catch (e) {
-        console.log('Error uploading data ', e);
-      }
-
-      // const { thisWritingCid, newPageCid } = responseData;
-
-      // if (!thisWritingCid || !newPageCid)
-      //   throw new Error('There was an error getting the cids for this.');
-
-      // console.log('this writing cid is: ', thisWritingCid);
-      // console.log('this new page cid is: ', newPageCid);
-
-      // console.log('the dementors contract is: ', dementorsContract);
-      // console.log('this dementors id is: ', id);
-      // if (dementorsContract) {
-      //   const tx = await dementorsContract.writeDementorPage(
-      //     id,
-      //     thisWritingCid,
-      //     newPageCid
-      //   );
-      //   await tx.wait();
-
-      //   setLoadingSavingNewPage(false);
-      //   setUserIsReadyToWrite(false);
-      //   setDementorWasUpdated(true);
-      // ************************** //
+      } catch (error) {}
     } catch (error) {
       console.error('Failed to submit writing:', error);
       setLoadingSavingNewPage(false);
@@ -349,7 +424,7 @@ function DementorPage({
       <DementorGame
         {...writingGameProps}
         prompts={dementorData.pages[dementorData.pages.length - 1].prompts}
-        secondsPerPrompt={2}
+        secondsPerPrompt={10}
         text={text}
         setLifeBarLength={setLifeBarLength}
         lifeBarLength={lifeBarLength}

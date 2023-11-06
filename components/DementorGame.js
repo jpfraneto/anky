@@ -269,7 +269,16 @@ const DementorGame = ({
       <>
         {writingSaved ? (
           <>
-            <p>your writing was saved. congratulations.</p>
+            <p className='text-white my-3'>
+              your writing was saved. congratulations.
+            </p>
+            <div className='w-96 mx-auto'>
+              <Button
+                buttonText='close this'
+                buttonColor='bg-purple-600'
+                buttonAction={cancel}
+              />
+            </div>
           </>
         ) : (
           <>
