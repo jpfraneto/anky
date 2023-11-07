@@ -73,6 +73,7 @@ const GlobalApp = ({ alchemy }) => {
       console.log('users first anky txn', usersFirstAnkyTxn);
       setUserIsMintingAnky(false);
       setUserOwnsAnky(true);
+      router.push('/welcome');
     } catch (error) {
       console.log('there was an error', error);
       alert('there was an error, please try again.');

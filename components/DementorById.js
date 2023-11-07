@@ -36,6 +36,7 @@ function DementorPage({
   const [dementorPageForDisplay, setDementorPageForDisplay] = useState(null);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [dementorDoesntExist, setDementorDoesntExist] = useState(false);
   const [loadingSavingNewPage, setLoadingSavingNewPage] = useState(false);
   const [loadingDementor, setLoadingDementor] = useState(true);
   const [dementorsContract, setDementorsContract] = useState(null);
@@ -83,43 +84,50 @@ function DementorPage({
   }, [id, thisWallet]);
 
   async function fetchDementorData(dementorId) {
-    console.log('inside the fetch dementor data', userAnky);
-    if (!thisWallet.address) return;
-    let provider = await thisWallet?.getEthersProvider();
-    let signer;
+    try {
+      console.log('inside the fetch dementor data', userAnky);
+      if (!thisWallet.address) return;
+      let provider = await thisWallet?.getEthersProvider();
+      let signer;
 
-    if (provider) {
-      signer = await provider.getSigner();
-    } else {
-      return;
+      if (provider) {
+        signer = await provider.getSigner();
+      } else {
+        return;
+      }
+      console.log('before calling the anky dementors contract', provider);
+      const ankyDementorsContract = new ethers.Contract(
+        process.env.NEXT_PUBLIC_ANKY_DEMENTORS_CONTRACT,
+        AnkyDementorsAbi,
+        signer
+      );
+      setDementorsContract(ankyDementorsContract);
+      console.log('the dementors contract is: ', ankyDementorsContract);
+      console.log('the dementor id', dementorId);
+      let formattedDementorId = dementorId;
+
+      const dementorData = await ankyDementorsContract.getDementor(
+        formattedDementorId
+      );
+      console.log('the dementor data is: ', dementorData);
+      const processedDementor = await processFetchedDementor(dementorData);
+
+      const newProcessedDementor = await getDementorInfoFromIrys(
+        processedDementor,
+        'dementor',
+        router.query.id,
+        thisWallet.address
+      );
+
+      console.log('the NEW processed dementor is: ', newProcessedDementor);
+
+      setDementorData(newProcessedDementor);
+      setLoadingDementor(false);
+    } catch (error) {
+      console.log('there was an errror', error);
+      setLoadingDementor(false);
+      setDementorDoesntExist(true);
     }
-    console.log('before calling the anky dementors contract', provider);
-    const ankyDementorsContract = new ethers.Contract(
-      process.env.NEXT_PUBLIC_ANKY_DEMENTORS_CONTRACT,
-      AnkyDementorsAbi,
-      signer
-    );
-    setDementorsContract(ankyDementorsContract);
-    console.log('the dementors contract is: ', ankyDementorsContract);
-    console.log('the dementor id', dementorId);
-    let formattedDementorId = dementorId;
-
-    const dementorData = await ankyDementorsContract.getDementor(
-      formattedDementorId
-    );
-    console.log('the dementor data is: ', dementorData);
-    const processedDementor = await processFetchedDementor(dementorData);
-
-    const writtenPages = await getDementorInfoFromIrys(
-      'dementor',
-      router.query.id,
-      thisWallet.address
-    );
-    console.log('the written pages are: ', writtenPages);
-    console.log('the processed dementor is: ', processedDementor);
-
-    setDementorData(processedDementor);
-    setLoadingDementor(false);
   }
 
   async function userIsReadyToWriteTrigger() {
@@ -133,14 +141,13 @@ function DementorPage({
   }
 
   async function uploadDementorPage(finishText, prompts) {
-    console.log(
-      'sending text to chatgtp, and then updating the smart contract with these new cids.'
-    );
     setLoadingSavingNewPage(true);
     try {
       let previousPageCid;
       if (dementorData.pages.length > 0) {
-        previousPageCid = dementorData.pages[dementorData.pages.length - 1].cid;
+        previousPageCid =
+          dementorData.pages[dementorData.pages.length - 1].cid ||
+          dementorData.pages[dementorData.pages.length - 1].promptsCid;
       }
       const getWebIrys = async () => {
         // Ethers5 provider
@@ -179,7 +186,7 @@ function DementorPage({
           { name: 'dementor-answer', value: 'true' },
           {
             name: 'previous-cid',
-            value: previousCid,
+            value: previousCid || '',
           },
           {
             name: 'smart-contract',
@@ -275,14 +282,7 @@ function DementorPage({
         }
       }
 
-      const thisUserDementors = userAppInformation.userDementors;
-      const dementorIndex = thisUserDementors.findIndex(
-        j => j.dementorId == router.query.id
-      );
-      const thisPresentPage =
-        thisUserDementors[dementorIndex].pages[
-          thisUserDementors[dementorIndex].pages.length - 1
-        ];
+      const thisPresentPage = dementorData.pages[dementorData.pages.length - 1];
       console.log('this present page is: ', thisPresentPage);
 
       const { thisWritingCid, pageWritingTimestamp } =
@@ -295,7 +295,7 @@ function DementorPage({
       const newPrompts = await getNewAnkyPrompts(finishText, prompts);
       console.log('after here, the new prompts are: ', newPrompts);
       const newPage = {
-        prompts: newPrompts,
+        prompts: newPrompts.split('%%'),
       };
 
       const { newPromptsCid, newPromptsTimestamp } =
@@ -322,12 +322,16 @@ function DementorPage({
           updatedDementor.pages[dementorData.pages.length] = newPage;
 
           setDementorData(updatedDementor);
-
-          const updatedUserDementors = [
-            ...x.userDementors.slice(0, dementorIndexHere),
-            updatedDementor,
-            ...x.userDementors.slice(dementorIndexHere + 1),
-          ];
+          let updatedUserDementors;
+          if (dementorIndexHere != -1) {
+            updatedUserDementors = [
+              ...x.userDementors.slice(0, dementorIndexHere),
+              updatedDementor,
+              ...x.userDementors.slice(dementorIndexHere + 1),
+            ];
+          } else {
+            updatedUserDementors = [...x.userDementors, updatedDementor];
+          }
 
           setUserData('userDementors', updatedUserDementors);
 
@@ -362,7 +366,7 @@ function DementorPage({
               return (
                 <div className='my-2 p-2 bg-slate-200 rounded-xl' key={index}>
                   <h2 className='mb-2 text-left text-xl text-yellow-800'>
-                    {index}. {prompt}
+                    {prompt}
                   </h2>
                   <p className='mb-2 text-sm text-left'>
                     {dementorPageAnswersForDisplay[index]}
@@ -396,6 +400,16 @@ function DementorPage({
       <div>
         <Spinner />
         <p className='text-white'>loading</p>
+      </div>
+    );
+
+  if (dementorDoesntExist)
+    return (
+      <div className='my-8'>
+        <p className='text-white mb-4'>this dementor doesnt exist</p>
+        <Link href='/library' passHref>
+          <Button buttonText='library' buttonColor='bg-green-600' />
+        </Link>
       </div>
     );
 
@@ -440,7 +454,6 @@ function DementorPage({
     <div className='md:w-1/2 p-2 mx-auto w-screen text-black md:text-white pt-5'>
       <h2 className='text-3xl'>{dementorData.title}</h2>
       <p className='italic'>{dementorData.description}</p>
-      <button onClick={() => console.log(dementorData)}>console</button>
       <div className='flex space-x-2'>
         {dementorData.pages.map((x, i) => {
           return (
@@ -452,7 +465,7 @@ function DementorPage({
               }`}
               key={i}
               onClick={() => {
-                if (dementorData.currentPage == i) {
+                if (dementorData.pages.length == i + 1) {
                   return alert('This is the page that comes now');
                 } else {
                   setDementorPageAnswersForDisplay(
@@ -499,8 +512,6 @@ function DementorPage({
       </div>
       {showInformation && (
         <div className=''>
-          <p className='mt-2  '>each page in a dementor has 8 prompts.</p>
-          <p className='mt-1'>each writing session lasts 24 minutes.</p>
           <p className='mt-1'>3 minutes per prompt.</p>
           <p className='mt-1'>each one a journey into yourself.</p>
           <p className='mt-1'>bringing out everything that you have inside.</p>

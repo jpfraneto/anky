@@ -87,6 +87,7 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
         console.log('the event is', event);
         // Extract the tokenId from the event and set it to state
         const newDementorId = event.args.dementorId;
+        console.log('the new dementor id is: ', newDementorId);
         setAnkyDementorId(newDementorId.toString());
 
         const newDementor = {
@@ -174,15 +175,13 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
     <div className='text-white md:w-3/5 mx-auto'>
       {ankyDementorCreated ? (
         <div className='py-2 mt-8'>
-          <p className='mb-2'>
-            wow, congratulations. your anky dementor is ready.
-          </p>
+          <p className='mb-2'>your new dementor is ready.</p>
           <p className='mb-2'>
             with what you just wrote, a new writing container was created.
           </p>
           <p className='mb-2'>
-            inside it, there are 8 prompts. each one of them designed to take
-            you deeper into the process of self inquiry.
+            inside it, there are pages with prompts. each one of them designed
+            to take you deeper into the process of self inquiry.
           </p>
           <p className='mb-2'>
             treat coming here as the most important meditation practice of your

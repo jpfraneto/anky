@@ -49,7 +49,7 @@ const DementorGame = ({
   const [upscaledUrls, setUpscaledUrls] = useState([]);
 
   const [isActive, setIsActive] = useState(false);
-  const [newPromptDisplay, setNewPromptDisplay] = useState(false);
+  const [newPromptDisplay, setNewPromptDisplay] = useState(true);
   const [savingRound, setSavingRound] = useState(false);
   const [moreThanMinRun, setMoreThanMinRound] = useState(null);
   const [showNewPromptStarter, setShowNewPromptStarter] = useState(false);
@@ -186,6 +186,7 @@ const DementorGame = ({
     setUploadingWriting(true);
     await uploadDementorPage(text, prompts);
     setUploadingWriting(false);
+    startNewRun();
     setWritingSaved(true);
   }
 
@@ -343,22 +344,30 @@ const DementorGame = ({
       <audio ref={audioRef}>
         <source src='/sounds/bell.mp3' />
       </audio>
-      <div className='md:block text-white w-screen h-screen '>
-        <div>
-          {!finished && (
-            <div
-              className={` ${text.length > 0 && 'fade-out'} mb-4 ${
-                time > 2 && 'hidden'
-              }`}
-            >
-              <p
-                className={`${righteous.className} text-5xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]   my-4 font-bold text-center`}
-              >
-                {prompt}
-              </p>
-            </div>
-          )}
-
+      <div className='md:block text-white w-screen relative h-screen '>
+        <div className='p-4'>
+          <p
+            className={`${righteous.className} z-40 ${
+              newPromptDisplay
+                ? 'text-yellow-500 text-4xl'
+                : 'text-yellow-400 text-3xl'
+            } drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] font-bold`}
+          >
+            {prompt}
+          </p>
+          <div className='flex w-full justify-around my-2'>
+            {prompts.map((_, i) => {
+              return (
+                <div
+                  key={i}
+                  className={`rounded-full w-3 h-3 border border-white mt-2
+                 ${currentPromptIndex < i && 'transparent'}
+                 ${currentPromptIndex === i && 'bg-yellow-600'}
+                 ${currentPromptIndex > i && 'bg-yellow-400'}`}
+                ></div>
+              );
+            })}
+          </div>
           <textarea
             ref={textareaRef}
             disabled={finished || blockWriting}
@@ -374,11 +383,13 @@ const DementorGame = ({
                 textareaRef.current.focus();
               }
             }}
-            className={`${dancingScript.className} ${text && 'absolute'} ${
-              text ? 'md:aspect-video md:flex w-full h-full' : 'w-3/5 h-48'
+            className={`${dancingScript.className} ${
+              text && ' absolute  pt-64'
+            } ${
+              text ? 'md:aspect-video md:flex w-full h-full' : 'mt-4 w-3/5 h-48'
             } p-4 text-white ${
               time > 2 && 'opacity-80'
-            } placeholder-white  text-2xl border border-white rounded-md  bg-opacity-10 bg-black`}
+            } placeholder-white text-2xl border border-white rounded-md  bg-opacity-10 bg-black`}
             value={text}
             placeholder='just write...'
             onChange={handleTextChange}
@@ -442,32 +453,7 @@ const DementorGame = ({
                   </div>
                 </div>
               ) : (
-                <>
-                  <p
-                    className={`${righteous.className}  ${
-                      time < 3 && 'hidden'
-                    } z-40 ${
-                      newPromptDisplay
-                        ? 'text-yellow-500 text-5xl'
-                        : 'text-yellow-400 text-3xl'
-                    } drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] font-bold`}
-                  >
-                    {prompt}
-                  </p>
-                  <div className='flex w-full justify-around my-2'>
-                    {prompts.map((_, i) => {
-                      return (
-                        <div
-                          key={i}
-                          className={`rounded-full w-3 h-3 border border-white opacity-50
-                 ${currentPromptIndex < i && 'transparent'}
-                 ${currentPromptIndex === i && 'bg-yellow-600'}
-                 ${currentPromptIndex > i && 'bg-yellow-400'}`}
-                        ></div>
-                      );
-                    })}
-                  </div>
-                </>
+                <></>
               )}
             </div>
           )}

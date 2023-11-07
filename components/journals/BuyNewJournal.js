@@ -187,18 +187,21 @@ const BuyNewJournal = () => {
               </div>
             ) : (
               <div>
-                <p className='mb-2 text-3xl'>buy new journal</p>
-                <p className='mb-4'>it has 96 pages.</p>
+                <p className='mb-2 text-3xl'>new journal</p>
                 {loading ? (
                   <div>
                     <Spinner /> <p>loading...</p>
                   </div>
                 ) : (
                   <div>
+                    <p className='mb-2'>this is a container</p>
+                    <p className='mb-2'>
+                      that will store all of your writings.
+                    </p>
                     <div className='flex justify-center mb-4'>
                       <span
                         onClick={() => mintNewJournal()}
-                        className='m-2 bg-green-400 cursor-pointer hover:bg-green-600 shadow-lg shadow-black p-2 w-fit rounded-xl flex justify-center items-center'
+                        className='m-2 bg-green-400 text-black cursor-pointer hover:bg-green-600 shadow-lg shadow-black p-2 w-fit rounded-xl flex justify-center items-center'
                       >
                         buy new journal
                       </span>

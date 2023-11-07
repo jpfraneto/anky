@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import Button from './Button';
 
 const WelcomePage = () => {
   return (
@@ -16,7 +17,11 @@ const WelcomePage = () => {
       <p>just let jp know.</p>
       <p>that is how this system evolves.</p>
       <p>through the power of the collective.</p>
-      <Link href='/journal/new'>get journal</Link>
+      <div className='mt-4 w-48 mx-auto'>
+        <Link href='/journal/new'>
+          <Button buttonText='get journal' buttonColor='bg-green-600' />
+        </Link>
+      </div>
     </div>
   );
 };
