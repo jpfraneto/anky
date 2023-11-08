@@ -172,102 +172,92 @@ export const UserProvider = ({ children }) => {
     );
   };
 
-  // const loadUserLibrary = async (fromOutside = false) => {
-  //   console.log(
-  //     'inside the load user library function',
-  //     setupIsReady,
-  //     fromOutside,
-  //     authenticated,
-  //     wallet
-  //   );
-  //   try {
-  //     if (
-  //       (setupIsReady || fromOutside) &&
-  //       authenticated &&
-  //       wallet &&
-  //       wallet.address &&
-  //       wallet.address.length > 0
-  //     ) {
-  //       setLoadingLibrary(true);
-  //       console.log('loading the users library');
-  //       const { tba } = await callTba(wallet.address, setUserAppInformation);
-  //       let provider = await wallet?.getEthersProvider();
-  //       const signer = await provider.getSigner();
-  //       let userTba = userAppInformation?.tbaAddress || tba;
+  const loadUserLibrary = async (fromOutside = false) => {
+    console.log(
+      'inside the load user library function',
+      setupIsReady,
+      fromOutside,
+      authenticated,
+      wallet
+    );
+    try {
+      if (
+        (setupIsReady || fromOutside) &&
+        authenticated &&
+        wallet &&
+        wallet.address &&
+        wallet.address.length > 0
+      ) {
+        setLoadingLibrary(true);
+        console.log('loading the users library');
+        const { tba } = await callTba(wallet.address, setUserAppInformation);
+        let provider = await wallet?.getEthersProvider();
+        const signer = await provider.getSigner();
+        let userTba = userAppInformation?.tbaAddress || tba;
 
-  //       if (!userAppInformation || !userAppInformation.wallet)
-  //         setUserAppInformation(x => {
-  //           return { ...x, wallet };
-  //         });
+        if (!userAppInformation || !userAppInformation.wallet)
+          setUserAppInformation(x => {
+            return { ...x, wallet };
+          });
 
-  //       if (fromOutside || reloadData || !userAppInformation.userJournals) {
-  //         console.log('before fetching the journals');
-  //         const userJournals = await fetchUserJournals(signer);
-  //         console.log('the user journals are: ', userJournals);
-  //         setUserAppInformation(x => {
-  //           return { ...x, userJournals: userJournals };
-  //         });
-  //       }
+        if (fromOutside || reloadData || !userAppInformation.userJournals) {
+          console.log('before fetching the journals');
+          const userJournals = await fetchUserJournals(signer, wallet);
+          console.log('the user journals are: ', userJournals);
+          setUserAppInformation(x => {
+            return { ...x, userJournals: userJournals };
+          });
+        }
 
-  //       if (fromOutside || reloadData || !userAppInformation.userNotebooks) {
-  //         console.log('before fetching the notebooks');
+        // if (fromOutside || reloadData || !userAppInformation.userNotebooks) {
+        //   console.log('before fetching the notebooks');
 
-  //         const userNotebooks = await fetchUserNotebooks(signer, userTba);
-  //         console.log('the user notebooks are: ', userNotebooks);
+        //   const userNotebooks = await fetchUserNotebooks(
+        //     signer,
+        //     userTba,
+        //     wallet
+        //   );
+        //   console.log('the user notebooks are: ', userNotebooks);
 
-  //         setUserAppInformation(x => {
-  //           return { ...x, userNotebooks: userNotebooks };
-  //         });
-  //       }
+        //   setUserAppInformation(x => {
+        //     return { ...x, userNotebooks: userNotebooks };
+        //   });
+        // }
 
-  //       if (fromOutside || reloadData || !userAppInformation.userTemplates) {
-  //         console.log('before fetching the templates');
+        // if (fromOutside || reloadData || !userAppInformation.userEulogias) {
+        //   console.log('before fetching the eulogias');
 
-  //         const userTemplates = await fetchUserTemplates(
-  //           signer,
-  //           wallet.address
-  //         );
-  //         console.log('the user templates are: ', userTemplates);
+        //   const userEulogias = await fetchUserEulogias(signer);
+        //   console.log('the user eulogias are: ', userEulogias);
 
-  //         setUserAppInformation(x => {
-  //           return { ...x, userTemplates: userTemplates };
-  //         });
-  //       }
+        //   setUserAppInformation(x => {
+        //     return { ...x, userEulogias: userEulogias };
+        //   });
+        // }
 
-  //       if (fromOutside || reloadData || !userAppInformation.userEulogias) {
-  //         console.log('before fetching the eulogias');
+        if (fromOutside || reloadData || !userAppInformation.userDementors) {
+          console.log('before fetching the dementors');
 
-  //         const userEulogias = await fetchUserEulogias(signer);
-  //         console.log('the user eulogias are: ', userEulogias);
+          const userDementors = await fetchUserDementors(signer, wallet);
+          console.log('the user dementors are: ', userDementors);
 
-  //         setUserAppInformation(x => {
-  //           return { ...x, userEulogias: userEulogias };
-  //         });
-  //       }
-
-  //       if (fromOutside || reloadData || !userAppInformation.userDementors) {
-  //         console.log('before fetching the dementors');
-
-  //         const userDementors = await fetchUserDementors(signer);
-  //         console.log('the user dementors are: ', userDementors);
-
-  //         setUserAppInformation(x => {
-  //           return { ...x, userDementors: userDementors };
-  //         });
-  //       }
-  //       setLoadingLibrary(false);
-  //       setLibraryLoading(false);
-  //       setFinalSetup(true);
-  //     } else {
-  //       setAppLoading(false);
-  //     }
-  //   } catch (error) {
-  //     setAppLoading(false);
-  //     setLoadingLibrary(false);
-  //     alert('There was an error retrieving your library :(');
-  //     console.log('there was an error retrieving the users library.', error);
-  //   }
-  // };
+          setUserAppInformation(x => {
+            return { ...x, userDementors: userDementors };
+          });
+        }
+        setLoadingLibrary(false);
+        setLibraryLoading(false);
+        setFinalSetup(true);
+      } else {
+        setAppLoading(false);
+      }
+    } catch (error) {
+      setAppLoading(false);
+      setLoadingLibrary(false);
+      alert('There was an error retrieving your library :(');
+      console.log('there was an error retrieving the users library.', error);
+    }
+  };
   async function getTestEthAndAidropAnky(wallet, provider, authToken) {
     const testEthResponse = await sendTestEth(wallet, provider, authToken);
     if (!testEthResponse.success) {
@@ -446,7 +436,7 @@ export const UserProvider = ({ children }) => {
         appLoading,
         loadingLibrary,
         libraryLoading,
-        // loadUserLibrary,
+        loadUserLibrary,
         userOwnsAnky,
         setUserOwnsAnky,
         mainAppLoading,

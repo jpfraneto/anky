@@ -110,8 +110,11 @@ function DementorPage({
         formattedDementorId
       );
       console.log('the dementor data is: ', dementorData);
-      const processedDementor = await processFetchedDementor(dementorData);
-
+      const processedDementor = await processFetchedDementor(
+        dementorData,
+        formattedDementorId,
+        thisWallet
+      );
       const newProcessedDementor = await getDementorInfoFromIrys(
         processedDementor,
         'dementor',
@@ -454,6 +457,7 @@ function DementorPage({
     <div className='md:w-1/2 p-2 mx-auto w-screen text-black md:text-white pt-5'>
       <h2 className='text-3xl'>{dementorData.title}</h2>
       <p className='italic'>{dementorData.description}</p>
+      <button onClick={() => console.log(dementorData)}>cnsole</button>
       <div className='flex space-x-2'>
         {dementorData.pages.map((x, i) => {
           return (

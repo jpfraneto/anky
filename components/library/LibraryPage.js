@@ -61,8 +61,6 @@ const LibraryPage = ({}) => {
   }
 
   useEffect(() => {
-    console.log('the user templates are: ', userAppInformation.userTemplates);
-    setTemplates(userAppInformation.userTemplates);
     console.log('the user journals are: ', userAppInformation.userJournals);
     let sortedJournals;
     if (

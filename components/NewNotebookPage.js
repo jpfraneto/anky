@@ -170,6 +170,7 @@ function NewNotebookPage({}) {
   console.log('the wallets are: ', wallets);
 
   const thisWallet = wallets[0];
+  console.log('this wallet is: ', thisWallet);
 
   async function finalSubmit() {
     setLoadingNotebookCreation(true);
