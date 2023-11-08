@@ -438,7 +438,7 @@ function DementorPage({
       <DementorGame
         {...writingGameProps}
         prompts={dementorData.pages[dementorData.pages.length - 1].prompts}
-        secondsPerPrompt={10}
+        secondsPerPrompt={180}
         text={text}
         setLifeBarLength={setLifeBarLength}
         lifeBarLength={lifeBarLength}
