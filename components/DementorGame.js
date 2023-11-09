@@ -110,9 +110,10 @@ const DementorGame = ({
 
     if (isActive && !isDone) {
       intervalRef.current = setInterval(() => {
-        setTime(time => time + 1);
-        if (time > 1 && time % secondsPerPrompt === 0) {
+        setTime(time => time - 1);
+        if (time < 1) {
           const newIndex = currentPromptIndex + 1;
+          setTime(secondsPerPrompt);
           if (prompts.length > newIndex) {
             setBlockWriting(true);
             setIsActive(false);
@@ -199,7 +200,7 @@ const DementorGame = ({
     copyToClipboard();
     setCurrentPromptIndex(0);
     setCopyText('copy my writing');
-    setTime(0);
+    setTime(secondsPerPrompt);
     setLifeBarLength(100);
     setText('');
     setSavingRound(false);

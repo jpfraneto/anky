@@ -8,10 +8,12 @@ import Button from '../components/Button';
 import { getDementorInfoFromIrys } from '../lib/irys.js';
 import AnkyDementorsAbi from '../lib/ankyDementorsAbi.json'; // Assuming you have the ABI
 import { useUser } from '../context/UserContext';
-import { processFetchedDementor } from '../lib/notebooks.js';
+import { getIndividualDementorFormatted } from '../lib/notebooks.js';
 import Spinner from './Spinner';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
 import DementorGame from './DementorGame';
+
+const secondsPerPrompt = 10;
 
 const dummyDementorData = {
   title: 'The Eternal Exploration',
@@ -31,7 +33,8 @@ function DementorPage({
   const { authenticated, login, getAccessToken } = usePrivy();
   const [dementorData, setDementorData] = useState(null);
   const [text, setText] = useState('');
-  const [time, setTime] = useState(0);
+  // const [time, setTime] = useState(0);
+  const [time, setTime] = useState(secondsPerPrompt);
   const { setUserAppInformation, userAppInformation } = useUser();
   const [dementorPageForDisplay, setDementorPageForDisplay] = useState(null);
 
@@ -63,6 +66,63 @@ function DementorPage({
     setIsModalOpen(false);
     setDementorPageAnswersForDisplay([]);
     setDementorPagePromptsForDisplay([]);
+  }, []);
+
+  const handleKeyDown = event => {
+    if (event.key === 'ArrowLeft') {
+      setDementorData(prevDementorData => {
+        setDementorPageForDisplay(thisPage => {
+          console.log(
+            'the this page is: ',
+            thisPage.pageNumber,
+            prevDementorData
+          );
+          const newPageIndex = prevDementorData.pages.findIndex(
+            x => x.pageNumber == thisPage.pageNumber - 1
+          );
+          console.log('the new page index is: ', newPageIndex);
+          console.log('th', prevDementorData.pages[newPageIndex]);
+          setDementorPageAnswersForDisplay(
+            prevDementorData.pages[newPageIndex]?.writings || []
+          );
+          setDementorPagePromptsForDisplay(
+            prevDementorData.pages[newPageIndex]?.prompts || []
+          );
+          return prevDementorData.pages[newPageIndex] || [];
+        });
+        return prevDementorData;
+      });
+    } else if (event.key === 'ArrowRight') {
+      setDementorData(prevDementorData => {
+        setDementorPageForDisplay(thisPage => {
+          console.log(
+            'the this page is: ',
+            thisPage.pageNumber,
+            prevDementorData
+          );
+          const newPageIndex = prevDementorData.pages.findIndex(
+            x => x.pageNumber == thisPage.pageNumber + 1
+          );
+          console.log('the new page index is: ', newPageIndex);
+          console.log('th', prevDementorData.pages[newPageIndex]);
+          setDementorPageAnswersForDisplay(
+            prevDementorData.pages[newPageIndex]?.writings || []
+          );
+          setDementorPagePromptsForDisplay(
+            prevDementorData.pages[newPageIndex]?.prompts || []
+          );
+          return prevDementorData.pages[newPageIndex] || [];
+        });
+        return prevDementorData;
+      });
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
   }, []);
 
   useEffect(() => {
@@ -105,26 +165,30 @@ function DementorPage({
       console.log('the dementors contract is: ', ankyDementorsContract);
       console.log('the dementor id', dementorId);
       let formattedDementorId = dementorId;
-
-      const dementorData = await ankyDementorsContract.getDementor(
-        formattedDementorId
-      );
-      console.log('the dementor data is: ', dementorData);
-      const processedDementor = await processFetchedDementor(
-        dementorData,
+      const thisDementor = await getIndividualDementorFormatted(
         formattedDementorId,
         thisWallet
       );
-      const newProcessedDementor = await getDementorInfoFromIrys(
-        processedDementor,
-        'dementor',
-        router.query.id,
-        thisWallet.address
-      );
 
-      console.log('the NEW processed dementor is: ', newProcessedDementor);
+      // const dementorData = await ankyDementorsContract.getDementor(
+      //   formattedDementorId
+      // );
+      // console.log('the dementor data is: ', dementorData);
+      // const processedDementor = await processFetchedDementor(
+      //   dementorData,
+      //   formattedDementorId,
+      //   thisWallet
+      // );
+      // const newProcessedDementor = await getDementorInfoFromIrys(
+      //   processedDementor,
+      //   'dementor',
+      //   router.query.id,
+      //   thisWallet.address
+      // );
 
-      setDementorData(newProcessedDementor);
+      // console.log('the NEW processed dementor is: ', newProcessedDementor);
+
+      setDementorData(thisDementor);
       setLoadingDementor(false);
     } catch (error) {
       console.log('there was an errror', error);
@@ -358,6 +422,9 @@ function DementorPage({
       isModalOpen && (
         <div className='fixed top-0 left-0 bg-black w-full h-full flex items-center justify-center z-50'>
           <div className='bg-purple-200 relative overflow-y-scroll text-black rounded  p-6 w-1/2 h-2/3'>
+            <p className='absolute top-1  cursor-pointer left-2 text-gray-800'>
+              {dementorPageForDisplay.pageNumber + 1}
+            </p>
             <p
               onClick={() => setIsModalOpen(false)}
               className='absolute top-1 cursor-pointer right-2 text-red-600 hover:text-red-800'
@@ -441,7 +508,7 @@ function DementorPage({
       <DementorGame
         {...writingGameProps}
         prompts={dementorData.pages[dementorData.pages.length - 1].prompts}
-        secondsPerPrompt={180}
+        secondsPerPrompt={secondsPerPrompt}
         text={text}
         setLifeBarLength={setLifeBarLength}
         lifeBarLength={lifeBarLength}
@@ -462,7 +529,7 @@ function DementorPage({
         {dementorData.pages.map((x, i) => {
           return (
             <p
-              className={`p-3 w-8 flex items-center justify-center hover:opacity-70 cursor-pointer h-8 rounded-full ${
+              className={`p-3 w-8  mb-3 flex items-center justify-center hover:opacity-70 cursor-pointer h-8 rounded-full ${
                 dementorData.currentPage == i
                   ? 'bg-purple-400'
                   : 'bg-purple-600'

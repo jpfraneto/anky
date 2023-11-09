@@ -20,6 +20,7 @@ const BuyNewJournal = () => {
   const [journal, setJournal] = useState([]);
   const [loading, setLoading] = useState(true);
   const [journalPrice, setJournalPrice] = useState(null);
+  const [journalTitle, setJournalTitle] = useState('');
   const [thereWasAnError, setThereWasAnError] = useState(false);
   const [mintingNewJournal, setMintingNewJournal] = useState(false);
   const [mintedJournalId, setMintedJournalId] = useState(null);
@@ -62,6 +63,9 @@ const BuyNewJournal = () => {
         console.error('Wallet not available.');
         return;
       }
+      if (journalTitle.length > 20) {
+        return alert('The title must be less than 20 characters');
+      }
       setMintingNewJournal(true);
       const provider = await thisWallet.getEthersProvider();
       const signer = await provider.getSigner();
@@ -83,17 +87,17 @@ const BuyNewJournal = () => {
 
       // WHAT IS THE METADATA FOR THE JOURNAL?
       // Here i need to fetch bundlr with the information of the journal and update that metadata, which will be the starting thread of this particular journal... page 0
-      // It can be a title, a description, a timecreated, an image associated, a starting point in the form of an UID.z
-      const metadataCID = '';
+      // It can be a title, a description, a timecreated, an image associated, a starting point in the form of an UID.
       // Send the correct amount of Ether when minting
-      // function mintJournal(uint256 randomUID, string memory metadataCID, string memory passwordsCID) external onlyAnkyOwner {
-      const tx = await journalsContract.mintJournal(metadataCID);
+      const tx = await journalsContract.mintJournal(journalTitle);
 
       const receipt = await tx.wait();
       console.log('the receipt isss', receipt);
 
       // Process logs from the transaction receipt
-      const eventTopic = ethers.utils.id('JournalMinted(uint256,address)');
+      const eventTopic = ethers.utils.id(
+        'JournalMinted(uint256, address, title)'
+      );
       console.log('the event topic is: ', eventTopic);
       for (const log of receipt.logs) {
         console.log('inside the log', log);
@@ -104,7 +108,7 @@ const BuyNewJournal = () => {
           console.log('the token iddd is', tokenId);
           const newJournalElement = {
             journalId: tokenId.toString(),
-            metadataCID: '',
+            title: journalTitle,
           };
           console.log('the new journal element is: ', newJournalElement);
 
@@ -198,6 +202,12 @@ const BuyNewJournal = () => {
                     <p className='mb-2'>
                       that will store all of your writings.
                     </p>
+                    <input
+                      onChange={e => setJournalTitle(e.target.value)}
+                      type='text'
+                      placeholder='journal title'
+                      className='rounded-xl p-2 text-black'
+                    />
                     <div className='flex justify-center mb-4'>
                       <span
                         onClick={() => mintNewJournal()}

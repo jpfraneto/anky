@@ -13,7 +13,9 @@ const DementorCard = ({ dementor }) => {
   return (
     <Link href={`/dementor/${dementor.dementorId}`}>
       <div className='py-2 px-4 m-2 rounded-xl text-left flex flex-col bg-red-600 hover:bg-red-700 text-black'>
-        <h2 className='text-2xl'>#{dementor.dementorId}</h2>
+        <h2 className='text-2xl'>
+          {dementor.dementorId} · {dementor.title}
+        </h2>
         <p className='-my-1'>{dementor.pages.length} pages written.</p>
         {timestamp && (
           <p className='my-0'>

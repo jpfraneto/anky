@@ -234,7 +234,11 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
           };
         });
         setLifeBarLength(0);
+        console.log('the entry for display is: ', newJournalEntry.pageNumber);
+        setEntryForDisplay(newJournalEntry.pageNumber);
         setLoadWritingGame(false);
+        setIsModalOpen(true);
+
         console.log('after the setloadwrtinggame put into false');
       } catch (e) {
         console.log('Error uploading data ', e);
