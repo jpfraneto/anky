@@ -1,10 +1,3 @@
-NEEDS LOVE:
-
-- If the user goes to a template that she has already minted, this page should say that. right now i go in there and what is see is the same thing that i would see if i had never minted something here.
-- 
-
-
-
 # Your Uniqueness Is a Gift
 
 tl;dr: this repo is the pwa of anky. one of the infinite branches of expression of an interpretation of the underlying truth of all religions.
