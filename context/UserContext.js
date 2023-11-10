@@ -360,6 +360,7 @@ export const UserProvider = ({ children }) => {
       ankyAirdropContract
     );
     const usersAnkyBalance = await ankyAirdropContract.balanceOf(userAddress);
+    console.log('THE USERS ANKY BAÑANCE IS:', usersAnkyBalance);
     return ethers.utils.formatUnits(usersAnkyBalance, 0);
   }
 

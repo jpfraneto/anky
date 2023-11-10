@@ -202,8 +202,9 @@ const LibraryPage = ({}) => {
             {activeTab === 'notebooks' && (
               <>
                 <div className=' bg-purple-300 rounded-b-xl p-4 flex flex-col flex-wrap'>
-                  {notebooks.length > 0 ? (
+                  {notebooks && notebooks.length > 0 ? (
                     notebooks.map((x, i) => {
+                      if (!x.metadata?.title) return;
                       return <NotebookCard notebook={x} key={i} />;
                     })
                   ) : (

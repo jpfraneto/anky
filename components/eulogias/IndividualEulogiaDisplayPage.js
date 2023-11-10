@@ -69,9 +69,12 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
           if (!thisWallet) return;
           console.log('in hereeeee', thisWallet);
           console.log('the user app information is: ', userAppInformation);
-          const thisEulogiaInUser = userAppInformation.userEulogias.filter(
-            x => x.eulogiaID === router.query.id
-          )[0];
+          let thisEulogiaInUser = false;
+          if (userAppInformation.userEulogias?.length > 0) {
+            thisEulogiaInUser = userAppInformation.userEulogias.filter(
+              x => x.eulogiaID === router.query.id
+            )[0];
+          }
           if (thisEulogiaInUser) {
             const userMessage = thisEulogiaInUser.messages.find(
               msg => msg.writer === thisWallet.address
@@ -113,10 +116,10 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
 
               setMessages(formattedEulogia.messages);
 
-              const userMessage = formattedEulogia.messages.find(
-                msg => msg.writer === thisWallet.address
-              );
-              setUserHasWritten(Boolean(userMessage));
+              // const userMessage = formattedEulogia.messages.find(
+              //   msg => msg.writer === thisWallet.address
+              // );
+              setUserHasWritten(Boolean(false));
               setEulogiaLoading(false);
             } else {
               throw Error('No eulogia');
@@ -155,7 +158,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
         AnkyEulogiasAbi,
         signer
       );
-      await eulogiasContract.mintEulogiaToAnky(eulogia.eulogiaID);
+      await eulogiasContract.mintEulogia(eulogia.eulogiaID);
       alert('Eulogia minted successfully!');
     } catch (error) {
       console.error('Error minting eulogia:', error);
@@ -334,7 +337,6 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
                 )
               ) : null}
             </div>
-
             <p className='absolute w-full right-2 bottom-1 italic  flex flex-col'>
               <span className='text-xl mb-4'>
                 {' '}
@@ -398,9 +400,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
           <p className='italic text-lg md:text-2xl mb-2 w-96 mx-auto'>
             {eulogia.metadata.description}
           </p>
-          <div className='mb-4'>
-            {eulogia.maxMessages - messages.length} pages available
-          </div>
+          <div className='mb-4'>{eulogia.maxMessages - 0} pages available</div>
           <div className='mx-auto relative w-96 h-96 flex overflow-hidden border-white border rounded-xl justify-center'>
             <Image
               src={eulogia.metadata.coverImageUrl}
@@ -409,19 +409,22 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
             />
           </div>
         </div>
+        <button onClick={mintEulogia}> MINT EUOOGIA</button>
+
         <div className='w-full flex justify-center flex-wrap mx-auto'>
-          {messages.map((msg, index) => (
-            <div
-              className='p-2 w-8 flex justify-center items-center cursor-pointer h-8 mx-auto bg-purple-200 hover:bg-purple-400 m-2 rounded-xl text-black'
-              key={index}
-              onClick={() => {
-                setIsModalOpen(true);
-                setDisplayModalMessage(msg);
-              }}
-            >
-              <p>{index}</p>
-            </div>
-          ))}
+          {false &&
+            messages.map((msg, index) => (
+              <div
+                className='p-2 w-8 flex justify-center items-center cursor-pointer h-8 mx-auto bg-purple-200 hover:bg-purple-400 m-2 rounded-xl text-black'
+                key={index}
+                onClick={() => {
+                  setIsModalOpen(true);
+                  setDisplayModalMessage(msg);
+                }}
+              >
+                <p>{index}</p>
+              </div>
+            ))}
         </div>
         <div className='p-2 h-full overflow-y-scroll my-0'>
           {!authenticated ? (

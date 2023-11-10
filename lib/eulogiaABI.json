@@ -220,10 +220,8 @@
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "randomUID", "type": "uint256" },
       { "internalType": "string", "name": "metadataCID", "type": "string" },
-      { "internalType": "uint256", "name": "maxMsgs", "type": "uint256" },
-      { "internalType": "string", "name": "passwordsCID", "type": "string" }
+      { "internalType": "uint256", "name": "maxMsgs", "type": "uint256" }
     ],
     "name": "createEulogia",
     "outputs": [],
@@ -246,8 +244,7 @@
     "outputs": [
       { "internalType": "uint256", "name": "eulogiaId", "type": "uint256" },
       { "internalType": "string", "name": "metadataCID", "type": "string" },
-      { "internalType": "uint256", "name": "maxMessages", "type": "uint256" },
-      { "internalType": "string", "name": "passwordsCID", "type": "string" }
+      { "internalType": "uint256", "name": "maxMessages", "type": "uint256" }
     ],
     "stateMutability": "view",
     "type": "function"
@@ -259,6 +256,13 @@
     ],
     "name": "eulogiasWhereUserWrote",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "uint256", "name": "id", "type": "uint256" }],
+    "name": "exists",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
     "stateMutability": "view",
     "type": "function"
   },
@@ -276,10 +280,9 @@
             "internalType": "uint256",
             "name": "maxMessages",
             "type": "uint256"
-          },
-          { "internalType": "string", "name": "passwordsCID", "type": "string" }
+          }
         ],
-        "internalType": "struct NewAnkyEulogias.Eulogia",
+        "internalType": "struct AnkyEulogias.Eulogia",
         "name": "",
         "type": "tuple"
       }
@@ -389,6 +392,13 @@
     ],
     "name": "supportsInterface",
     "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "uint256", "name": "id", "type": "uint256" }],
+    "name": "totalSupply",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
   },

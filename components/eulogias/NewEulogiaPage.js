@@ -146,14 +146,18 @@ const NewEulogiaPage = ({ wallet }) => {
               },
               messages: [], // Initialize with an empty array as no messages have been added yet.
             };
-            allUserEulogias = [...x.userEulogias, newEulogia];
+            if (x.userEulogias?.length > 0) {
+              allUserEulogias = [...x.userEulogias, newEulogia];
+            } else {
+              allUserEulogias = [newEulogia];
+            }
+            setUserData('userEulogias', allUserEulogias);
 
             return {
               ...x,
               userEulogias: allUserEulogias,
             };
           });
-          setUserData('userEulogias', allUserEulogias);
         } else {
           setEulogiaCreationError(true);
         }

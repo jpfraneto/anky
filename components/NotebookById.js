@@ -87,6 +87,7 @@ function NotebookPage({ router, wallet }) {
     setMintingNotebook(true);
     try {
       if (!wallet) return alert('You need to login first');
+      console.log('the idea is to mint the notebook now');
       let provider = await wallet.getEthersProvider();
       let signer = await provider.getSigner();
 
@@ -98,11 +99,10 @@ function NotebookPage({ router, wallet }) {
 
       const amount = 1;
       const priceInWei = ethers.utils.parseEther(notebookData.price);
-
       const transaction = await notebooksContract.mintNotebook(
+        wallet.address,
         notebookData.notebookId,
         amount,
-        'aloja', // this value is not needed anymore because there are no password strings.
         { value: priceInWei }
       );
 
@@ -111,36 +111,47 @@ function NotebookPage({ router, wallet }) {
       const mintedEvents = transactionResponse.events.filter(
         event => event.event === 'NotebookMinted'
       );
-      const notebookIds = mintedEvents.map(event => event.args.instanceId);
+
+      //emit NotebookMinted(notebookId, usersAnkyAddress, thisNotebook.metadataCID);
+      console.log('the mintedEvents are: ', mintedEvents);
+      const notebookIds = mintedEvents.map(event => event.args.notebookId);
       console.log(notebookIds);
       console.log('mint of the notebook was successful');
 
-      const transferredEvents = transactionResponse.events.filter(
-        event => event.event === 'FundsTransferred'
-      );
-      const transferredAmounts = transferredEvents.map(
-        event => event.args.amount
-      );
-      console.log(transferredAmounts);
-
       const notebookId = mintedEvents[0].args.instanceId;
-      const creatorAmount = ethers.utils.formatEther(transferredAmounts[0]);
-      const userAmount = ethers.utils.formatEther(transferredAmounts[1]);
 
       setMintedNotebookId(notebookId);
       setMintedNotebookSuccess(true);
       setMintingNotebook(false);
       let newNotebooksArray;
-      setNotebookInformation({ creatorAmount, userAmount, notebookId });
       setUserAppInformation(x => {
-        newNotebooksArray = [
-          ...x.userNotebooks,
-          { notebookId: notebookId, userPages: [], template: templateData },
-        ];
-        return {
-          ...x,
-          userNotebooks: newNotebooksArray,
-        };
+        if (x.userNotebooks?.length > 0) {
+          newNotebooksArray = [
+            ...x.userNotebooks,
+            {
+              notebookId: notebookId,
+              userPages: [],
+              title: notebookData.title,
+              description: notebookData.description,
+            },
+          ];
+          return {
+            ...x,
+            userNotebooks: newNotebooksArray,
+          };
+        } else {
+          return {
+            ...x,
+            userNotebooks: [
+              {
+                notebookId: notebookId,
+                userPages: [],
+                title: notebookData.title,
+                description: notebookData.description,
+              },
+            ],
+          };
+        }
       });
       setUserData('userNotebooks', newNotebooksArray);
     } catch (error) {
@@ -179,18 +190,9 @@ function NotebookPage({ router, wallet }) {
                 congratulations, you minted the following notebook:
               </h2>
               <h2 className='text-3xl mb-3'>
-                {templateData.metadata.title || 'undefined'}
+                {notebookData.metadata.title || 'undefined'}
               </h2>
 
-              <p>
-                {notebookInformation.creatorAmount} eth was transferred to the
-                notebook creator as royalties.
-              </p>
-              <p>
-                {notebookInformation.userAmount} eth was returned to you as
-                in-app credits.
-              </p>
-              <p>the rest goes to the dao that makes this place exist.</p>
               <div className='w-fit mx-auto mt-2'>
                 <Button
                   buttonColor='bg-purple-600'
