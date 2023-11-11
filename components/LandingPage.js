@@ -242,14 +242,18 @@ function LandingPage({
         </p>
       </div>
 
-      <div className='p-8 bg-white flex flex-row'>
+      <div className='p-8 bg-white flex flex-col'>
         <div className='px-2 md:w-3/5 mx-auto'>
-          <p className='mb-2'>all your feedback is gold</p>
-          <p className='mb-2'>@kithkui on x</p>
-          <p className='mb-2'>@jpfraneto on farcaster</p>
           <p className='mb-2'>
             its all open source https://www.github.com/ankylat
           </p>
+        </div>
+        <div className='flex justify-center w-48 mx-auto my-4'>
+          <Button
+            buttonText='im ready to write'
+            buttonAction={() => setDisplayWritingGameLanding(true)}
+            buttonColor='bg-gradient-to-r from-red-500 via-yellow-600 to-violet-500 text-black'
+          />
         </div>
       </div>
     </div>

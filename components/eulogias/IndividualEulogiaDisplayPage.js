@@ -62,6 +62,10 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
           );
           const data = await serverResponse.json();
           console.log('the server response is: ', data);
+          if (!data.success) {
+            setEulogiaLoading(false);
+            return setEulogiaDoesnt;
+          }
           setEulogia(data.eulogia);
           setMessages(data.eulogia.messages);
           setEulogiaLoading(false);
@@ -75,6 +79,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
               x => x.eulogiaID === router.query.id
             )[0];
           }
+          console.log('this eulogia in the user is', thisEulogiaInUser);
           if (thisEulogiaInUser) {
             const userMessage = thisEulogiaInUser.messages.find(
               msg => msg.writer === thisWallet.address
@@ -353,6 +358,18 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
       )
     );
   }
+
+  if (!authenticated)
+    return (
+      <div>
+        <p>you need to login to write on this eulogia</p>
+        <Button
+          buttonAction={login}
+          buttonText='login'
+          buttonColor='bg-purple-600'
+        />
+      </div>
+    );
 
   if (eulogiaLoading)
     return (

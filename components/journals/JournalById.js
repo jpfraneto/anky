@@ -93,10 +93,14 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
             const fetchedJournal = thisJournal[0];
             console.log('the fetched journal is: 0', fetchedJournal);
 
+            let thisContainerContract =
+              process.env.NEXT_PUBLIC_JOURNALS_CONTRACT_ADDRESS;
+
             const writtenPages = await getContainerInfoFromIrys(
               'journal',
               router.query.id,
-              thisWallet.address
+              thisWallet.address,
+              thisContainerContract
             );
 
             fetchedJournal.entries = writtenPages;
@@ -174,6 +178,10 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
         { name: 'container-type', value: 'journal' },
         { name: 'container-id', value: router.query.id.toString() },
         { name: 'page-number', value: journal.entries.length.toString() },
+        {
+          name: 'smart-contract-address',
+          value: process.env.NEXT_PUBLIC_JOURNALS_CONTRACT_ADDRESS,
+        },
         // what is the CID from the previous page? this is where the provenance plays an important role and needs to be taken care of.
         {
           name: 'previous-page',
@@ -286,6 +294,9 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
           <div className='bg-purple-300 overflow-y-scroll text-black rounded relative p-6 w-2/3 h-2/3'>
             <p className='absolute top-1  cursor-pointer left-2 text-gray-800'>
               {entryForDisplay + 1}
+            </p>
+            <p className='absolute top-1  cursor-pointer left-1/2 text-gray-800'>
+              {thisEntry.timestamp}
             </p>
             <p
               onClick={closeModal}

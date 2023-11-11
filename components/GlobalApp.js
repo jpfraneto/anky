@@ -49,15 +49,9 @@ const GlobalApp = ({ alchemy }) => {
   const [userIsMintingAnky, setUserIsMintingAnky] = useState(false);
   const wallets = useWallets();
   const wallet = wallets.wallets[0];
-  useEffect(() => {
-    console.log('out hereeee');
-    if (ready) {
-      console.log('IN EHEEEREREE');
-    }
-  }, [ready]);
 
   async function mintUsersAnky() {
-    if (!wallet) return alert('you dont have a wallet connected');
+    if (!wallet) return alert('you are not logged in');
     try {
       setUserIsMintingAnky(true);
       let provider = await wallet.getEthersProvider();
@@ -81,8 +75,31 @@ const GlobalApp = ({ alchemy }) => {
     }
   }
 
+  async function checkIfUserOwnsAnky() {
+    if (!wallet) return alert('you are not logged in');
+    try {
+      let provider = await wallet.getEthersProvider();
+      let signer = await provider.getSigner();
+      const ankyAirdropContract = new ethers.Contract(
+        process.env.NEXT_PUBLIC_ANKY_AIRDROP_SMART_CONTRACT,
+        airdropABI,
+        signer
+      );
+      const usersBalance = await ankyAirdropContract.balanceOf(wallet.address);
+      console.log('the users balance is: ', usersBalance);
+      const usersAnkys = ethers.utils.formatUnits(usersBalance, 0);
+      if (usersAnkys > 0) {
+        setUserOwnsAnky(true);
+      }
+    } catch (error) {
+      console.log('there was an error', error);
+      alert('there was an error, please try again.');
+      setUserIsMintingAnky(false);
+    }
+  }
+
   function getComponentForRoute(route, router) {
-    if (!ready) return;
+    if (!ready || loading) return;
     console.log(`________________${userOwnsAnky}____________________*****`);
     if (authenticated && wallet && wallet.address && !userOwnsAnky) {
       console.log('in heeere');
@@ -119,6 +136,13 @@ const GlobalApp = ({ alchemy }) => {
                 <Mint usersWalletAddress={wallet.address} />
               </div>
             )}
+          </div>
+          <div>
+            <Button
+              buttonText='wtf? i already bought one'
+              buttonAction={checkIfUserOwnsAnky}
+              buttonColor='bg-green-600'
+            />
           </div>
         </div>
       );

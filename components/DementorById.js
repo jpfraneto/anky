@@ -256,7 +256,7 @@ function DementorPage({
             value: previousCid || '',
           },
           {
-            name: 'smart-contract',
+            name: 'smart-contract-address',
             value: process.env.NEXT_PUBLIC_ANKY_DEMENTORS_CONTRACT,
           },
         ];

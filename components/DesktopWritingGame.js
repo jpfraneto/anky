@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Righteous, Dancing_Script } from 'next/font/google';
 import Button from './Button';
 import Image from 'next/image';
+import { WebIrys } from '@irys/sdk';
 import { useWallets } from '@privy-io/react-auth';
 import { saveTextAnon } from '../lib/backend';
 import { ethers } from 'ethers';
@@ -164,26 +165,63 @@ const DesktopWritingGame = ({
     setCopyText('copied.');
   };
 
-  const sendTextToBackend = async () => {
+  const sendTextToIrys = async () => {
     if (!authenticated) {
       alert('You need to login');
       return login();
     }
     setSavingTextAnon(true);
+    const getWebIrys = async () => {
+      // Ethers5 provider
+      // await window.ethereum.enable();
+      if (!thisWallet) return;
+      // const provider = new providers.Web3Provider(window.ethereum);
+      console.log('thiiiiis wallet is: ', thisWallet);
+      const provider = await thisWallet.getEthersProvider();
+
+      const url = 'https://node2.irys.xyz';
+      const token = 'ethereum';
+      const rpcURL = 'https://rpc-mumbai.maticvigil.com'; // Optional parameter
+
+      // Create a wallet object
+      const wallet = { rpcUrl: rpcURL, name: 'ethersv5', provider: provider };
+      // Use the wallet object
+      const webIrys = new WebIrys({ url, token, wallet });
+      await webIrys.ready();
+      return webIrys;
+    };
+
+    const webIrys = await getWebIrys();
+    console.log('the web irys is: ', webIrys);
+    let previousPageCid = 0;
+    previousPageCid = '';
+
+    const containerId = 'alohomora' || getAnkyverseDay();
+    const pageNumber = '3';
+
+    const tags = [
+      { name: 'Content-Type', value: 'text/plain' },
+      { name: 'application-id', value: 'Anky Dementors' },
+      { name: 'container-type', value: 'community-notebook' },
+      { name: 'container-id', value: containerId },
+      { name: 'page-number', value: pageNumber },
+      // what is the CID from the previous page? this is where the provenance plays an important role and needs to be taken care of.
+      {
+        name: 'previous-page',
+        value: previousPageCid.toString(),
+      },
+    ];
+    console.log('right after the tags', tags);
     try {
-      const response = await saveTextAnon(text, userPrompt);
-      console.log('the response is: ', response);
-      if (response.bundlrResponseId) {
-        const arweaveLink = `https://arweave.net/${response.bundlrResponseId}`;
-        await callSmartContract(arweaveLink);
-        setSavedText(true);
-        router.push('/community-notebook');
-      } else {
-        alert('There was an error, contact jp asap.');
-      }
+      const receipt = await webIrys.upload(finishText, { tags });
+      console.log(`Data uploaded ==> https://gateway.irys.xyz/${receipt.id}`);
+      setLifeBarLength(0);
+      setDisplayWritingGameLanding(false);
+      setIsModalOpen(true);
     } catch (error) {
-      alert('There was an error fetching the api route. Contact jp asap.');
-      console.log('the error was:', error);
+      console.log('there was an error');
+      console.log('the error is:', error);
+      setDisplayWritingGameLanding(false);
     }
   };
 
@@ -358,7 +396,7 @@ const DesktopWritingGame = ({
 
                   <div className='flex justify-center '>
                     <Button
-                      buttonAction={sendTextToBackend}
+                      buttonAction={sendTextToIrys}
                       buttonColor='bg-green-600 text-black'
                       buttonText={savingTextAnon ? 'saving...' : 'save text'}
                     />

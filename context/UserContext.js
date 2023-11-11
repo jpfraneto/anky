@@ -48,6 +48,7 @@ export const UserProvider = ({ children }) => {
   }
 
   // Load stored user data from IndexedDB and set it to state
+
   useEffect(() => {
     async function loadStoredUserData() {
       if (ready && isEmpty(userAppInformation)) {
@@ -90,13 +91,16 @@ export const UserProvider = ({ children }) => {
   // Check initialization and setup status
   useEffect(() => {
     async function handleInitialization() {
+      console.log('inside the handleinitialization', loading, ready);
       if (loading && !ready) return;
-      if (!authenticated && ready) {
+      console.log('AUTHENTICATED', authenticated, wallet);
+      if ((!authenticated && ready) || !wallet) {
         console.log('running the hereee');
         setMainAppLoading(false);
         setAppLoading(false);
         return;
       }
+
       const usersAnkyBalance = await fetchUsersAnky();
       console.log('after fetching the user anky,', usersAnkyBalance);
       if (usersAnkyBalance == 0) {
@@ -110,7 +114,7 @@ export const UserProvider = ({ children }) => {
       console.log('inside hereaasc213');
 
       if (wallet && !wallet.chainId.includes('84531')) await changeChain();
-      console.log('the wallet is: ', wallet);
+      console.log('the wallet is HERE: ', wallet);
       console.log('the wallets are: ', wallets, userAppInformation?.wallet);
       const isUserTheSame =
         wallet?.address == userAppInformation?.wallet?.address;
@@ -126,8 +130,10 @@ export const UserProvider = ({ children }) => {
         setAppLoading(false);
       }
     }
+    console.log('the wallet is here', wallet);
+
     handleInitialization();
-  }, [loadingUserStoredData, wallet]);
+  }, [loadingUserStoredData]);
 
   // Load the user's library when setup is ready
   useEffect(() => {
@@ -341,27 +347,6 @@ export const UserProvider = ({ children }) => {
     } else {
       setErrorMessage('There was an error with your journal.');
     }
-  }
-
-  async function fetchUsersAnky() {
-    if (!wallet && !wallet?.address) return;
-    let provider = await wallet.getEthersProvider();
-    let signer = await provider.getSigner();
-    const ankyAirdropContract = new ethers.Contract(
-      process.env.NEXT_PUBLIC_ANKY_AIRDROP_SMART_CONTRACT,
-      airdropABI,
-      signer
-    );
-    console.log('IN HEEERE', wallet.address);
-    const userAddress = wallet.address;
-    console.log(
-      'the anky airdrop contract is: ',
-      userAddress,
-      ankyAirdropContract
-    );
-    const usersAnkyBalance = await ankyAirdropContract.balanceOf(userAddress);
-    console.log('THE USERS ANKY BAÑANCE IS:', usersAnkyBalance);
-    return ethers.utils.formatUnits(usersAnkyBalance, 0);
   }
 
   const initializeUser = async () => {
