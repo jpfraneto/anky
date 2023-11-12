@@ -100,7 +100,8 @@ const GlobalApp = ({ alchemy }) => {
 
   function getComponentForRoute(route, router) {
     if (!ready || loading) return;
-    console.log(`________________${userOwnsAnky}____________________*****`);
+    console.log(userOwnsAnky);
+    console.log(`___________****_____${userOwnsAnky}____________________*****`);
     if (authenticated && wallet && wallet.address && !userOwnsAnky) {
       console.log('in heeere');
       return (
@@ -208,7 +209,12 @@ const GlobalApp = ({ alchemy }) => {
         return <NewNotebookPage userAnky={userAppInformation} />;
       case `/notebook/${route.split('/').pop()}`: // Extracts the template id from the route
         return (
-          <NotebookPage wallet={wallet} alchemy={alchemy} router={router} />
+          <NotebookPage
+            setLifeBarLength={setLifeBarLength}
+            lifeBarLength={lifeBarLength}
+            wallet={wallet}
+            router={router}
+          />
         );
 
       case '/community-notebook':

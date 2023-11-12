@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { ethers } from 'ethers';
+import { WebIrys } from '@irys/sdk';
+
 import Button from '../Button';
 import Link from 'next/link';
+import { getContainerInfoFromIrys } from '../../lib/irys';
 import { useUser } from '../../context/UserContext';
 import {
   processFetchedTemplate,
@@ -16,7 +19,12 @@ import WritingGameComponent from '../WritingGameComponent';
 import Spinner from '../Spinner';
 import AnkyNotebooksAbi from '../../lib/notebookABI.json'; // Assuming you have the ABI
 
-const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
+const IndividualNotebookPage = ({
+  setLifeBarLength,
+  lifeBarLength,
+  notebookData,
+}) => {
+  console.log('the notebookData is: ', notebookData);
   const router = useRouter();
   const [notebook, setNotebook] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -43,6 +51,7 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
     async function fetchNotebook() {
       try {
         if (!thisWallet) return;
+        console.log('FETCHING THIS NOTEBOOK ');
         const notebookID = router.query.id;
         if (notebookID === undefined || !notebookID) {
           return setFailed(true);
@@ -54,50 +63,17 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
         let fetchedProvider = await thisWallet.getEthersProvider();
         setProvider(fetchedProvider);
         console.log('the provider is: ', fetchedProvider);
-        let signer = await fetchedProvider.getSigner();
-        if (thisNotebookInUser) {
-          setNotebook(thisNotebookInUser);
-          setNotebookPages(thisNotebookInUser.userPages);
-          setNotebookTemplate(thisNotebookInUser.template);
-          setLoading(false);
-          return;
-        } else {
-          const notebooksContract = new ethers.Contract(
-            process.env.NEXT_PUBLIC_NOTEBOOKS_CONTRACT,
-            AnkyNotebooksAbi,
-            signer
-          );
-          console.log('this notebook id is: ');
-          console.log('the notebooks contract is: ', notebooksContract);
-          const thisNotebook = await notebooksContract.getFullNotebook(
-            Number(notebookID)
-          );
-          console.log('this notebook is: ', thisNotebook);
-          const fetchedPages = await fetchArweaveContent(
-            thisNotebook.userPages
-          );
-          setNotebookPages(fetchedPages);
-          console.log('the notebook is: ', thisNotebook);
-          const templatesContract = new ethers.Contract(
-            process.env.NEXT_PUBLIC_TEMPLATES_CONTRACT_ADDRESS,
-            templatesContractABI,
-            signer
-          );
-          const templateId = ethers.utils.formatUnits(
-            thisNotebook.templateId,
-            0
-          );
-          const thisTemplate = await templatesContract.getTemplate(templateId);
-          const formattedTemplate = await processFetchedTemplate(thisTemplate);
-          console.log('the formatted template is: ', formattedTemplate);
-          if (thisNotebook && formattedTemplate) {
-            setNotebook(thisNotebook);
-            setNotebookTemplate(formattedTemplate);
-            setLoading(false);
-          } else {
-            throw Error('No notebook found');
-          }
-        }
+
+        const fetchedPages = await getContainerInfoFromIrys(
+          'notebook',
+          router.query.id,
+          thisWallet.address,
+          process.env.NEXT_PUBLIC_NOTEBOOKS_CONTRACT
+        );
+        console.log('OUT HERE, THE FETCHED PAGES ARE: ', fetchedPages);
+
+        setNotebookPages(fetchedPages);
+        setLoading(false);
       } catch (error) {
         console.error(error);
       }
@@ -110,11 +86,11 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
     console.log('in here, the notebook pages are: ', notebookPages);
     const pagesWritten = notebookPages.length;
     console.log('the pages written are:', pagesWritten);
-    if (pagesWritten >= notebookTemplate.metadata.prompts.length) {
+    if (pagesWritten >= notebookData.metadata.prompts.length) {
       alert('All prompts have been written!');
       return;
     }
-    const nextPrompt = notebookTemplate.metadata.prompts[pagesWritten];
+    const nextPrompt = notebookData.metadata.prompts[pagesWritten];
     setChosenPrompt(nextPrompt);
     const writingGameParameters = {
       notebookType: 'notebook',
@@ -140,90 +116,100 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
 
   const updateNotebookWithPage = async finishText => {
     try {
-      const authToken = await getAccessToken();
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/notebooks/upload-writing`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${authToken}`,
-          },
-          body: JSON.stringify({ text: finishText }),
-        }
-      );
+      const getWebIrys = async () => {
+        // Ethers5 provider
+        // await window.ethereum.enable();
+        if (!thisWallet) return;
+        // const provider = new providers.Web3Provider(window.ethereum);
+        console.log('thiiiiis wallet is: ', thisWallet);
+        const provider = await thisWallet.getEthersProvider();
 
-      const { cid } = await response.json();
-      console.log('in here, the cid is: ', cid);
-      let signer = await provider.getSigner();
-      const notebooksContract = new ethers.Contract(
-        process.env.NEXT_PUBLIC_NOTEBOOKS_CONTRACT,
-        AnkyNotebooksAbi,
-        signer
-      );
-      console.log('the notebooks contract is: ', notebooksContract);
-      console.log('the pages number is: ', notebookPages);
-      const pageNumber = notebookPages.length;
-      console.log('the page number is :0', pageNumber);
-      console.log('the notebook is: ', notebook);
-      console.log('the provider is: ', provider);
-      const notebookId = router.query.id;
-      console.log('the notebook id is: ', notebookId);
-      const tx = await notebooksContract.writeNotebookPage(
-        notebookId,
-        pageNumber,
-        cid,
-        true
-      );
-      await tx.wait();
-      console.log('after the response of writing in the notebook');
-      console.log('the notebook pages are: ', notebookPages);
-      let updatedUserNotebooks;
-      let newNotebookPage = {
-        text: finishText,
-        pageIndex: notebookPages.length,
-        written: true,
+        const url = 'https://node2.irys.xyz';
+        const token = 'ethereum';
+        const rpcURL = 'https://rpc-mumbai.maticvigil.com'; // Optional parameter
+
+        // Create a wallet object
+        const wallet = { rpcUrl: rpcURL, name: 'ethersv5', provider: provider };
+        // Use the wallet object
+        const webIrys = new WebIrys({ url, token, wallet });
+        await webIrys.ready();
+        return webIrys;
       };
-      setNotebookPages(x => [...x, newNotebookPage]);
-      setUserAppInformation(x => {
-        // Find the specific journal index by its id
-        const notebookIndex = x.userNotebooks.findIndex(
-          j => j.notebookId == notebookId
-        );
 
-        // If the journal is found
-        if (notebookIndex !== -1) {
-          console.log('the notebook index is: ', notebookIndex);
-          const updatedNotebook = {
-            ...x.userNotebooks[notebookIndex],
-            userPages: [
-              ...x.userNotebooks[notebookIndex].userPages,
-              newNotebookPage,
-            ],
-          };
+      const webIrys = await getWebIrys();
+      let previousPageCid = 0;
+      if (notebookPages.length > 0) {
+        previousPageCid = notebookPages[notebookPages.length - 1].cid;
+      }
+      const tags = [
+        { name: 'Content-Type', value: 'text/plain' },
+        { name: 'application-id', value: 'Anky Dementors' },
+        { name: 'container-type', value: 'notebook' },
+        { name: 'container-id', value: router.query.id.toString() },
+        { name: 'page-number', value: notebookPages.length.toString() },
+        {
+          name: 'smart-contract-address',
+          value: process.env.NEXT_PUBLIC_NOTEBOOKS_CONTRACT,
+        },
+        // what is the CID from the previous page? this is where the provenance plays an important role and needs to be taken care of.
+        {
+          name: 'previous-page',
+          value: previousPageCid.toString(),
+        },
+      ];
+      console.log('right after the tags', tags);
+      try {
+        const receipt = await webIrys.upload(finishText, { tags });
+        console.log(`Data uploaded ==> https://gateway.irys.xyz/${receipt.id}`);
+        let newNotebookPage = {
+          text: finishText,
+          pageIndex: notebookPages.length,
+          written: true,
+        };
+        setNotebookPages(x => [...x, newNotebookPage]);
+        setUserAppInformation(x => {
+          // Find the specific journal index by its id
+          const notebookIndex = x.userNotebooks.findIndex(
+            j => j.notebookId == router.query.id
+          );
 
-          updatedUserNotebooks = [
-            ...x.userNotebooks.slice(0, notebookIndex),
-            updatedNotebook,
-            ...x.userNotebooks.slice(notebookIndex + 1),
-          ];
-          console.log('the updated user notebooks are: ', updatedUserNotebooks);
+          // If the journal is found
+          if (notebookIndex !== -1) {
+            console.log('the notebook index is: ', notebookIndex);
+            const updatedNotebook = {
+              ...notebookData,
+              userPages: [...notebookPages, newNotebookPage],
+            };
 
-          return {
-            ...x,
-            userNotebooks: updatedUserNotebooks,
-          };
-        }
+            let updatedUserNotebooks = [
+              ...x.userNotebooks.slice(0, notebookIndex),
+              updatedNotebook,
+              ...x.userNotebooks.slice(notebookIndex + 1),
+            ];
+            console.log(
+              'the updated user notebooks are: ',
+              updatedUserNotebooks
+            );
 
-        setUserData('userNotebooks', updatedUserNotebooks);
+            return {
+              ...x,
+              userNotebooks: updatedUserNotebooks,
+            };
+          }
 
-        // Return the original state if the journal isn't found (for safety)
-        return x;
-      });
+          setUserData('userNotebooks', updatedUserNotebooks);
 
-      setLoadWritingGame(false);
+          // Return the original state if the journal isn't found (for safety)
+          return x;
+        });
+
+        setLoadWritingGame(false);
+        setLifeBarLength(0);
+      } catch (error) {
+        console.error('Failed to write to notebook:', error);
+      }
     } catch (error) {
-      console.error('Failed to write to notebook:', error);
+      console.error('Failed to write to notebook down here:', error);
     }
   };
 
@@ -265,10 +251,10 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
 
   return (
     <div className='text-white md:w-3/5 mx-auto p-4'>
-      <h2 className='text-4xl my-2'>{notebookTemplate.metadata.title}</h2>{' '}
-      <small className='italic'>{notebookTemplate.metadata.description}</small>
+      <h2 className='text-4xl my-2'>{notebookData.metadata.title}</h2>{' '}
+      <small className='italic'>{notebookData.metadata.description}</small>
       <div className='text-left my-4 '>
-        {notebookTemplate.metadata.prompts.map((x, i) => {
+        {notebookData.metadata.prompts.map((x, i) => {
           return (
             <div key={i}>
               <p
@@ -307,14 +293,14 @@ const IndividualNotebookPage = ({ setLifeBarLength, lifeBarLength }) => {
         )}
       </div>
       <div className='flex justify-center'>
-        {notebookPages.length === notebookTemplate.metadata.prompts.length ? (
+        {notebookPages.length === notebookData.metadata.prompts.length ? (
           <div>
             <p>Congratulations, you finished writing this notebook</p>
-            <p className='mb-4'>Time to mint create another one.</p>
+            <p className='mb-4'>Time to create another one.</p>
             <div className='flex justify-center space-x-2'>
-              <Link href='/templates/new' passHref>
+              <Link href='/notebooks/new' passHref>
                 <Button
-                  buttonText={`create template`}
+                  buttonText={`create notebook`}
                   buttonColor='bg-green-600 w-48 mx-auto'
                 />
               </Link>

@@ -220,7 +220,7 @@ const LibraryPage = ({}) => {
                 <div className='flex justify-center mt-4'>
                   <Button
                     buttonAction={() => router.push('/notebooks/new')}
-                    buttonText='new template'
+                    buttonText='new notebook'
                     buttonColor='bg-purple-600'
                   />
                 </div>

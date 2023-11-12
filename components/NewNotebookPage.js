@@ -382,9 +382,7 @@ function NewNotebookPage({}) {
                   <>
                     {!notebookCreationError ? (
                       <div>
-                        <p>
-                          the template for this notebook is being created...
-                        </p>
+                        <p>this notebook is being created...</p>
                         <Spinner />
                       </div>
                     ) : (

@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
 import AnkyEulogiasAbi from '../../lib/eulogiaABI.json';
+import { WebIrys } from '@irys/sdk';
+import { getContainerInfoFromIrys } from '../../lib/irys';
+
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { processFetchedEulogia } from '../../lib/notebooks.js';
@@ -56,6 +59,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
       try {
         if (eulogia) return;
         if (!router.query) return;
+
         if (!authenticated && !loading) {
           const serverResponse = await fetch(
             `${process.env.NEXT_PUBLIC_SERVER_URL}/notebooks/eulogia/${router.query.id}`
@@ -71,6 +75,8 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
           setEulogiaLoading(false);
         } else {
           if (!thisWallet) return;
+          console.log('before fetching the infor from irys');
+
           console.log('in hereeeee', thisWallet);
           console.log('the user app information is: ', userAppInformation);
           let thisEulogiaInUser = false;
@@ -116,15 +122,18 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
             setPreloadedBackground(imageUrl);
 
             if (formattedEulogia) {
-              console.log('right before the set eulogia', formattedEulogia);
-              setEulogia(formattedEulogia);
+              const fetchedPages = await getContainerInfoFromIrys(
+                'eulogia',
+                router.query.id,
+                thisWallet.address,
+                process.env.NEXT_PUBLIC_EULOGIAS_CONTRACT_ADDRESS
+              );
+              console.log('OUT HERE, THE FETCHED PAGES ARE: ', fetchedPages);
 
-              setMessages(formattedEulogia.messages);
-
-              // const userMessage = formattedEulogia.messages.find(
-              //   msg => msg.writer === thisWallet.address
-              // );
-              setUserHasWritten(Boolean(false));
+              setEulogia(x => {
+                return { ...formattedEulogia, pages: fetchedPages };
+              });
+              setEulogiaLoading(false);
               setEulogiaLoading(false);
             } else {
               throw Error('No eulogia');
@@ -176,106 +185,111 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
   const onFinish = async finishText => {
     try {
       console.log('before getting the auth token');
-      const authToken = await getAccessToken();
-      console.log('the auth token is: ', authToken);
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/notebooks/eulogia/writing`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${authToken}`,
-          },
-          credentials: 'include',
-          body: JSON.stringify({ text: finishText }),
-        }
-      );
-      console.log('out here');
-      const { cid } = await response.json();
-      console.log('the cid is: ', cid);
-      let signer;
-      if (!provider) {
-        const newProvider = await thisWallet.getEthersProvider();
-        signer = await newProvider.getSigner();
-      } else {
-        signer = await provider.getSigner();
+
+      const getWebIrys = async () => {
+        // Ethers5 provider
+        // await window.ethereum.enable();
+        if (!thisWallet) return;
+        // const provider = new providers.Web3Provider(window.ethereum);
+        console.log('thiiiiis wallet is: ', thisWallet);
+        const provider = await thisWallet.getEthersProvider();
+
+        const url = 'https://node2.irys.xyz';
+        const token = 'ethereum';
+        const rpcURL = 'https://rpc-mumbai.maticvigil.com'; // Optional parameter
+
+        // Create a wallet object
+        const wallet = { rpcUrl: rpcURL, name: 'ethersv5', provider: provider };
+        // Use the wallet object
+        const webIrys = new WebIrys({ url, token, wallet });
+        await webIrys.ready();
+        return webIrys;
+      };
+
+      const webIrys = await getWebIrys();
+      let previousPageCid = 0;
+      if (eulogia.pages.length > 0) {
+        previousPageCid = eulogia.pages[eulogia.pages.length - 1].cid;
       }
-      // Step 2: Send the CID to the smart contract.
-      const eulogiasContract = new ethers.Contract(
-        process.env.NEXT_PUBLIC_EULOGIAS_CONTRACT_ADDRESS,
-        AnkyEulogiasAbi,
-        signer
-      );
+      const tags = [
+        { name: 'Content-Type', value: 'text/plain' },
+        { name: 'application-id', value: 'Anky Dementors' },
+        { name: 'container-type', value: 'eulogia' },
+        { name: 'container-id', value: router.query.id.toString() },
+        {
+          name: 'smart-contract-address',
+          value: process.env.NEXT_PUBLIC_EULOGIAS_CONTRACT_ADDRESS,
+        },
+        // what is the CID from the previous page? this is where the provenance plays an important role and needs to be taken care of.
+        {
+          name: 'previous-page',
+          value: previousPageCid.toString(),
+        },
+      ];
+      console.log('right after the tags', tags);
+      try {
+        const receipt = await webIrys.upload(finishText, { tags });
+        console.log(`Data uploaded ==> https://gateway.irys.xyz/${receipt.id}`);
+        const newEulogiaWriting = {
+          writer: thisWallet.address,
+          whoWroteIt: whoIsWriting,
+          content: finishText,
+          cid: receipt.id,
+          timestamp: new Date().getTime(),
+        };
 
-      console.log('the eulogias contract is: ', eulogiasContract);
-      console.log('eulog', eulogia, cid, whoIsWriting);
-      const eulogiaID = router.query.id;
-      const tx = await eulogiasContract.writeEulogiaPage(
-        eulogiaID,
-        cid,
-        whoIsWriting,
-        true,
-        false
-      );
-      await tx.wait();
+        const updatedEulogia = {
+          ...eulogia,
+          eulogiaID: router.query.id,
+          pages: [...eulogia.pages, newEulogiaWriting],
+        };
 
-      console.log('after the transaction');
-      const newEulogiaWriting = {
-        writer: thisWallet.address,
-        whoWroteIt: whoIsWriting,
-        content: finishText,
-        timestamp: new Date().getTime(),
-      };
+        let updatedUserEulogias;
 
-      const updatedEulogia = {
-        ...eulogia,
-        eulogiaID: router.query.id,
-        messages: [...eulogia.messages, newEulogiaWriting],
-      };
+        setUserAppInformation(x => {
+          // Find the specific journal index by its id
+          if (x && x.userEulogias && x.userEulogias.length > 0) {
+            const eulogiaIndex = x.userEulogias.findIndex(
+              j => j.eulogiaID == eulogia.eulogiaID
+            );
 
-      let updatedUserEulogias;
+            // If the journal is found
+            if (eulogiaIndex !== -1) {
+              updatedUserEulogias = [
+                ...x.userEulogias.slice(0, eulogiaIndex),
+                updatedEulogia,
+                ...x.userEulogias.slice(eulogiaIndex + 1),
+              ];
 
-      setUserAppInformation(x => {
-        // Find the specific journal index by its id
-        if (x && x.userEulogias && x.userEulogias.length > 0) {
-          const eulogiaIndex = x.userEulogias.findIndex(
-            j => j.eulogiaID == eulogia.eulogiaID
-          );
-          console.log('the eulogia index is: ', eulogiaIndex);
+              setEulogia(updatedEulogia);
 
-          // If the journal is found
-          if (eulogiaIndex !== -1) {
-            updatedUserEulogias = [
-              ...x.userEulogias.slice(0, eulogiaIndex),
-              updatedEulogia,
-              ...x.userEulogias.slice(eulogiaIndex + 1),
-            ];
-
-            setEulogia(updatedEulogia);
-
-            return {
-              ...x,
-              userEulogias: updatedUserEulogias,
-            };
+              return {
+                ...x,
+                userEulogias: updatedUserEulogias,
+              };
+            } else {
+              updatedUserEulogias = [...x.userEulogias, updatedEulogia];
+              return {
+                ...x,
+                userEulogias: updatedUserEulogias,
+              };
+            }
           } else {
-            updatedUserEulogias = [...x.userEulogias, updatedEulogia];
+            setEulogia(updatedEulogia);
             return {
               ...x,
-              userEulogias: updatedUserEulogias,
+              userEulogias: [updatedEulogia],
             };
           }
-        } else {
-          setEulogia(updatedEulogia);
-          return {
-            ...x,
-            userEulogias: [updatedEulogia],
-          };
-        }
-      });
-      console.log('setting the user data', updatedUserEulogias);
-      setUserData('userEulogias', updatedUserEulogias);
-      setUserHasWritten(true); // Update the state to reflect the user has written.
-      setLoadWritingGame(false);
+        });
+        setUserData('userEulogias', updatedUserEulogias);
+        setUserHasWritten(true); // Update the state to reflect the user has written.
+        setLoadWritingGame(false);
+      } catch (error) {
+        console.log(error);
+      }
+
+      return;
     } catch (error) {
       await navigator.clipboard.writeText(finishText);
       console.error('Failed to write to eulogia:', error);
@@ -430,7 +444,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
 
         <div className='w-full flex justify-center flex-wrap mx-auto'>
           {false &&
-            messages.map((msg, index) => (
+            eulogia.pages.map((msg, index) => (
               <div
                 className='p-2 w-8 flex justify-center items-center cursor-pointer h-8 mx-auto bg-purple-200 hover:bg-purple-400 m-2 rounded-xl text-black'
                 key={index}

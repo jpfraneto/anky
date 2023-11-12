@@ -41,7 +41,9 @@ export const UserProvider = ({ children }) => {
   const [reloadData, setReloadData] = useState(false);
 
   const wallets = useWallets();
+  console.log('the wallets are. ', wallets);
   const wallet = wallets.wallets[0];
+  console.log('the wallettt is: ', wallet);
 
   function isEmpty(obj) {
     return Object.keys(obj).length === 0 && obj.constructor === Object;
@@ -93,8 +95,8 @@ export const UserProvider = ({ children }) => {
     async function handleInitialization() {
       console.log('inside the handleinitialization', loading, ready);
       if (loading && !ready) return;
-      console.log('AUTHENTICATED', authenticated, wallet);
-      if ((!authenticated && ready) || !wallet) {
+      console.log('AUTHENTICATED', authenticated, wallet, ready);
+      if (ready && !wallet) {
         console.log('running the hereee');
         setMainAppLoading(false);
         setAppLoading(false);
@@ -133,7 +135,7 @@ export const UserProvider = ({ children }) => {
     console.log('the wallet is here', wallet);
 
     handleInitialization();
-  }, [loadingUserStoredData]);
+  }, [loadingUserStoredData, wallet]);
 
   // Load the user's library when setup is ready
   useEffect(() => {
@@ -264,6 +266,29 @@ export const UserProvider = ({ children }) => {
       console.log('there was an error retrieving the users library.', error);
     }
   };
+
+  async function fetchUsersAnky() {
+    if (!wallet) return;
+    try {
+      let provider = await wallet.getEthersProvider();
+      let signer = await provider.getSigner();
+      const ankyAirdropContract = new ethers.Contract(
+        process.env.NEXT_PUBLIC_ANKY_AIRDROP_SMART_CONTRACT,
+        airdropABI,
+        signer
+      );
+      const usersBalance = await ankyAirdropContract.balanceOf(wallet.address);
+      console.log('the users balance is: ', usersBalance);
+      const usersAnkys = ethers.utils.formatUnits(usersBalance, 0);
+      if (usersAnkys > 0) {
+        setUserOwnsAnky(true);
+      }
+    } catch (error) {
+      console.log('there was an error', error);
+      alert('there was an error, please try again.');
+    }
+  }
+
   async function getTestEthAndAidropAnky(wallet, provider, authToken) {
     const testEthResponse = await sendTestEth(wallet, provider, authToken);
     if (!testEthResponse.success) {

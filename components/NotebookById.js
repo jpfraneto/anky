@@ -4,29 +4,34 @@ import { ethers } from 'ethers';
 import Button from './Button';
 import Link from 'next/link';
 import notebookContractABI from '../lib/notebookABI.json';
+import IndividualNotebookPage from './notebook/IndividualNotebookPage';
 import { setUserData } from '../lib/idbHelper';
 import { useUser } from '../context/UserContext';
 import { newProcessFetchedNotebook } from '../lib/notebooks.js';
 import Spinner from './Spinner';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
 
-function NotebookPage({ router, wallet }) {
-  const { authenticated, login } = usePrivy();
+function NotebookPage({ router, wallet, setLifeBarLength, lifeBarLength }) {
+  const { authenticated, login, ready } = usePrivy();
   const [notebookData, setNotebookData] = useState(null);
   const [loadingNotebook, setLoadingNotebook] = useState(true);
   const [mintingNotebook, setMintingNotebook] = useState(false);
   const [doesntExist, setDoesntExist] = useState(false);
   const [mintedNotebookId, setMintedNotebookId] = useState(null);
   const [linkCopied, setLinkCopied] = useState(false);
+  const [userOwnsThisNotebook, setUserOwnsThisNotebook] = useState(false);
   const [mintedNotebookSuccess, setMintedNotebookSuccess] = useState(false);
   const [notebookInformation, setNotebookInformation] = useState({});
   const { setUserAppInformation } = useUser();
 
   const { id } = router.query;
   useEffect(() => {
+    if (!ready) return;
+    console.log('ONE');
     if (id && wallet) fetchNotebookData(id);
     else {
-      if (id) {
+      console.log('TWO');
+      if (id && !authenticated && !wallet) {
         fetchNotebookFromServer();
       }
     }
@@ -39,7 +44,7 @@ function NotebookPage({ router, wallet }) {
       setNotebookData(data.template);
       setLoadingNotebook(false);
     }
-  }, [id]);
+  }, [id, ready, wallet]);
 
   const copyToClipboard = async () => {
     await navigator.clipboard.writeText(`https://www.anky.lat/template/${id}`);
@@ -47,6 +52,7 @@ function NotebookPage({ router, wallet }) {
   };
 
   async function fetchNotebookData(notebookId) {
+    console.log('inside the fetch noteobok data');
     if (!wallet) return;
     let provider = await wallet.getEthersProvider();
     let signer;
@@ -61,6 +67,14 @@ function NotebookPage({ router, wallet }) {
       process.env.NEXT_PUBLIC_NOTEBOOKS_CONTRACT,
       notebookContractABI,
       signer
+    );
+
+    const usersNotebookBalance = await contract.getUsersBalanceOfNotebook(
+      notebookId
+    );
+    const userNotebookBalance = ethers.utils.formatUnits(
+      usersNotebookBalance,
+      0
     );
 
     console.log(
@@ -80,6 +94,9 @@ function NotebookPage({ router, wallet }) {
     const processedData = await newProcessFetchedNotebook(data);
     console.log('the data is:', processedData);
     setNotebookData(processedData);
+    if (userNotebookBalance > 0) {
+      setUserOwnsThisNotebook(true);
+    }
     setLoadingNotebook(false);
   }
 
@@ -160,6 +177,15 @@ function NotebookPage({ router, wallet }) {
       alert(error.message);
     }
   }
+
+  if (userOwnsThisNotebook)
+    return (
+      <IndividualNotebookPage
+        notebookData={notebookData}
+        setLifeBarLength={setLifeBarLength}
+        lifeBarLength={lifeBarLength}
+      />
+    );
 
   if (loadingNotebook)
     return (
