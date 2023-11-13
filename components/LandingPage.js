@@ -82,7 +82,7 @@ function LandingPage({
                   <div className='mt-2 w-96 flex mx-auto'>
                     {startJourney ? (
                       <Button
-                        buttonText='login with any email'
+                        buttonText='login'
                         buttonAction={login}
                         buttonColor='bg-purple-400 mx-1 text-black'
                       />
@@ -108,11 +108,8 @@ function LandingPage({
 
       <div className='py-8 px-2 w-full md:px-64 bg-gray-200'>
         <p className='mb-4'>You are reading.</p>
-        <p className='mb-4'>
-          I understand. You want to know what this thing is about.
-        </p>
-        <p className='mb-4'>Let me tell you something:</p>
-        <p className='mb-4'>This is not a place for reading.</p>
+        <p className='mb-4'>You want to know what this thing is about.</p>
+        <p className='mb-4'>But this is not a place for reading.</p>
         <p className='mb-4'>
           It is the most important tool that you have found to get to know
           yourself through writing.
@@ -191,10 +188,7 @@ function LandingPage({
           <p className='mb-4'>
             your Anky is the keeper of everything that you write.
           </p>
-          <p className='mb-1'>
-            i&apos;m understanding how to encrypt your writings so that only you
-            are the one that can access what is inside them.
-          </p>
+
           <div className='flex flex-col md:flex-row h-fit  justify-center items-center '>
             <input
               type='text'
@@ -226,27 +220,11 @@ function LandingPage({
         <p className='mb-4'>if you want to know who you are.</p>
       </div>
 
-      <div className='py-8 px-2 md:px-64 bg-gray-200'>
-        <h2 className='text-3xl font-semibold mb-6'>the tech</h2>
-
-        <p className='mb-2 mx-auto'>
-          each of your writings is on arweave, an eternal decentralized
-          database.
-        </p>
-        <p className='mb-2 mx-auto'>
-          each writing container is an NFT, which has different entries where
-          the address to retrieve that is stored.
-        </p>
-        <p className='mb-2 mx-auto'>
-          this allows this system to store your writings forever.
-        </p>
-      </div>
-
-      <div className='p-8 bg-white flex flex-col'>
+      <div className='p-8 bg-gray-200 flex flex-col'>
         <div className='px-2 md:w-3/5 mx-auto'>
-          <p className='mb-2'>
-            its all open source https://www.github.com/ankylat
-          </p>
+          <p className='mb-2'>its all open source</p>
+          <p className='mb-2'>we build together.</p>
+          <p className='mb-2'>https:////www.github.com/ankylat</p>
         </div>
         <div className='flex justify-center w-48 mx-auto my-4'>
           <Button
