@@ -134,7 +134,7 @@ const GlobalApp = ({ alchemy }) => {
             {userIsMintingAnky ? (
               <Spinner />
             ) : (
-              <div className='flex space-x-2 justify-center w-full'>
+              <div className='flex space-x-2 justify-center items-center w-full'>
                 <Button
                   buttonAction={mintUsersAnky}
                   buttonText='pay with eth'

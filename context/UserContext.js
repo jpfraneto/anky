@@ -299,7 +299,6 @@ export const UserProvider = ({ children }) => {
         usersAnkyUri = await ankyAirdropContract.tokenURI(usersAnkyId);
         console.log('the users anky uri is: ', usersAnkyUri);
       }
-      console.log('RIGHT BEFORE HERE:', usersAnkys, usersAnkyUri);
       setUsersAnky({ ankyIndex: usersAnkys, ankyUri: usersAnkyUri });
       return { usersAnkys, usersAnkyUri };
     } catch (error) {

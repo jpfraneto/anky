@@ -37,11 +37,11 @@ function NotebookPage({ router, wallet, setLifeBarLength, lifeBarLength }) {
     }
     async function fetchNotebookFromServer() {
       const serverResponse = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/notebooks/template/${id}`
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/notebooks/notebook/${id}`
       );
       const data = await serverResponse.json();
       console.log('the server response is: ', data);
-      setNotebookData(data.template);
+      setNotebookData(data.notebook);
       setLoadingNotebook(false);
     }
   }, [id, ready, wallet]);
@@ -238,11 +238,18 @@ function NotebookPage({ router, wallet, setLifeBarLength, lifeBarLength }) {
               <p className='italic text-lg mb-3'>
                 {notebookData.metadata.description || 'undefined'}
               </p>
-              <small className='text-sm'>
-                this is notebook is closed. solid. in order to write on it and
-                access its magic, you need to buy it for the price that the
-                creator determined.
-              </small>
+              <p className='text-sm mb-2'>
+                this is notebook is closed. in order to write on it, you need to
+                buy it for the price that the creator determined.
+              </p>
+              <p className='text-sm mb-2'>
+                you will mint it as an ERC1155, which you can transact on the
+                open market freely.
+              </p>
+              <p className='text-sm'>
+                but if you do that, you will lose access to what you wrote
+                inside it.
+              </p>
               <ol className='text-left text-black p-4 bg-slate-200 rounded-xl  my-4'>
                 {notebookData.metadata.prompts.map((x, i) => (
                   <li key={i}>
@@ -259,11 +266,6 @@ function NotebookPage({ router, wallet, setLifeBarLength, lifeBarLength }) {
                 </p>
               </div>
 
-              <p>
-                70% of what you pay will go back to your wallet as credits for
-                using here.
-              </p>
-              <p>10% of it will go to who created the template as royalties.</p>
               <div className='w-96 mx-auto  text-white flex items-start justify-center my-4'>
                 {authenticated ? (
                   <div className='flex justify-center space-x-2'>
@@ -288,12 +290,9 @@ function NotebookPage({ router, wallet, setLifeBarLength, lifeBarLength }) {
                   <div className='flex flex-col space-y-2'>
                     <Button
                       buttonColor='bg-purple-400'
-                      buttonText='login to mint'
+                      buttonText='login to buy'
                       buttonAction={login}
                     />
-                    <small className='text-white text-sm'>
-                      (its all on base goerli for now)
-                    </small>
                   </div>
                 )}
               </div>
