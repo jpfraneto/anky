@@ -194,6 +194,18 @@ const LibraryPage = ({}) => {
                     journals.map((x, i) => {
                       return <JournalCard journal={x} key={i} />;
                     })}
+
+                  {journals && journals.length > 0 ? (
+                    journals.map((x, i) => {
+                      return <JournalCard journal={x} key={i} />;
+                    })
+                  ) : (
+                    <div className='text-black w-full p-2'>
+                      <p>you dont own journals yet</p>
+                      <p>you can buy one.</p>
+                      <p>to write on it whatever wants to come forth </p>
+                    </div>
+                  )}
                 </div>
                 <div className='flex justify-center mt-4'>
                   <Button

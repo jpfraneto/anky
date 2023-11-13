@@ -172,13 +172,11 @@ const BuyNewJournal = () => {
       <div>
         {successfullyMintedJournal ? (
           <div>
-            <p className='my-2'>
-              you now have a new journal where to download your consciousness
-            </p>
-            <p className='my-2'>the id of it is {mintedJournalId}</p>
+            <p className='my-2'>success!</p>
+            <p className='my-2'>you now own a new journal.</p>
             <div className='mt-2 w-48 mx-auto'>
               <Link passHref href={`/journal/${mintedJournalId}`}>
-                <Button buttonColor='bg-green-600' buttonText='go to journal' />
+                <Button buttonColor='bg-green-600' buttonText='go to it' />
               </Link>
             </div>
           </div>
@@ -198,7 +196,7 @@ const BuyNewJournal = () => {
                   </div>
                 ) : (
                   <div>
-                    <p className='mb-2'>this is a container</p>
+                    <p className='mb-2'>this is a simple container</p>
                     <p className='mb-2'>
                       that will store all of your writings.
                     </p>
@@ -208,32 +206,12 @@ const BuyNewJournal = () => {
                       placeholder='journal title'
                       className='rounded-xl p-2 text-black'
                     />
-                    <div className='flex justify-center mb-4'>
-                      <span
-                        onClick={() => mintNewJournal()}
-                        className='m-2 bg-green-400 text-black cursor-pointer hover:bg-green-600 shadow-lg shadow-black p-2 w-fit rounded-xl flex justify-center items-center'
-                      >
-                        buy new journal
-                      </span>
-                    </div>
-                    <h2 className='mb-2'>important information</h2>
-                    <p className='mb-2'>
-                      the mission is to make what you will write here PRIVATE.
-                    </p>
-                    <p className='mb-2'>
-                      encrypted using your wallet, so that only you can read the
-                      contents of your notebook.
-                    </p>
-                    <p className='mb-2'>
-                      yes, it is stored on the blockchain, but the information
-                      inside it is not public.
-                    </p>
-                    <p className='mb-2'>
-                      it will be stored forever, but you need to access through
-                      this wallet in order to read what is inside.
-                    </p>
-
-                    <div className='mt-4 w-36 mx-auto'>
+                    <div className='flex justify-center my-4'>
+                      <Button
+                        buttonText='buy new journal'
+                        buttonAction={mintNewJournal}
+                        buttonColor='bg-green-600'
+                      />
                       <Link href='/library' passHref>
                         <Button
                           buttonText='library'

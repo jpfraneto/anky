@@ -235,7 +235,7 @@ export const UserProvider = ({ children }) => {
             userTba,
             wallet
           );
-          console.log('the user notebooks are: ', userNotebooks);
+          console.log('the user notebooks are HERE: ', userNotebooks);
 
           setUserAppInformation(x => {
             return { ...x, userNotebooks: userNotebooks };
