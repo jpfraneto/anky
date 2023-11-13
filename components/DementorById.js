@@ -46,6 +46,7 @@ function DementorPage({
   const [isUserSureThatUserIsReady, setIsUserSureThatUserIsReady] =
     useState(false);
   const [showInformation, setShowInformation] = useState(false);
+  const [userAnswers, setUserAnswers] = useState([]);
   const [writingGameProps, setWritingGameProps] = useState(null);
   const [dementorWasUpdated, setDementorWasUpdated] = useState(false);
   const [mintingNotebook, setMintingNotebook] = useState(false);
@@ -356,13 +357,13 @@ function DementorPage({
         await uploadTheWritingForThisPage(webIrys, finishText, previousPageCid);
 
       thisPresentPage.writingTimestamp = pageWritingTimestamp;
-      thisPresentPage.writings = finishText.split('---');
+      thisPresentPage.writings = userAnswers;
       thisPresentPage.writingsCid = thisWritingCid;
 
       const newPrompts = await getNewAnkyPrompts(finishText, prompts);
       console.log('after here, the new prompts are: ', newPrompts);
       const newPage = {
-        prompts: newPrompts.split('%%'),
+        prompts: newPrompts.split('%%').filter(x => x.length > 0),
       };
 
       const { newPromptsCid, newPromptsTimestamp } =
@@ -512,6 +513,7 @@ function DementorPage({
         text={text}
         setLifeBarLength={setLifeBarLength}
         lifeBarLength={lifeBarLength}
+        setUserAnswers={setUserAnswers}
         setText={setText}
         time={time}
         setTime={setTime}
@@ -555,15 +557,36 @@ function DementorPage({
           );
         })}
       </div>
-      <div className='my-2 w-96 flex justify-center mx-auto'>
+      <div className='my-2 w-96 flex justify-center mx-auto relative'>
         {!isUserSureThatUserIsReady ? (
-          <Button
-            buttonText={`im ready to write page ${
-              dementorData.pages.length - 1
-            }`}
-            buttonAction={() => setIsUserSureThatUserIsReady(true)}
-            buttonColor='bg-green-700'
-          />
+          <div>
+            <Button
+              buttonText={`im ready to write page ${
+                dementorData.pages.length - 1
+              }`}
+              buttonAction={() => setIsUserSureThatUserIsReady(true)}
+              buttonColor='bg-green-700'
+            />
+            <div className='absolute top-12'>
+              <p>
+                This chapter has{' '}
+                {
+                  dementorData.pages[dementorData.pages.length - 1].prompts
+                    .length
+                }{' '}
+                prompts
+              </p>
+              <p>
+                You will be writing for{' '}
+                {Math.floor(
+                  (secondsPerPrompt / 60) *
+                    dementorData.pages[dementorData.pages.length - 1].prompts
+                      .length
+                )}{' '}
+                minutes
+              </p>
+            </div>
+          </div>
         ) : (
           <Button
             buttonText='lets do this'

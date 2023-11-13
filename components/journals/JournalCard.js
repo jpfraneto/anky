@@ -13,7 +13,7 @@ const JournalCard = ({ journal }) => {
   return (
     <Link href={`/journal/${journal.journalId}`}>
       <div className='py-2 px-4 m-2 rounded-xl text-left flex flex-col bg-green-600 hover:bg-green-700 text-black'>
-        <h2 className='text-2xl'>#{journal.journalId}</h2>
+        <h2 className='text-2xl'>{journal.title}</h2>
         <p className='-my-1'>{journal.entries?.length || 0} pages written.</p>
         {timestamp && (
           <p className='my-0'>

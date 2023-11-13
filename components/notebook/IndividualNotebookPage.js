@@ -165,6 +165,7 @@ const IndividualNotebookPage = ({
           text: finishText,
           pageIndex: notebookPages.length,
           written: true,
+          cid: receipt.id,
         };
         setNotebookPages(x => [...x, newNotebookPage]);
         setUserAppInformation(x => {

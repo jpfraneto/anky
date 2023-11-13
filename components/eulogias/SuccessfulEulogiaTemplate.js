@@ -19,7 +19,7 @@ const SuccessfulEulogiaTemplate = ({ eulogia }) => {
         <Button
           buttonAction={createSharingLink}
           buttonText='Copy Invite Link'
-          buttonColor='bg-purple-500'
+          buttonColor='bg-orange-500'
         />
       </div>
       {linkCopied && (
@@ -27,12 +27,8 @@ const SuccessfulEulogiaTemplate = ({ eulogia }) => {
           <small className='text-red-600 text-sm'>
             the link is on your clipboard
           </small>
-          <p className='mt-2'>
-            I&apos;m working on the functionality for making all of this more
-            interactive.
-          </p>
-          <p>All feedback is gold.</p>
-          <p>Thank you.</p>
+          <p className='mt-2'>you can invite your friends to write in here.</p>
+
           <div className='w-48 mx-auto mt-2'>
             <Link href={`/eulogias/${eulogia.createdEulogiaId}`} passHref>
               <Button buttonColor='bg-orange-600' buttonText='visit eulogia' />

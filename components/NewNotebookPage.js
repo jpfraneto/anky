@@ -172,6 +172,20 @@ function NewNotebookPage({}) {
   const thisWallet = wallets[0];
   console.log('this wallet is: ', thisWallet);
 
+  useEffect(() => {
+    const handleKeyPress = event => {
+      if (event.key === 'Escape' && isModalOpen) {
+        setIsModalOpen(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress);
+    };
+  }, [isModalOpen]);
+
   async function finalSubmit() {
     setLoadingNotebookCreation(true);
 
@@ -298,7 +312,7 @@ function NewNotebookPage({}) {
     if (price < 0) return alert('Add a valid price'); // What does valid mean?
     if (supply <= 0)
       return alert('Please add a valid amount of notebooks to mint');
-    setIsModalOpen(true); // Simply open the modal on initial submit
+    setIsModalOpen(true);
   }
 
   const handleAddPrompt = () => {
@@ -357,10 +371,10 @@ function NewNotebookPage({}) {
   const handleBulkImport = () => {
     if (
       bulkImportString.length > 0 &&
-      bulkImportString.includes(';') &&
-      bulkImportString.split(';').length > 0
+      bulkImportString.includes('%%') &&
+      bulkImportString.split('%%').length > 0
     ) {
-      const importedPrompts = bulkImportString.split(';').map(s => s.trim());
+      const importedPrompts = bulkImportString.split('%%').map(s => s.trim());
       setPrompts([...importedPrompts]);
       setNumPages(importedPrompts.length);
       setBulkImportString('');
@@ -404,8 +418,8 @@ function NewNotebookPage({}) {
                   </>
                 ) : (
                   <>
-                    <h3 className='text-sm'>
-                      you are about to create a notebook template:
+                    <h3 className='text-sm mb-2'>
+                      you are about to create a notebook:
                     </h3>
                     <p className='text-3xl my-1'> {title}</p>
                     <p className='italic'>{description}</p>
@@ -424,12 +438,14 @@ function NewNotebookPage({}) {
                       it.
                     </p>
                     <p className='bg-purple-500 p-2 rounded-xl border border-black w-fit mx-auto'>
-                      supply: {supply} | <strong>price:</strong> {price} eth
+                      supply: {supply} | <strong>price:</strong> {price} eth |{' '}
+                      <strong>
+                        {price * process.env.NEXT_PUBLIC_ETHEREUM_PRICE} usd
+                      </strong>
                     </p>
 
                     <p className='mt-2'>
-                      what they will write in there will be forever stored on
-                      the blockchain.
+                      what they will write in there will be forever.
                     </p>
                     <div className='flex left-0 mt-2'>
                       <Button
@@ -503,37 +519,13 @@ function NewNotebookPage({}) {
           </p>
 
           <textarea
-            className='border p-2 w-full h-64 rounded text-gray-500'
+            className='border p-2 w-full h-48 rounded text-gray-500'
             value={description}
             maxlength='560'
             onChange={e => setDescription(e.target.value)}
             required
           />
         </div>
-
-        <p className='text-left text-sm text-gray-500 my-0'>bulk import</p>
-        <textarea
-          className='border p-2 w-full h-96 rounded text-gray-500'
-          placeholder='Enter questions separated by commas...'
-          value={bulkImportString}
-          onChange={e => {
-            setHandlePromptsError(false);
-            setBulkImportString(e.target.value);
-          }}
-        />
-        <button
-          type='button'
-          className='bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded  w-fit mt-2 mr-auto'
-          onClick={handleBulkImport}
-        >
-          import All Questions
-        </button>
-        {handlePromptsError && (
-          <p className='mr-auto text-red-400 text-left'>
-            please add a long string with each question separated by a
-            semicolon.
-          </p>
-        )}
 
         <p className='text-left text-sm text-gray-500 mt-1 mb-0'>
           notebook prompts
@@ -562,11 +554,38 @@ function NewNotebookPage({}) {
           </button>
         </div>
 
+        <p className='text-left text-sm text-gray-500 my-0'>bulk import</p>
+        <textarea
+          className='border p-2 w-full h-48 rounded text-gray-500'
+          placeholder='Enter each question separated by %%'
+          value={bulkImportString}
+          onChange={e => {
+            setHandlePromptsError(false);
+            setBulkImportString(e.target.value);
+          }}
+        />
+        <button
+          type='button'
+          className='bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded  w-fit mt-2 mr-auto'
+          onClick={handleBulkImport}
+        >
+          import All Questions
+        </button>
+        {handlePromptsError && (
+          <p className='mr-auto text-red-400 text-left'>
+            please add a long string with each question separated by this %%.
+          </p>
+        )}
+
         <div>
           <p className='text-left text-sm text-gray-500 mt-1'>
             price (in eth - how much will a user pay for minting an instance of
             this notebook? - you will get 10% of each transaction)
           </p>
+          <small className='text-left my-0 text-red-200'>
+            this is about {price * process.env.NEXT_PUBLIC_ETHEREUM_PRICE} usd
+            per notebook.
+          </small>
           <input
             className='border p-2 w-full rounded text-gray-500'
             type='number'
@@ -585,6 +604,7 @@ function NewNotebookPage({}) {
             type='number'
             value={supply}
             min={0}
+            max={100}
             onChange={e => setSupply(e.target.value)}
             required
           />
@@ -604,7 +624,7 @@ function NewNotebookPage({}) {
           </Link>
         </div>
       </form>
-      ){renderModal()}
+      {renderModal()}
     </div>
   );
 }

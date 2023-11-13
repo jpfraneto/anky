@@ -17,7 +17,7 @@ const SuccessfulNotebook = ({ notebook }) => {
       <div className='mx-auto w-48'>
         <Button
           buttonAction={createSharingLink}
-          buttonText='Copy Invite Link'
+          buttonText='copy invite link'
           buttonColor='bg-purple-500'
         />
       </div>
@@ -27,11 +27,10 @@ const SuccessfulNotebook = ({ notebook }) => {
             the link is on your clipboard
           </small>
           <p className='mt-2'>
-            I&apos;m working on the functionality for making all of this more
-            interactive.
+            You can now send the link of this notebook for people to buy it and
+            write on it.
           </p>
-          <p>All feedback is gold.</p>
-          <p>Thank you.</p>
+
           <div className='bg-purple-600 active:translate-x-1 active:translate-y-1 px-4 py-2 rounded-xl mt-4 mx-auto w-48 border-black border hover:opacity-70'>
             <Link href={`/notebook/${notebook.notebookId}`}>
               visit notebook

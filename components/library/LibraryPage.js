@@ -16,9 +16,14 @@ import { useRouter } from 'next/router';
 
 const LibraryPage = ({}) => {
   const router = useRouter();
-  const { userAppInformation, appLoading, loadUserLibrary, loadingLibrary } =
-    useUser();
-
+  const {
+    userAppInformation,
+    appLoading,
+    loadUserLibrary,
+    loadingLibrary,
+    usersAnky,
+  } = useUser();
+  console.log('IN HERE, THE USERS ANKY URI IS: ', usersAnky);
   const [notebooks, setNotebooks] = useState([]);
   const [journals, setJournals] = useState([]);
   const [templates, setTemplates] = useState([]);
@@ -134,6 +139,7 @@ const LibraryPage = ({}) => {
           <div className='relative w-4/5 md:w-3/5 aspect-square rounded-2xl border-2 border-white overflow-hidden'>
             <Image fill src={`/ankys/elmasmejor.png`} />
           </div>
+          <p>{usersAnky.ankyIndex}</p>
           <p className='mt-2'>welcome back,</p>
           <p className='mt-2'>are you ready to keep writing?</p>
         </div>

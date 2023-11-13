@@ -30,7 +30,6 @@ const GlobalApp = dynamic(() => import('../components/GlobalApp'));
 function MyApp({ Component, pageProps }) {
   const [isDesktop, setIsDesktop] = useState(false);
 
-
   useEffect(() => {
     // const isStandalone = window.matchMedia(
     //   '(display-mode: standalone)'
@@ -83,7 +82,9 @@ function MyApp({ Component, pageProps }) {
     }
   }, []);
 
-  const handleLogin = async user => {};
+  const handleLogin = async user => {
+    console.log('the user is logged in', user);
+  };
 
   return (
     <main className={`${righteous.className}`}>

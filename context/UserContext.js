@@ -28,6 +28,7 @@ export const UserProvider = ({ children }) => {
   const [loadingLibrary, setLoadingLibrary] = useState(false);
   const [userIsReadyNow, setUserIsReadyNow] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [usersAnkyUri, setUsersAnkyUri] = useState('');
   const [userOwnsAnky, setUserOwnsAnky] = useState('');
   const [loadingUserStoredData, setLoadingUserStoredData] = useState(true);
   const [mainAppLoading, setMainAppLoading] = useState(true);
@@ -35,6 +36,10 @@ export const UserProvider = ({ children }) => {
   const [settingThingsUp, setSettingThingsUp] = useState(false);
   const [showProgressModal, setShowProgressModal] = useState(false);
   const [libraryLoading, setLibraryLoading] = useState(true);
+  const [usersAnky, setUsersAnky] = useState({
+    ankyIndex: undefined,
+    ankyUri: undefined,
+  });
   const [setupIsReady, setSetupIsReady] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [checkIfUserIsTheSame, setCheckIfUserIsTheSame] = useState(false);
@@ -96,19 +101,24 @@ export const UserProvider = ({ children }) => {
       console.log('inside the handleinitialization', loading, ready);
       if (loading && !ready) return;
       console.log('AUTHENTICATED', authenticated, wallet, ready);
-      if (ready && !wallet) {
+      if (ready && !wallet && !authenticated) {
         console.log('running the hereee');
         setMainAppLoading(false);
         setAppLoading(false);
         return;
       }
 
-      const usersAnkyBalance = await fetchUsersAnky();
-      console.log('after fetching the user anky,', usersAnkyBalance);
-      if (usersAnkyBalance == 0) {
+      const response = await fetchUsersAnky();
+      console.log('THE RESPONSE IS: ', response);
+      if (!response) return;
+      let usersAnkys = response.usersAnkys;
+      let usersAnkyUri = response.usersAnkyUri;
+      console.log('after fetching the user anky,', usersAnkys);
+      if (usersAnkys == 0) {
         setUserOwnsAnky(false);
         return setMainAppLoading(false);
       }
+      setUsersAnkyUri(usersAnkyUri);
       console.log('after hereee');
       setUserOwnsAnky(true);
       setMainAppLoading(false);
@@ -217,31 +227,31 @@ export const UserProvider = ({ children }) => {
           });
         }
 
-        // if (fromOutside || reloadData || !userAppInformation.userNotebooks) {
-        //   console.log('before fetching the notebooks');
+        if (fromOutside || reloadData || !userAppInformation.userNotebooks) {
+          console.log('before fetching the notebooks');
 
-        //   const userNotebooks = await fetchUserNotebooks(
-        //     signer,
-        //     userTba,
-        //     wallet
-        //   );
-        //   console.log('the user notebooks are: ', userNotebooks);
+          const userNotebooks = await fetchUserNotebooks(
+            signer,
+            userTba,
+            wallet
+          );
+          console.log('the user notebooks are: ', userNotebooks);
 
-        //   setUserAppInformation(x => {
-        //     return { ...x, userNotebooks: userNotebooks };
-        //   });
-        // }
+          setUserAppInformation(x => {
+            return { ...x, userNotebooks: userNotebooks };
+          });
+        }
 
-        // if (fromOutside || reloadData || !userAppInformation.userEulogias) {
-        //   console.log('before fetching the eulogias');
+        if (fromOutside || reloadData || !userAppInformation.userEulogias) {
+          console.log('before fetching the eulogias');
 
-        //   const userEulogias = await fetchUserEulogias(signer);
-        //   console.log('the user eulogias are: ', userEulogias);
+          const userEulogias = await fetchUserEulogias(signer, wallet);
+          console.log('the user eulogias are: ', userEulogias);
 
-        //   setUserAppInformation(x => {
-        //     return { ...x, userEulogias: userEulogias };
-        //   });
-        // }
+          setUserAppInformation(x => {
+            return { ...x, userEulogias: userEulogias };
+          });
+        }
 
         if (fromOutside || reloadData || !userAppInformation.userDementors) {
           console.log('before fetching the dementors');
@@ -279,10 +289,19 @@ export const UserProvider = ({ children }) => {
       );
       const usersBalance = await ankyAirdropContract.balanceOf(wallet.address);
       console.log('the users balance is: ', usersBalance);
+      let usersAnkyUri = '';
       const usersAnkys = ethers.utils.formatUnits(usersBalance, 0);
       if (usersAnkys > 0) {
-        setUserOwnsAnky(true);
+        const usersAnkyId = await ankyAirdropContract.tokenOfOwnerByIndex(
+          wallet.address,
+          0
+        );
+        usersAnkyUri = await ankyAirdropContract.tokenURI(usersAnkyId);
+        console.log('the users anky uri is: ', usersAnkyUri);
       }
+      console.log('RIGHT BEFORE HERE:', usersAnkys, usersAnkyUri);
+      setUsersAnky({ ankyIndex: usersAnkys, ankyUri: usersAnkyUri });
+      return { usersAnkys, usersAnkyUri };
     } catch (error) {
       console.log('there was an error', error);
       alert('there was an error, please try again.');
@@ -452,6 +471,7 @@ export const UserProvider = ({ children }) => {
         setUserOwnsAnky,
         mainAppLoading,
         setMainAppLoading,
+        usersAnky,
       }}
     >
       {showProgressModal && (

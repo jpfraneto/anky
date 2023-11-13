@@ -33,7 +33,7 @@ const DementorGame = ({
   time,
   cancel,
   setTime,
-
+  setUserAnswers,
   prompts,
   secondsPerPrompt,
 }) => {
@@ -121,7 +121,11 @@ const DementorGame = ({
             setPrompt(prompts[newIndex]);
             setNewPromptDisplay(true);
             setTimeout(() => {
-              setText(x => `${x}---`);
+              setText(x => {
+                setUserAnswers(y => [...y, x]);
+                return ' ';
+              });
+
               setNewPromptDisplay(false);
               document.addEventListener('keydown', handleSpacePress);
             }, 3000);

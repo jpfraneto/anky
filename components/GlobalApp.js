@@ -43,6 +43,10 @@ const GlobalApp = ({ alchemy }) => {
     useUser();
   const router = useRouter();
   const [lifeBarLength, setLifeBarLength] = useState(0);
+  const [checkingIfYouOwnAnky, setCheckingIfYouOwnAnky] = useState(false);
+  const [ankyButtonText, setAnkyButtonText] = useState(
+    'wtf? i own one of these'
+  );
   const [displayWritingGameLanding, setDisplayWritingGameLanding] =
     useState(false);
   const [userWallet, setUserWallet] = useState(null);
@@ -65,9 +69,9 @@ const GlobalApp = ({ alchemy }) => {
         wallet.address
       );
       console.log('users first anky txn', usersFirstAnkyTxn);
+      router.push('/welcome');
       setUserIsMintingAnky(false);
       setUserOwnsAnky(true);
-      router.push('/welcome');
     } catch (error) {
       console.log('there was an error', error);
       alert('there was an error, please try again.');
@@ -76,6 +80,7 @@ const GlobalApp = ({ alchemy }) => {
   }
 
   async function checkIfUserOwnsAnky() {
+    setAnkyButtonText('looking for your anky...');
     if (!wallet) return alert('you are not logged in');
     try {
       let provider = await wallet.getEthersProvider();
@@ -90,6 +95,8 @@ const GlobalApp = ({ alchemy }) => {
       const usersAnkys = ethers.utils.formatUnits(usersBalance, 0);
       if (usersAnkys > 0) {
         setUserOwnsAnky(true);
+      } else {
+        setAnkyButtonText('you dont own an anky airdrop');
       }
     } catch (error) {
       console.log('there was an error', error);
@@ -140,7 +147,7 @@ const GlobalApp = ({ alchemy }) => {
           </div>
           <div>
             <Button
-              buttonText='wtf? i already bought one'
+              buttonText={ankyButtonText}
               buttonAction={checkIfUserOwnsAnky}
               buttonColor='bg-green-600'
             />

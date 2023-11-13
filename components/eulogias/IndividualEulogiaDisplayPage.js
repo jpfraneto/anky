@@ -26,11 +26,12 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
   const [displayModalMessage, setDisplayModalMessage] = useState(null);
   const [preloadedBackground, setPreloadedBackground] = useState(null);
   const [whoIsWriting, setWhoIsWriting] = useState('');
+  const [mintingEulogia, setMintingEulogia] = useState(false);
   const [loadWritingGame, setLoadWritingGame] = useState(false);
   const [writingGameProps, setWritingGameProps] = useState(null);
   const [text, setText] = useState('');
   const [provider, setProvider] = useState(null);
-  const [messages, setMessages] = useState([]);
+  const [pages, setPages] = useState([]);
   const [userHasWritten, setUserHasWritten] = useState(false);
   const { wallets } = useWallets();
   const thisWallet = wallets[0];
@@ -71,7 +72,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
             return setEulogiaDoesnt;
           }
           setEulogia(data.eulogia);
-          setMessages(data.eulogia.messages);
+          setPages(data.eulogia.pages);
           setEulogiaLoading(false);
         } else {
           if (!thisWallet) return;
@@ -87,7 +88,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
           }
           console.log('this eulogia in the user is', thisEulogiaInUser);
           if (thisEulogiaInUser) {
-            const userMessage = thisEulogiaInUser.messages.find(
+            const userMessage = thisEulogiaInUser.pages.find(
               msg => msg.writer === thisWallet.address
             );
             setUserHasWritten(Boolean(userMessage));
@@ -104,12 +105,15 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
               signer
             );
             console.log('the router query is: ', router.query.id);
-            const eulogiaID = router.query.id;
-            const thisEulogia = await eulogiasContract.getEulogia(eulogiaID);
+            const eulogiaId = router.query.id;
+            const thisEulogia = await eulogiasContract.getEulogia(eulogiaId);
             console.log('this eulogia is: ', thisEulogia);
             if (thisEulogia.metadataURI === '') return setEulogiaLoading(false);
-            const formattedEulogia = await processFetchedEulogia(thisEulogia);
-            formattedEulogia.eulogiaID = eulogiaID;
+            const formattedEulogia = await processFetchedEulogia(
+              thisEulogia,
+              thisWallet
+            );
+            formattedEulogia.eulogiaId = eulogiaId;
 
             formattedEulogia.metadata.backgroundImageUrl = `https://ipfs.io/ipfs/${formattedEulogia.metadata.backgroundImageCid}`;
             formattedEulogia.metadata.coverImageUrl = `https://ipfs.io/ipfs/${formattedEulogia.metadata.coverImageCid}`;
@@ -166,6 +170,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
 
   const mintEulogia = async () => {
     try {
+      setMintingEulogia(true);
       let signer = await provider.getSigner();
       const eulogiasContract = new ethers.Contract(
         process.env.NEXT_PUBLIC_EULOGIAS_CONTRACT_ADDRESS,
@@ -173,7 +178,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
         signer
       );
       await eulogiasContract.mintEulogia(eulogia.eulogiaID);
-      alert('Eulogia minted successfully!');
+      setMintingEulogia(false);
     } catch (error) {
       console.error('Error minting eulogia:', error);
       alert(
@@ -237,20 +242,23 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
           cid: receipt.id,
           timestamp: new Date().getTime(),
         };
+        console.log('the new eulogia writing is: ', newEulogiaWriting);
 
         const updatedEulogia = {
           ...eulogia,
-          eulogiaID: router.query.id,
+          eulogiaId: router.query.id,
           pages: [...eulogia.pages, newEulogiaWriting],
         };
-
+        console.log('the updated Eulogia is: , updat', updatedEulogia);
+        setPages([...eulogia.pages, newEulogiaWriting]);
+        setEulogia(updatedEulogia);
         let updatedUserEulogias;
 
         setUserAppInformation(x => {
           // Find the specific journal index by its id
           if (x && x.userEulogias && x.userEulogias.length > 0) {
             const eulogiaIndex = x.userEulogias.findIndex(
-              j => j.eulogiaID == eulogia.eulogiaID
+              j => j.eulogiaId == eulogia.eulogiaID
             );
 
             // If the journal is found
@@ -260,8 +268,6 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
                 updatedEulogia,
                 ...x.userEulogias.slice(eulogiaIndex + 1),
               ];
-
-              setEulogia(updatedEulogia);
 
               return {
                 ...x,
@@ -275,11 +281,17 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
               };
             }
           } else {
-            setEulogia(updatedEulogia);
-            return {
-              ...x,
-              userEulogias: [updatedEulogia],
-            };
+            if (x.userEulogias.length > 0) {
+              return {
+                ...x,
+                userEulogias: [...x.userEulogias, updatedEulogia],
+              };
+            } else {
+              return {
+                ...x,
+                userEulogias: [updatedEulogia],
+              };
+            }
           }
         });
         setUserData('userEulogias', updatedUserEulogias);
@@ -362,9 +374,10 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
                 {displayModalMessage.whoWroteIt}
               </span>
               <span className='text-sm'>
-                {new Date(
-                  displayModalMessage.timestamp * 1000
-                ).toLocaleDateString('en-US', options)}
+                {new Date(displayModalMessage.timestamp).toLocaleDateString(
+                  'en-US',
+                  options
+                )}
               </span>
             </p>
           </div>
@@ -428,6 +441,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
           <h2 className='text-2xl md:text-6xl my-2 text-purple-200'>
             {eulogia.metadata.title}
           </h2>
+          <button onClick={() => console.log(eulogia)}>console-</button>
           <p className='italic text-lg md:text-2xl mb-2 w-96 mx-auto'>
             {eulogia.metadata.description}
           </p>
@@ -440,10 +454,9 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
             />
           </div>
         </div>
-        <button onClick={mintEulogia}> MINT EUOOGIA</button>
 
         <div className='w-full flex justify-center flex-wrap mx-auto'>
-          {false &&
+          {eulogia.pages &&
             eulogia.pages.map((msg, index) => (
               <div
                 className='p-2 w-8 flex justify-center items-center cursor-pointer h-8 mx-auto bg-purple-200 hover:bg-purple-400 m-2 rounded-xl text-black'
@@ -501,22 +514,20 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
         </div>
       </div>
       <div className='w-full mx-auto mb-16'>
-        <div className='flex w-4/5 mx-auto justify-center'>
+        <div className='flex w-4/5 h-fit mx-auto justify-center'>
           {authenticated && (
-            <>
-              <Link passHref href='/eulogias/new'>
-                <Button
-                  buttonText='create new eulogia'
-                  buttonColor='bg-amber-600 mb-2'
-                  buttonAction={() => router.push('/library')}
-                />
-              </Link>
+            <div className='flex space-x-2'>
+              <Button
+                buttonAction={mintEulogia}
+                buttonColor='bg-green-500'
+                buttonText={mintingEulogia ? 'minting...' : 'mint eulogia'}
+              />
               <Button
                 buttonText='library'
-                buttonColor='bg-purple-600 mb-2'
+                buttonColor='bg-purple-600'
                 buttonAction={() => router.push('/library')}
               />
-            </>
+            </div>
           )}
         </div>
       </div>

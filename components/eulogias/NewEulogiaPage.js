@@ -56,6 +56,7 @@ const NewEulogiaPage = ({ wallet }) => {
 
   async function finalSubmit() {
     setLoadingEulogiaCreation(true);
+    console.log('INSIDE THE FINAL SUBMIT FUNCTION');
 
     try {
       console.log('the user anky is after: ', thisWallet);
@@ -116,7 +117,7 @@ const NewEulogiaPage = ({ wallet }) => {
         if (event) {
           const rawEulogiaId = event.args[0]; // Based on the order in your emit statement
           const eulogiaId = ethers.utils.formatUnits(rawEulogiaId, 0);
-          console.log('Eulogia ID:', eulogiaId);
+          console.log('Eulogia ID:', eulogiaId);  
 
           setCreatedEulogiaId(eulogiaId);
           setSuccess(true);
@@ -125,11 +126,7 @@ const NewEulogiaPage = ({ wallet }) => {
           console.log('the eulgoia that was created is: ');
           let newEulogia;
           setUserAppInformation(x => {
-            console.log(
-              'the x in the user app information before adding a new eulogia is: ',
-              x
-            );
-
+            console.log('THIS IS RUNNING ONCE');
             newEulogia = {
               eulogiaId: eulogiaId,
               maxMessages: maxMsgs,
@@ -144,13 +141,15 @@ const NewEulogiaPage = ({ wallet }) => {
                 title: title,
                 maxPages: maxMsgs,
               },
-              messages: [], // Initialize with an empty array as no messages have been added yet.
+              pages: [], // Initialize with an empty array as no messages have been added yet.
             };
+            console.log('the new euuuulogia is: ', newEulogia);
             if (x.userEulogias?.length > 0) {
               allUserEulogias = [...x.userEulogias, newEulogia];
             } else {
               allUserEulogias = [newEulogia];
             }
+            console.log('the all user eulogias is: ', allUserEulogias);
             setUserData('userEulogias', allUserEulogias);
 
             return {

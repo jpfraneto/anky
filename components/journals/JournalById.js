@@ -385,7 +385,7 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
   }
   return (
     <div className='text-white pt-4'>
-      <h2 className='text-2xl mb-4'>This is journal {journal.journalId}</h2>
+      <h2 className='text-2xl mb-4'>{journal.title}</h2>
       {journal.entries && journal.entries.length !== 0 ? (
         <div className='p-4 flex rounded-xl bg-yellow-500'>
           {journal.entries.map((x, i) => {

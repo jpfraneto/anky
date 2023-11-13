@@ -19,7 +19,8 @@ const DementorCard = ({ dementor }) => {
         <p className='-my-1'>{dementor.pages.length} pages written.</p>
         {timestamp && (
           <p className='my-0'>
-            last update: {new Date(timestamp).toLocaleString()}
+            last update:{' '}
+            {new Date(timestamp).toLocaleDateString('en-US', options)}
           </p>
         )}
       </div>
