@@ -6,7 +6,8 @@
         "internalType": "address",
         "name": "_implementation",
         "type": "address"
-      }
+      },
+      { "internalType": "string", "name": "_baseUriString", "type": "string" }
     ],
     "stateMutability": "nonpayable",
     "type": "constructor"
@@ -201,13 +202,10 @@
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "address", "name": "to", "type": "address" }],
-    "name": "airdropNft",
-    "outputs": [
-      { "internalType": "uint256", "name": "", "type": "uint256" },
-      { "internalType": "string", "name": "", "type": "string" }
-    ],
-    "stateMutability": "nonpayable",
+    "inputs": [{ "internalType": "address", "name": "_to", "type": "address" }],
+    "name": "airdropToAnkyGenesisHolders",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "payable",
     "type": "function"
   },
   {
@@ -235,6 +233,15 @@
     ],
     "name": "createTBAforUsersAnky",
     "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "tokenId", "type": "uint256" }
+    ],
+    "name": "deleteTokenURI",
+    "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -322,25 +329,6 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "usersAnkyAddress",
-        "type": "address"
-      },
-      {
-        "internalType": "string",
-        "name": "writingContainerType",
-        "type": "string"
-      },
-      { "internalType": "string", "name": "cid", "type": "string" }
-    ],
-    "name": "registerWriting",
-    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [],
     "name": "registry",
     "outputs": [
@@ -379,17 +367,6 @@
       { "internalType": "bytes", "name": "data", "type": "bytes" }
     ],
     "name": "safeTransferFrom",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "address", "name": "notebooks", "type": "address" },
-      { "internalType": "address", "name": "eulogias", "type": "address" },
-      { "internalType": "address", "name": "journals", "type": "address" }
-    ],
-    "name": "setAllowedContracts",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

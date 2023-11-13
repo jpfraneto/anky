@@ -45,7 +45,7 @@ const GlobalApp = ({ alchemy }) => {
   const [lifeBarLength, setLifeBarLength] = useState(0);
   const [checkingIfYouOwnAnky, setCheckingIfYouOwnAnky] = useState(false);
   const [ankyButtonText, setAnkyButtonText] = useState(
-    'wtf? i own one of these'
+    'wtf? i already own one of these'
   );
   const [displayWritingGameLanding, setDisplayWritingGameLanding] =
     useState(false);
@@ -126,7 +126,6 @@ const GlobalApp = ({ alchemy }) => {
         >
           <p>you don&apos;t own an anky.</p>
           <p>it is the starting point of this journey.</p>
-          <p>to get one, you just have to buy it by clicking on this link.</p>
           <p>it is only 2 usd.</p>
           <p>and it will guide you into the future.</p>
           <p>through the present.</p>
@@ -139,13 +138,13 @@ const GlobalApp = ({ alchemy }) => {
                 <Button
                   buttonAction={mintUsersAnky}
                   buttonText='pay with eth'
-                  buttonColor='bg-purple-600'
+                  buttonColor='bg-purple-600 h-full flex items-center justify-center'
                 />
                 <Mint usersWalletAddress={wallet.address} />
               </div>
             )}
           </div>
-          <div>
+          <div className='mt-2'>
             <Button
               buttonText={ankyButtonText}
               buttonAction={checkIfUserOwnsAnky}
