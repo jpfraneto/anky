@@ -110,7 +110,6 @@ const GlobalApp = ({ alchemy }) => {
     console.log(userOwnsAnky);
     console.log(`___________****_____${userOwnsAnky}____________________*****`);
     if (authenticated && wallet && wallet.address && !userOwnsAnky) {
-      console.log('in heeere');
       return (
         <div
           className={`${righteous.className}  py-24 text-white relative overflow-y-scroll flex flex-col items-center  w-full bg-cover bg-center`}
@@ -126,7 +125,7 @@ const GlobalApp = ({ alchemy }) => {
         >
           <p>you don&apos;t own an anky.</p>
           <p>it is the starting point of this journey.</p>
-          <p>it is only 2 usd.</p>
+          <p>it free, you only pay for the gas.</p>
           <p>and it will guide you into the future.</p>
           <p>through the present.</p>
 

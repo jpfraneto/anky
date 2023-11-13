@@ -13,9 +13,7 @@ const EulogiaCard = ({ eulogia }) => {
       <div className='text-black flex m-2 w-full text-left justify-between p-2 bg-orange-500 rounded-xl hover:bg-orange-600 cursor-pointer'>
         <div>
           <h2 className='text-2xl'>{eulogia.metadata.title}</h2>
-          <p className='-my-1'>
-            {eulogia.messageCount} / {eulogia.maxMessages} pages written
-          </p>
+          <p className='-my-1'>{eulogia.pages.length} pages written</p>
           {timestamp && (
             <p className='my-0'>
               last update: {new Date(timestamp * 1000).toLocaleString()}

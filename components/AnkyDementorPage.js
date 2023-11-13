@@ -5,14 +5,14 @@ import Spinner from './Spinner';
 import Link from 'next/link';
 import { ethers } from 'ethers';
 import { useWallets, usePrivy } from '@privy-io/react-auth';
-import WritingGameComponent from './WritingGameComponent';
+import DementorGameComponent from './DementorGameComponent';
 import AnkyDementorsAbi from '../lib/ankyDementorsAbi.json';
 import { setUserData } from '../lib/idbHelper';
 import { useUser } from '../context/UserContext';
 
 const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
   const { getAccessToken, authenticated, user } = usePrivy();
-  const [time, setTime] = useState(0);
+  const [time, setTime] = useState(180);
   const [text, setText] = useState('');
   const [areYouSure, setAreYouSure] = useState(false);
   const [loadWritingGame, setLoadWritingGame] = useState(false);
@@ -158,7 +158,7 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
 
   if (loadWritingGame)
     return (
-      <WritingGameComponent
+      <DementorGameComponent
         {...writingGameProps}
         text={text}
         minimumWritingTime={3}

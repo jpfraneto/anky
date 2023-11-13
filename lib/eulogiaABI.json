@@ -220,8 +220,7 @@
   },
   {
     "inputs": [
-      { "internalType": "string", "name": "metadataCID", "type": "string" },
-      { "internalType": "uint256", "name": "maxMsgs", "type": "uint256" }
+      { "internalType": "string", "name": "metadataCID", "type": "string" }
     ],
     "name": "createEulogia",
     "outputs": [],
@@ -243,8 +242,7 @@
     "name": "eulogias",
     "outputs": [
       { "internalType": "uint256", "name": "eulogiaId", "type": "uint256" },
-      { "internalType": "string", "name": "metadataCID", "type": "string" },
-      { "internalType": "uint256", "name": "maxMessages", "type": "uint256" }
+      { "internalType": "string", "name": "metadataCID", "type": "string" }
     ],
     "stateMutability": "view",
     "type": "function"
@@ -275,18 +273,22 @@
       {
         "components": [
           { "internalType": "uint256", "name": "eulogiaId", "type": "uint256" },
-          { "internalType": "string", "name": "metadataCID", "type": "string" },
-          {
-            "internalType": "uint256",
-            "name": "maxMessages",
-            "type": "uint256"
-          }
+          { "internalType": "string", "name": "metadataCID", "type": "string" }
         ],
         "internalType": "struct AnkyEulogias.Eulogia",
         "name": "",
         "type": "tuple"
       }
     ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "eulogiaId", "type": "uint256" }
+    ],
+    "name": "getEulogiaBalance",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
   },

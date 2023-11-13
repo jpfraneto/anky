@@ -100,8 +100,7 @@ const NewEulogiaPage = ({ wallet }) => {
 
         // Call the contract's method and send the transaction
         const transactionResponse = await eulogiaContract.createEulogia(
-          metadataCID.cid,
-          200
+          metadataCID.cid
         );
 
         const transactionReceipt = await transactionResponse.wait(); // Wait for the transaction to be mined

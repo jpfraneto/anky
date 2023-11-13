@@ -2,15 +2,14 @@ import '../styles/globals.css';
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 import { Righteous } from 'next/font/google';
-import { PrivyProvider, useWallets, useLogout } from '@privy-io/react-auth';
+import { PrivyProvider } from '@privy-io/react-auth';
 import { PrivyWagmiConnector } from '@privy-io/wagmi-connector';
 import { baseGoerli } from '@wagmi/chains';
 import { configureChains, createConfig } from 'wagmi';
 import { publicProvider } from 'wagmi/providers/public';
-import { Transition } from 'react-transition-group';
-import BottomNavbar from '../components/BottomNavbar';
 import Head from 'next/head';
 import { UserProvider } from '../context/UserContext';
+import { useRouter } from 'next/router';
 import { initializeDB } from '../lib/idbHelper';
 
 import { Network, Alchemy } from 'alchemy-sdk';
@@ -29,7 +28,7 @@ const GlobalApp = dynamic(() => import('../components/GlobalApp'));
 
 function MyApp({ Component, pageProps }) {
   const [isDesktop, setIsDesktop] = useState(false);
-
+  const router = useRouter();
   useEffect(() => {
     // const isStandalone = window.matchMedia(
     //   '(display-mode: standalone)'
