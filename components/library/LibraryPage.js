@@ -22,8 +22,8 @@ const LibraryPage = ({}) => {
     loadUserLibrary,
     loadingLibrary,
     usersAnky,
+    usersAnkyImage,
   } = useUser();
-  console.log('IN HERE, THE USERS ANKY URI IS: ', usersAnky);
   const [notebooks, setNotebooks] = useState([]);
   const [journals, setJournals] = useState([]);
   const [templates, setTemplates] = useState([]);
@@ -137,9 +137,8 @@ const LibraryPage = ({}) => {
       <div className='text-white py-4 flex flex-col md:flex-row w-screen px-4'>
         <div className='w-full md:w-2/5 aspect-square p-2 text-white flex flex-col items-center'>
           <div className='relative w-4/5 md:w-3/5 aspect-square rounded-2xl border-2 border-white overflow-hidden'>
-            <Image fill src={`/ankys/elmasmejor.png`} />
+            <Image fill src={usersAnkyImage || `/ankys/elmasmejor.png`} />
           </div>
-          <p>{usersAnky.ankyIndex}</p>
           <p className='mt-2'>welcome back,</p>
           <p className='mt-2'>are you ready to keep writing?</p>
         </div>
@@ -190,11 +189,6 @@ const LibraryPage = ({}) => {
             {activeTab === 'journals' && (
               <>
                 <div className='flex flex-wrap bg-green-300 w-full flex-col rounded-b-xl p-4'>
-                  {journals &&
-                    journals.map((x, i) => {
-                      return <JournalCard journal={x} key={i} />;
-                    })}
-
                   {journals && journals.length > 0 ? (
                     journals.map((x, i) => {
                       return <JournalCard journal={x} key={i} />;

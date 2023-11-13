@@ -2,7 +2,16 @@ import React from 'react';
 import Link from 'next/link';
 
 const DementorCard = ({ dementor }) => {
-  console.log('in here', dementor);
+  var options = {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric',
+    hour12: true,
+  };
 
   let timestamp;
   if (dementor.pages && dementor.pages.length > 0) {

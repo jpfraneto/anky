@@ -202,13 +202,23 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
         </div>
       ) : (
         <div className='my-2'>
-          <p>welcome to the most important practice of your life.</p>
-          <p>are you ready?</p>
-          <p>write as if there was no tomorrow.</p>
-          <p>your target is 180 seconds.</p>
-          <p>just write.</p>
-          <p>whatever comes.</p>
-
+          <p className='mt-12 mb-2'>welcome to a transformational journey.</p>
+          <p className='mb-2'>
+            your mission in this first session is to write 180 seconds.
+          </p>
+          <p className='mb-2'>
+            whatever wants to come, just allow it to happen.
+          </p>
+          <p className='mb-2'>
+            with that, your anky will create another chapter of the dementor
+            notebook.
+          </p>{' '}
+          <p className='mb-2'>
+            one that will have prompts that will guide you into yourself.
+          </p>{' '}
+          <p className='mb-2'>
+            whatever wants to come, just allow it to happen.
+          </p>
           <div className='w-full flex justify-center  my-2'>
             <div className='flex space-x-2 justify-center'>
               {areYouSure ? (

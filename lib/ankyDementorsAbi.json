@@ -188,7 +188,7 @@
           },
           { "internalType": "string", "name": "firstPageCid", "type": "string" }
         ],
-        "internalType": "struct NewAnkyDementor.Dementor",
+        "internalType": "struct AnkyDementor.Dementor",
         "name": "",
         "type": "tuple"
       }

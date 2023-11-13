@@ -17,6 +17,17 @@ import AnkyJournalsAbi from '../../lib/journalsABI.json'; // Assuming you have t
 import { useUser } from '../../context/UserContext';
 import { setUserData } from '../../lib/idbHelper';
 
+var options = {
+  weekday: 'long',
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+  hour: 'numeric',
+  minute: 'numeric',
+  second: 'numeric',
+  hour12: true,
+};
+
 const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
   const router = useRouter();
   const { getAccessToken } = usePrivy();
@@ -295,9 +306,7 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
             <p className='absolute top-1  cursor-pointer left-2 text-gray-800'>
               {entryForDisplay + 1}
             </p>
-            <p className='absolute top-1  cursor-pointer left-1/2 text-gray-800'>
-              {thisEntry.timestamp}
-            </p>
+
             <p
               onClick={closeModal}
               className='absolute top-1 cursor-pointer right-2 text-red-600'
@@ -317,6 +326,14 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
                 )
               ) : null}
             </div>
+            <p className='absolute w-full right-2 bottom-1 italic  flex flex-col'>
+              <span className='text-sm'>
+                {new Date(thisEntry.timestamp).toLocaleDateString(
+                  'en-US',
+                  options
+                )}
+              </span>
+            </p>
           </div>
         </div>
       )

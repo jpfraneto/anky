@@ -211,58 +211,16 @@ const DesktopWritingGame = ({
         value: previousPageCid.toString(),
       },
     ];
-    console.log('right after the tags', tags);
     try {
-      const receipt = await webIrys.upload(finishText, { tags });
+      const receipt = await webIrys.upload(text, { tags });
       console.log(`Data uploaded ==> https://gateway.irys.xyz/${receipt.id}`);
       setLifeBarLength(0);
       setDisplayWritingGameLanding(false);
-      setIsModalOpen(true);
+      alert('this was saved forever');
     } catch (error) {
       console.log('there was an error');
       console.log('the error is:', error);
       setDisplayWritingGameLanding(false);
-    }
-  };
-
-  const callSmartContract = async arweaveLink => {
-    const BUILDERS_NOTEBOOKS_CONTRACT_ADDRESS =
-      '0xA06742b4018aec4602C3296D3CAcF0159F5234E8';
-    try {
-      if (!thisWallet) return;
-      let provider = await thisWallet.getEthersProvider();
-      let signer = await provider.getSigner();
-
-      console.log('the user app information is: ', userAppInformation);
-
-      if (thisWallet && signer) {
-        // The thing here is that I'm trying to send this transaction from the wallet of the user, not from the erc6551 token.
-
-        const templatesContract = new ethers.Contract(
-          BUILDERS_NOTEBOOKS_CONTRACT_ADDRESS,
-          buildersABI,
-          signer
-        );
-
-        let addressForMinting = thisWallet.address;
-        if (typeof userAppInformation.tbaAddress === 'string') {
-          addressForMinting = userAppInformation.tbaAddress;
-        }
-
-        const transactionResponse = await templatesContract.safeMint(
-          arweaveLink,
-          addressForMinting
-        );
-
-        await transactionResponse.wait(); // Wait for the transaction to be mined
-        console.log('Notebook template created successfully');
-        setSavingTextAnon(false);
-        setDisplayWritingGameLanding(false);
-      } else {
-        console.error('Wallet not connected or not authenticated with Privy');
-      }
-    } catch (error) {
-      console.error('There was an error creating the notebook:', error);
     }
   };
 

@@ -110,6 +110,7 @@ const BuyNewJournal = () => {
             journalId: tokenId.toString(),
             title: journalTitle,
           };
+          let newJournals;
           console.log('the new journal element is: ', newJournalElement);
 
           setUserAppInformation(x => {
@@ -117,14 +118,12 @@ const BuyNewJournal = () => {
               'the x in the user app information before adding a new journal is: ',
               x
             );
-            if (x.userJournals) {
-              setUserData('userJournals', [
-                ...x.userJournals,
-                newJournalElement,
-              ]);
+            if (x.userJournals && x.userJournals.length > 0) {
+              newJournals = [...x.userJournals, newJournalElement];
+              setUserData('userJournals', newJournals);
               return {
                 ...x,
-                userJournals: [...x.userJournals, newJournalElement],
+                userJournals: newJournals,
               };
             } else {
               setUserData('userJournals', [newJournalElement]);

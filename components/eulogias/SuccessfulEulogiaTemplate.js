@@ -6,7 +6,7 @@ const SuccessfulEulogiaTemplate = ({ eulogia }) => {
   const [linkCopied, setLinkCopied] = useState(false);
   async function createSharingLink() {
     console.log('the eulogia is: ', eulogia);
-    const newLink = `https://www.anky.lat/eulogias/${eulogia.createdEulogiaId}`;
+    const newLink = `https://anky.lat/eulogias/${eulogia.createdEulogiaId}`;
     await navigator.clipboard.writeText(newLink);
     setLinkCopied(true);
   }

@@ -6,7 +6,7 @@ const SuccessfulNotebook = ({ notebook }) => {
   const [linkCopied, setLinkCopied] = useState(false);
   async function createSharingLink() {
     console.log('the notebook is: ', notebook);
-    const newLink = `https://www.anky.lat/notebook/${notebook.notebookId}`;
+    const newLink = `https://anky.lat/notebook/${notebook.notebookId}`;
     await navigator.clipboard.writeText(newLink);
     setLinkCopied(true);
   }

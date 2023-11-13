@@ -28,6 +28,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
   const [whoIsWriting, setWhoIsWriting] = useState('');
   const [mintingEulogia, setMintingEulogia] = useState(false);
   const [loadWritingGame, setLoadWritingGame] = useState(false);
+  const [userEulogiaBalance, setUserEulogiaBalance] = useState(null);
   const [writingGameProps, setWritingGameProps] = useState(null);
   const [text, setText] = useState('');
   const [provider, setProvider] = useState(null);
@@ -83,7 +84,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
           let thisEulogiaInUser = false;
           if (userAppInformation.userEulogias?.length > 0) {
             thisEulogiaInUser = userAppInformation.userEulogias.filter(
-              x => x.eulogiaID === router.query.id
+              x => x.eulogiaId === router.query.id
             )[0];
           }
           console.log('this eulogia in the user is', thisEulogiaInUser);
@@ -153,6 +154,28 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
     fetchEulogia();
   }, [loading, authenticated, thisWallet, router.query]);
 
+  useEffect(() => {
+    if (thisWallet) {
+      checkIfUserOwnsEulogiaAsNFT();
+    }
+    async function checkIfUserOwnsEulogiaAsNFT() {
+      let thisProvider = await thisWallet.getEthersProvider();
+      let signer = await thisProvider.getSigner();
+
+      const eulogiasContract = new ethers.Contract(
+        process.env.NEXT_PUBLIC_EULOGIAS_CONTRACT_ADDRESS,
+        AnkyEulogiasAbi,
+        signer
+      );
+      const eulogiaId = router.query.id;
+      const userBalanceNotFormatted = await eulogiasContract.getEulogiaBalance(
+        eulogiaId
+      );
+      const userBalance = ethers.utils.formatUnits(userBalanceNotFormatted, 0);
+      setUserEulogiaBalance(userBalance);
+    }
+  }, [thisWallet]);
+
   async function getContentFromArweave(cid) {
     try {
       console.log('inside the get content from arwarave', cid);
@@ -171,13 +194,16 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
   const mintEulogia = async () => {
     try {
       setMintingEulogia(true);
-      let signer = await provider.getSigner();
+      const thisProvider = await thisWallet.getEthersProvider();
+      let signer = await thisProvider.getSigner();
       const eulogiasContract = new ethers.Contract(
         process.env.NEXT_PUBLIC_EULOGIAS_CONTRACT_ADDRESS,
         AnkyEulogiasAbi,
         signer
       );
-      await eulogiasContract.mintEulogia(eulogia.eulogiaID);
+      console.log('the eulogia is: ', eulogia);
+      const tx = await eulogiasContract.mintEulogia(eulogia.eulogiaId);
+      console.log('the tx is: ', tx);
       setMintingEulogia(false);
     } catch (error) {
       console.error('Error minting eulogia:', error);
@@ -258,7 +284,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
           // Find the specific journal index by its id
           if (x && x.userEulogias && x.userEulogias.length > 0) {
             const eulogiaIndex = x.userEulogias.findIndex(
-              j => j.eulogiaId == eulogia.eulogiaID
+              j => j.eulogiaId == eulogia.eulogiaId
             );
 
             // If the journal is found
@@ -386,18 +412,6 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
     );
   }
 
-  if (!authenticated)
-    return (
-      <div>
-        <p>you need to login to write on this eulogia</p>
-        <Button
-          buttonAction={login}
-          buttonText='login'
-          buttonColor='bg-purple-600'
-        />
-      </div>
-    );
-
   if (eulogiaLoading)
     return (
       <div>
@@ -441,7 +455,6 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
           <h2 className='text-2xl md:text-6xl my-2 text-purple-200'>
             {eulogia.metadata.title}
           </h2>
-          <button onClick={() => console.log(eulogia)}>console-</button>
           <p className='italic text-lg md:text-2xl mb-2 w-96 mx-auto'>
             {eulogia.metadata.description}
           </p>
@@ -517,11 +530,14 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
         <div className='flex w-4/5 h-fit mx-auto justify-center'>
           {authenticated && (
             <div className='flex space-x-2'>
-              <Button
-                buttonAction={mintEulogia}
-                buttonColor='bg-green-500'
-                buttonText={mintingEulogia ? 'minting...' : 'mint eulogia'}
-              />
+              {userEulogiaBalance == 0 && (
+                <Button
+                  buttonAction={mintEulogia}
+                  buttonColor='bg-green-500'
+                  buttonText={mintingEulogia ? 'minting...' : 'mint eulogia'}
+                />
+              )}
+
               <Button
                 buttonText='library'
                 buttonColor='bg-purple-600'

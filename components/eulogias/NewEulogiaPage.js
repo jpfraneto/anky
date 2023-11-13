@@ -27,7 +27,6 @@ const NewEulogiaPage = ({ wallet }) => {
   const [loading, setLoading] = useState(false);
   const [fileError, setFileError] = useState('');
   const [price, setPrice] = useState((24 * PRICE_FACTOR).toFixed(4));
-  const [maxMsgs, setMaxMsgs] = useState(null);
   const [coverImage, setCoverImage] = useState(null);
   const [backgroundImage, setBackgroundImage] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -68,7 +67,6 @@ const NewEulogiaPage = ({ wallet }) => {
       formData.append('description', description);
       formData.append('price', price);
       formData.append('coverImage', coverImage);
-      formData.append('maxPages', pages);
       const authToken = await getAccessToken();
       const serverResponse = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/notebooks/eulogia`,
@@ -99,12 +97,11 @@ const NewEulogiaPage = ({ wallet }) => {
 
         const userEnteredPriceInWei = ethers.utils.parseEther(price.toString());
         // You may need to set appropriate values for metadataURI, password, and maxMsgs
-        const maxMsgs = pages; // Update with actual max messages
 
         // Call the contract's method and send the transaction
         const transactionResponse = await eulogiaContract.createEulogia(
           metadataCID.cid,
-          maxMsgs
+          200
         );
 
         const transactionReceipt = await transactionResponse.wait(); // Wait for the transaction to be mined
@@ -117,7 +114,7 @@ const NewEulogiaPage = ({ wallet }) => {
         if (event) {
           const rawEulogiaId = event.args[0]; // Based on the order in your emit statement
           const eulogiaId = ethers.utils.formatUnits(rawEulogiaId, 0);
-          console.log('Eulogia ID:', eulogiaId);  
+          console.log('Eulogia ID:', eulogiaId);
 
           setCreatedEulogiaId(eulogiaId);
           setSuccess(true);
@@ -129,7 +126,6 @@ const NewEulogiaPage = ({ wallet }) => {
             console.log('THIS IS RUNNING ONCE');
             newEulogia = {
               eulogiaId: eulogiaId,
-              maxMessages: maxMsgs,
               messageCount: 0,
 
               metadata: {
@@ -139,7 +135,6 @@ const NewEulogiaPage = ({ wallet }) => {
                 coverImageUrl: `https://ipfs.io/ipfs/${metadataCID.coverImageCid}`,
                 description: description,
                 title: title,
-                maxPages: maxMsgs,
               },
               pages: [], // Initialize with an empty array as no messages have been added yet.
             };
@@ -215,7 +210,7 @@ const NewEulogiaPage = ({ wallet }) => {
                 ) : (
                   <>
                     <h3 className='text-sm'>
-                      You are about to create an eulogia notebook:
+                      You are about to create an eulogia:
                     </h3>
                     <p className='text-3xl my-1'> {title}</p>
                     <p className='italic mb-2'>{description}</p>
@@ -302,23 +297,6 @@ const NewEulogiaPage = ({ wallet }) => {
               className='border p-2 w-full rounded text-gray-500'
               value={description}
               onChange={e => setDescription(e.target.value)}
-            />
-          </div>
-
-          <div className='flex flex-col items-start'>
-            <p className='text-left text-sm text-gray-500 my-1'>
-              Number of Pages (max 100)
-            </p>
-            <input
-              type='number'
-              min={0}
-              max={100}
-              className='border p-2 w-36 rounded text-gray-500'
-              value={pages}
-              onChange={e => {
-                setPages(e.target.value);
-                setPrice((0.0001 * e.target.value).toFixed(2));
-              }}
             />
           </div>
 

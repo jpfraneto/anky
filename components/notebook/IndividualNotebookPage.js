@@ -218,7 +218,7 @@ const IndividualNotebookPage = ({
     return (
       <div>
         <Spinner />
-        <p className='text-white'>loading...</p>
+        <p className='text-white'>loading</p>
       </div>
     );
 

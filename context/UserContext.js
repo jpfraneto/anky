@@ -27,6 +27,7 @@ export const UserProvider = ({ children }) => {
   const [appLoading, setAppLoading] = useState(true);
   const [loadingLibrary, setLoadingLibrary] = useState(false);
   const [userIsReadyNow, setUserIsReadyNow] = useState(false);
+  const [usersAnkyImage, setUsersAnkyImage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [usersAnkyUri, setUsersAnkyUri] = useState('');
   const [userOwnsAnky, setUserOwnsAnky] = useState('');
@@ -107,18 +108,20 @@ export const UserProvider = ({ children }) => {
         setAppLoading(false);
         return;
       }
-
+      await changeChain();
       const response = await fetchUsersAnky();
       console.log('THE RESPONSE IS: ', response);
       if (!response) return;
       let usersAnkys = response.usersAnkys;
       let usersAnkyUri = response.usersAnkyUri;
+      let usersImage = response.imageUrl;
       console.log('after fetching the user anky,', usersAnkys);
       if (usersAnkys == 0) {
         setUserOwnsAnky(false);
         return setMainAppLoading(false);
       }
       setUsersAnkyUri(usersAnkyUri);
+      setUsersAnkyImage(usersImage);
       console.log('after hereee');
       setUserOwnsAnky(true);
       setMainAppLoading(false);
@@ -287,6 +290,7 @@ export const UserProvider = ({ children }) => {
         airdropABI,
         signer
       );
+      console.log('the wallet is: ', wallet);
       const usersBalance = await ankyAirdropContract.balanceOf(wallet.address);
       console.log('the users balance is: ', usersBalance);
       let usersAnkyUri = '';
@@ -297,10 +301,24 @@ export const UserProvider = ({ children }) => {
           0
         );
         usersAnkyUri = await ankyAirdropContract.tokenURI(usersAnkyId);
-        console.log('the users anky uri is: ', usersAnkyUri);
+        const transformUri = broken => {
+          return `https://ipfs.io/ipfs/${broken.split('ipfs://')[1]}`;
+        };
+        const fetchableUri = transformUri(usersAnkyUri);
+        const metadata = await fetch(fetchableUri);
+        const jsonMetadata = await metadata.json();
+        let imageUrl = transformUri(jsonMetadata.image);
+        console.log('the metadata is: ', jsonMetadata);
+        setUsersAnky({
+          ankyIndex: usersAnkys,
+          ankyUri: usersAnkyUri,
+          imageUrl: imageUrl,
+        });
+        return { usersAnkys, usersAnkyUri, imageUrl };
+      } else {
+        setUsersAnky({ ankyIndex: undefined, ankyUri: undefined });
+        return { usersAnkys: 0, usersAnkyUri: '', imageUrl: '' };
       }
-      setUsersAnky({ ankyIndex: usersAnkys, ankyUri: usersAnkyUri });
-      return { usersAnkys, usersAnkyUri };
     } catch (error) {
       console.log('there was an error', error);
       alert('there was an error, please try again.');
@@ -471,6 +489,7 @@ export const UserProvider = ({ children }) => {
         mainAppLoading,
         setMainAppLoading,
         usersAnky,
+        usersAnkyImage,
       }}
     >
       {showProgressModal && (
