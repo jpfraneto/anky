@@ -18,7 +18,7 @@ import Link from 'next/link';
 const BuyNewJournal = () => {
   const router = useRouter();
   const [journal, setJournal] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [journalTitle, setJournalTitle] = useState('');
   const [thereWasAnError, setThereWasAnError] = useState(false);
   const [mintingNewJournal, setMintingNewJournal] = useState(false);
@@ -158,37 +158,29 @@ const BuyNewJournal = () => {
             ) : (
               <div>
                 <p className='mb-2 text-3xl'>new journal</p>
-                {loading ? (
-                  <div>
-                    <Spinner /> <p>loading...</p>
-                  </div>
-                ) : (
-                  <div>
-                    <p className='mb-2'>this is a simple container</p>
-                    <p className='mb-2'>
-                      that will store all of your writings.
-                    </p>
-                    <input
-                      onChange={e => setJournalTitle(e.target.value)}
-                      type='text'
-                      placeholder='journal title'
-                      className='rounded-xl p-2 text-black'
+                <div>
+                  <p className='mb-2'>this is a simple container</p>
+                  <p className='mb-2'>that will store all of your writings.</p>
+                  <input
+                    onChange={e => setJournalTitle(e.target.value)}
+                    type='text'
+                    placeholder='journal title'
+                    className='rounded-xl p-2 text-black'
+                  />
+                  <div className='flex justify-center my-4'>
+                    <Button
+                      buttonText='buy new journal'
+                      buttonAction={mintNewJournal}
+                      buttonColor='bg-green-600'
                     />
-                    <div className='flex justify-center my-4'>
+                    <Link href='/library' passHref>
                       <Button
-                        buttonText='buy new journal'
-                        buttonAction={mintNewJournal}
-                        buttonColor='bg-green-600'
+                        buttonText='library'
+                        buttonColor='bg-purple-600'
                       />
-                      <Link href='/library' passHref>
-                        <Button
-                          buttonText='library'
-                          buttonColor='bg-purple-600'
-                        />
-                      </Link>
-                    </div>
+                    </Link>
                   </div>
-                )}
+                </div>
               </div>
             )}
           </>
