@@ -13,15 +13,7 @@ import Spinner from './Spinner';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
 import DementorGame from './DementorGame';
 
-const secondsPerPrompt = 10;
-
-const dummyDementorData = {
-  title: 'The Eternal Exploration',
-  description:
-    'This chapter explores the continuous journey of self-exploration, embracing the beauty of each moment and the willingness to transform.',
-  prompts:
-    'What does it mean to live in the present moment?%%What is the gift of this moment?%%How does self-inquiry lead to transformation?%%What is the beauty of becoming the present moment?%%How does the willingness to explore shape our experiences?%%What is the importance of the practice and repetition in self-exploration?%%How does the perception of words and experiences evolve over time?%%Why is the quest for self-knowledge essential for authentic connection?',
-};
+const secondsPerPrompt = 180;
 
 function DementorPage({
   userAnky,
@@ -526,7 +518,21 @@ function DementorPage({
     <div className='md:w-1/2 p-2 mx-auto w-screen text-black md:text-white pt-5'>
       <h2 className='text-3xl'>{dementorData.title}</h2>
       <p className='italic'>{dementorData.description}</p>
-      <button onClick={() => console.log(dementorData)}>cnsole</button>
+      <div className='text-yellow-300'>
+        <p>
+          This chapter has{' '}
+          {dementorData.pages[dementorData.pages.length - 1].prompts.length}{' '}
+          prompts
+        </p>
+        <p>
+          You will be writing for
+          {Math.floor(
+            (secondsPerPrompt / 60) *
+              dementorData.pages[dementorData.pages.length - 1].prompts.length
+          )}{' '}
+          minutes
+        </p>
+      </div>
       <div className='flex space-x-2'>
         {dementorData.pages.map((x, i) => {
           return (
@@ -559,37 +565,14 @@ function DementorPage({
       </div>
       <div className='my-2 w-96 flex justify-center mx-auto relative'>
         {!isUserSureThatUserIsReady ? (
-          <div>
-            <Button
-              buttonText={`im ready to write page ${
-                dementorData.pages.length - 1
-              }`}
-              buttonAction={() => setIsUserSureThatUserIsReady(true)}
-              buttonColor='bg-green-700'
-            />
-            <div className='absolute top-12'>
-              <p>
-                This chapter has{' '}
-                {
-                  dementorData.pages[dementorData.pages.length - 1].prompts
-                    .length
-                }{' '}
-                prompts
-              </p>
-              <p>
-                You will be writing for{' '}
-                {Math.floor(
-                  (secondsPerPrompt / 60) *
-                    dementorData.pages[dementorData.pages.length - 1].prompts
-                      .length
-                )}{' '}
-                minutes
-              </p>
-            </div>
-          </div>
+          <Button
+            buttonText={`im ready`}
+            buttonAction={() => setIsUserSureThatUserIsReady(true)}
+            buttonColor='bg-green-700'
+          />
         ) : (
           <Button
-            buttonText='lets do this'
+            buttonText='breathe deep and go for it.'
             buttonAction={userIsReadyToWriteTrigger}
             buttonColor='bg-green-600'
           />
@@ -615,11 +598,11 @@ function DementorPage({
             just write, doing the best you can to answer the prompt at hand.
           </p>
           <p className='mt-1'>
-            when you reach the 180 second mark, the time will stop, the
-            container will block, and youll have time to read the next one.
+            when you reach the 180 second mark, the time will stop, the writing
+            container will block, and youll have time to read the next prompt.
           </p>
           <p className='mt-1'>
-            when you are ready, just press the space bar and continue writing.
+            when you are ready, press the space bar and continue writing.
           </p>
           <p className='mt-1'>you&apos;ll understand the mechanics fast.</p>
         </div>

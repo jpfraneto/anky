@@ -397,6 +397,12 @@ function NewNotebookPage({}) {
                     {!notebookCreationError ? (
                       <div>
                         <p>this notebook is being created...</p>
+                        <p>you will -probably- need to confirm two things:</p>
+                        <p>one for uploading the metadata to irys</p>
+                        <p>
+                          another one for creating the notebook as an erc1155
+                          nft
+                        </p>
                         <Spinner />
                       </div>
                     ) : (

@@ -24,7 +24,6 @@ const IndividualNotebookPage = ({
   lifeBarLength,
   notebookData,
 }) => {
-  console.log('the notebookData is: ', notebookData);
   const router = useRouter();
   const [notebook, setNotebook] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -39,6 +38,8 @@ const IndividualNotebookPage = ({
   const [openPages, setOpenPages] = useState([]);
   const [loadWritingGame, setLoadWritingGame] = useState(false);
   const [writingForDisplay, setWritingForDisplay] = useState(null);
+  const [copyNotebookLinkText, setCopyNotebookLinkText] =
+    useState('copy notebook link');
   const [writingGameProps, setWritingGameProps] = useState(null);
   const [whoIsWriting, setWhoIsWriting] = useState('');
   const [failed, setFailed] = useState(false);
@@ -112,6 +113,13 @@ const IndividualNotebookPage = ({
     } else {
       setOpenPages(prevPages => [...prevPages, i]);
     }
+  };
+
+  const copyNotebookLink = async () => {
+    await navigator.clipboard.writeText(
+      `https://anky.lat/notebook/${router.query.id}`
+    );
+    setCopyNotebookLinkText('link copied');
   };
 
   const updateNotebookWithPage = async finishText => {
@@ -326,6 +334,12 @@ const IndividualNotebookPage = ({
                 buttonColor='bg-purple-600 mx-2 mb-3'
               />
             </Link>
+
+            <Button
+              buttonText={copyNotebookLinkText}
+              buttonAction={copyNotebookLink}
+              buttonColor='bg-cyan-600 mx-2 mb-3'
+            />
           </div>
         )}
       </div>

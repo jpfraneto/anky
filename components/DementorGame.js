@@ -128,7 +128,7 @@ const DementorGame = ({
 
               setNewPromptDisplay(false);
               document.addEventListener('keydown', handleSpacePress);
-            }, 3000);
+            }, 5000);
           } else {
             setIsDone(true);
             setIsActive(false);
@@ -166,6 +166,7 @@ const DementorGame = ({
 
   const userLost = async () => {
     setUserLostFlag(true);
+    setCopyText('copy what you wrote');
     startNewRun();
     setIsActive(false);
   };
@@ -201,7 +202,6 @@ const DementorGame = ({
   };
 
   const startNewRun = () => {
-    copyToClipboard();
     setCurrentPromptIndex(0);
     setCopyText('copy my writing');
     setTime(secondsPerPrompt);
@@ -241,11 +241,6 @@ const DementorGame = ({
           There was an error. But you can always keep your writing if you want.
         </p>
         <p>I&apos;m sorry. I&apos;m doing my best to make this thing work.</p>
-        <Button
-          buttonColor='bg-thegreenbtn'
-          buttonAction={copyToClipboard}
-          buttonText={copyText}
-        />
       </div>
     );
 
@@ -318,12 +313,9 @@ const DementorGame = ({
         <p>this is extremely hard. better focus more next time.</p>
         <p>remember: there are no right or wrong answers.</p>
         <p>just write.</p>
+        <p>let go of expectations.</p>
+
         <div className='my-2 mx-auto w-98 justify-between flex'>
-          <Button
-            buttonAction={copyToClipboard}
-            buttonColor='bg-green-600 mx-2'
-            buttonText={copyText}
-          />
           <Button
             buttonText='start again'
             buttonColor='bg-green-600 mx-2'

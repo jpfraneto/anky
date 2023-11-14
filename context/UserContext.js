@@ -111,7 +111,7 @@ export const UserProvider = ({ children }) => {
       await changeChain();
       const response = await fetchUsersAnky();
       console.log('THE RESPONSE IS: ', response);
-      if (!response) return;
+      if (!response) return setMainAppLoading(false);
       let usersAnkys = response.usersAnkys;
       let usersAnkyUri = response.usersAnkyUri;
       let usersImage = response.imageUrl;
@@ -285,6 +285,7 @@ export const UserProvider = ({ children }) => {
     try {
       let provider = await wallet.getEthersProvider();
       let signer = await provider.getSigner();
+      console.log('before getting the users balance', wallet);
       const ankyAirdropContract = new ethers.Contract(
         process.env.NEXT_PUBLIC_ANKY_AIRDROP_SMART_CONTRACT,
         airdropABI,
@@ -321,7 +322,6 @@ export const UserProvider = ({ children }) => {
       }
     } catch (error) {
       console.log('there was an error', error);
-      alert('there was an error, please try again.');
     }
   }
 
@@ -469,7 +469,6 @@ export const UserProvider = ({ children }) => {
       await wallet.switchChain(84531);
       console.log('THE CHAIN WAS UPDATED');
       setUserAppInformation(x => {
-        console.log('saisica', wallet);
         return { ...x, wallet: wallet };
       });
     }

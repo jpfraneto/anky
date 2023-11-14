@@ -74,7 +74,6 @@ const GlobalApp = ({ alchemy }) => {
       setUserOwnsAnky(true);
     } catch (error) {
       console.log('there was an error', error);
-      alert('there was an error, please try again.');
       setUserIsMintingAnky(false);
     }
   }
@@ -83,6 +82,7 @@ const GlobalApp = ({ alchemy }) => {
     setAnkyButtonText('looking for your anky...');
     if (!wallet) return alert('you are not logged in');
     try {
+      console.log('the wallet is: ', wallet);
       let provider = await wallet.getEthersProvider();
       let signer = await provider.getSigner();
       const ankyAirdropContract = new ethers.Contract(
@@ -90,6 +90,8 @@ const GlobalApp = ({ alchemy }) => {
         airdropABI,
         signer
       );
+      console.log('in here, wallet', wallet.address);
+      console.log('the anky airdrop contract is: ', ankyAirdropContract);
       const usersBalance = await ankyAirdropContract.balanceOf(wallet.address);
       console.log('the users balance is: ', usersBalance);
       const usersAnkys = ethers.utils.formatUnits(usersBalance, 0);
@@ -100,8 +102,8 @@ const GlobalApp = ({ alchemy }) => {
       }
     } catch (error) {
       console.log('there was an error', error);
-      alert('there was an error, please try again.');
       setUserIsMintingAnky(false);
+      setAnkyButtonText('you dont own an anky airdrop');
     }
   }
 

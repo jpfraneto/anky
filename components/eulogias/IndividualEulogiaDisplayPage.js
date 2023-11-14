@@ -264,7 +264,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
         const newEulogiaWriting = {
           writer: thisWallet.address,
           whoWroteIt: whoIsWriting,
-          content: finishText,
+          text: finishText,
           cid: receipt.id,
           timestamp: new Date().getTime(),
         };
@@ -382,15 +382,15 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
             </p>
 
             <div className='overflow-y-scroll h-9/12'>
-              {displayModalMessage && displayModalMessage.content ? (
-                displayModalMessage.content.includes('\n') ? (
-                  displayModalMessage.content.split('\n').map((x, i) => (
+              {displayModalMessage && displayModalMessage.text ? (
+                displayModalMessage.text.includes('\n') ? (
+                  displayModalMessage.text.split('\n').map((x, i) => (
                     <p className='my-2' key={i}>
                       {x}
                     </p>
                   ))
                 ) : (
-                  <p className='my-2'>{displayModalMessage.content}</p>
+                  <p className='my-2'>{displayModalMessage.text}</p>
                 )
               ) : null}
             </div>
@@ -458,7 +458,6 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
           <p className='italic text-lg md:text-2xl mb-2 w-96 mx-auto'>
             {eulogia.metadata.description}
           </p>
-          <div className='mb-4'>{eulogia.maxMessages - 0} pages available</div>
           <div className='mx-auto relative w-96 h-96 flex overflow-hidden border-white border rounded-xl justify-center'>
             <Image
               src={eulogia.metadata.coverImageUrl}
@@ -486,6 +485,7 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
         <div className='p-2 h-full overflow-y-scroll my-0'>
           {!authenticated ? (
             <div>
+              <p>this is a community written notebook.</p>
               <p>
                 you can write here if you{' '}
                 <span

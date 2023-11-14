@@ -270,7 +270,7 @@ const LibraryPage = ({}) => {
             {activeTab === 'dementor' && (
               <>
                 <div className=' flex flex-wrap bg-red-300 w-full flex-col rounded-b-xl p-4'>
-                  {dementors.length > 0 ? (
+                  {dementors && dementors.length > 0 ? (
                     dementors.map((x, i) => {
                       return <DementorCard dementor={x} key={i} />;
                     })

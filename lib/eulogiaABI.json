@@ -228,36 +228,6 @@
     "type": "function"
   },
   {
-    "inputs": [
-      { "internalType": "uint256", "name": "", "type": "uint256" },
-      { "internalType": "uint256", "name": "", "type": "uint256" }
-    ],
-    "name": "eulogiaOwners",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "name": "eulogias",
-    "outputs": [
-      { "internalType": "uint256", "name": "eulogiaId", "type": "uint256" },
-      { "internalType": "string", "name": "metadataCID", "type": "string" }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "address", "name": "", "type": "address" },
-      { "internalType": "uint256", "name": "", "type": "uint256" }
-    ],
-    "name": "eulogiasWhereUserWrote",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [{ "internalType": "uint256", "name": "id", "type": "uint256" }],
     "name": "exists",
     "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
@@ -417,26 +387,6 @@
     "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "name": "uri",
     "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "address", "name": "", "type": "address" },
-      { "internalType": "uint256", "name": "", "type": "uint256" }
-    ],
-    "name": "userCreatedEulogias",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "address", "name": "", "type": "address" },
-      { "internalType": "uint256", "name": "", "type": "uint256" }
-    ],
-    "name": "userOwnedEulogias",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
   }

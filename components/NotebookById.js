@@ -47,7 +47,7 @@ function NotebookPage({ router, wallet, setLifeBarLength, lifeBarLength }) {
   }, [id, ready, wallet]);
 
   const copyToClipboard = async () => {
-    await navigator.clipboard.writeText(`https://anky.lat/template/${id}`);
+    await navigator.clipboard.writeText(`https://anky.lat/notebook/${id}`);
     setLinkCopied(true);
   };
 
