@@ -70,6 +70,12 @@
         "internalType": "address",
         "name": "owner",
         "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "string",
+        "name": "title",
+        "type": "string"
       }
     ],
     "name": "JournalCreated",
@@ -165,9 +171,9 @@
       {
         "components": [
           { "internalType": "uint256", "name": "journalId", "type": "uint256" },
-          { "internalType": "string", "name": "metadataCID", "type": "string" }
+          { "internalType": "string", "name": "title", "type": "string" }
         ],
-        "internalType": "struct NewAnkyJournals.Journal",
+        "internalType": "struct AnkyJournals.Journal",
         "name": "",
         "type": "tuple"
       }
@@ -206,14 +212,14 @@
     "name": "journals",
     "outputs": [
       { "internalType": "uint256", "name": "journalId", "type": "uint256" },
-      { "internalType": "string", "name": "metadataCID", "type": "string" }
+      { "internalType": "string", "name": "title", "type": "string" }
     ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "string", "name": "metadataCID", "type": "string" }
+      { "internalType": "string", "name": "journalTitle", "type": "string" }
     ],
     "name": "mintJournal",
     "outputs": [],

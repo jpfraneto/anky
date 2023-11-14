@@ -125,24 +125,13 @@ const GlobalApp = ({ alchemy }) => {
         >
           <p>you don&apos;t own an anky.</p>
           <p>it is the starting point of this journey.</p>
-          <p>it free, you only pay for the gas.</p>
-          <p>and it will guide you into the future.</p>
-          <p>through the present.</p>
+          <p>it is free, you just need to ask me for it.</p>
+          <p>just send an email to jp@anky.lat</p>
+          <p>or reach out on telegram @jpfraneto</p>
+          <p>hurry up, there are only 96 of them.</p>
+          <p>don&apos;t forget to add your address in that email</p>
+          <p>it is this one: {wallet.address}</p>
 
-          <div className='w-96 my-2'>
-            {userIsMintingAnky ? (
-              <Spinner />
-            ) : (
-              <div className='flex space-x-2 justify-center items-center w-full'>
-                <Button
-                  buttonAction={mintUsersAnky}
-                  buttonText='pay with eth'
-                  buttonColor='bg-purple-600 h-full flex items-center justify-center'
-                />
-                <Mint usersWalletAddress={wallet.address} />
-              </div>
-            )}
-          </div>
           <div className='mt-2'>
             <Button
               buttonText={ankyButtonText}

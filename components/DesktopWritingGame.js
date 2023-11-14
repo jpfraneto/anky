@@ -216,7 +216,9 @@ const DesktopWritingGame = ({
       console.log(`Data uploaded ==> https://gateway.irys.xyz/${receipt.id}`);
       setLifeBarLength(0);
       setDisplayWritingGameLanding(false);
-      alert('this was saved forever');
+      alert(
+        'this was saved forever. somewhere. one day we will read all of what has been said.'
+      );
     } catch (error) {
       console.log('there was an error');
       console.log('the error is:', error);
@@ -270,11 +272,8 @@ const DesktopWritingGame = ({
                 time > 2 && 'hidden'
               }`}
             >
-              <small className={`${righteous.className}  font-bold`}>
-                {ankyverseDate}
-              </small>
               <p
-                className={`${righteous.className} text-2xl mt-16 md:mt-0 md:text-5xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]   mb-4 font-bold text-center`}
+                className={`${righteous.className} text-2xl pt-8 md:mt-0 md:text-5xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]   mb-4 font-bold text-center`}
               >
                 {userPrompt}
               </p>
