@@ -147,7 +147,7 @@ function NotebookPage({ router, wallet, setLifeBarLength, lifeBarLength }) {
             ...x.userNotebooks,
             {
               notebookId: notebookId,
-              userPages: [],
+              pages: [],
               title: notebookData.title,
               description: notebookData.description,
             },
@@ -162,7 +162,7 @@ function NotebookPage({ router, wallet, setLifeBarLength, lifeBarLength }) {
             userNotebooks: [
               {
                 notebookId: notebookId,
-                userPages: [],
+                pages: [],
                 title: notebookData.title,
                 description: notebookData.description,
               },

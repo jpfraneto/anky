@@ -104,12 +104,14 @@ const DementorGameComponent = ({
     if (isActive) {
       keystrokeIntervalRef.current = setInterval(() => {
         const elapsedTime = Date.now() - lastKeystroke;
-        if (time === 480) {
-          // audioRef.current.play();
+        if (time <= 0) {
+          finishRun();
+          setUserNeedsToWriteAgain(false);
         }
         if (elapsedTime > 3000 && !isDone) {
           if (time <= 0) {
             finishRun();
+            setUserNeedsToWriteAgain(false);
           } else {
             setFinished(true);
             clearInterval(intervalRef.current);
@@ -318,7 +320,7 @@ const DementorGameComponent = ({
                       <p
                         className={`${righteous.className} mb-2 text-xl font-bold`}
                       >
-                        the minimum for your anky to be able to help you{' '}
+                        the minimum for your anky to be able to help you is{' '}
                         {targetTime} seconds.
                       </p>
 

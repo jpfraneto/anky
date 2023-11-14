@@ -34,7 +34,7 @@ const LitProtocol = () => {
     // const authSig = await ethConnect.signAndSaveAuthMessage({
     //   web3: provider,
     //   account: wallet.address,
-    //   chainId: 84531,
+    //   chainId: 8453,
     //   expiration: new Date(Date.now() + 1000 * 60 * 60 * 24).toISOString(),
     // });
     // // const authSig = await LitJsSdk.checkAndSignAuthMessage({
@@ -109,7 +109,7 @@ const LitProtocol = () => {
     const authSig = await LitJsSdk.ethConnect.signAndSaveAuthMessage({
       web3: provider,
       account: wallet.address,
-      chainId: 84531,
+      chainId: 8453,
       expiration: new Date(Date.now() + 1000 * 60 * 60 * 24).toISOString(),
     });
     // const authSig = await LitJsSdk.checkAndSignAuthMessage({

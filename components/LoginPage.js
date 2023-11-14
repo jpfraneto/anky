@@ -9,13 +9,13 @@ const LoginPage = () => {
 
   const changeChain = async () => {
     if (authenticated && wallet) {
-      await wallet.switchChain(84531);
+      await wallet.switchChain(8453);
       console.log('THE CHAIN WAS UPDATED');
     }
   };
 
   async function getUsersAnky() {
-    if (!wallet.chainId.includes('84531')) {
+    if (!wallet.chainId.includes('8453')) {
       await changeChain();
     }
     console.log('the wallet is: ', wallet);

@@ -187,7 +187,7 @@ const IndividualNotebookPage = ({
             console.log('the notebook index is: ', notebookIndex);
             const updatedNotebook = {
               ...notebookData,
-              userPages: [...notebookPages, newNotebookPage],
+              pages: [...notebookPages, newNotebookPage],
             };
 
             let updatedUserNotebooks = [

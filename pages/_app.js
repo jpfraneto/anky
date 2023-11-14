@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { Righteous } from 'next/font/google';
 import { PrivyProvider } from '@privy-io/react-auth';
 import { PrivyWagmiConnector } from '@privy-io/wagmi-connector';
-import { baseGoerli } from '@wagmi/chains';
+import { base } from '@wagmi/chains';
 import { configureChains, createConfig } from 'wagmi';
 import { publicProvider } from 'wagmi/providers/public';
 import Head from 'next/head';
@@ -14,11 +14,11 @@ import { initializeDB } from '../lib/idbHelper';
 
 import { Network, Alchemy } from 'alchemy-sdk';
 
-const configureChainsConfig = configureChains([baseGoerli], [publicProvider()]);
+const configureChainsConfig = configureChains([base], [publicProvider()]);
 
 const settings = {
   apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY,
-  network: Network.BASE_GOERLI,
+  network: Network.BASE_MAINNET,
 };
 
 const alchemy = new Alchemy(settings);

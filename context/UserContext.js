@@ -128,7 +128,7 @@ export const UserProvider = ({ children }) => {
       if (loadingUserStoredData) return;
       console.log('inside hereaasc213');
 
-      if (wallet && !wallet.chainId.includes('84531')) await changeChain();
+      if (wallet && !wallet.chainId.includes('8453')) await changeChain();
       console.log('the wallet is HERE: ', wallet);
       console.log('the wallets are: ', wallets, userAppInformation?.wallet);
       const isUserTheSame =
@@ -466,7 +466,7 @@ export const UserProvider = ({ children }) => {
 
   const changeChain = async () => {
     if (authenticated && wallet) {
-      await wallet.switchChain(84531);
+      await wallet.switchChain(8453);
       console.log('THE CHAIN WAS UPDATED');
       setUserAppInformation(x => {
         return { ...x, wallet: wallet };
