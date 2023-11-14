@@ -128,7 +128,7 @@ const GlobalApp = ({ alchemy }) => {
           <p>you don&apos;t own an anky.</p>
           <p>it is the starting point of this journey.</p>
           <p>it is free, you just need to ask me for it.</p>
-          <p>just send an email to jp@anky.lat</p>
+          <p>send me an email to jp@anky.lat</p>
           <p>or reach out on telegram @jpfraneto</p>
           <p>hurry up, there are only 96 of them.</p>
           <p>don&apos;t forget to add your address in that email</p>

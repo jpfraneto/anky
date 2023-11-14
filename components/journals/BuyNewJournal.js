@@ -19,7 +19,6 @@ const BuyNewJournal = () => {
   const router = useRouter();
   const [journal, setJournal] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [journalPrice, setJournalPrice] = useState(null);
   const [journalTitle, setJournalTitle] = useState('');
   const [thereWasAnError, setThereWasAnError] = useState(false);
   const [mintingNewJournal, setMintingNewJournal] = useState(false);
@@ -31,30 +30,6 @@ const BuyNewJournal = () => {
   const { wallets } = useWallets();
 
   const thisWallet = wallets[0];
-
-  useEffect(() => {
-    async function fetchJournalPrices() {
-      try {
-        const provider = await thisWallet.getEthersProvider();
-        const journalsContract = new ethers.Contract(
-          process.env.NEXT_PUBLIC_JOURNALS_CONTRACT_ADDRESS,
-          AnkyJournalsAbi,
-          provider
-        );
-
-        const fetchedJournalPrice = await journalsContract.journalPrice();
-        setJournalPrice(fetchedJournalPrice);
-        setLoading(false);
-      } catch (error) {
-        setThereWasAnError(true);
-        console.error('Failed to fetch journal prices:', error);
-      }
-    }
-
-    if (thisWallet) {
-      fetchJournalPrices();
-    }
-  }, [thisWallet]);
 
   const mintNewJournal = async size => {
     try {
@@ -78,12 +53,6 @@ const BuyNewJournal = () => {
 
       // Get the price for the selected journal size
       console.log('in heeere');
-
-      if (!journalPrice) {
-        // Handle the case where the price is not available
-        console.error('Price not available for size', size);
-        return;
-      }
 
       // WHAT IS THE METADATA FOR THE JOURNAL?
       // Here i need to fetch bundlr with the information of the journal and update that metadata, which will be the starting thread of this particular journal... page 0
