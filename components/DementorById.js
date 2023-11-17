@@ -525,7 +525,7 @@ function DementorPage({
           prompts
         </p>
         <p>
-          You will be writing for
+          You will be writing for{' '}
           {Math.floor(
             (secondsPerPrompt / 60) *
               dementorData.pages[dementorData.pages.length - 1].prompts.length

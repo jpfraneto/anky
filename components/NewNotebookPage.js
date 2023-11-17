@@ -151,6 +151,7 @@ function NewNotebookPage({}) {
   const [title, setTitle] = useState('the process of being');
   const [description, setDescription] = useState('96 days of exploration');
   const [numPages, setNumPages] = useState(4);
+  const [showBulkImport, setShowBulkImport] = useState(false);
   const [createdNotebook, setCreatedNotebook] = useState(null);
   const [bulkImportString, setBulkImportString] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -507,7 +508,8 @@ function NewNotebookPage({}) {
 
         <div>
           <p className='text-left text-sm text-gray-500 mt-1'>
-            title (max 50 characters)
+            title - a line about what you want to bring to the writer through
+            this notebook (max 50 characters)
           </p>
 
           <input
@@ -521,7 +523,7 @@ function NewNotebookPage({}) {
 
         <div>
           <p className='text-left text-sm text-gray-500 mt-1'>
-            description (max 560 characters)
+            description - what is this notebook about? (max 560 characters)
           </p>
 
           <textarea
@@ -534,7 +536,8 @@ function NewNotebookPage({}) {
         </div>
 
         <p className='text-left text-sm text-gray-500 mt-1 mb-0'>
-          notebook prompts
+          notebook prompts (what is the journey that you want to take the writer
+          into?)
         </p>
 
         <div className='space-y-2 mt-0 text-gray-500'>{renderPrompts()}</div>
@@ -545,7 +548,7 @@ function NewNotebookPage({}) {
             className='bg-blue-500  hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-fit mt-2 mr-2'
             onClick={handleAddPrompt}
           >
-            add Prompt
+            add prompt
           </button>
           <button
             type='button'
@@ -556,31 +559,41 @@ function NewNotebookPage({}) {
               }
             }}
           >
-            clear Prompts
+            clear prompts
           </button>
         </div>
 
-        <p className='text-left text-sm text-gray-500 my-0'>bulk import</p>
-        <textarea
-          className='border p-2 w-full h-48 rounded text-gray-500'
-          placeholder='Enter each question separated by %%'
-          value={bulkImportString}
-          onChange={e => {
-            setHandlePromptsError(false);
-            setBulkImportString(e.target.value);
-          }}
-        />
-        <button
-          type='button'
-          className='bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded  w-fit mt-2 mr-auto'
-          onClick={handleBulkImport}
+        <p
+          className='text-left text-sm text-gray-500 my-0'
+          onClick={() => setShowBulkImport(x => !x)}
         >
-          import All Questions
-        </button>
-        {handlePromptsError && (
-          <p className='mr-auto text-red-400 text-left'>
-            please add a long string with each question separated by this %%.
-          </p>
+          bulk import
+        </p>
+        {showBulkImport && (
+          <div>
+            <textarea
+              className='border p-2 w-full h-48 rounded text-gray-500'
+              placeholder='Enter each question separated by %%'
+              value={bulkImportString}
+              onChange={e => {
+                setHandlePromptsError(false);
+                setBulkImportString(e.target.value);
+              }}
+            />
+            <button
+              type='button'
+              className='bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded  w-fit mt-2 mr-auto'
+              onClick={handleBulkImport}
+            >
+              import All Questions
+            </button>
+            {handlePromptsError && (
+              <p className='mr-auto text-red-400 text-left'>
+                please add a long string with each question separated by this
+                %%.
+              </p>
+            )}
+          </div>
         )}
 
         <div>
