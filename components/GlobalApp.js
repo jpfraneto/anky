@@ -38,15 +38,14 @@ const ankyverseToday = getAnkyverseDay(new Date());
 const ankyverseQuestion = getAnkyverseQuestion(ankyverseToday.wink);
 
 const GlobalApp = ({ alchemy }) => {
-  const { login, authenticated, ready, loading, logout } = usePrivy();
+  const { login, authenticated, ready, loading, logout, getAccessToken } =
+    usePrivy();
   const { userAppInformation, userOwnsAnky, setUserOwnsAnky, mainAppLoading } =
     useUser();
   const router = useRouter();
   const [lifeBarLength, setLifeBarLength] = useState(0);
   const [checkingIfYouOwnAnky, setCheckingIfYouOwnAnky] = useState(false);
-  const [ankyButtonText, setAnkyButtonText] = useState(
-    'wtf? i already own one of these'
-  );
+  const [ankyButtonText, setAnkyButtonText] = useState('get my anky');
   const [displayWritingGameLanding, setDisplayWritingGameLanding] =
     useState(false);
   const [userWallet, setUserWallet] = useState(null);
@@ -54,26 +53,37 @@ const GlobalApp = ({ alchemy }) => {
   const wallets = useWallets();
   const wallet = wallets.wallets[0];
 
-  async function mintUsersAnky() {
+  async function getMyAnky() {
     if (!wallet) return alert('you are not logged in');
     try {
+      setAnkyButtonText('loading...');
       setUserIsMintingAnky(true);
       let provider = await wallet.getEthersProvider();
       let signer = await provider.getSigner();
-      const ankyAirdropContract = new ethers.Contract(
-        process.env.NEXT_PUBLIC_ANKY_AIRDROP_SMART_CONTRACT,
-        airdropABI,
-        signer
+      const authToken = await getAccessToken();
+      console.log('the auth token is: ', authToken);
+      console.log('before sending the aidrop message', wallet.address);
+      const serverResponse = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/blockchain/airdrop`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+          body: JSON.stringify({ userWallet: wallet.address }),
+          credentials: 'include',
+        }
       );
-      const usersFirstAnkyTxn = await ankyAirdropContract.mintTo(
-        wallet.address
-      );
-      console.log('users first anky txn', usersFirstAnkyTxn);
+      const data = await serverResponse.json();
+
+      console.log('users first anky txn', data);
+      return;
       router.push('/welcome');
       setUserIsMintingAnky(false);
       setUserOwnsAnky(true);
     } catch (error) {
       console.log('there was an error', error);
+      setAnkyButtonText('there was an error');
       setUserIsMintingAnky(false);
     }
   }
@@ -127,17 +137,12 @@ const GlobalApp = ({ alchemy }) => {
         >
           <p>you don&apos;t own an anky.</p>
           <p>it is the starting point of this journey.</p>
-          <p>it is free, you just need to ask me for it.</p>
-          <p>send me an email to jp@anky.lat</p>
-          <p>or reach out on telegram @jpfraneto</p>
-          <p>hurry up, there are only 96 of them.</p>
-          <p>don&apos;t forget to add your address in that email</p>
-          <p>it is this one: {wallet.address}</p>
+          <p>it is free, and there are only 96 of them available.</p>
 
           <div className='mt-2'>
             <Button
               buttonText={ankyButtonText}
-              buttonAction={checkIfUserOwnsAnky}
+              buttonAction={getMyAnky}
               buttonColor='bg-green-600'
             />
           </div>

@@ -192,7 +192,6 @@ const DesktopWritingGame = ({
     };
 
     const webIrys = await getWebIrys();
-    console.log('the web irys is: ', webIrys);
     let previousPageCid = 0;
     previousPageCid = '';
 
@@ -205,7 +204,6 @@ const DesktopWritingGame = ({
       { name: 'container-type', value: 'community-notebook' },
       { name: 'container-id', value: containerId },
       { name: 'page-number', value: pageNumber },
-      // what is the CID from the previous page? this is where the provenance plays an important role and needs to be taken care of.
       {
         name: 'previous-page',
         value: previousPageCid.toString(),
