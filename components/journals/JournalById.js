@@ -326,7 +326,7 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
                 )
               ) : null}
             </div>
-            <p className='absolute w-full right-2 bottom-1 italic  flex flex-col'>
+            <p className=' w-full  italic  flex flex-col'>
               <span className='text-sm'>
                 {new Date(thisEntry.timestamp).toLocaleDateString(
                   'en-US',

@@ -1,43 +1,126 @@
 import React, { useEffect, useState } from 'react';
 import { getThisUserWritings } from '../lib/irys';
+import { usePrivy } from '@privy-io/react-auth';
+import Button from './Button';
+import Link from 'next/link';
+import Spinner from './Spinner';
 
-const UserFeed = ({ thisWallet }) => {
+var options = {
+  weekday: 'long',
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+  hour: 'numeric',
+  minute: 'numeric',
+  second: 'numeric',
+  hour12: true,
+};
+
+const UserFeed = ({ thisWallet, exportWallet }) => {
   console.log('this walet is: ', thisWallet);
   const [userWritings, setUserWritings] = useState([]);
+  const [loadingFeed, setLoadingFeed] = useState(true);
   useEffect(() => {
     const fetchUserWritings = async () => {
       if (!thisWallet) return;
       const thisUserWritings = await getThisUserWritings(thisWallet.address);
       console.log('the user writings are: ', thisUserWritings);
       setUserWritings(thisUserWritings);
+      setLoadingFeed(false);
     };
     fetchUserWritings();
   }, [thisWallet]);
+  if (!thisWallet)
+    return (
+      <div>
+        <p className='text-white'>please login first</p>
+      </div>
+    );
+
+  if (loadingFeed) {
+    return (
+      <div className='mt-12'>
+        <p className='text-white'>loading...</p>
+        <Spinner />
+      </div>
+    );
+  }
 
   return (
-    <div className='w-1/2 mx-auto'>
-      {userWritings.map((x, i) => {
-        return <UserWriting writing={x} />;
-      })}
+    <div>
+      <div>
+        <p className='text-white text-2xl'>Your feed:</p>
+        <h2 className='text-white'>{thisWallet.address}</h2>
+      </div>
+      <div className='w-1/2 mx-auto'>
+        {userWritings.map((x, i) => {
+          return <UserWriting key={x.cid} writing={x} />;
+        })}
+      </div>
     </div>
   );
 };
 
 const UserWriting = ({ writing }) => {
+  function getColor(containerType) {
+    console.log('in here, the container tupe is: ', containerType);
+    switch (containerType) {
+      case 'journal':
+        return 'bg-green-400 hover:bg-green-500';
+      case 'dementor':
+        return 'bg-red-400 hover:bg-red-500';
+      case 'eulogia':
+        return 'bg-orange-400 hover:bg-orange-500';
+      case 'notebook':
+        return 'bg-blue-400 hover:bg-blue-500';
+      default:
+        return 'bg-black';
+    }
+  }
+
+  function getContainerLink(writing) {
+    console.log('the writing is: ', writing);
+    switch (writing.writingContainerType) {
+      case 'journal':
+        return `/journal/${writing.containerId}`;
+      case 'dementor':
+        return `/dementor/${writing.containerId}`;
+      case 'eulogia':
+        return `/eulogia/${writing.containerId}`;
+      case 'notebook':
+        return `/notebook/${writing.containerId}`;
+      default:
+        return 'bg-black';
+    }
+  }
+
   return (
-    <div className='p-2 m-2 rounded-xl border-white border-2 bg-black text-white'>
-      {writing.text && writing.text ? (
-        writing.text.includes('\n') ? (
-          writing.text.split('\n').map((x, i) => (
-            <p className='my-2' key={i}>
-              {x}
-            </p>
-          ))
-        ) : (
-          <p className='my-2'>{writing.text}</p>
-        )
-      ) : null}
-    </div>
+    <Link href={`${getContainerLink(writing)}`} passHref>
+      <div
+        className={`p-2 m-2 rounded-xl border-white border-2 ${getColor(
+          writing.writingContainerType
+        )} text-white`}
+      >
+        <p className='text-sm'>
+          {new Date(writing.timestamp).toLocaleDateString('en-US', options)}
+        </p>
+        <p>
+          {writing.writingContainerType} - {writing.containerId}
+        </p>
+        <hr className='w-9/11 mx-auto bg-black text-black my-2' />
+        {writing.text && writing.text ? (
+          writing.text.includes('\n') ? (
+            writing.text.split('\n').map((x, i) => (
+              <p className='my-2' key={i}>
+                {x}
+              </p>
+            ))
+          ) : (
+            <p className='my-2'>{writing.text}</p>
+          )
+        ) : null}
+      </div>
+    </Link>
   );
 };
 

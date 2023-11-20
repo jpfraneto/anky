@@ -39,8 +39,15 @@ const ankyverseToday = getAnkyverseDay(new Date());
 const ankyverseQuestion = getAnkyverseQuestion(ankyverseToday.wink);
 
 const GlobalApp = ({ alchemy }) => {
-  const { login, authenticated, ready, loading, logout, getAccessToken } =
-    usePrivy();
+  const {
+    login,
+    authenticated,
+    ready,
+    loading,
+    logout,
+    getAccessToken,
+    exportWallet,
+  } = usePrivy();
   const { userAppInformation, userOwnsAnky, setUserOwnsAnky, mainAppLoading } =
     useUser();
   const router = useRouter();
@@ -222,7 +229,7 @@ const GlobalApp = ({ alchemy }) => {
       case '/community-notebook':
         return <BuildersPage />;
       case '/me':
-        return <UserFeed thisWallet={wallet} />;
+        return <UserFeed exportWallet={exportWallet} thisWallet={wallet} />;
       case '/eulogias':
         return <EulogiasListPage />;
       case '/library':

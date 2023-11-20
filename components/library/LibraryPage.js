@@ -141,6 +141,12 @@ const LibraryPage = ({}) => {
           </div>
           <p className='mt-2'>welcome back,</p>
           <p className='mt-2'>are you ready to keep writing?</p>
+          <Link
+            href='/me'
+            className='mt-2 hover:cursor-pointer hover:text-yellow-300'
+          >
+            my writing feed
+          </Link>
         </div>
         {loadingLibrary ? (
           <div>
