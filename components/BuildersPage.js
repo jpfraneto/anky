@@ -8,6 +8,7 @@ import { usePrivy, useWallets } from '@privy-io/react-auth';
 import buildersABI from '../lib/buildersABI.json';
 import { processFetchedTemplate } from '../lib/notebooks.js';
 import { useRouter } from 'next/router';
+import { getCommunityWritings } from '../lib/irys.js';
 
 const BUILDERS_NOTEBOOKS_CONTRACT_ADDRESS =
   '0xA06742b4018aec4602C3296D3CAcF0159F5234E8';
@@ -18,6 +19,8 @@ function BuildersPage() {
   const router = useRouter();
   const [writings, setWritings] = useState([]);
   const [displayedPage, setDisplayedPage] = useState(0);
+  const [communityWritings, setCommunityWritings] = useState([]);
+  const [loadingFeed, setLoadingFeed] = useState(true);
   const [provider, setProvider] = useState(null);
   const { wallets } = useWallets();
 
@@ -36,30 +39,13 @@ function BuildersPage() {
   };
 
   useEffect(() => {
-    async function fetchWritings() {
+    const fetchWritings = async () => {
       if (!thisWallet) return;
-
-      let fetchedProvider = await thisWallet.getEthersProvider();
-      setProvider(fetchedProvider); // Setting the provider to the state
-      let signer = await fetchedProvider.getSigner();
-
-      const writingsContract = new ethers.Contract(
-        BUILDERS_NOTEBOOKS_CONTRACT_ADDRESS,
-        buildersABI,
-        signer
-      );
-
-      const allWritings = await writingsContract.getAllWritings();
-      setDisplayedPage(allWritings.length - 1);
-      const writingsContent = await Promise.all(
-        allWritings.map(async url => {
-          const response = await fetch(url);
-          return await response.text();
-        })
-      );
-      setWritings(writingsContent);
-    }
-
+      const theseWritings = await getCommunityWritings();
+      console.log('these writings are:', theseWritings);
+      setCommunityWritings(theseWritings);
+      setLoadingFeed(false);
+    };
     fetchWritings();
   }, [thisWallet]);
 
@@ -69,8 +55,6 @@ function BuildersPage() {
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, []);
-
-  if (!thisWallet) return <p className='text-white'>Please login first.</p>;
 
   if (writings.length === 0)
     return (

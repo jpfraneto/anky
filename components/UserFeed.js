@@ -59,12 +59,20 @@ const UserFeed = ({ thisWallet, exportWallet }) => {
       <div>
         <p className='text-white text-2xl'>Your feed:</p>
         <h2 className='text-white'>{thisWallet.address}</h2>
+        <Link href='/library'>
+          <Button buttonColor='bg-green-400' buttonText='library' />
+        </Link>
       </div>
-      <div className='w-1/2 mx-auto'>
+      <div className='w-full px-4 md:w-1/2 mx-auto'>
         {userWritings.map((x, i) => {
           return <UserWriting key={x.cid} writing={x} />;
         })}
       </div>
+      {userWritings && userWritings.length > 0 && (
+        <Link href='/library'>
+          <Button buttonColor='bg-green-400' buttonText='library' />
+        </Link>
+      )}
     </div>
   );
 };
@@ -96,7 +104,7 @@ const UserWriting = ({ writing }) => {
       case 'notebook':
         return `/notebook/${writing.containerId}`;
       default:
-        return 'bg-black';
+        return '/community-notebook';
     }
   }
 
