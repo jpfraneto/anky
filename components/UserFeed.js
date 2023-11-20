@@ -117,7 +117,7 @@ const UserWriting = ({ writing }) => {
           writing.writingContainerType
         )} text-white`}
       >
-        <p className='text-sm'>
+        <p className='text-sm em'>
           {new Date(writing.timestamp).toLocaleDateString('en-US', options)}
         </p>
         <p>

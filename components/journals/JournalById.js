@@ -302,7 +302,7 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
     return (
       isModalOpen && (
         <div className='fixed top-0 left-0 bg-black w-full h-full flex items-center justify-center z-50'>
-          <div className='bg-purple-300 overflow-y-scroll text-black rounded relative p-6 w-2/3 h-2/3'>
+          <div className='bg-purple-300 overflow-y-scroll text-black rounded relative p-6 w-11/12 h-3/4 md:w-2/3 md:h-2/3'>
             <p className='absolute top-1  cursor-pointer left-2 text-gray-800'>
               {entryForDisplay + 1}
             </p>

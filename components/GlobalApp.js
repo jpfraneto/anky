@@ -126,7 +126,7 @@ const GlobalApp = ({ alchemy }) => {
     if (authenticated && wallet && wallet.address && !userOwnsAnky) {
       return (
         <div
-          className={`${righteous.className}  py-24 text-white relative overflow-y-scroll flex flex-col items-center  w-full bg-cover bg-center`}
+          className={`${righteous.className}  py-24 text-white relative overflow-y-scroll flex flex-col items-center w-full bg-cover bg-center`}
           style={{
             boxSizing: 'border-box',
             height: 'calc(100vh)',
@@ -399,7 +399,7 @@ const GlobalApp = ({ alchemy }) => {
         </div>
       </div>
       <div
-        className={`${righteous.className} text-black relative overflow-y-scroll flex flex-col items-center  w-screen bg-cover bg-center`}
+        className={`${righteous.className} text-black relative overflow-y-scroll items-center  w-screen bg-cover bg-center`}
         style={{
           boxSizing: 'border-box',
           height: 'calc(100vh - 33px)',
