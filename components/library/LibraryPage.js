@@ -32,7 +32,7 @@ const LibraryPage = ({}) => {
   const [activeTab, setActiveTab] = useState('journals');
   const [displayRefreshBtn, setDisplayRefreshBtn] = useState(false);
   const wallets = useWallets();
-  const { authenticated } = usePrivy();
+  const { authenticated, login } = usePrivy();
 
   function sortJournalsByLastUpdated(a, b) {
     if (!a.entries || !b.entries) return;
@@ -113,12 +113,22 @@ const LibraryPage = ({}) => {
   //     </div>
   //   );
   // }
+  if (!authenticated)
+    return (
+      <div className='py-2 text-white'>
+        <p>you need to login</p>
+        <Button
+          buttonAction={login}
+          buttonColor='bg-green-400'
+          buttonText='login'
+        />
+      </div>
+    );
 
   return (
     <div>
       <div className='flex w-96 mx-auto relative items-center justify-center'>
         <h2 className='text-white text-2xl mt-2 '>library</h2>
-
         <span
           className='hover:cursor-pointer text-2xl mx-2 translate-y-1'
           onMouseEnter={() => setDisplayRefreshBtn(true)}

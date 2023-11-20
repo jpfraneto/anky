@@ -18,6 +18,7 @@ var options = {
 
 const UserFeed = ({ thisWallet, exportWallet }) => {
   console.log('this walet is: ', thisWallet);
+  const { login } = usePrivy();
   const [userWritings, setUserWritings] = useState([]);
   const [loadingFeed, setLoadingFeed] = useState(true);
   useEffect(() => {
@@ -33,7 +34,16 @@ const UserFeed = ({ thisWallet, exportWallet }) => {
   if (!thisWallet)
     return (
       <div>
-        <p className='text-white'>please login first</p>
+        <p className='text-white mt-2'>
+          please{' '}
+          <span
+            className='hover:text-yellow-300 cursor-pointer'
+            onClick={login}
+          >
+            login
+          </span>{' '}
+          first
+        </p>
       </div>
     );
 

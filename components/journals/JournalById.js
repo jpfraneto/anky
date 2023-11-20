@@ -326,7 +326,7 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
                 )
               ) : null}
             </div>
-            <p className=' w-full  italic  flex flex-col'>
+            <p className=' w-full absolute top-1 italic  flex flex-col'>
               <span className='text-sm'>
                 {new Date(thisEntry.timestamp).toLocaleDateString(
                   'en-US',
@@ -340,6 +340,14 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
     );
   }
 
+  if (loading)
+    return (
+      <div>
+        <Spinner />
+        <p className='text-white'>loading...</p>
+      </div>
+    );
+
   if (noJournals) {
     return (
       <div className='pt-8'>
@@ -352,14 +360,6 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
       </div>
     );
   }
-
-  if (loading)
-    return (
-      <div>
-        <Spinner />
-        <p className='text-white'>loading...</p>
-      </div>
-    );
 
   if (loadWritingGame)
     return (
