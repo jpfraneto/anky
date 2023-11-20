@@ -69,8 +69,7 @@ const GlobalApp = ({ alchemy }) => {
       let provider = await wallet.getEthersProvider();
       let signer = await provider.getSigner();
       const authToken = await getAccessToken();
-      console.log('the auth token is: ', authToken);
-      console.log('before sending the aidrop message', wallet.address);
+
       const serverResponse = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/blockchain/airdrop`,
         {
@@ -85,7 +84,6 @@ const GlobalApp = ({ alchemy }) => {
       );
       const data = await serverResponse.json();
 
-      console.log('users first anky txn', data);
       return;
       router.push('/welcome');
       setUserIsMintingAnky(false);
@@ -101,7 +99,6 @@ const GlobalApp = ({ alchemy }) => {
     setAnkyButtonText('looking for your anky...');
     if (!wallet) return alert('you are not logged in');
     try {
-      console.log('the wallet is: ', wallet);
       let provider = await wallet.getEthersProvider();
       let signer = await provider.getSigner();
       const ankyAirdropContract = new ethers.Contract(
@@ -109,10 +106,8 @@ const GlobalApp = ({ alchemy }) => {
         airdropABI,
         signer
       );
-      console.log('in here, wallet', wallet.address);
-      console.log('the anky airdrop contract is: ', ankyAirdropContract);
+
       const usersBalance = await ankyAirdropContract.balanceOf(wallet.address);
-      console.log('the users balance is: ', usersBalance);
       const usersAnkys = ethers.utils.formatUnits(usersBalance, 0);
       if (usersAnkys > 0) {
         setUserOwnsAnky(true);
@@ -128,8 +123,6 @@ const GlobalApp = ({ alchemy }) => {
 
   function getComponentForRoute(route, router) {
     if (!ready || loading) return;
-    console.log(userOwnsAnky);
-    console.log(`___________****_____${userOwnsAnky}____________________*****`);
     if (authenticated && wallet && wallet.address && !userOwnsAnky) {
       return (
         <div
@@ -323,7 +316,6 @@ const GlobalApp = ({ alchemy }) => {
             ></div>
           </div>
 
-          {/* <button onClick={() => console.log(userAppInformation)}>print</button> */}
           <div className='px-4 w-fit flex justify-center '>
             {authenticated ? (
               <button
@@ -388,7 +380,6 @@ const GlobalApp = ({ alchemy }) => {
           ></div>
         </div>
 
-        {/* <button onClick={() => console.log(userAppInformation)}>print</button> */}
         <div className='px-4 w-fit flex justify-center '>
           {authenticated ? (
             <button

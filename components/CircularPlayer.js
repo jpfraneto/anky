@@ -41,7 +41,6 @@ const CircularPlayer = ({ image, audio, setMeditationReady }) => {
   let progressLoop = null;
 
   const onAudioMetadataLoaded = () => {
-    console.log('iINSIODEIDNEKAGJCKJSAn the audio metadata function');
     setTimeLeft(Math.floor(audioRef.current.duration));
   };
 

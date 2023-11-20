@@ -3,7 +3,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 const AnswerToQuestionCard = ({ answer, index }) => {
-  console.log('the answer is: ', answer);
   const [opened, setOpened] = useState(false);
   return (
     <div

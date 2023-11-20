@@ -15,7 +15,6 @@ const IrysPage = () => {
   const [containerType, setContainerType] = useState('eulogia');
   const [pageNumber, setPageNumber] = useState(0);
   const [version, setVersion] = useState(0);
-  console.log('the wallets are', wallets);
   const thisWallet = wallets[0];
 
   const str = 'https://node2.irys.xyz';

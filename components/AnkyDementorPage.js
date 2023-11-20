@@ -65,7 +65,6 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
       setResponseFromAnkyReady(true);
       const { firstPageCid } = await response.json();
       setAnkyResponseIsReady(true);
-      console.log('in here, the cid is: ', firstPageCid);
 
       let signer = await provider.getSigner();
       const ankyDementorsContract = new ethers.Contract(
@@ -73,21 +72,17 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
         AnkyDementorsAbi,
         signer
       );
-      console.log('the anky dementors contract is: ', ankyDementorsContract);
 
       const tx = await ankyDementorsContract.mintDementor(
         thisWallet.address,
         firstPageCid
       );
       const receipt = await tx.wait();
-      console.log('the receipt is: ', receipt);
       const event = receipt.events?.find(e => e.event === 'DementorCreated');
 
       if (event) {
-        console.log('the event is', event);
         // Extract the tokenId from the event and set it to state
         const newDementorId = event.args.dementorId;
-        console.log('the new dementor id is: ', newDementorId);
         setAnkyDementorId(newDementorId.toString());
 
         const newDementor = {
@@ -104,10 +99,6 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
           ],
         };
         setUserAppInformation(x => {
-          console.log(
-            'the x in the user app information before adding a new dementor is: ',
-            x
-          );
           if (x.userDementors) {
             setUserData('userDementors', [...x.userDementors, newDementor]);
             return {
@@ -124,7 +115,6 @@ const AnkyDementorPage = ({ setLifeBarLength, lifeBarLength }) => {
         });
       }
 
-      console.log('after the response of creating the anky dementor notebook');
       setAnkyDementorCreated(true);
       setLoadWritingGame(false);
     } catch (error) {

@@ -22,10 +22,8 @@ const BottomNavbar = () => {
       return;
     }
     Notification.requestPermission().then(permission => {
-      console.log('IN HEREAS', permission);
       if (permission === 'granted') {
         setNotificationsEnabled(true);
-        console.log('Notification permission granted.');
         subscribeToPushManager();
       } else {
         console.error('Unable to get permission to notify.');

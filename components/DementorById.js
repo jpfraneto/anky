@@ -50,7 +50,6 @@ function DementorPage({
     useState([]);
 
   const wallets = useWallets();
-  console.log('the wallets are: ', wallets);
   const thisWallet = wallets.wallets[0];
 
   const { id } = router.query;
@@ -65,16 +64,10 @@ function DementorPage({
     if (event.key === 'ArrowLeft') {
       setDementorData(prevDementorData => {
         setDementorPageForDisplay(thisPage => {
-          console.log(
-            'the this page is: ',
-            thisPage.pageNumber,
-            prevDementorData
-          );
           const newPageIndex = prevDementorData.pages.findIndex(
             x => x.pageNumber == thisPage.pageNumber - 1
           );
-          console.log('the new page index is: ', newPageIndex);
-          console.log('th', prevDementorData.pages[newPageIndex]);
+
           setDementorPageAnswersForDisplay(
             prevDementorData.pages[newPageIndex]?.writings || []
           );
@@ -88,16 +81,10 @@ function DementorPage({
     } else if (event.key === 'ArrowRight') {
       setDementorData(prevDementorData => {
         setDementorPageForDisplay(thisPage => {
-          console.log(
-            'the this page is: ',
-            thisPage.pageNumber,
-            prevDementorData
-          );
           const newPageIndex = prevDementorData.pages.findIndex(
             x => x.pageNumber == thisPage.pageNumber + 1
           );
-          console.log('the new page index is: ', newPageIndex);
-          console.log('th', prevDementorData.pages[newPageIndex]);
+
           setDementorPageAnswersForDisplay(
             prevDementorData.pages[newPageIndex]?.writings || []
           );
@@ -138,7 +125,6 @@ function DementorPage({
 
   async function fetchDementorData(dementorId) {
     try {
-      console.log('inside the fetch dementor data', userAnky);
       if (!thisWallet.address) return;
       let provider = await thisWallet?.getEthersProvider();
       let signer;
@@ -148,43 +134,22 @@ function DementorPage({
       } else {
         return;
       }
-      console.log('before calling the anky dementors contract', provider);
       const ankyDementorsContract = new ethers.Contract(
         process.env.NEXT_PUBLIC_ANKY_DEMENTORS_CONTRACT,
         AnkyDementorsAbi,
         signer
       );
       setDementorsContract(ankyDementorsContract);
-      console.log('the dementors contract is: ', ankyDementorsContract);
-      console.log('the dementor id', dementorId);
+
       let formattedDementorId = dementorId;
       const thisDementor = await getIndividualDementorFormatted(
         formattedDementorId,
         thisWallet
       );
 
-      // const dementorData = await ankyDementorsContract.getDementor(
-      //   formattedDementorId
-      // );
-      // console.log('the dementor data is: ', dementorData);
-      // const processedDementor = await processFetchedDementor(
-      //   dementorData,
-      //   formattedDementorId,
-      //   thisWallet
-      // );
-      // const newProcessedDementor = await getDementorInfoFromIrys(
-      //   processedDementor,
-      //   'dementor',
-      //   router.query.id,
-      //   thisWallet.address
-      // );
-
-      // console.log('the NEW processed dementor is: ', newProcessedDementor);
-
       setDementorData(thisDementor);
       setLoadingDementor(false);
     } catch (error) {
-      console.log('there was an errror', error);
       setLoadingDementor(false);
       setDementorDoesntExist(true);
     }
@@ -253,16 +218,9 @@ function DementorPage({
             value: process.env.NEXT_PUBLIC_ANKY_DEMENTORS_CONTRACT,
           },
         ];
-        console.log('the first tags are: ', tags);
         try {
           const receipt = await webIrys.upload(finishText, { tags });
-          console.log(
-            'the writing was uploaded, and the receipt is: ',
-            receipt
-          );
-          console.log(
-            `Data uploaded ==> https://gateway.irys.xyz/${receipt.id}`
-          );
+
           return {
             thisWritingCid: receipt.id,
             pageWritingTimestamp: receipt.timestamp,
@@ -287,7 +245,6 @@ function DementorPage({
           }
         );
         const responseData = await response.json();
-        console.log('the response data from anky is: ', responseData);
         return responseData.newPrompts;
       }
 
@@ -312,26 +269,15 @@ function DementorPage({
             value: process.env.NEXT_PUBLIC_ANKY_DEMENTORS_CONTRACT,
           },
         ];
-        console.log('the second tags are: ', tags);
-        console.log(
-          'the prompts that are going to be uploaded now are: ',
-          newPromptsString
-        );
+
         if (newPromptsString && newPromptsString.length == 0) {
           newPromptsString = '1. Lorem ipsum%% 2. aloja%%3. vamo compare';
         }
         try {
-          console.log('the new prompts are: ', newPromptsString);
           const receipt = await webIrys.upload(newPromptsString.toString(), {
             tags,
           });
-          console.log(
-            'the new prompts were uploaded, and the receipt is: ',
-            receipt
-          );
-          console.log(
-            `Data uploaded ==> https://gateway.irys.xyz/${receipt.id}`
-          );
+
           return {
             newPromptsCid: receipt.id,
             newPromptsTimestamp: receipt.timestamp,
@@ -343,7 +289,6 @@ function DementorPage({
       }
 
       const thisPresentPage = dementorData.pages[dementorData.pages.length - 1];
-      console.log('this present page is: ', thisPresentPage);
 
       const { thisWritingCid, pageWritingTimestamp } =
         await uploadTheWritingForThisPage(webIrys, finishText, previousPageCid);
@@ -353,7 +298,6 @@ function DementorPage({
       thisPresentPage.writingsCid = thisWritingCid;
 
       const newPrompts = await getNewAnkyPrompts(finishText, prompts);
-      console.log('after here, the new prompts are: ', newPrompts);
       const newPage = {
         prompts: newPrompts.split('%%').filter(x => x.length > 0),
       };
@@ -425,7 +369,6 @@ function DementorPage({
               close
             </p>
             {dementorPagePromptsForDisplay.map((prompt, index) => {
-              console.log('the prompt is. ', prompt);
               return (
                 <div className='my-2 p-2 bg-slate-200 rounded-xl' key={index}>
                   <h2 className='mb-2 text-left text-xl text-yellow-800'>
@@ -496,7 +439,6 @@ function DementorPage({
   }
 
   if (userIsReadyToWrite) {
-    console.log('in here, the dementor data is: ', dementorData);
     return (
       <DementorGame
         {...writingGameProps}

@@ -18,7 +18,6 @@ const DementorCard = ({ dementor }) => {
     timestamp = dementor?.pages[dementor?.pages?.length - 1].timestamp;
   }
 
-  console.log('the timestamp is: ', timestamp);
   return (
     <Link href={`/dementor/${dementor.dementorId}`}>
       <div className='py-2 px-4 m-2 rounded-xl text-left flex flex-col bg-red-600 hover:bg-red-700 text-black'>

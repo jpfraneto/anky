@@ -47,9 +47,7 @@ export const UserProvider = ({ children }) => {
   const [reloadData, setReloadData] = useState(false);
 
   const wallets = useWallets();
-  console.log('the wallets are. ', wallets);
   const wallet = wallets.wallets[0];
-  console.log('the wallettt is: ', wallet);
 
   function isEmpty(obj) {
     return Object.keys(obj).length === 0 && obj.constructor === Object;
@@ -69,17 +67,6 @@ export const UserProvider = ({ children }) => {
         const ankyTbaAddress = await getUserData('ankyTbaAddress');
         const userWalletAddress = await getUserData('userWalletAddress');
 
-        console.log(
-          '------------ BEFORE THE SET USER APP INFORMATION --------------------',
-          userJournals,
-          userTemplates,
-          userNotebooks,
-          userEulogias,
-          ankyIndex,
-          ankyTbaAddress,
-          userWalletAddress,
-          userDementors
-        );
         setUserAppInformation({
           userJournals,
           userTemplates,
@@ -99,41 +86,32 @@ export const UserProvider = ({ children }) => {
   // Check initialization and setup status
   useEffect(() => {
     async function handleInitialization() {
-      console.log('inside the handleinitialization', loading, ready);
       if (loading && !ready) return;
-      console.log('AUTHENTICATED', authenticated, wallet, ready);
       if (ready && !wallet && !authenticated) {
-        console.log('running the hereee');
         setMainAppLoading(false);
         setAppLoading(false);
         return;
       }
       await changeChain();
       const response = await fetchUsersAnky();
-      console.log('THE RESPONSE IS: ', response);
       if (!response) return setMainAppLoading(false);
       let usersAnkys = response.usersAnkys;
       let usersAnkyUri = response.usersAnkyUri;
       let usersImage = response.imageUrl;
-      console.log('after fetching the user anky,', usersAnkys);
       if (usersAnkys == 0) {
         setUserOwnsAnky(false);
         return setMainAppLoading(false);
       }
       setUsersAnkyUri(usersAnkyUri);
       setUsersAnkyImage(usersImage);
-      console.log('after hereee');
       setUserOwnsAnky(true);
       setMainAppLoading(false);
       if (loadingUserStoredData) return;
-      console.log('inside hereaasc213');
 
       if (wallet && !wallet.chainId.includes('8453')) await changeChain();
-      console.log('the wallet is HERE: ', wallet);
-      console.log('the wallets are: ', wallets, userAppInformation?.wallet);
+
       const isUserTheSame =
         wallet?.address == userAppInformation?.wallet?.address;
-      console.log('user is the same', isUserTheSame);
       setCheckIfUserIsTheSame(isUserTheSame);
 
       if ((shouldInitializeUser() && wallet) || isUserTheSame) {
@@ -145,7 +123,6 @@ export const UserProvider = ({ children }) => {
         setAppLoading(false);
       }
     }
-    console.log('the wallet is here', wallet);
 
     handleInitialization();
   }, [loadingUserStoredData, wallet]);
@@ -159,10 +136,6 @@ export const UserProvider = ({ children }) => {
 
   useEffect(() => {
     if (finalSetup) {
-      console.log(
-        '************right before here*************',
-        userAppInformation
-      );
       setUserData('userJournals', userAppInformation.userJournals);
       setUserData('userTemplates', userAppInformation.userTemplates);
       setUserData('userNotebooks', userAppInformation.userNotebooks);
@@ -176,13 +149,7 @@ export const UserProvider = ({ children }) => {
 
   const shouldInitializeUser = () => {
     // return authenticated && wallet && true;
-    console.log(
-      'inside the should initialize user',
-      localStorage.getItem('firstTimeUser189'),
-      authenticated,
-      wallet,
-      userAppInformation
-    );
+
     return (
       !localStorage.getItem('firstTimeUser189') ||
       (authenticated &&
@@ -194,13 +161,6 @@ export const UserProvider = ({ children }) => {
   };
 
   const loadUserLibrary = async (fromOutside = false) => {
-    console.log(
-      'inside the load user library function',
-      setupIsReady,
-      fromOutside,
-      authenticated,
-      wallet
-    );
     try {
       if (
         (setupIsReady || fromOutside) &&
@@ -210,7 +170,6 @@ export const UserProvider = ({ children }) => {
         wallet.address.length > 0
       ) {
         setLoadingLibrary(true);
-        console.log('loading the users library');
         const { tba } = await callTba(wallet.address, setUserAppInformation);
         let provider = await wallet?.getEthersProvider();
         const signer = await provider.getSigner();
@@ -222,23 +181,18 @@ export const UserProvider = ({ children }) => {
           });
 
         if (fromOutside || reloadData || !userAppInformation.userJournals) {
-          console.log('before fetching the journals');
           const userJournals = await fetchUserJournals(signer, wallet);
-          console.log('the user journals are: ', userJournals);
           setUserAppInformation(x => {
             return { ...x, userJournals: userJournals };
           });
         }
 
         if (fromOutside || reloadData || !userAppInformation.userNotebooks) {
-          console.log('before fetching the notebooks');
-
           const userNotebooks = await fetchUserNotebooks(
             signer,
             userTba,
             wallet
           );
-          console.log('the user notebooks are HERE: ', userNotebooks);
 
           setUserAppInformation(x => {
             return { ...x, userNotebooks: userNotebooks };
@@ -246,10 +200,7 @@ export const UserProvider = ({ children }) => {
         }
 
         if (fromOutside || reloadData || !userAppInformation.userEulogias) {
-          console.log('before fetching the eulogias');
-
           const userEulogias = await fetchUserEulogias(signer, wallet);
-          console.log('the user eulogias are: ', userEulogias);
 
           setUserAppInformation(x => {
             return { ...x, userEulogias: userEulogias };
@@ -257,10 +208,7 @@ export const UserProvider = ({ children }) => {
         }
 
         if (fromOutside || reloadData || !userAppInformation.userDementors) {
-          console.log('before fetching the dementors');
-
           const userDementors = await fetchUserDementors(signer, wallet);
-          console.log('the user dementors are: ', userDementors);
 
           setUserAppInformation(x => {
             return { ...x, userDementors: userDementors };
@@ -285,15 +233,12 @@ export const UserProvider = ({ children }) => {
     try {
       let provider = await wallet.getEthersProvider();
       let signer = await provider.getSigner();
-      console.log('before getting the users balance', wallet);
       const ankyAirdropContract = new ethers.Contract(
         process.env.NEXT_PUBLIC_ANKY_AIRDROP_SMART_CONTRACT,
         airdropABI,
         signer
       );
-      console.log('the wallet is: ', wallet);
       const usersBalance = await ankyAirdropContract.balanceOf(wallet.address);
-      console.log('the users balance is: ', usersBalance);
       let usersAnkyUri = '';
       const usersAnkys = ethers.utils.formatUnits(usersBalance, 0);
       if (usersAnkys > 0) {
@@ -309,7 +254,6 @@ export const UserProvider = ({ children }) => {
         const metadata = await fetch(fetchableUri);
         const jsonMetadata = await metadata.json();
         let imageUrl = transformUri(jsonMetadata.image);
-        console.log('the metadata is: ', jsonMetadata);
         setUsersAnky({
           ankyIndex: usersAnkys,
           ankyUri: usersAnkyUri,
@@ -336,7 +280,6 @@ export const UserProvider = ({ children }) => {
       setUserAppInformation,
       authToken
     );
-    console.log('the airdrop call response is: ', airdropCallResponse);
     setUserAppInformation(x => {
       return {
         ...x,
@@ -357,7 +300,6 @@ export const UserProvider = ({ children }) => {
       wallet.address,
       setUserAppInformation
     );
-    console.log('the tba call response is: ', callTbaResponse);
     setUserAppInformation(x => {
       return {
         ...x,
@@ -372,13 +314,11 @@ export const UserProvider = ({ children }) => {
   }
   async function airdropUsersFirstJournal(address, authToken, provider) {
     const response = await airdropFirstJournal(address, authToken);
-    console.log('the response is: ', response);
 
     if (response && response.success) {
       const txHash = response.txHash;
       // Assuming you have a provider instance to query the Ethereum network
       const txReceipt = await provider.getTransactionReceipt(txHash);
-      console.log('the tx receipt is: ', txReceipt);
 
       const eventTopic = ethers.utils.id(
         'JournalAirdropped(tokenId, usersAnkyAddress)'
@@ -411,13 +351,11 @@ export const UserProvider = ({ children }) => {
   }
 
   const initializeUser = async () => {
-    console.log('inside the initialize user function');
     try {
       if (setupIsReady) return;
       if (loading) return;
       if (!wallet && !wallet?.address) return;
-      console.log('in hereAKHCKSA', userAppInformation);
-      console.log('THE WALLET IS: ', wallet);
+
       setShowProgressModal(true);
       setSettingThingsUp(true);
       const authToken = await getAccessToken();
@@ -426,7 +364,6 @@ export const UserProvider = ({ children }) => {
 
       let provider = await wallet.getEthersProvider();
       if (checkIfUserIsTheSame || !userAppInformation.ankyIndex) {
-        console.log('in here, the provider is: ', provider);
         await getTestEthAndAidropAnky(wallet, provider, authToken);
       }
       setCurrentStep(2);
@@ -454,7 +391,6 @@ export const UserProvider = ({ children }) => {
       }
       setCurrentStep(5);
 
-      console.log('all the initial setup is ready');
       localStorage.setItem('firstTimeUser189', 'done');
       setUserIsReadyNow(true);
       setShowProgressModal(false);
@@ -467,7 +403,6 @@ export const UserProvider = ({ children }) => {
   const changeChain = async () => {
     if (authenticated && wallet) {
       await wallet.switchChain(8453);
-      console.log('THE CHAIN WAS UPDATED');
       setUserAppInformation(x => {
         return { ...x, wallet: wallet };
       });
