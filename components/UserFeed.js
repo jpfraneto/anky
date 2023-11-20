@@ -17,7 +17,6 @@ var options = {
 };
 
 const UserFeed = ({ thisWallet, exportWallet }) => {
-  console.log('this walet is: ', thisWallet);
   const { login } = usePrivy();
   const [userWritings, setUserWritings] = useState([]);
   const [loadingFeed, setLoadingFeed] = useState(true);
@@ -25,7 +24,6 @@ const UserFeed = ({ thisWallet, exportWallet }) => {
     const fetchUserWritings = async () => {
       if (!thisWallet) return;
       const thisUserWritings = await getThisUserWritings(thisWallet.address);
-      console.log('the user writings are: ', thisUserWritings);
       setUserWritings(thisUserWritings);
       setLoadingFeed(false);
     };
@@ -73,7 +71,6 @@ const UserFeed = ({ thisWallet, exportWallet }) => {
 
 const UserWriting = ({ writing }) => {
   function getColor(containerType) {
-    console.log('in here, the container tupe is: ', containerType);
     switch (containerType) {
       case 'journal':
         return 'bg-green-400 hover:bg-green-500';
@@ -89,7 +86,6 @@ const UserWriting = ({ writing }) => {
   }
 
   function getContainerLink(writing) {
-    console.log('the writing is: ', writing);
     switch (writing.writingContainerType) {
       case 'journal':
         return `/journal/${writing.containerId}`;
