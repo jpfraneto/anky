@@ -76,6 +76,7 @@ const GlobalApp = ({ alchemy }) => {
         {
           method: 'POST',
           headers: {
+            'Content-Type': 'application/json',
             Authorization: `Bearer ${authToken}`,
           },
           body: JSON.stringify({ userWallet: wallet.address }),
@@ -145,12 +146,17 @@ const GlobalApp = ({ alchemy }) => {
         >
           <p>you don&apos;t own an anky.</p>
           <p>it is the starting point of this journey.</p>
-          <p>it is free, and there are only 96 of them available.</p>
+          <p>it is free, you just need to ask me for it.</p>
+          <p>send me an email to jp@anky.lat</p>
+          <p>or reach out on telegram @jpfraneto</p>
+          <p>hurry up, there are only 96 of them.</p>
+          <p>don&apos;t forget to add your address in that email</p>
+          <p>it is this one: {wallet.address}</p>
 
           <div className='mt-2'>
             <Button
               buttonText={ankyButtonText}
-              buttonAction={getMyAnky}
+              buttonAction={checkIfUserOwnsAnky}
               buttonColor='bg-green-600'
             />
           </div>
