@@ -32,6 +32,7 @@ import Irys from './Irys';
 import Button from './Button';
 import Spinner from './Spinner';
 import WelcomePage from './WelcomePage';
+import UserFeed from './UserFeed';
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 const ankyverseToday = getAnkyverseDay(new Date());
@@ -220,8 +221,8 @@ const GlobalApp = ({ alchemy }) => {
 
       case '/community-notebook':
         return <BuildersPage />;
-      case '/user':
-        return <UserPage />;
+      case '/me':
+        return <UserFeed thisWallet={wallet} />;
       case '/eulogias':
         return <EulogiasListPage />;
       case '/library':
