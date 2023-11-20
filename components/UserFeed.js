@@ -55,13 +55,15 @@ const UserFeed = ({ thisWallet, exportWallet }) => {
   }
 
   return (
-    <div>
-      <div>
+    <div className='w-full'>
+      <div className='w-full'>
         <p className='text-white text-2xl'>Your feed:</p>
         <h2 className='text-white'>{thisWallet.address}</h2>
-        <Link href='/library'>
-          <Button buttonColor='bg-green-400' buttonText='library' />
-        </Link>
+        <div className='mx-auto w-24'>
+          <Link href='/library'>
+            <Button buttonColor='bg-green-400' buttonText='library' />
+          </Link>
+        </div>
       </div>
       <div className='w-full px-4 md:w-1/2 mx-auto'>
         {userWritings.map((x, i) => {
