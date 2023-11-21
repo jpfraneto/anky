@@ -125,7 +125,7 @@ export const UserProvider = ({ children }) => {
     }
 
     handleInitialization();
-  }, [loadingUserStoredData, wallet]);
+  }, [loadingUserStoredData, ready, loading, wallet]);
 
   // Load the user's library when setup is ready
   useEffect(() => {
