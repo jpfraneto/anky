@@ -4,6 +4,7 @@ import { ethers } from 'ethers';
 import Link from 'next/link';
 import Image from 'next/image';
 import NotebookCard from '../NotebookCard';
+import airdropABI from '../../lib/airdropABI.json';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
 import EulogiaCard from '../eulogias/EulogiaCard';
 import JournalCard from '../journals/JournalCard';
@@ -35,9 +36,11 @@ const LibraryPage = ({}) => {
   const [ankyButtonText, setAnkyButtonText] = useState('i already own one');
   const [activeTab, setActiveTab] = useState('journals');
   const [displayRefreshBtn, setDisplayRefreshBtn] = useState(false);
-  const wallets = useWallets();
+  const { wallets } = useWallets();
+  console.log('the wallets are', wallets);
   const wallet = wallets[0];
-  const { authenticated, login } = usePrivy();
+  console.log('the wallet is: ', wallet);
+  const { authenticated, login, loading } = usePrivy();
 
   async function checkIfUserOwnsAnky() {
     setAnkyButtonText('looking for your anky...');
@@ -54,9 +57,10 @@ const LibraryPage = ({}) => {
       );
 
       console.log('the anky airdrp contract is: ', ankyAirdropContract);
-      setUserOwnsAnky(true);
+
       const usersBalance = await ankyAirdropContract.balanceOf(wallet.address);
       const usersAnkys = ethers.utils.formatUnits(usersBalance, 0);
+      console.log('the users ankys is: ', usersAnkys);
       if (usersAnkys > 0) {
         setUserOwnsAnky(true);
       } else {
@@ -149,7 +153,15 @@ const LibraryPage = ({}) => {
   //     </div>
   //   );
   // }
-  if (!authenticated)
+  if (loading)
+    return (
+      <div className='text-white'>
+        <p>loading...</p>
+        <Spinner />
+      </div>
+    );
+  console.log('the wallet is: ', wallet);
+  if (!wallet || !authenticated)
     return (
       <div className='py-2 text-white'>
         <p>you need to login</p>
@@ -163,7 +175,7 @@ const LibraryPage = ({}) => {
 
   if (!userOwnsAnky)
     return (
-      <div>
+      <div className='md:w-1/2 text-white mx-auto p-2'>
         <p>you don&apos;t own an anky.</p>
         <p>it is the starting point of this journey.</p>
         <p>it is free, you just need to ask me for it.</p>

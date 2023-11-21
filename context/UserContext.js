@@ -112,19 +112,8 @@ export const UserProvider = ({ children }) => {
       if (loadingUserStoredData) return;
 
       if (wallet && !wallet.chainId.includes('8453')) await changeChain();
-
-      const isUserTheSame =
-        wallet?.address == userAppInformation?.wallet?.address;
-      setCheckIfUserIsTheSame(isUserTheSame);
-
-      if ((shouldInitializeUser() && wallet) || isUserTheSame) {
-        if (wallets.length > 1)
-          return alert('Please disconnect one of your wallets to proceed');
-        // await initializeUser();
-      } else {
-        setLibraryLoading(false);
-        setAppLoading(false);
-      }
+      setLibraryLoading(false);
+      setAppLoading(false);
     }
 
     handleInitialization();

@@ -380,6 +380,12 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
             >
               close
             </p>
+            <span className='text-sm absolute w-fit top-0'>
+              {new Date(displayModalMessage.timestamp).toLocaleDateString(
+                'en-US',
+                options
+              )}
+            </span>
 
             <div className='overflow-y-scroll h-9/12'>
               {displayModalMessage && displayModalMessage.text ? (
@@ -398,12 +404,6 @@ const IndividualEulogiaDisplayPage = ({ setLifeBarLength, lifeBarLength }) => {
               <span className='text-xl mb-4'>
                 {' '}
                 {displayModalMessage.whoWroteIt}
-              </span>
-              <span className='text-sm'>
-                {new Date(displayModalMessage.timestamp).toLocaleDateString(
-                  'en-US',
-                  options
-                )}
               </span>
             </p>
           </div>
