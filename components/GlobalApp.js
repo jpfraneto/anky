@@ -53,7 +53,7 @@ const GlobalApp = ({ alchemy }) => {
   const router = useRouter();
   const [lifeBarLength, setLifeBarLength] = useState(0);
   const [checkingIfYouOwnAnky, setCheckingIfYouOwnAnky] = useState(false);
-  const [ankyButtonText, setAnkyButtonText] = useState('get my anky');
+  const [ankyButtonText, setAnkyButtonText] = useState('i already own one');
   const [displayWritingGameLanding, setDisplayWritingGameLanding] =
     useState(false);
   const [userWallet, setUserWallet] = useState(null);

@@ -35,7 +35,7 @@ const LoginPage = () => {
             <Button
               buttonAction={getUsersAnky}
               buttonColor='bg-green-600 text-white'
-              buttonText='get my anky'
+              buttonText='i already have one'
             />
           </div>
         </div>
