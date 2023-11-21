@@ -99,7 +99,9 @@ const GlobalApp = ({ alchemy }) => {
     setAnkyButtonText('looking for your anky...');
     if (!wallet) return alert('you are not logged in');
     try {
+      console.log('the wallet is: ', wallet);
       let provider = await wallet.getEthersProvider();
+      console.log('the provider is: ', provider);
       let signer = await provider.getSigner();
       const ankyAirdropContract = new ethers.Contract(
         process.env.NEXT_PUBLIC_ANKY_AIRDROP_SMART_CONTRACT,
@@ -107,6 +109,8 @@ const GlobalApp = ({ alchemy }) => {
         signer
       );
 
+      console.log('the anky airdrp contract is: ', ankyAirdropContract);
+      setUserOwnsAnky(true);
       const usersBalance = await ankyAirdropContract.balanceOf(wallet.address);
       const usersAnkys = ethers.utils.formatUnits(usersBalance, 0);
       if (usersAnkys > 0) {
@@ -115,6 +119,7 @@ const GlobalApp = ({ alchemy }) => {
         setAnkyButtonText('you dont own an anky airdrop');
       }
     } catch (error) {
+      console.log('askdkuahs');
       console.log('there was an error', error);
       setUserIsMintingAnky(false);
       setAnkyButtonText('you dont own an anky airdrop');
@@ -123,39 +128,7 @@ const GlobalApp = ({ alchemy }) => {
 
   function getComponentForRoute(route, router) {
     if (!ready || loading) return;
-    if (authenticated && wallet && wallet.address && !userOwnsAnky) {
-      return (
-        <div
-          className={`${righteous.className}  py-24 text-white relative overflow-y-scroll flex flex-col items-center w-full bg-cover bg-center`}
-          style={{
-            boxSizing: 'border-box',
-            height: 'calc(100vh)',
-            backgroundImage:
-              "linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/images/backgroundankys.png')",
-            backgroundPosition: 'center center',
-            backgroundSize: 'cover',
-            backgroundRepeat: 'no-repeat',
-          }}
-        >
-          <p>you don&apos;t own an anky.</p>
-          <p>it is the starting point of this journey.</p>
-          <p>it is free, you just need to ask me for it.</p>
-          <p>send me an email to jp@anky.lat</p>
-          <p>or reach out on telegram @jpfraneto</p>
-          <p>hurry up, there are only 96 of them.</p>
-          <p>don&apos;t forget to add your address in that email</p>
-          <p>it is this one: {wallet.address}</p>
 
-          <div className='mt-2'>
-            <Button
-              buttonText={ankyButtonText}
-              buttonAction={checkIfUserOwnsAnky}
-              buttonColor='bg-green-600'
-            />
-          </div>
-        </div>
-      );
-    }
     switch (route) {
       case '/':
         return (

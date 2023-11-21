@@ -88,11 +88,13 @@ export const UserProvider = ({ children }) => {
     async function handleInitialization() {
       if (loading && !ready) return;
       if (ready && !wallet && !authenticated) {
+        console.log('INEIS');
         setMainAppLoading(false);
         setAppLoading(false);
         return;
       }
       if (!wallet) return;
+      console.log('alooooja');
       await changeChain();
       const response = await fetchUsersAnky();
       if (!response) return setMainAppLoading(false);
@@ -126,7 +128,7 @@ export const UserProvider = ({ children }) => {
     }
 
     handleInitialization();
-  }, [ready]);
+  }, [wallet, ready]);
 
   // Load the user's library when setup is ready
   useEffect(() => {

@@ -23,16 +23,51 @@ const LibraryPage = ({}) => {
     loadingLibrary,
     usersAnky,
     usersAnkyImage,
+    userOwnsAnky,
+    setUserOwnsAnky,
   } = useUser();
   const [notebooks, setNotebooks] = useState([]);
   const [journals, setJournals] = useState([]);
   const [templates, setTemplates] = useState([]);
   const [dementors, setDementors] = useState([]);
   const [eulogias, setEulogias] = useState([]);
+  const [checkingIfYouOwnAnky, setCheckingIfYouOwnAnky] = useState(false);
+  const [ankyButtonText, setAnkyButtonText] = useState('i already own one');
   const [activeTab, setActiveTab] = useState('journals');
   const [displayRefreshBtn, setDisplayRefreshBtn] = useState(false);
   const wallets = useWallets();
   const { authenticated, login } = usePrivy();
+
+  async function checkIfUserOwnsAnky() {
+    setAnkyButtonText('looking for your anky...');
+    if (!wallet) return alert('you are not logged in');
+    try {
+      console.log('the wallet is: ', wallet);
+      let provider = await wallet.getEthersProvider();
+      console.log('the provider is: ', provider);
+      let signer = await provider.getSigner();
+      const ankyAirdropContract = new ethers.Contract(
+        process.env.NEXT_PUBLIC_ANKY_AIRDROP_SMART_CONTRACT,
+        airdropABI,
+        signer
+      );
+
+      console.log('the anky airdrp contract is: ', ankyAirdropContract);
+      setUserOwnsAnky(true);
+      const usersBalance = await ankyAirdropContract.balanceOf(wallet.address);
+      const usersAnkys = ethers.utils.formatUnits(usersBalance, 0);
+      if (usersAnkys > 0) {
+        setUserOwnsAnky(true);
+      } else {
+        setAnkyButtonText('you dont own an anky airdrop');
+      }
+    } catch (error) {
+      console.log('askdkuahs');
+      console.log('there was an error', error);
+      setUserIsMintingAnky(false);
+      setAnkyButtonText('you dont own an anky airdrop');
+    }
+  }
 
   function sortJournalsByLastUpdated(a, b) {
     if (!a.entries || !b.entries) return;
@@ -125,18 +160,37 @@ const LibraryPage = ({}) => {
       </div>
     );
 
+  if (!userOwnsAnky)
+    return (
+      <div>
+        <p>you don&apos;t own an anky.</p>
+        <p>it is the starting point of this journey.</p>
+        <p>it is free, you just need to ask me for it.</p>
+        <p>send me an email to jp@anky.lat</p>
+        <p>or reach out on telegram @jpfraneto</p>
+        <p>hurry up, there are only 96 of them.</p>
+        <p>don&apos;t forget to add your address in that email</p>
+        <p>it is this one: {wallet.address}</p>
+        <div className='mt-2'>
+          <Button
+            buttonText={ankyButtonText}
+            buttonAction={checkIfUserOwnsAnky}
+            buttonColor='bg-green-600'
+          />
+        </div>
+      </div>
+    );
+
   return (
     <div>
       <div className='flex w-96 mx-auto relative items-center justify-center'>
         <h2 className='text-white text-2xl mt-2 '>library</h2>
-        <span
-          className='hover:cursor-pointer text-2xl mx-2 translate-y-1'
-          onMouseEnter={() => setDisplayRefreshBtn(true)}
-          onMouseLeave={() => setDisplayRefreshBtn(false)}
-          onClick={() => loadUserLibrary(true)}
-        >
-          👽
-        </span>
+
+        <Button
+          buttonAction={() => loadUserLibrary(true)}
+          buttonText='refresh library'
+          buttonColor='bg-green-100 my-2'
+        />
         {displayRefreshBtn && (
           <span className='text-red-200 text-sm absolute right-0 translate-y-1'>
             {loadingLibrary ? 'refreshing...' : 'refresh library'}
