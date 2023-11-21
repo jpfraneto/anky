@@ -92,6 +92,7 @@ export const UserProvider = ({ children }) => {
         setAppLoading(false);
         return;
       }
+      if (!wallet) return;
       await changeChain();
       const response = await fetchUsersAnky();
       if (!response) return setMainAppLoading(false);
@@ -229,10 +230,11 @@ export const UserProvider = ({ children }) => {
   };
 
   async function fetchUsersAnky() {
-    if (!wallet) return;
+    if (!wallet || !wallet.address) return;
     try {
       let provider = await wallet.getEthersProvider();
       let signer = await provider.getSigner();
+      if (!provider) return;
       const ankyAirdropContract = new ethers.Contract(
         process.env.NEXT_PUBLIC_ANKY_AIRDROP_SMART_CONTRACT,
         airdropABI,
