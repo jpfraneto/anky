@@ -303,13 +303,13 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
       isModalOpen && (
         <div className='fixed top-0 left-0 bg-black w-full h-full flex items-center justify-center z-50'>
           <div className='bg-purple-300 overflow-y-scroll text-black rounded relative p-6 w-11/12 h-3/4 md:w-2/3 md:h-2/3'>
-            <p className='absolute top-1  cursor-pointer left-2 text-gray-800'>
+            <p className='absolute top-1 w-fit cursor-pointer left-2 text-gray-800'>
               {entryForDisplay + 1}
             </p>
 
             <p
               onClick={closeModal}
-              className='absolute top-1 cursor-pointer right-2 text-red-600'
+              className='absolute w-fit top-1 cursor-pointer right-2 text-red-600'
             >
               close
             </p>
@@ -326,7 +326,7 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
                 )
               ) : null}
             </div>
-            <p className=' w-full absolute top-1 italic  flex flex-col'>
+            <p className='absolute top-1 italic w-fit flex flex-col'>
               <span className='text-sm'>
                 {new Date(thisEntry.timestamp).toLocaleDateString(
                   'en-US',
