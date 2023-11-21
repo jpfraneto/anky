@@ -36,6 +36,7 @@ const LibraryPage = ({}) => {
   const [activeTab, setActiveTab] = useState('journals');
   const [displayRefreshBtn, setDisplayRefreshBtn] = useState(false);
   const wallets = useWallets();
+  const wallet = wallets[0];
   const { authenticated, login } = usePrivy();
 
   async function checkIfUserOwnsAnky() {
