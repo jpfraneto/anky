@@ -262,7 +262,7 @@ const DesktopWritingGame = ({
       <audio ref={audioRef}>
         <source src='/sounds/bell.mp3' />
       </audio>
-      <div className='md:block text-white w-full px-2 md:w-full lg:w-2/3'>
+      <div className='md:block text-white w-full mx-auto px-2 md:w-full lg:w-2/3'>
         <div>
           {!finished && (
             <div

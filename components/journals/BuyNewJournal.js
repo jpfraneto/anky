@@ -167,7 +167,7 @@ const BuyNewJournal = () => {
                     placeholder='journal title'
                     className='rounded-xl p-2 text-black'
                   />
-                  <div className='flex justify-center my-4'>
+                  <div className='flex justify-around w-96 mx-auto   my-4'>
                     <Button
                       buttonText='buy new journal'
                       buttonAction={mintNewJournal}

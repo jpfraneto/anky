@@ -33,6 +33,7 @@ import Button from './Button';
 import Spinner from './Spinner';
 import WelcomePage from './WelcomePage';
 import UserFeed from './UserFeed';
+import GlobalFeed from './GlobalFeed';
 
 const righteous = Righteous({ weight: '400', subsets: ['latin'] });
 const ankyverseToday = getAnkyverseDay(new Date());
@@ -200,6 +201,8 @@ const GlobalApp = ({ alchemy }) => {
 
       case '/community-notebook':
         return <BuildersPage />;
+      case '/feed':
+        return <GlobalFeed thisWallet={wallet} />;
       case '/me':
         return <UserFeed exportWallet={exportWallet} thisWallet={wallet} />;
       case '/eulogias':
@@ -372,7 +375,7 @@ const GlobalApp = ({ alchemy }) => {
         </div>
       </div>
       <div
-        className={`${righteous.className} text-black relative overflow-y-scroll items-center  w-screen bg-cover bg-center`}
+        className={`${righteous.className} text-black relative overflow-y-scroll items-center justify-center w-screen bg-cover bg-center`}
         style={{
           boxSizing: 'border-box',
           height: 'calc(100vh - 33px)',

@@ -486,7 +486,7 @@ function NewNotebookPage({}) {
       </p>
     );
   return (
-    <div className='my-4 md:w-2/3 text-gray-200 flex items-center justify-center'>
+    <div className='my-4 md:w-2/3 mx-auto text-gray-200 flex items-center justify-center'>
       <form
         className='bg-black w-full flex flex-col p-2 md:p-6 rounded shadow-md space-y-4'
         onSubmit={handleSubmit}
