@@ -1,7 +1,7 @@
 import React from 'react';
 
 const Inquiry = () => {
-  return <div>Inquiry</div>;
+  return <div>Account setup - inquiry</div>;
 };
 
 export default Inquiry;
