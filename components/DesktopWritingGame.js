@@ -213,8 +213,10 @@ const DesktopWritingGame = ({
     try {
       const receipt = await webIrys.upload(text, { tags });
       setLifeBarLength(0);
-      router.push(`/writing/${receipt.id}`)
-      setDisplayWritingGameLanding(false);
+      router.push(`/me`);
+      setTimeout(()=>{
+        setDisplayWritingGameLanding(false);
+      }, 1000)
     } catch (error) {
       console.log('there was an error');
       console.log('the error is:', error);

@@ -68,7 +68,7 @@ const IndividualWritingDisplayPage = ({  }) => {
       </div>
 
         </div>
-        <Button buttonText={copyText} buttonAction={copyThisText} buttonColor='bg-green-600 w-48'/>
+        <Button buttonText={copyText} buttonAction={copyThisText} buttonColor='bg-green-600 w-48 mb-8'/>
       </div>
     );
 }
