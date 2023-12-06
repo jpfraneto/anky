@@ -5,6 +5,7 @@ import { Righteous, Dancing_Script } from 'next/font/google';
 import { getAnkyverseDay, getAnkyverseQuestion } from '../lib/ankyverse';
 import { useUser } from '../context/UserContext';
 import { ethers } from 'ethers';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { fetchUserDementors } from '../lib/notebooks';
 import { Transition } from 'react-transition-group';
@@ -23,6 +24,7 @@ import EulogiasListPage from './eulogias/EulogiasListPage';
 import NewEulogiaPage from './eulogias/NewEulogiaPage';
 import IndividualEulogiaDisplayPage from './eulogias/IndividualEulogiaDisplayPage';
 import IndividualNotebookPage from './notebook/IndividualNotebookPage';
+import IndividualWritingDisplayPage from './IndividualWritingDisplayPage'
 import JournalById from './journals/JournalById';
 import BuyNewJournal from './journals/BuyNewJournal';
 import LitProtocol from './LitProtocol';
@@ -200,7 +202,7 @@ const GlobalApp = ({ alchemy }) => {
         );
 
       case '/community-notebook':
-        return <BuildersPage />;
+        return <GlobalFeed thisWallet={wallet} />;
       case '/feed':
         return <GlobalFeed thisWallet={wallet} />;
       case '/me':
@@ -211,7 +213,10 @@ const GlobalApp = ({ alchemy }) => {
         return <LibraryPage />;
       case '/write?':
         return <LibraryPage />;
-
+      case `/writing/${route.split('/').pop()}`:
+        return (
+          <IndividualWritingDisplayPage />
+        );
       case '/journal':
         return <JournalPage userAppInformation={userAppInformation} />;
       case `/journal/new`:
@@ -276,12 +281,12 @@ const GlobalApp = ({ alchemy }) => {
     return (
       <div className='text-center w-screen text-white'>
         <div className='text-gray-400 w-full h-8 flex justify-between items-center'>
-          <div
-            className='hover:text-red-300 hover:cursor-pointer px-4 active:text-red-400'
-            onClick={() => router.push('/')}
-          >
-            anky
-          </div>
+          <span onClick={()=>setDisplayWritingGameLanding(false)}>
+            <Link className='hover:text-red-300 hover:cursor-pointer px-4 active:text-red-400' href='/'>
+              anky
+            </Link>
+          </span>
+          
           <div className='h-full w-full'>
             <div
               className='h-full opacity-50'
@@ -294,12 +299,26 @@ const GlobalApp = ({ alchemy }) => {
 
           <div className='px-4 w-fit flex justify-center '>
             {authenticated ? (
-              <button
-                className='hover:text-purple-600 cursor-pointer'
-                onClick={logout}
-              >
-                logout
-              </button>
+               <div className='flex space-x-2 w-fit'>
+                  <button
+               className='hover:text-purple-600 cursor-pointer'
+               onClick={()=>setDisplayWritingGameLanding(false)}
+             >
+               cancel
+             </button>
+             <span onClick={()=>setDisplayWritingGameLanding(false)} >
+              <Link href='/library'  className='hover:text-purple-600 cursor-pointer'>
+                library
+              </Link>
+             </span>
+               
+               <button
+               className='hover:text-purple-600 cursor-pointer'
+               onClick={logout}
+             >
+               logout
+             </button>
+             </div>
             ) : (
               <button
                 className='hover:text-purple-600 cursor-pointer'
@@ -340,12 +359,11 @@ const GlobalApp = ({ alchemy }) => {
   return (
     <div className='text-center w-screen text-white'>
       <div className='text-gray-400 w-full h-8 flex justify-between items-center'>
-        <div
-          className='hover:text-red-300 hover:cursor-pointer px-4 active:text-red-400'
-          onClick={() => router.push('/')}
-        >
-          anky
-        </div>
+      <span onClick={()=>setDisplayWritingGameLanding(false)}>
+            <Link className='hover:text-red-300 hover:cursor-pointer px-4 active:text-red-400' href='/'>
+              anky
+            </Link>
+          </span>
         <div className='h-full w-full'>
           <div
             className='h-full opacity-50'
@@ -358,12 +376,26 @@ const GlobalApp = ({ alchemy }) => {
 
         <div className='px-4 w-fit flex justify-center '>
           {authenticated ? (
-            <button
+            <div className='flex space-x-2 w-fit'>
+               <button
+               className='hover:text-purple-600 cursor-pointer'
+               onClick={()=>setDisplayWritingGameLanding(true)}
+             >
+               write
+             </button>
+             <span onClick={()=>setDisplayWritingGameLanding(false)} >
+             <Link href='/library'  className='hover:text-purple-600 cursor-pointer'>
+               library
+               </Link>
+             </span>
+              <button
               className='hover:text-purple-600 cursor-pointer'
               onClick={logout}
             >
               logout
             </button>
+            </div>
+         
           ) : (
             <button
               className='hover:text-purple-600 cursor-pointer'

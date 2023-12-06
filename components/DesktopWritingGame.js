@@ -167,8 +167,9 @@ const DesktopWritingGame = ({
 
   const sendTextToIrys = async () => {
     if (!authenticated) {
-      alert('You need to login');
-      return login();
+      if(confirm('You need to login to save your writings')){
+        return login();
+      }
     }
     setSavingTextAnon(true);
     const getWebIrys = async () => {
@@ -211,12 +212,9 @@ const DesktopWritingGame = ({
     ];
     try {
       const receipt = await webIrys.upload(text, { tags });
-      console.log(`Data uploaded ==> https://gateway.irys.xyz/${receipt.id}`);
       setLifeBarLength(0);
+      router.push(`/writing/${receipt.id}`)
       setDisplayWritingGameLanding(false);
-      alert(
-        'this was saved forever. somewhere. one day we will read all of what has been said.'
-      );
     } catch (error) {
       console.log('there was an error');
       console.log('the error is:', error);
@@ -336,7 +334,7 @@ const DesktopWritingGame = ({
               </div>
 
               {finished ? (
-                <div className='p-4 bg-black drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]  z-50'>
+                <div className='p-4 bg-black md:w-1/2 rounded-xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]  z-50'>
                   <p
                     className={`${righteous.className} mb-2 text-xl font-bold`}
                   >
@@ -346,7 +344,7 @@ const DesktopWritingGame = ({
                     className={`${righteous.className} mb-2 text-xl font-bold`}
                   >
                     you can add what you wrote to a special notebook that will
-                    be stored forever on the blockchain.
+                    be stored forever.
                   </p>
 
                   <div className='flex justify-center '>

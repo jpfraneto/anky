@@ -57,13 +57,8 @@ const UserFeed = ({ thisWallet, exportWallet }) => {
   return (
     <div className='w-full'>
       <div className='w-full'>
-        <p className='text-white text-2xl'>Your feed:</p>
-        <h2 className='text-white'>{thisWallet.address}</h2>
-        <div className='mx-auto w-24'>
-          <Link href='/library'>
-            <Button buttonColor='bg-green-400' buttonText='library' />
-          </Link>
-        </div>
+        <p className='text-white text-5xl my-2'>Your feed:</p>
+       
       </div>
       <div className='w-full px-4 md:w-1/2 mx-auto'>
         {userWritings.map((x, i) => {
@@ -80,6 +75,27 @@ const UserFeed = ({ thisWallet, exportWallet }) => {
 };
 
 const UserWriting = ({ writing }) => {
+  const [copyText, setCopyText] = useState('copy text')
+  const [copyLinkText, setCopyLinkText] = useState('copy link')
+
+
+  const copyThisWritingText = async () => {
+    await navigator.clipboard.writeText(writing.text);
+    setCopyText('text copied')
+    setTimeout(()=>{
+      setCopyText("copy text")
+    }, 1618)
+  }
+
+  const copyThisWritingLink = async () => {
+    const newLink = `http://localhost:3000/writing/${writing.cid}`;
+    await navigator.clipboard.writeText(newLink);
+    setCopyLinkText('link copied')
+    setTimeout(()=>{
+      setCopyLinkText("copy link")
+    }, 1618)
+  }
+
   function getColor(containerType) {
     switch (containerType) {
       case 'journal':
@@ -111,15 +127,23 @@ const UserWriting = ({ writing }) => {
   }
 
   return (
-    <Link href={`${getContainerLink(writing)}`} passHref>
       <div
         className={`p-2 m-2 rounded-xl border-white border-2 ${getColor(
           writing.writingContainerType
-        )} text-white`}
-      >
+        )} text-white relative`}
+      > 
+        <span className='absolute left-2 top-2 hover:text-purple-600 hover:cursor-pointer' onClick={copyThisWritingLink}>{copyLinkText}</span>
+
+        <div className='absolute flex space-x-2 w-fit top-2 right-2  z-20'>
+          <Link className='hover:text-purple-600' href={`${getContainerLink(writing)}`}>
+             visit
+          </Link>
+          <span className='hover:text-purple-600 hover:cursor-pointer' onClick={copyThisWritingText}>{copyText}</span>
+        </div>
         <p className='text-sm em'>
           {new Date(writing.timestamp).toLocaleDateString('en-US', options)}
         </p>
+      
         <p>
           {writing.writingContainerType} - {writing.containerId}
         </p>
@@ -136,7 +160,6 @@ const UserWriting = ({ writing }) => {
           )
         ) : null}
       </div>
-    </Link>
   );
 };
 

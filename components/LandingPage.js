@@ -53,8 +53,8 @@ function LandingPage({
       >
         <div className='absolute inset-0 h-screen bg-black opacity-40'></div>
         <div className='relative z-10 flex flex-col items-center justify-center h-full'>
-          <h1 className='text-5xl text-gray-400 font-bold mt-48 md:mt-32 mb-8'>
-            {authenticated ? 'welcome back, my friend' : 'tell us who you are'}
+          <h1 className='text-5xl text-gray-400 font-bold mt-64 mb-2'>
+            {authenticated ? 'welcome back, my friend' : 'welcome. are you ready to write?'}
           </h1>
 
           {loading ? (
@@ -64,35 +64,22 @@ function LandingPage({
               {authenticated ? (
                 <div className='text-gray-400'>
                   <div className='mt-2 flex space-x-2'>
-                    <Link href='/library' passHref>
+                    <Button
+                      buttonAction={() => setDisplayWritingGameLanding(true)}
+                      buttonText='write'
+                      buttonColor='bg-gradient-to-r from-red-500 via-yellow-600 to-violet-500 text-black'
+                    />
+                    <Link href='/me' passHref>
                       <Button
-                        buttonText='library'
+                        buttonText='read'
                         buttonColor='bg-purple-400 text-black'
                       />
                     </Link>
-                    <Button
-                      buttonAction={() => setDisplayWritingGameLanding(true)}
-                      buttonText='prompt of the day'
-                      buttonColor='bg-gradient-to-r from-red-500 via-yellow-600 to-violet-500 text-black'
-                    />
                   </div>
                 </div>
               ) : (
                 <div className='text-gray-400'>
                   <div className='mt-2 w-96 flex mx-auto'>
-                    {startJourney ? (
-                      <Button
-                        buttonText='login'
-                        buttonAction={login}
-                        buttonColor='bg-purple-400 mx-1 text-black'
-                      />
-                    ) : (
-                      <Button
-                        buttonText='start journey'
-                        buttonColor='bg-purple-500 mx-1 text-black'
-                        buttonAction={() => setStartJourney(true)}
-                      />
-                    )}
                     <Button
                       buttonText='prompt of the day'
                       buttonAction={() => setDisplayWritingGameLanding(true)}
