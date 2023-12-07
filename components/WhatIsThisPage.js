@@ -14,7 +14,7 @@ const WhatIsThisPage = () => {
             We believe in the transformative power of writing.
           </p>
           <p className="mb-2">
-            This practice is not just a means of communication; it's a pathway
+            This practice is not just a means of communication; it&apos;s a pathway
             to deeper self-awareness and mindfulness. Here, you embark on a
             journey of self-discovery, using writing as a tool to explore your
             inner world and connect with your thoughts and emotions in a
@@ -27,7 +27,7 @@ const WhatIsThisPage = () => {
           <p className="mb-2">
             Anky harnesses the serenity of meditation and the clarity of writing
             to create a pioneering system designed to enrich your mental
-            well-being. Whether you're journaling your thoughts, penning down
+            well-being. Whether you&apos;re journaling your thoughts, penning down
             your aspirations, or simply reflecting on your day, Anky provides a
             serene and focused environment for you to dive deep into the essence
             of your mind.
@@ -35,7 +35,7 @@ const WhatIsThisPage = () => {
           <p className="mb-2">
             The challenge? To break free from the noise and distractions of
             everyday life and discover the power of your own voice. In doing so,
-            you'll find a sense of peace, gain new perspectives, and cultivate a
+            you&apos;ll find a sense of peace, gain new perspectives, and cultivate a
             practice that nurtures your mental health.
           </p>
           <p className="mb-2">
