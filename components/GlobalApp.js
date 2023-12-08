@@ -4,6 +4,7 @@ import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { Righteous, Dancing_Script } from "next/font/google";
 import { getAnkyverseDay, getAnkyverseQuestion } from "../lib/ankyverse";
 import { useUser } from "../context/UserContext";
+import { GiRollingEnergy } from "react-icons/gi";
 import { ethers } from "ethers";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -57,6 +58,7 @@ const GlobalApp = ({ alchemy }) => {
     useUser();
   const router = useRouter();
   const [lifeBarLength, setLifeBarLength] = useState(0);
+  const [displayManaInfo, setDisplayManaInfo] = useState(false);
   const [checkingIfYouOwnAnky, setCheckingIfYouOwnAnky] = useState(false);
   const [ankyButtonText, setAnkyButtonText] = useState("i already own one");
   const [displayWritingGameLanding, setDisplayWritingGameLanding] =
@@ -387,9 +389,21 @@ const GlobalApp = ({ alchemy }) => {
           ></div>
         </div>
 
-        <div className="px-4 w-fit flex justify-center ">
+        <div className="px-4 w-fit flex justify-center items-center">
           {authenticated ? (
-            <div className="flex space-x-2 w-fit">
+            <div className="flex space-x-2 w-fit items-center">
+              <span
+                onMouseEnter={() => setDisplayManaInfo(true)}
+                onMouseLeave={() => setDisplayManaInfo(false)}
+                className="rounded-xl bg-purple-600 border-white border hover:cursor-pointer hover:text-white  px-2 flex space-x-2"
+              >
+                220
+                <GiRollingEnergy
+                  size={16}
+                  color="white"
+                  className="ml-2 translate-y-1"
+                />
+              </span>
               <span onClick={() => setDisplayWritingGameLanding(false)}>
                 <Link
                   href="/settings"
