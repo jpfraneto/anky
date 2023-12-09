@@ -250,7 +250,7 @@ const WritingGameComponent = ({
             className={`${righteous.className} w-full bg-black/50 pt-4 justify-center items-center flex h-24 items-center px-2 flex `}
           >
             <p
-              className={`text-left h-24 w-10/12 text-purple-600 md:mt-0 text-2xl overflow-y-scroll md:text-4xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]`}
+              className={`text-left h-24 w-10/12 text-purple-600 md:mt-0 text-xl overflow-y-scroll md:text-4xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]`}
             >
               {userPrompt}
             </p>

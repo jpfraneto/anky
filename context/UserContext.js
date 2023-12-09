@@ -1,22 +1,22 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { usePrivy, useWallets } from '@privy-io/react-auth';
-import { ethers } from 'ethers';
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { usePrivy, useWallets } from "@privy-io/react-auth";
+import { ethers } from "ethers";
 import {
   fetchUserEulogias,
   fetchUserTemplates,
   fetchUserNotebooks,
   fetchUserJournals,
   fetchUserDementors,
-} from '../lib/notebooks';
-import AccountSetupModal from '../components/AccountSetupModal';
-import { setUserData, getUserData } from '../lib/idbHelper';
-import airdropABI from '../lib/airdropABI.json';
+} from "../lib/notebooks";
+import AccountSetupModal from "../components/AccountSetupModal";
+import { setUserData, getUserData } from "../lib/idbHelper";
+import airdropABI from "../lib/airdropABI.json";
 import {
   sendTestEth,
   airdropCall,
   callTba,
   airdropFirstJournal,
-} from '../lib/helpers';
+} from "../lib/helpers";
 
 const UserContext = createContext();
 
@@ -27,10 +27,10 @@ export const UserProvider = ({ children }) => {
   const [appLoading, setAppLoading] = useState(true);
   const [loadingLibrary, setLoadingLibrary] = useState(false);
   const [userIsReadyNow, setUserIsReadyNow] = useState(false);
-  const [usersAnkyImage, setUsersAnkyImage] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [usersAnkyUri, setUsersAnkyUri] = useState('');
-  const [userOwnsAnky, setUserOwnsAnky] = useState('');
+  const [usersAnkyImage, setUsersAnkyImage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [usersAnkyUri, setUsersAnkyUri] = useState("");
+  const [userOwnsAnky, setUserOwnsAnky] = useState("");
   const [loadingUserStoredData, setLoadingUserStoredData] = useState(true);
   const [mainAppLoading, setMainAppLoading] = useState(true);
   const [finalSetup, setFinalSetup] = useState(false);
@@ -58,14 +58,14 @@ export const UserProvider = ({ children }) => {
   useEffect(() => {
     async function loadStoredUserData() {
       if (ready && isEmpty(userAppInformation)) {
-        const userJournals = await getUserData('userJournals');
-        const userTemplates = await getUserData('userTemplates');
-        const userNotebooks = await getUserData('userNotebooks');
-        const userEulogias = await getUserData('userEulogias');
-        const userDementors = await getUserData('userDementors');
-        const ankyIndex = await getUserData('ankyIndex');
-        const ankyTbaAddress = await getUserData('ankyTbaAddress');
-        const userWalletAddress = await getUserData('userWalletAddress');
+        const userJournals = await getUserData("userJournals");
+        const userTemplates = await getUserData("userTemplates");
+        const userNotebooks = await getUserData("userNotebooks");
+        const userEulogias = await getUserData("userEulogias");
+        const userDementors = await getUserData("userDementors");
+        const ankyIndex = await getUserData("ankyIndex");
+        const ankyTbaAddress = await getUserData("ankyTbaAddress");
+        const userWalletAddress = await getUserData("userWalletAddress");
 
         setUserAppInformation({
           userJournals,
@@ -88,13 +88,13 @@ export const UserProvider = ({ children }) => {
     async function handleInitialization() {
       if (loading && !ready) return;
       if (ready && !wallet && !authenticated) {
-        console.log('INEIS');
+        console.log("INEIS");
         setMainAppLoading(false);
         setAppLoading(false);
         return;
       }
       if (!wallet) return;
-      console.log('alooooja');
+      console.log("alooooja");
       await changeChain();
       const response = await fetchUsersAnky();
       if (!response) return setMainAppLoading(false);
@@ -111,7 +111,7 @@ export const UserProvider = ({ children }) => {
       setMainAppLoading(false);
       if (loadingUserStoredData) return;
 
-      if (wallet && !wallet.chainId.includes('8453')) await changeChain();
+      if (wallet && !wallet.chainId.includes("8453")) await changeChain();
       setLibraryLoading(false);
       setAppLoading(false);
     }
@@ -128,14 +128,14 @@ export const UserProvider = ({ children }) => {
 
   useEffect(() => {
     if (finalSetup) {
-      setUserData('userJournals', userAppInformation.userJournals);
-      setUserData('userTemplates', userAppInformation.userTemplates);
-      setUserData('userNotebooks', userAppInformation.userNotebooks);
-      setUserData('userEulogias', userAppInformation.userEulogias);
-      setUserData('userDementors', userAppInformation.userDementors);
-      setUserData('ankyIndex', userAppInformation.ankyIndex);
-      setUserData('ankyTbaAddress', userAppInformation.tbaAddress);
-      setUserData('userWalletAddress', userAppInformation.userWalletAddress);
+      setUserData("userJournals", userAppInformation.userJournals);
+      setUserData("userTemplates", userAppInformation.userTemplates);
+      setUserData("userNotebooks", userAppInformation.userNotebooks);
+      setUserData("userEulogias", userAppInformation.userEulogias);
+      setUserData("userDementors", userAppInformation.userDementors);
+      setUserData("ankyIndex", userAppInformation.ankyIndex);
+      setUserData("ankyTbaAddress", userAppInformation.tbaAddress);
+      setUserData("userWalletAddress", userAppInformation.userWalletAddress);
     }
   }, [finalSetup]);
 
@@ -143,7 +143,7 @@ export const UserProvider = ({ children }) => {
     // return authenticated && wallet && true;
 
     return (
-      !localStorage.getItem('firstTimeUser189') ||
+      !localStorage.getItem("firstTimeUser189") ||
       (authenticated &&
         wallet &&
         !userAppInformation?.ankyIndex &&
@@ -168,44 +168,56 @@ export const UserProvider = ({ children }) => {
         let userTba = userAppInformation?.tbaAddress || tba;
 
         if (!userAppInformation || !userAppInformation.wallet)
-          setUserAppInformation(x => {
+          setUserAppInformation((x) => {
             return { ...x, wallet };
           });
 
+        const promises = [];
+
         if (fromOutside || reloadData || !userAppInformation.userJournals) {
-          const userJournals = await fetchUserJournals(signer, wallet);
-          setUserAppInformation(x => {
-            return { ...x, userJournals: userJournals };
-          });
+          promises.push(
+            fetchUserJournals(signer, wallet).then((userJournals) => {
+              setUserAppInformation((x) => {
+                return { ...x, userJournals: userJournals };
+              });
+            })
+          );
         }
 
         if (fromOutside || reloadData || !userAppInformation.userNotebooks) {
-          const userNotebooks = await fetchUserNotebooks(
-            signer,
-            userTba,
-            wallet
+          promises.push(
+            fetchUserNotebooks(signer, userTba, wallet).then(
+              (userNotebooks) => {
+                setUserAppInformation((x) => {
+                  return { ...x, userNotebooks: userNotebooks };
+                });
+              }
+            )
           );
-
-          setUserAppInformation(x => {
-            return { ...x, userNotebooks: userNotebooks };
-          });
         }
 
         if (fromOutside || reloadData || !userAppInformation.userEulogias) {
-          const userEulogias = await fetchUserEulogias(signer, wallet);
-
-          setUserAppInformation(x => {
-            return { ...x, userEulogias: userEulogias };
-          });
+          promises.push(
+            fetchUserEulogias(signer, wallet).then((userEulogias) => {
+              setUserAppInformation((x) => {
+                return { ...x, userEulogias: userEulogias };
+              });
+            })
+          );
         }
 
         if (fromOutside || reloadData || !userAppInformation.userDementors) {
-          const userDementors = await fetchUserDementors(signer, wallet);
-
-          setUserAppInformation(x => {
-            return { ...x, userDementors: userDementors };
-          });
+          promises.push(
+            fetchUserDementors(signer, wallet).then((userDementors) => {
+              setUserAppInformation((x) => {
+                return { ...x, userDementors: userDementors };
+              });
+            })
+          );
         }
+
+        await Promise.all(promises);
+
         setLoadingLibrary(false);
         setLibraryLoading(false);
         setFinalSetup(true);
@@ -215,8 +227,8 @@ export const UserProvider = ({ children }) => {
     } catch (error) {
       setAppLoading(false);
       setLoadingLibrary(false);
-      alert('There was an error retrieving your library :(');
-      console.log('there was an error retrieving the users library.', error);
+      alert("There was an error retrieving your library :(");
+      console.log("there was an error retrieving the users library.", error);
     }
   };
 
@@ -232,7 +244,7 @@ export const UserProvider = ({ children }) => {
         signer
       );
       const usersBalance = await ankyAirdropContract.balanceOf(wallet.address);
-      let usersAnkyUri = '';
+      let usersAnkyUri = "";
       const usersAnkys = ethers.utils.formatUnits(usersBalance, 0);
       if (usersAnkys > 0) {
         const usersAnkyId = await ankyAirdropContract.tokenOfOwnerByIndex(
@@ -240,8 +252,8 @@ export const UserProvider = ({ children }) => {
           0
         );
         usersAnkyUri = await ankyAirdropContract.tokenURI(usersAnkyId);
-        const transformUri = broken => {
-          return `https://ipfs.io/ipfs/${broken.split('ipfs://')[1]}`;
+        const transformUri = (broken) => {
+          return `https://ipfs.io/ipfs/${broken.split("ipfs://")[1]}`;
         };
         const fetchableUri = transformUri(usersAnkyUri);
         const metadata = await fetch(fetchableUri);
@@ -255,25 +267,25 @@ export const UserProvider = ({ children }) => {
         return { usersAnkys, usersAnkyUri, imageUrl };
       } else {
         setUsersAnky({ ankyIndex: undefined, ankyUri: undefined });
-        return { usersAnkys: 0, usersAnkyUri: '', imageUrl: '' };
+        return { usersAnkys: 0, usersAnkyUri: "", imageUrl: "" };
       }
     } catch (error) {
-      console.log('there was an error', error);
+      console.log("there was an error", error);
     }
   }
 
   async function getTestEthAndAidropAnky(wallet, provider, authToken) {
     const testEthResponse = await sendTestEth(wallet, provider, authToken);
     if (!testEthResponse.success) {
-      setErrorMessage('There was an error sending you the test eth');
-      throw new Error('There was an error sending the test eth.');
+      setErrorMessage("There was an error sending you the test eth");
+      throw new Error("There was an error sending the test eth.");
     }
     const airdropCallResponse = await airdropCall(
       wallet,
       setUserAppInformation,
       authToken
     );
-    setUserAppInformation(x => {
+    setUserAppInformation((x) => {
       return {
         ...x,
         tokenUri: airdropCallResponse.tokenUri,
@@ -282,26 +294,26 @@ export const UserProvider = ({ children }) => {
       };
     });
     if (!airdropCallResponse.success) {
-      setErrorMessage('There was an error gifting you your anky.');
-      throw new Error('There was an error with the airdrop call.');
+      setErrorMessage("There was an error gifting you your anky.");
+      throw new Error("There was an error with the airdrop call.");
       return;
     }
-    await new Promise(resolve => setTimeout(resolve, 8000));
+    await new Promise((resolve) => setTimeout(resolve, 8000));
   }
   async function getTbaInformation(wallet, setUserAppInformation) {
     const callTbaResponse = await callTba(
       wallet.address,
       setUserAppInformation
     );
-    setUserAppInformation(x => {
+    setUserAppInformation((x) => {
       return {
         ...x,
         tbaAddress: callTbaResponse.tba,
       };
     });
     if (!callTbaResponse.success) {
-      setErrorMessage('There was an error retrieving your tba.');
-      throw new Error('There was an error with the tba call.');
+      setErrorMessage("There was an error retrieving your tba.");
+      throw new Error("There was an error with the tba call.");
       return;
     }
   }
@@ -314,7 +326,7 @@ export const UserProvider = ({ children }) => {
       const txReceipt = await provider.getTransactionReceipt(txHash);
 
       const eventTopic = ethers.utils.id(
-        'JournalAirdropped(tokenId, usersAnkyAddress)'
+        "JournalAirdropped(tokenId, usersAnkyAddress)"
       );
 
       for (const log of txReceipt.logs) {
@@ -325,21 +337,21 @@ export const UserProvider = ({ children }) => {
             journalId: tokenId,
             entries: [],
             journalType: 0,
-            metadataCID: '',
+            metadataCID: "",
           };
 
-          setUserAppInformation(x => {
+          setUserAppInformation((x) => {
             return {
               ...x,
               userJournals: [newJournalElement],
             };
           });
-          setUserData('userJournals', [newJournalElement]);
+          setUserData("userJournals", [newJournalElement]);
           break;
         }
       }
     } else {
-      setErrorMessage('There was an error with your journal.');
+      setErrorMessage("There was an error with your journal.");
     }
   }
 
@@ -379,24 +391,24 @@ export const UserProvider = ({ children }) => {
             provider
           );
         } catch (error) {
-          console.log('there was an error airdropping her ');
+          console.log("there was an error airdropping her ");
         }
       }
       setCurrentStep(5);
 
-      localStorage.setItem('firstTimeUser189', 'done');
+      localStorage.setItem("firstTimeUser189", "done");
       setUserIsReadyNow(true);
       setShowProgressModal(false);
       return setSetupIsReady(true);
     } catch (error) {
-      console.log('Error initializing user', error);
+      console.log("Error initializing user", error);
     }
   };
 
   const changeChain = async () => {
     if (authenticated && wallet) {
       await wallet.switchChain(8453);
-      setUserAppInformation(x => {
+      setUserAppInformation((x) => {
         return { ...x, wallet: wallet };
       });
     }
@@ -435,7 +447,7 @@ export const UserProvider = ({ children }) => {
 export const useUser = () => {
   const context = useContext(UserContext);
   if (context === undefined) {
-    throw new Error('useUser must be used within a UserProvider');
+    throw new Error("useUser must be used within a UserProvider");
   }
   return context;
 };

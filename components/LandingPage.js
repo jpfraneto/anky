@@ -1,31 +1,31 @@
-import React, { useState } from 'react';
-import Button from './Button';
-import { useRouter } from 'next/router';
-import Link from 'next/link';
-import { usePrivy } from '@privy-io/react-auth';
-import Image from 'next/image';
-import { useUser } from '../context/UserContext';
-import Spinner from './Spinner';
+import React, { useState } from "react";
+import Button from "./Button";
+import { useRouter } from "next/router";
+import Link from "next/link";
+import { usePrivy } from "@privy-io/react-auth";
+import Image from "next/image";
+import { useUser } from "../context/UserContext";
+import Spinner from "./Spinner";
 
 const notebookTypes = [
   {
-    name: 'dementor',
+    name: "dementor",
     description:
-      'your anky prompts you on a ongoing journey of self discovery.',
+      "your anky prompts you on a ongoing journey of self discovery.",
   },
   {
-    name: 'notebook',
-    description: 'created by users, you can buy and write on them.',
+    name: "notebook",
+    description: "created by users, you can buy and write on them.",
   },
   {
-    name: 'eulogias',
+    name: "eulogias",
     description:
-      'community written notebook. want say happy birthday? say goodbye to someone that died? eulogias are for that.',
+      "community written notebook. want say happy birthday? say goodbye to someone that died? eulogias are for that.",
   },
   {
-    name: 'journal',
+    name: "journal",
     description:
-      'write without any direction. just allow it to happen through you.',
+      "write without any direction. just allow it to happen through you.",
   },
 ];
 
@@ -38,23 +38,25 @@ function LandingPage({
   const router = useRouter();
   const [startJourney, setStartJourney] = useState(false);
   const [promptForTheUser, setPromptForTheUser] = useState(
-    'what makes you happy?'
+    "what makes you happy?"
   );
 
   return (
-    <div className='w-screen'>
+    <div className="w-screen">
       {/* Hero Section */}
       <div
-        className='h-screen w-screen bg-center bg-no-repeat bg-cover'
+        className="h-screen w-screen bg-center bg-no-repeat bg-cover"
         style={{
           backgroundImage:
             "linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('/images/librarian.png')",
         }}
       >
-        <div className='absolute inset-0 h-screen bg-black opacity-40'></div>
-        <div className='relative z-10 flex flex-col items-center justify-center h-full'>
-          <h1 className='text-5xl text-gray-400 font-bold mt-64 mb-2'>
-            {authenticated ? 'welcome back, my friend' : 'welcome. are you ready to write?'}
+        <div className="absolute inset-0 h-screen bg-black opacity-40"></div>
+        <div className="relative z-10 flex flex-col items-center justify-center h-full">
+          <h1 className="text-5xl text-gray-400 font-bold mt-64 mb-2">
+            {authenticated
+              ? "welcome back, my friend"
+              : "welcome. are you ready to write?"}
           </h1>
 
           {loading ? (
@@ -62,28 +64,28 @@ function LandingPage({
           ) : (
             <>
               {authenticated ? (
-                <div className='text-gray-400'>
-                  <div className='mt-2 flex space-x-2'>
+                <div className="text-gray-400">
+                  <div className="mt-2 flex space-x-2">
                     <Button
                       buttonAction={() => setDisplayWritingGameLanding(true)}
-                      buttonText='write'
-                      buttonColor='bg-gradient-to-r from-red-500 via-yellow-600 to-violet-500 text-black'
+                      buttonText="write"
+                      buttonColor="bg-gradient-to-r from-red-500 via-yellow-600 to-violet-500 text-black"
                     />
-                    <Link href='/me' passHref>
+                    <Link href="/me" passHref>
                       <Button
-                        buttonText='read'
-                        buttonColor='bg-purple-400 text-black'
+                        buttonText="read"
+                        buttonColor="bg-purple-400 text-black"
                       />
                     </Link>
                   </div>
                 </div>
               ) : (
-                <div className='text-gray-400'>
-                  <div className='mt-2 w-96 flex mx-auto'>
+                <div className="text-gray-400">
+                  <div className="mt-2 w-96 flex mx-auto">
                     <Button
-                      buttonText='prompt of the day'
+                      buttonText="prompt of the day"
                       buttonAction={() => setDisplayWritingGameLanding(true)}
-                      buttonColor='bg-gradient-to-r from-red-500 via-yellow-600 to-violet-500 text-black'
+                      buttonColor="bg-gradient-to-r from-red-500 via-yellow-600 to-violet-500 text-black"
                     />
                   </div>
                 </div>
@@ -93,103 +95,103 @@ function LandingPage({
         </div>
       </div>
 
-      <div className='py-8 px-2 w-full md:px-64 bg-gray-200'>
-        <p className='mb-4'>You are reading.</p>
-        <p className='mb-4'>You want to know what this thing is about.</p>
-        <p className='mb-4'>But this is not a place for reading.</p>
-        <p className='mb-4'>
+      <div className="py-8 px-2 w-full md:px-64 bg-gray-200">
+        <p className="mb-4">You are reading.</p>
+        <p className="mb-4">You want to know what this thing is about.</p>
+        <p className="mb-4">But this is not a place for reading.</p>
+        <p className="mb-4">
           It is the most important tool that you have found to get to know
           yourself through writing.
         </p>
-        <p className='mb-4'>Are you ready?</p>
-        <p className='mb-4'>Just write.</p>
-        <p className='mb-4'>
+        <p className="mb-4">Are you ready?</p>
+        <p className="mb-4">Just write.</p>
+        <p className="mb-4">
           Everything that takes you away from that is resistance.
         </p>
-        <div className='flex justify-center w-48 mx-auto my-4'>
+        <div className="flex justify-center w-48 mx-auto my-4">
           <Button
-            buttonText='im ready'
+            buttonText="im ready"
             buttonAction={() => setDisplayWritingGameLanding(true)}
-            buttonColor='bg-gradient-to-r from-red-500 via-yellow-600 to-violet-500 text-black'
+            buttonColor="bg-gradient-to-r from-red-500 via-yellow-600 to-violet-500 text-black"
           />
         </div>
       </div>
 
       {/* Journey with Anky Section */}
-      <div className='py-8 px-2 w-full md:px-64 bg-white'>
-        <h2 className='text-3xl font-semibold mb-6'>
+      <div className="py-8 px-2 w-full md:px-64 bg-white">
+        <h2 className="text-3xl font-semibold mb-6">
           when there is no time to think, your truth comes forth
         </h2>
-        <p className='mb-4'>anky is built on top of a pioneer interface:</p>
-        <p className='mb-4'>
+        <p className="mb-4">anky is built on top of a pioneer interface:</p>
+        <p className="mb-4">
           if you stop writing for more than three seconds, you lose.
         </p>
-        <p className='mb-4'>
+        <p className="mb-4">
           as soon as you create an account here, you are assigned a unique
           character: your anky
         </p>
-        <p className='mb-4'>
+        <p className="mb-4">
           think of it as the keeper of your secrets. your imaginary friend.
         </p>
-        <p className='mb-4'>
+        <p className="mb-4">
           built on top of blockchain technolgy, your anky will store your
           writings forever.
         </p>
-        <p className='mb-4'>this is how some of them look:</p>
-        <div className='flex flex-wrap justify-center'>
-          <div className='relative w-1/3 h-1/3 md:w-48 md:h-48 m-2 rounded-xl overflow-hidden'>
-            <Image src='/ankys/1.png' alt='anky' layout='fill' />
+        <p className="mb-4">this is how some of them look:</p>
+        <div className="flex flex-wrap justify-center">
+          <div className="relative w-1/3 h-1/3 md:w-48 md:h-48 m-2 rounded-xl overflow-hidden">
+            <Image src="/ankys/1.png" alt="anky" layout="fill" />
           </div>
-          <div className='relative w-1/3 h-1/3 md:w-48 md:h-48 m-2 rounded-xl overflow-hidden'>
-            <Image src='/ankys/2.png' alt='anky' layout='fill' />
+          <div className="relative w-1/3 h-1/3 md:w-48 md:h-48 m-2 rounded-xl overflow-hidden">
+            <Image src="/ankys/2.png" alt="anky" layout="fill" />
           </div>
-          <div className='relative w-1/3 h-1/3 md:w-48 md:h-48 m-2 rounded-xl overflow-hidden'>
-            <Image src='/ankys/3.png' alt='anky' layout='fill' />
+          <div className="relative w-1/3 h-1/3 md:w-48 md:h-48 m-2 rounded-xl overflow-hidden">
+            <Image src="/ankys/3.png" alt="anky" layout="fill" />
           </div>
-          <div className='relative w-1/3 h-1/3 md:w-48 md:h-48 m-2 rounded-xl overflow-hidden'>
-            <Image src='/ankys/4.png' alt='anky' layout='fill' />
+          <div className="relative w-1/3 h-1/3 md:w-48 md:h-48 m-2 rounded-xl overflow-hidden">
+            <Image src="/ankys/4.png" alt="anky" layout="fill" />
           </div>
         </div>
       </div>
 
       {/* Discover your Anky Section */}
-      <div className='p-8 bg-gray-200 flex flex-row'>
-        <div className='px-2  w-full md:w-3/5 mx-auto'>
-          <h2 className='text-3xl font-semibold mb-6'>
+      <div className="p-8 bg-gray-200 flex flex-row">
+        <div className="px-2  w-full md:w-3/5 mx-auto">
+          <h2 className="text-3xl font-semibold mb-6">
             four types of writing containers
           </h2>
-          <div className='flex flex-wrap mx-auto justify-center mb-4'>
+          <div className="flex flex-wrap mx-auto justify-center mb-4">
             {notebookTypes.map((x, i) => {
               return (
                 <div
                   key={i}
-                  className='p-2 rounded-xl border-purple-600 border-2 shadow-lg shadow-yellow-500 hover:bg-purple-500 bg-purple-400 m-2'
+                  className="p-2 rounded-xl border-purple-600 border-2 shadow-lg shadow-yellow-500 hover:bg-purple-500 bg-purple-400 m-2"
                 >
-                  <h2 className='text-xl '>{x.name}</h2>
-                  <p className='text-sm'>{x.description}</p>
+                  <h2 className="text-xl ">{x.name}</h2>
+                  <p className="text-sm">{x.description}</p>
                 </div>
               );
             })}
           </div>
 
-          <p className='mb-4'>
+          <p className="mb-4">
             your Anky is the keeper of everything that you write.
           </p>
 
-          <div className='flex flex-col md:flex-row h-fit  justify-center items-center '>
+          <div className="flex flex-col md:flex-row h-fit  justify-center items-center ">
             <input
-              type='text'
+              type="text"
               value={promptForTheUser}
-              onChange={e => setPromptForTheUser(e.target.value)}
-              className=' w-2/3 my-3 md:w-96 text-black mx-4 px-2 py-2 rounded-xl border border-black'
+              onChange={(e) => setPromptForTheUser(e.target.value)}
+              className=" w-2/3 my-3 md:w-96 text-black mx-4 px-2 py-2 rounded-xl border border-black"
             />
             <Link
-              href={`/write?p=${promptForTheUser.replaceAll(' ', '-')}`}
+              href={`/write?p=${promptForTheUser.replaceAll(" ", "-")}`}
               passHref
             >
               <Button
-                buttonText='test it out'
-                buttonColor='bg-gradient-to-r from-red-500 via-yellow-600 to-violet-500 text-black'
+                buttonText="test it out"
+                buttonColor="bg-gradient-to-r from-red-500 via-yellow-600 to-violet-500 text-black"
               />
             </Link>
           </div>
@@ -197,27 +199,27 @@ function LandingPage({
       </div>
 
       {/* Join the Ankyverse Section */}
-      <div className='py-8 px-2 md:px-64 bg-white'>
-        <p className='mb-4'>
+      <div className="py-8 px-2 md:px-64 bg-white">
+        <p className="mb-4">
           what is happening here is designed to be a powerful meditation
           practice.
         </p>
-        <p className='mb-4'>if you want to experience how you think.</p>
-        <p className='mb-4'>if you want to see yourself with more clarity.</p>
-        <p className='mb-4'>if you want to know who you are.</p>
+        <p className="mb-4">if you want to experience how you think.</p>
+        <p className="mb-4">if you want to see yourself with more clarity.</p>
+        <p className="mb-4">if you want to know who you are.</p>
       </div>
 
-      <div className='p-8 bg-gray-200 flex flex-col'>
-        <div className='px-2 md:w-3/5 mx-auto'>
-          <p className='mb-2'>its all open source</p>
-          <p className='mb-2'>we build together.</p>
-          <p className='mb-2'>https:////www.github.com/ankylat</p>
+      <div className="p-8 bg-gray-200 flex flex-col">
+        <div className="px-2 md:w-3/5 mx-auto">
+          <p className="mb-2">its all open source</p>
+          <p className="mb-2">we build together.</p>
+          <p className="mb-2">https:////www.github.com/ankylat</p>
         </div>
-        <div className='flex justify-center w-48 mx-auto my-4'>
+        <div className="flex justify-center w-48 mx-auto my-4">
           <Button
-            buttonText='im ready to write'
+            buttonText="im ready to write"
             buttonAction={() => setDisplayWritingGameLanding(true)}
-            buttonColor='bg-gradient-to-r from-red-500 via-yellow-600 to-violet-500 text-black'
+            buttonColor="bg-gradient-to-r from-red-500 via-yellow-600 to-violet-500 text-black"
           />
         </div>
       </div>

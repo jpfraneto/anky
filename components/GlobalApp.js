@@ -391,7 +391,15 @@ const GlobalApp = ({ alchemy }) => {
 
         <div className="px-4 w-fit flex justify-center items-center">
           {authenticated ? (
-            <div className="flex space-x-2 w-fit items-center">
+            <div className="flex space-x-2 relative w-fit items-center">
+              {displayManaInfo && (
+                <span className="absolute p-1 top-8 z-50 rounded-xl border-white text-white border-2 bg-purple-400">
+                  <p className="text-left">
+                    Mana: The intention is that every second that you spend
+                    writing here, you will earn these.
+                  </p>
+                </span>
+              )}
               <span
                 onMouseEnter={() => setDisplayManaInfo(true)}
                 onMouseLeave={() => setDisplayManaInfo(false)}
@@ -400,7 +408,7 @@ const GlobalApp = ({ alchemy }) => {
                 220
                 <GiRollingEnergy
                   size={16}
-                  color="white"
+                  color={`${displayManaInfo ? "white" : "#9CA38F"}`}
                   className="ml-2 translate-y-1"
                 />
               </span>
