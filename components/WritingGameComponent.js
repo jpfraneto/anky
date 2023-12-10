@@ -252,7 +252,7 @@ const WritingGameComponent = ({
             <p
               className={`text-left h-24 w-10/12 text-purple-600 md:mt-0 text-xl overflow-y-scroll md:text-4xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]`}
             >
-              {userPrompt}
+              {prompt}
             </p>
             <p className="w-2/12 text-2xl md:text-6xl text-yellow-600 h-full items-center justify-center ">
               {time}
