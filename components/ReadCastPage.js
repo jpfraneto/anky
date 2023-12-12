@@ -21,6 +21,8 @@ var options = {
 };
 
 const ReadCastPage = () => {
+  const router = useRouter();
+  const { id } = router.query;
   const apiRoute =
     self.location.hostname === "localhost"
       ? "http://localhost:3000"
@@ -32,8 +34,7 @@ const ReadCastPage = () => {
   const [displayComments, setDisplayComments] = useState(false);
   const [comments, setComments] = useState([]);
   const [writing, setWriting] = useState("");
-  const router = useRouter();
-  const { id } = router.query;
+
   useEffect(() => {
     if (!id) return;
     async function fetchCastByHash(id) {
@@ -71,6 +72,7 @@ const ReadCastPage = () => {
         <Link href="/farcaster">write</Link>
       </div>
     );
+
   return (
     <div className="h-screen w-full">
       <Head>

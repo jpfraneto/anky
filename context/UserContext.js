@@ -94,7 +94,6 @@ export const UserProvider = ({ children }) => {
         return;
       }
       if (!wallet) return;
-      console.log("alooooja");
       await changeChain();
       const response = await fetchUsersAnky();
       if (!response) return setMainAppLoading(false);
