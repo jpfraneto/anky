@@ -290,7 +290,7 @@ const GlobalApp = ({ alchemy }) => {
   if (displayWritingGameLanding) {
     return (
       <div className="text-center w-screen text-white">
-        <div className="text-gray-400 w-full h-8 flex justify-between items-center">
+        <div className="text-gray-400 w-full h-8 standalone:pt-22 fixed mt-8 md:mt-0 standalone:mb-22 flex justify-between items-center">
           <span onClick={() => setDisplayWritingGameLanding(false)}>
             <Link
               className="hover:text-red-300 hover:cursor-pointer px-4 active:text-red-400"

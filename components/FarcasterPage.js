@@ -12,10 +12,17 @@ import {
 const FarcasterPage = () => {
   const [loading, setLoading] = useState();
   const [farcasterUser, setFarcasterUser] = useState(null);
-  const [text, setText] = useState("");
+  const [text, setText] = useState(
+    "llegó el tata. llegó el tata.\n\ny la niña habla con el otro tata. la niña abraza a los tatas, y los encuentra donde ellos están. la niña explora inocentemente. la niña no se preocupa.\n\nla niña simplemente es.\n\nla niña no se aproblema. la niña explora. la niña se entretiene."
+  );
   const [cid, setCid] = useState("");
   const [translatedCid, setTranslatedCid] = useState("");
   const [isCasting, setIsCasting] = useState(false);
+  const [embedOne, setEmbedOne] = useState(
+    "https://soundcloud.com/oliver-huntemann/oliver-huntemann-fusion-festival-2023-i-tanzwuste-full-set"
+  );
+  const [embedTwo, setEmbedTwo] = useState("");
+  const [castHash, setCastHash] = useState("");
   const [decodedCid, setDecodedCid] = useState("");
   const [isCastBeingBroadcasted, setIsCastBeingBroadcasted] = useState(false);
   const [wasSuccessfullyCasted, setWasSuccessfullyCasted] = useState(false);
@@ -94,6 +101,13 @@ const FarcasterPage = () => {
     setLoading(false);
   }
 
+  function manageEmbeds(e) {
+    console.log("e", e.target.value);
+    setEmbeds((prev) => {
+      console.log("prev");
+    });
+  }
+
   async function createAndStoreSigner() {
     try {
       console.log("inside the create and store signer function");
@@ -128,14 +142,23 @@ const FarcasterPage = () => {
       const kannadaCid = encodeToAnkyverseLanguage(cid);
       setTranslatedCid(kannadaCid);
       const newCastText = `${kannadaCid}\n\nwritten as anky`;
+      let embeds = [];
+      if (embedOne && embedOne.length > 0) {
+        embeds.push({ url: embedOne });
+      }
+      if (embedTwo && embedTwo.length > 0) {
+        embeds.push({ url: embedTwo });
+      }
       const response = await axios.post(`${apiRoute}/farcaster/api/cast`, {
         text: newCastText,
         signer_uuid: farcasterUser?.signer_uuid,
+        embeds: embeds,
       });
       console.log("the response is: ", response);
       if (response.status === 200) {
         setText(""); // Clear the text field
         setWasSuccessfullyCasted(true);
+        setCastHash(response.data.cast.hash);
       }
     } catch (error) {
       console.error("Could not send the cast", error);
@@ -224,6 +247,15 @@ const FarcasterPage = () => {
                   onChange={(e) => setText(e.target.value)}
                   rows={5}
                 />
+                <div className="bg-purple-200 mb-4 p-2 rounded-xl w-96 text-black">
+                  <p>embeds</p>
+                  <input
+                    className="px-2 py-1 rounded-xl bg-purple-300 w-full my-2 border-black placeholder:text-gray-500  border-2"
+                    onChange={(e) => setEmbedOne(e.target.value)}
+                    value={embedOne}
+                    placeholder="embed number one..."
+                  />
+                </div>
                 <Button
                   buttonAction={handleCast}
                   buttonColor="bg-purple-600 w-fit mx-auto"
