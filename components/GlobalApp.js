@@ -4,6 +4,7 @@ import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { Righteous, Dancing_Script } from "next/font/google";
 import { getAnkyverseDay, getAnkyverseQuestion } from "../lib/ankyverse";
 import { useUser } from "../context/UserContext";
+import { FaPencilAlt } from "react-icons/fa";
 import { GiRollingEnergy } from "react-icons/gi";
 import { ethers } from "ethers";
 import Link from "next/link";
@@ -100,6 +101,10 @@ const GlobalApp = ({ alchemy }) => {
       setAnkyButtonText("there was an error");
       setUserIsMintingAnky(false);
     }
+  }
+
+  function handleOpenWritingModal() {
+    alert("open writing modal!");
   }
 
   async function checkIfUserOwnsAnky() {
@@ -290,7 +295,7 @@ const GlobalApp = ({ alchemy }) => {
   if (displayWritingGameLanding) {
     return (
       <div className="text-center w-screen text-white">
-        <div className="text-gray-400 w-full h-8 standalone:pt-22 fixed mt-8 md:mt-0 standalone:mb-22 flex justify-between items-center">
+        <div className="text-gray-400 hidden md:flex w-full h-8 standalone:pt-22 fixed mt-8 md:mt-0 standalone:mb-22  justify-between items-center">
           <span onClick={() => setDisplayWritingGameLanding(false)}>
             <Link
               className="hover:text-red-300 hover:cursor-pointer px-4 active:text-red-400"
@@ -373,8 +378,8 @@ const GlobalApp = ({ alchemy }) => {
   }
 
   return (
-    <div className="text-center w-screen text-white">
-      <div className="text-gray-400 w-full h-8 flex justify-between items-center">
+    <div className="text-center w-screen text-white h-screen">
+      <div className="text-gray-400 w-full h-8 hidden md:flex justify-between items-center">
         <span onClick={() => setDisplayWritingGameLanding(false)}>
           <Link
             className="hover:text-red-300 hover:cursor-pointer px-4 active:text-red-400"
@@ -456,10 +461,9 @@ const GlobalApp = ({ alchemy }) => {
         </div>
       </div>
       <div
-        className={`${righteous.className} text-black relative overflow-y-scroll items-center justify-center w-screen bg-cover bg-center`}
+        className={`${righteous.className} h-screen md:h-screen-[33px] text-black relative overflow-y-scroll items-center justify-center w-screen bg-cover bg-center`}
         style={{
           boxSizing: "border-box",
-          height: "calc(100vh - 33px)",
           backgroundImage:
             "linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/images/mintbg.jpg')",
           backgroundPosition: "center center",
@@ -468,6 +472,12 @@ const GlobalApp = ({ alchemy }) => {
         }}
       >
         {getComponentForRoute(router.pathname, router)}
+        <div
+          onClick={handleOpenWritingModal}
+          className="absolute h-16 w-16 bottom-3 right-3 border-black border-2 active:bg-purple-500 rounded-full text-green-400 bg-purple-600 z-10 flex items-center justify-center"
+        >
+          <FaPencilAlt size={28} color="black" />
+        </div>
       </div>
     </div>
   );

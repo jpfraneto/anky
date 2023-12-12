@@ -200,9 +200,6 @@ const FarcasterPage = () => {
 
       {farcasterUser?.status == "approved" && (
         <div>
-          <div className="bg-purple-600 text-white p-2 border-white border-2 rounded-xl w-fit mx-auto my-3">
-            {`You are logged in as fid ${farcasterUser.fid}`}
-          </div>
           <div className="flex flex-col w-96 my-2 items-center mx-auto ">
             {isCasting ? (
               <div>

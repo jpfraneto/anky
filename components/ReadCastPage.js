@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { decodeFromAnkyverseLanguage } from "../lib/ankyverse";
 import { getOneWriting } from "../lib/irys";
 import Link from "next/link";
-import { FaRegCommentAlt, FaRegHeart } from "react-icons/fa";
+import { FaRegCommentAlt, FaRegHeart, FaPencilAlt } from "react-icons/fa";
 import { BsArrowRepeat } from "react-icons/bs";
 import Head from "next/head";
 import OgDisplay from "./OgDisplay";
@@ -55,7 +55,7 @@ const ReadCastPage = () => {
     fetchCastByHash(id);
   }, [id]);
   async function handleDisplayComments() {
-    setDisplayComments(!displayComments);
+    alert("display comments");
   }
   async function handleRecast() {
     alert("recast!");
@@ -72,7 +72,7 @@ const ReadCastPage = () => {
       </div>
     );
   return (
-    <div className="h-full w-full">
+    <div className="h-screen w-full">
       <Head>
         <title>Ankycaster</title>
         <meta property="og:title" content="Tell us who you are" />
@@ -84,17 +84,17 @@ const ReadCastPage = () => {
         <meta property="og:url" content={`https://www.anky.lat/r/${id}`} />
         <meta property="og:type" content="website" />
       </Head>
-      <div className="w-full h-full flex flex-col pt-4">
-        <div className="w-6/12 mx-auto rounded-xl pt-2 pb-16 h-96 bg-purple-200 text-black p-2 ">
-          <p className="text-sm italic">
+      <div className="w-full h-screen flex flex-col relative">
+        <div className="w-full md:w-6/12 mx-auto standalone:pt-12 pt-2 pb-16 h-screen bg-purple-500 text-black p-2 ">
+          <p className="text-sm italic flex-none h-4 flex items-center">
             {new Date(cast.timestamp).toLocaleDateString("en-US", options)} - @
             {cast.author.username}
           </p>
-          <div className="border-black border h-full px-2 py-1 overflow-y-scroll rounded-xl bg-purple-300  my-2">
+          <div className="border-black grow h-full border-2 rounded px-2 py-1 overflow-y-scroll  bg-purple-300 my-2">
             {writing ? (
               writing.includes("\n") ? (
                 writing.split("\n").map((x, i) => (
-                  <p className="my-2" key={i}>
+                  <p className="mb-4" key={i}>
                     {x}
                   </p>
                 ))
@@ -137,11 +137,11 @@ const ReadCastPage = () => {
             </div>
           </div>
         </div>
-        {displayComments && (
-          <div className="w-6/12 mx-auto rounded-xl mt-2 bg-purple-200 text-black p-2">
+        {/* {displayComments && (
+          <div className="w-6/12 h-32 flex-none mx-auto rounded-xl mt-2 bg-purple-200 text-black p-2">
             comments
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );
