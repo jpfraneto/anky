@@ -244,10 +244,10 @@ const WritingGameComponent = ({
       <audio ref={audioRef}>
         <source src="/sounds/bell.mp3" />
       </audio>
-      <div className="md:block text-white w-screen h-screen ">
-        <div className="flex h-full flex-col">
+      <div className="md:block text-white w-screen h-full ">
+        <div className="flex h-full  items-center flex-col">
           <div
-            className={`${righteous.className} w-full bg-black/50 pt-4 justify-center items-center flex h-24 items-center px-2 flex `}
+            className={`${righteous.className} w-full bg-black/50 pt-4 justify-center items-center flex h-24 items-center px-2 flex`}
           >
             <p
               className={`text-left h-24 w-10/12 text-purple-600 md:mt-0 text-xl overflow-y-scroll md:text-4xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]`}
@@ -269,10 +269,8 @@ const WritingGameComponent = ({
               right: `${text && "0"}%`,
               transition: "top 1s, bottom 1s, left 1s, right 1s", // smooth transition over 1 second
             }}
-            className={`${dancingScript.className} ${text && "absolute"} ${
-              text
-                ? "md:aspect-video md:flex w-full h-full"
-                : "w-4/5 md:w-3/5 h-48"
+            className={`${dancingScript.className} ${
+              text ? "md:aspect-video md:flex w-full" : "w-4/5 md:w-3/5 h-48"
             } p-4 text-white ${
               time > 2 && "opacity-80"
             } placeholder-white  text-2xl border border-white rounded-md  bg-opacity-10 bg-black`}
@@ -293,7 +291,7 @@ const WritingGameComponent = ({
             <div
               className={`${
                 text && "fade-in"
-              } flex flex-col justify-center items-center text-opacity-20 mb-4`}
+              } flex flex-col justify-center absolute top-1/2 -translate-y-1/2 items-center text-opacity-20 mb-4`}
             >
               {finished && (
                 <>

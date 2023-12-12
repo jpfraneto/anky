@@ -170,7 +170,7 @@ const DesktopWritingGame = ({
       if (confirm("You need to login to save your writings")) {
         return login();
       }
-      return router.push('/what-is-this')
+      return router.push("/what-is-this");
     }
     setSavingTextAnon(true);
     const getWebIrys = async () => {

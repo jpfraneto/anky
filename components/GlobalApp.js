@@ -15,8 +15,8 @@ import NewNotebookPage from "./NewNotebookPage";
 import WhatIsThisPage from "./WhatIsThisPage";
 import LandingPage from "./LandingPage";
 import DementorPage from "./DementorById";
+import ReadCastPage from "./ReadCastPage";
 import ProfilePage from "./ProfilePage";
-import BuildersPage from "./BuildersPage";
 import NotebookPage from "./NotebookById";
 import AnkyDementorPage from "./AnkyDementorPage";
 import UserPage from "./UserPage";
@@ -30,7 +30,6 @@ import IndividualWritingDisplayPage from "./IndividualWritingDisplayPage";
 import JournalById from "./journals/JournalById";
 import BuyNewJournal from "./journals/BuyNewJournal";
 import LitProtocol from "./LitProtocol";
-import { CrossmintPayButton } from "@crossmint/client-sdk-react-ui";
 import Mint from "./MintingComponentBtn";
 import Irys from "./Irys";
 import Button from "./Button";
@@ -39,6 +38,7 @@ import WelcomePage from "./WelcomePage";
 import UserFeed from "./UserFeed";
 import GlobalFeed from "./GlobalFeed";
 import SettingsPage from "./SettingsPage";
+import FarcasterPage from "./FarcasterPage";
 
 const righteous = Righteous({ weight: "400", subsets: ["latin"] });
 const ankyverseToday = getAnkyverseDay(new Date());
@@ -170,8 +170,12 @@ const GlobalApp = ({ alchemy }) => {
         );
       case "/welcome":
         return <WelcomePage />;
+      case "/farcaster":
+        return <FarcasterPage />;
       case "/what-is-this":
         return <WhatIsThisPage />;
+      case `/r/${route.split("/").pop()}`:
+        return <ReadCastPage />;
       case "/dementor":
         return (
           <AnkyDementorPage

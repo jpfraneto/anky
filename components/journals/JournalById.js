@@ -38,6 +38,9 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
   const [text, setText] = useState("");
   const [noJournals, setNoJournals] = useState(false);
   const [uploadingWriting, setUploadingWriting] = useState(false);
+  const [journalPrompt, setJournalPrompt] = useState(
+    "write as if the world was going to end"
+  );
   const [thereWasAnError, setThereWasAnError] = useState(false);
   const [entryForDisplay, setEntryForDisplay] = useState(null);
   const [chosenPrompt, setChosenPrompt] = useState("");
@@ -138,6 +141,8 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
   const writeOnJournal = async () => {
     const pagesWritten = journal.entries.length;
     console.log("the pages written are:", pagesWritten);
+    if (!journalPrompt && journalPrompt.length == 0)
+      return alert("add a prompt!");
     if (pagesWritten == 96) {
       alert("this journal aint having more space my friend");
       return;
@@ -146,7 +151,7 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
       notebookType: "journal",
       targetTime: 480,
       backgroundImage: null, // You can modify this if you have an image.
-      prompt: "write as if the world was going to end", // You need to fetch and set the correct prompt.
+      prompt: journalPrompt, // You need to fetch and set the correct prompt.
       musicUrl: "https://www.youtube.com/watch?v=HcKBDY64UN8",
       onFinish: updateJournalWithPage,
     };
@@ -406,9 +411,15 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
   }
   return (
     <div className="text-white pt-4">
-      <h2 className="text-2xl mb-4">{journal.title}</h2>
+      <h2 className="text-2xl mb-2 underline">{journal.title}</h2>
+      <input
+        type="text"
+        value={journalPrompt}
+        onChange={(e) => setJournalPrompt(e.target.value)}
+        className="mb-2 text-xl text-black md:w-7/12 flex justify-center mx-auto px-2 py-1 rounded-xl"
+      />
       {journal.entries && journal.entries.length !== 0 ? (
-        <div className="p-4 flex rounded-xl bg-yellow-500">
+        <div className="p-4 flex rounded-xl bg-yellow-500 md:w-9/12 mx-auto flex-wrap">
           {journal.entries.map((x, i) => {
             return (
               <div
