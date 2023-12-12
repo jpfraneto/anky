@@ -111,7 +111,7 @@ const ReadCastPage = () => {
             cast.embeds.length > 0 &&
             cast.embeds.map((x, i) => {
               return (
-                <div>
+                <div key={i}>
                   <OgDisplay url={x.url} />
                 </div>
               );
