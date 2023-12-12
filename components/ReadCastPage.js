@@ -42,13 +42,15 @@ const ReadCastPage = () => {
         const response = await axios.get(
           `${apiRoute}/farcaster/api/cast/${id}`
         );
-        setCast(response.data.cast);
-        console.log("the cast is: ", response.data.cast);
-        const encodedCid = response.data.cast.text.split("\n")[0];
-        const decodedCid = decodeFromAnkyverseLanguage(encodedCid);
-        const writingText = await getOneWriting(decodedCid);
-        setWriting(writingText.text);
-        setLoading(false);
+        if (response.data.cast) {
+          setCast(response.data.cast);
+          console.log("the cast is: ", response.data.cast);
+          const encodedCid = response.data.cast.text.split("\n")[0];
+          const decodedCid = decodeFromAnkyverseLanguage(encodedCid);
+          const writingText = await getOneWriting(decodedCid);
+          setWriting(writingText.text);
+          setLoading(false);
+        }
       } catch (error) {
         console.log("there was an error retrieving the cast", error);
       }
