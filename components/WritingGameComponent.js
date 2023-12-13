@@ -229,7 +229,7 @@ const WritingGameComponent = ({
 
   return (
     <div
-      className={`${righteous.className} text-black relative overflow-y-scroll flex flex-col items-center  w-full bg-cover bg-center`}
+      className={`${righteous.className} text-black relative overflow-y-scroll  flex flex-col items-center  w-full bg-cover bg-center`}
       style={{
         boxSizing: "border-box",
         height: "calc(100vh - 33px)",
@@ -244,13 +244,13 @@ const WritingGameComponent = ({
       <audio ref={audioRef}>
         <source src="/sounds/bell.mp3" />
       </audio>
-      <div className="md:block text-white w-screen h-full ">
+      <div className="md:block text-white  w-screen h-full ">
         <div className="flex h-full  items-center flex-col">
           <div
             className={`${righteous.className} w-full bg-black/50 pt-4 justify-center items-center flex h-24 items-center px-2 flex`}
           >
             <p
-              className={`text-left h-24 w-10/12 text-purple-600 md:mt-0 text-xl overflow-y-scroll md:text-4xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]`}
+              className={`text-left h-24 w-10/12  text-purple-600 md:mt-0 text-xl overflow-y-scroll md:text-4xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]`}
             >
               {prompt}
             </p>

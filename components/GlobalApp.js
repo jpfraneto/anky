@@ -58,7 +58,7 @@ const GlobalApp = ({ alchemy }) => {
   const { userAppInformation, userOwnsAnky, setUserOwnsAnky, mainAppLoading } =
     useUser();
   const router = useRouter();
-  const [lifeBarLength, setLifeBarLength] = useState(0);
+  const [lifeBarLength, setLifeBarLength] = useState(100);
   const [displayManaInfo, setDisplayManaInfo] = useState(false);
   const [checkingIfYouOwnAnky, setCheckingIfYouOwnAnky] = useState(false);
   const [ankyButtonText, setAnkyButtonText] = useState("i already own one");
@@ -305,7 +305,7 @@ const GlobalApp = ({ alchemy }) => {
             </Link>
           </span>
 
-          <div className="h-full w-full">
+          <div className="h-full w-full standalone:mt-20">
             <div
               className="h-full opacity-50"
               style={{
@@ -315,7 +315,7 @@ const GlobalApp = ({ alchemy }) => {
             ></div>
           </div>
 
-          <div className="px-4 w-fit flex justify-center ">
+          <div className="hidden px-4 w-fit md:flex justify-center ">
             {authenticated ? (
               <div className="flex space-x-2 w-fit">
                 <button
@@ -351,10 +351,10 @@ const GlobalApp = ({ alchemy }) => {
           </div>
         </div>
         <div
-          className={`${righteous.className} text-black relative overflow-y-scroll flex flex-col items-center  w-full bg-cover bg-center`}
+          className={`${righteous.className} text-black h-screen standalone:h-screen-[33px] relative overflow-y-scroll flex flex-col items-center  w-full bg-cover bg-center`}
           style={{
             boxSizing: "border-box",
-            height: "calc(100vh - 33px)",
+
             backgroundImage:
               "linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/images/mintbg.jpg')",
             backgroundPosition: "center center",
@@ -369,6 +369,7 @@ const GlobalApp = ({ alchemy }) => {
             userPrompt={ankyverseQuestion}
             userAppInformation={userAppInformation}
             setLifeBarLength={setLifeBarLength}
+            lifeBarLength={lifeBarLength}
             displayWritingGameLanding={displayWritingGameLanding}
             setDisplayWritingGameLanding={setDisplayWritingGameLanding}
           />
@@ -378,8 +379,8 @@ const GlobalApp = ({ alchemy }) => {
   }
 
   return (
-    <div className="text-center w-screen text-white h-screen">
-      <div className="text-gray-400 w-full h-8 hidden md:flex justify-between items-center">
+    <div className="text-center w-screen text-white h-screen flex flex-col">
+      <div className="text-gray-400 w-full h-8 hidden md:flex  justify-between items-center">
         <span onClick={() => setDisplayWritingGameLanding(false)}>
           <Link
             className="hover:text-red-300 hover:cursor-pointer px-4 active:text-red-400"
@@ -398,9 +399,9 @@ const GlobalApp = ({ alchemy }) => {
           ></div>
         </div>
 
-        <div className="px-4 w-fit flex justify-center items-center">
+        <div className="px-4 w-fit flex flex-col h-8 flex-col justify-center items-center">
           {authenticated ? (
-            <div className="flex space-x-2 relative w-fit items-center">
+            <div className="flex space-x-2  relative w-fit items-center">
               {displayManaInfo && (
                 <span className="absolute p-1 top-8 z-50 rounded-xl border-white text-white border-2 bg-purple-400">
                   <p className="text-left">
@@ -461,7 +462,7 @@ const GlobalApp = ({ alchemy }) => {
         </div>
       </div>
       <div
-        className={`${righteous.className} h-screen md:h-screen-[33px] text-black relative overflow-y-scroll items-center justify-center w-screen bg-cover bg-center`}
+        className={`${righteous.className} flex-grow standalone:h-screen-[33px] text-black relative standalone:pt-12  items-center justify-center w-screen bg-cover bg-center`}
         style={{
           boxSizing: "border-box",
           backgroundImage:
@@ -473,7 +474,7 @@ const GlobalApp = ({ alchemy }) => {
       >
         {getComponentForRoute(router.pathname, router)}
         <div
-          onClick={handleOpenWritingModal}
+          onClick={() => setDisplayWritingGameLanding((x) => !x)}
           className="absolute h-16 w-16 bottom-3 right-3 border-black border-2 active:bg-purple-500 rounded-full text-green-400 bg-purple-600 z-10 flex items-center justify-center"
         >
           <FaPencilAlt size={28} color="black" />

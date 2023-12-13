@@ -30,6 +30,7 @@ const DesktopWritingGame = ({
   userAppInformation,
   setDisplayWritingGameLanding,
   displayWritingGameLanding,
+  lifeBarLength,
 }) => {
   const router = useRouter();
   const { login, authenticated, user } = usePrivy();
@@ -263,20 +264,30 @@ const DesktopWritingGame = ({
       <audio ref={audioRef}>
         <source src="/sounds/bell.mp3" />
       </audio>
-      <div className="md:block text-white relative w-full h-full mx-auto px-2">
+      <div className="md:block text-white relative standalone:mt-16 w-full h-full mx-auto">
         <div className="flex h-full flex-col">
+          <div className=" w-full h-8">
+            <div
+              className="h-full opacity-100"
+              style={{
+                width: `${lifeBarLength}%`,
+                backgroundColor: lifeBarLength > 30 ? "green" : "red",
+              }}
+            ></div>
+          </div>
           <div
-            className={`${righteous.className} w-full bg-black/50 pt-4 justify-center items-center flex h-24 items-center px-2 flex `}
+            className={`${righteous.className} w-full bg-black/50 py-2 justify-center items-center flex h-fit items-center px-2 flex `}
           >
             <p
-              className={`text-left h-24 w-10/12 text-purple-600 md:mt-0 text-2xl overflow-y-scroll md:text-4xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]`}
+              className={`text-left h-24 w-10/12 text-purple-600 md:mt-0 text-lg md:text-xl overflow-y-scroll md:text-4xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]`}
             >
               {userPrompt}
             </p>
-            <p className="w-2/12 text-2xl md:text-6xl text-yellow-600 h-full items-center justify-center ">
+            <p className="w-2/12 text-4xl md:text-6xl text-yellow-600 h-full flex  items-center justify-center ">
               {time}
             </p>
           </div>
+
           <div className="w-full flex-grow relative">
             <textarea
               ref={textareaRef}
@@ -324,10 +335,10 @@ const DesktopWritingGame = ({
             <div
               className={`${
                 text && "fade-in"
-              } flex flex-col justify-center items-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-opacity-20 mb-4`}
+              } flex flex-col justify-center items-center absolute w-screen top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-opacity-20 mb-4`}
             >
               {finished && (
-                <div className="p-4 bg-black md:w-50 rounded-xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] z-50">
+                <div className="p-4 bg-black w-2/3 md:w-1/3 rounded-xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] z-50">
                   <p
                     className={`${righteous.className} mb-2 text-xl font-bold`}
                   >

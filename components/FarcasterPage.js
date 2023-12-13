@@ -12,9 +12,7 @@ import {
 const FarcasterPage = () => {
   const [loading, setLoading] = useState();
   const [farcasterUser, setFarcasterUser] = useState(null);
-  const [text, setText] = useState(
-    "llegó el tata. llegó el tata.\n\ny la niña habla con el otro tata. la niña abraza a los tatas, y los encuentra donde ellos están. la niña explora inocentemente. la niña no se preocupa.\n\nla niña simplemente es.\n\nla niña no se aproblema. la niña explora. la niña se entretiene."
-  );
+  const [text, setText] = useState("");
   const [cid, setCid] = useState("");
   const [translatedCid, setTranslatedCid] = useState("");
   const [isCasting, setIsCasting] = useState(false);
@@ -23,6 +21,7 @@ const FarcasterPage = () => {
   );
   const [embedTwo, setEmbedTwo] = useState("");
   const [castHash, setCastHash] = useState("");
+  const [targetWritingTime, setTargetWritingTime] = useState(480);
   const [decodedCid, setDecodedCid] = useState("");
   const [isCastBeingBroadcasted, setIsCastBeingBroadcasted] = useState(false);
   const [wasSuccessfullyCasted, setWasSuccessfullyCasted] = useState(false);
@@ -171,29 +170,34 @@ const FarcasterPage = () => {
   };
 
   return (
-    <div className="text-white">
+    <div className="text-white mt-5">
       {!farcasterUser?.status && (
-        <Button
-          buttonAction={handleSignIn}
-          buttonColor="w-96 mx-auto bg-green-600 mt-4"
-          buttonText={loading ? "loading..." : "connect with farcaster"}
-        />
+        <div className="w-96 mx-auto">
+          <p className="text-white">
+            all of this is being developed now! use at your own risk
+          </p>
+          <Button
+            buttonAction={handleSignIn}
+            buttonColor="w-96 mx-auto bg-green-600 mt-4"
+            buttonText={loading ? "loading..." : "connect with farcaster"}
+          />
+        </div>
       )}
 
       {farcasterUser?.status == "pending_approval" &&
         farcasterUser?.signer_approval_url && (
-          <div className="signer-approval-container">
-            <div className="w-full flex justify-center my-4">
+          <div className="signer-approval-container pt-12">
+            <div className="hidden w-full md:flex justify-center my-4">
               <QRCode value={farcasterUser.signer_approval_url} />
             </div>
 
-            <div className="or-divider">OR</div>
             <a
+              className="bg-gradient-to-r from-red-500 via-yellow-600 to-violet-500 text-black p-2 rounded-xl mt-24"
               href={farcasterUser.signer_approval_url}
               target="_blank"
               rel="noopener noreferrer"
             >
-              Click here to view the signer URL
+              Login with warpcast
             </a>
           </div>
         )}
@@ -237,6 +241,15 @@ const FarcasterPage = () => {
               </div>
             ) : (
               <div className="w-full">
+                <p>target writing time:</p>
+                <input
+                  type="number"
+                  placeholder="480"
+                  className="bg-purple-200 text-black my-2 p-2 rounded-xl text-center"
+                  min={0}
+                  onChange={(e) => setTargetWritingTime(e.target.value)}
+                  value={targetWritingTime}
+                />
                 <textarea
                   className="text-black p-2 rounded-xl mb-2 w-full"
                   placeholder={DEFAULT_CAST}
@@ -244,7 +257,7 @@ const FarcasterPage = () => {
                   onChange={(e) => setText(e.target.value)}
                   rows={5}
                 />
-                <div className="bg-purple-200 mb-4 p-2 rounded-xl w-96 text-black">
+                {/* <div className="bg-purple-200 mb-4 p-2 rounded-xl w-96 text-black">
                   <p>embeds</p>
                   <input
                     className="px-2 py-1 rounded-xl bg-purple-300 w-full my-2 border-black placeholder:text-gray-500  border-2"
@@ -252,7 +265,7 @@ const FarcasterPage = () => {
                     value={embedOne}
                     placeholder="embed number one..."
                   />
-                </div>
+                </div> */}
                 <Button
                   buttonAction={handleCast}
                   buttonColor="bg-purple-600 w-fit mx-auto"
