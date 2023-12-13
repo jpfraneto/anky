@@ -165,11 +165,16 @@ const LibraryPage = ({}) => {
     return (
       <div className="py-2 w-96 mx-auto text-white">
         <p className="mb-4">you need to login</p>
-        <Button
-          buttonAction={login}
-          buttonColor="bg-green-400"
-          buttonText="login"
-        />
+        <div className="flex space-x-2 w-96 ">
+          <Button
+            buttonAction={login}
+            buttonColor="bg-green-400"
+            buttonText="login"
+          />
+          <Link href="/">
+            <Button buttonText="landing" buttonColor="bg-green-600" />
+          </Link>
+        </div>
       </div>
     );
 

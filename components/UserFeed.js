@@ -139,7 +139,7 @@ const UserWriting = ({ writing }) => {
 
   return (
     <div
-      className={`p-2 m-4 shadow-xl shadow-yellow-600 rounded-xl border-white border-2 ${getColor(
+      className={`px-2 my-2 shadow-xl pt-4 shadow-yellow-600 rounded-xl border-white border-2 ${getColor(
         writing.writingContainerType
       )} text-white relative`}
     >
@@ -164,14 +164,14 @@ const UserWriting = ({ writing }) => {
           {copyText}
         </span>
       </div>
-      <p className="text-sm em">
+      {/* <p className="text-sm em">
         {new Date(writing.timestamp).toLocaleDateString("en-US", options)}
-      </p>
+      </p> */}
 
-      <p>
+      {/* <p className="">
         {writing.writingContainerType} - {writing.containerId}
-      </p>
-      <hr className="w-9/11 mx-auto bg-black text-black my-2" />
+      </p> */}
+      <hr className="w-9/11 mx-auto bg-black text-black mt-4 my-2" />
       {writing.text && writing.text ? (
         writing.text.includes("\n") ? (
           writing.text.split("\n").map((x, i) => (

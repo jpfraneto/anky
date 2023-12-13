@@ -87,7 +87,7 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <main
-      className={`${righteous.className}`}
+      className={`${righteous.className} h-screen`}
       style={{ WebkitTapHighlightColor: "transparent" }}
     >
       <Head>

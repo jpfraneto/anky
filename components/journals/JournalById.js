@@ -198,7 +198,6 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
           name: "smart-contract-address",
           value: process.env.NEXT_PUBLIC_JOURNALS_CONTRACT_ADDRESS,
         },
-        // what is the CID from the previous page? this is where the provenance plays an important role and needs to be taken care of.
         {
           name: "previous-page",
           value: previousPageCid.toString(),

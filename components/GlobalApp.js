@@ -5,6 +5,7 @@ import { Righteous, Dancing_Script } from "next/font/google";
 import { getAnkyverseDay, getAnkyverseQuestion } from "../lib/ankyverse";
 import { useUser } from "../context/UserContext";
 import { FaPencilAlt } from "react-icons/fa";
+import { IoArrowBack } from "react-icons/io5";
 import { GiRollingEnergy } from "react-icons/gi";
 import { ethers } from "ethers";
 import Link from "next/link";
@@ -292,95 +293,9 @@ const GlobalApp = ({ alchemy }) => {
       </Transition>
     );
 
-  if (displayWritingGameLanding) {
-    return (
-      <div className="text-center w-screen text-white">
-        <div className="text-gray-400 hidden md:flex w-full h-8 standalone:pt-22 fixed mt-8 md:mt-0 standalone:mb-22  justify-between items-center">
-          <span onClick={() => setDisplayWritingGameLanding(false)}>
-            <Link
-              className="hover:text-red-300 hover:cursor-pointer px-4 active:text-red-400"
-              href="/"
-            >
-              anky
-            </Link>
-          </span>
-
-          <div className="h-full w-full standalone:mt-20">
-            <div
-              className="h-full opacity-50"
-              style={{
-                width: `${lifeBarLength}%`,
-                backgroundColor: lifeBarLength > 30 ? "green" : "red",
-              }}
-            ></div>
-          </div>
-
-          <div className="hidden px-4 w-fit md:flex justify-center ">
-            {authenticated ? (
-              <div className="flex space-x-2 w-fit">
-                <button
-                  className="hover:text-purple-600 cursor-pointer"
-                  onClick={() => setDisplayWritingGameLanding(false)}
-                >
-                  cancel
-                </button>
-                <span onClick={() => setDisplayWritingGameLanding(false)}>
-                  <Link
-                    href="/library"
-                    className="hover:text-purple-600 cursor-pointer"
-                  >
-                    library
-                  </Link>
-                </span>
-
-                <button
-                  className="hover:text-purple-600 cursor-pointer"
-                  onClick={logout}
-                >
-                  logout
-                </button>
-              </div>
-            ) : (
-              <button
-                className="hover:text-purple-600 cursor-pointer"
-                onClick={login}
-              >
-                login
-              </button>
-            )}
-          </div>
-        </div>
-        <div
-          className={`${righteous.className} text-black h-screen standalone:h-screen-[33px] relative overflow-y-scroll flex flex-col items-center  w-full bg-cover bg-center`}
-          style={{
-            boxSizing: "border-box",
-
-            backgroundImage:
-              "linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/images/mintbg.jpg')",
-            backgroundPosition: "center center",
-            backgroundSize: "cover",
-            backgroundRepeat: "no-repeat",
-          }}
-        >
-          <DesktopWritingGame
-            ankyverseDate={`sojourn ${ankyverseToday.currentSojourn} - wink ${
-              ankyverseToday.wink
-            } - ${ankyverseToday.currentKingdom.toLowerCase()}`}
-            userPrompt={ankyverseQuestion}
-            userAppInformation={userAppInformation}
-            setLifeBarLength={setLifeBarLength}
-            lifeBarLength={lifeBarLength}
-            displayWritingGameLanding={displayWritingGameLanding}
-            setDisplayWritingGameLanding={setDisplayWritingGameLanding}
-          />
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="text-center w-screen text-white h-screen flex flex-col">
-      <div className="text-gray-400 w-full h-8 hidden md:flex  justify-between items-center">
+      <div className="text-gray-400 w-full h-8 hidden md:flex justify-between items-center">
         <span onClick={() => setDisplayWritingGameLanding(false)}>
           <Link
             className="hover:text-red-300 hover:cursor-pointer px-4 active:text-red-400"
@@ -462,9 +377,8 @@ const GlobalApp = ({ alchemy }) => {
         </div>
       </div>
       <div
-        className={`${righteous.className} flex-grow standalone:h-screen-[33px] text-black relative standalone:pt-12  items-center justify-center w-screen bg-cover bg-center`}
+        className={`${righteous.className} h-3/4 standalone:h-screen-[33px] text-black relative standalone:pt-12  items-center justify-center`}
         style={{
-          boxSizing: "border-box",
           backgroundImage:
             "linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/images/mintbg.jpg')",
           backgroundPosition: "center center",
@@ -472,13 +386,37 @@ const GlobalApp = ({ alchemy }) => {
           backgroundRepeat: "no-repeat",
         }}
       >
-        {getComponentForRoute(router.pathname, router)}
-        <div
-          onClick={() => setDisplayWritingGameLanding((x) => !x)}
-          className="absolute h-16 w-16 bottom-3 right-3 border-black border-2 active:bg-purple-500 rounded-full text-green-400 bg-purple-600 z-10 flex items-center justify-center"
-        >
-          <FaPencilAlt size={28} color="black" />
-        </div>
+        {displayWritingGameLanding ? (
+          <>
+            <DesktopWritingGame
+              ankyverseDate={`sojourn ${ankyverseToday.currentSojourn} - wink ${
+                ankyverseToday.wink
+              } - ${ankyverseToday.currentKingdom.toLowerCase()}`}
+              userPrompt={ankyverseQuestion}
+              userAppInformation={userAppInformation}
+              setLifeBarLength={setLifeBarLength}
+              lifeBarLength={lifeBarLength}
+              displayWritingGameLanding={displayWritingGameLanding}
+              setDisplayWritingGameLanding={setDisplayWritingGameLanding}
+            />
+            <div
+              onClick={() => setDisplayWritingGameLanding((x) => !x)}
+              className="absolute hover:bg-red-700 hover:cursor-pointer h-16 w-16 bottom-3 right-3 border-black border-2 active:bg-red-500 rounded-full text-green-400 bg-red-500 z-10 flex items-center justify-center"
+            >
+              <IoArrowBack size={28} color="black" />
+            </div>
+          </>
+        ) : (
+          <div className="h-full">
+            {getComponentForRoute(router.pathname, router)}
+            <div
+              onClick={() => setDisplayWritingGameLanding((x) => !x)}
+              className="absolute hover:bg-purple-700 hover:cursor-pointer h-16 w-16 bottom-3 right-3 border-black border-2 active:bg-purple-500 rounded-full text-green-400 bg-purple-600 z-10 flex items-center justify-center"
+            >
+              <FaPencilAlt size={28} color="black" />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

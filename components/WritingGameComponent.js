@@ -233,9 +233,9 @@ const WritingGameComponent = ({
       style={{
         boxSizing: "border-box",
         height: "calc(100vh - 33px)",
-        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(${
-          preloadedBackground || "/images/mintbg.jpg"
-        })`,
+        // backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(${
+        //   preloadedBackground || "/images/mintbg.jpg"
+        // })`,
         backgroundPosition: "center center",
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",

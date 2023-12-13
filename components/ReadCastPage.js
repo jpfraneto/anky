@@ -39,9 +39,11 @@ const ReadCastPage = () => {
     if (!id) return;
     async function fetchCastByHash(id) {
       try {
+        console.log("fetching the cast");
         const response = await axios.get(
           `${apiRoute}/farcaster/api/cast/${id}`
         );
+        console.log("the response is: ", response.data);
         if (response.data.cast) {
           setCast(response.data.cast);
           console.log("the cast is: ", response.data.cast);
@@ -49,6 +51,9 @@ const ReadCastPage = () => {
           const decodedCid = decodeFromAnkyverseLanguage(encodedCid);
           const writingText = await getOneWriting(decodedCid);
           setWriting(writingText.text);
+          setLoading(false);
+        } else {
+          console.log("onaksjc");
           setLoading(false);
         }
       } catch (error) {
@@ -66,6 +71,7 @@ const ReadCastPage = () => {
   async function handleAddLike() {
     alert("like!");
   }
+  if (loading) return <p>loading...</p>;
   if (!cast)
     return (
       <div className="text-white pt-4">
@@ -90,7 +96,7 @@ const ReadCastPage = () => {
       </Head>
       <div className="w-full h-screen flex flex-col relative">
         <div className="w-full md:w-6/12 mx-auto standalone:pt-12 pt-2 pb-16 h-screen bg-purple-500 text-black p-2 ">
-          <p className="text-sm italic flex-none h-4 flex items-center">
+          <p className="text-xs italic flex-none h-4 flex items-center">
             {new Date(cast.timestamp).toLocaleDateString("en-US", options)} - @
             {cast.author.username}
           </p>

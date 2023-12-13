@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Button from "./Button";
 import axios from "axios";
 import QRCode from "qrcode.react";
+import Link from "next/link";
 import { DEFAULT_CAST, LOCAL_STORAGE_KEYS } from "../lib/constants";
 import { saveTextAnon } from "../lib/backend";
 import {
@@ -126,6 +127,8 @@ const FarcasterPage = () => {
   }
 
   const handleCast = async () => {
+    if (!text) return alert("please write something");
+
     setIsCasting(true);
     setAnkyTranslatingCast(true);
     try {
@@ -140,14 +143,15 @@ const FarcasterPage = () => {
       setIsCastBeingBroadcasted(true);
       const kannadaCid = encodeToAnkyverseLanguage(cid);
       setTranslatedCid(kannadaCid);
+
       const newCastText = `${kannadaCid}\n\nwritten as anky`;
-      let embeds = [];
-      if (embedOne && embedOne.length > 0) {
-        embeds.push({ url: embedOne });
-      }
-      if (embedTwo && embedTwo.length > 0) {
-        embeds.push({ url: embedTwo });
-      }
+      let embeds = [{ url: `https://www.anky.lat/r/${cid}` }];
+      // if (embedOne && embedOne.length > 0) {
+      //   embeds.push({ url: embedOne });
+      // }
+      // if (embedTwo && embedTwo.length > 0) {
+      //   embeds.push({ url: embedTwo });
+      // }
       const response = await axios.post(`${apiRoute}/farcaster/api/cast`, {
         text: newCastText,
         signer_uuid: farcasterUser?.signer_uuid,
@@ -160,6 +164,7 @@ const FarcasterPage = () => {
         setCastHash(response.data.cast.hash);
       }
     } catch (error) {
+      setIsCasting(false);
       console.error("Could not send the cast", error);
     }
   };
@@ -170,7 +175,7 @@ const FarcasterPage = () => {
   };
 
   return (
-    <div className="text-white mt-5">
+    <div className="text-white pt-5 h-full">
       {!farcasterUser?.status && (
         <div className="w-96 mx-auto">
           <p className="text-white">
@@ -203,27 +208,30 @@ const FarcasterPage = () => {
         )}
 
       {farcasterUser?.status == "approved" && (
-        <div>
-          <div className="flex flex-col w-96 my-2 items-center mx-auto ">
+        <div className="h-full">
+          <div className="flex flex-col h-full w-screen md:w-96 my-2 items-center mx-auto ">
             {isCasting ? (
-              <div>
+              <div className="w-full px-2">
                 {ankyTranslatingCast ? (
                   <p>anky is translating your cast...</p>
                 ) : (
-                  <div>
+                  <div className="w-full">
                     {isCastBeingBroadcasted ? (
-                      <div>
+                      <div className="w-full">
                         <p>
                           your cast was translated into the language of the
                           ankyverse
                         </p>
-                        <p className="text-2xl">{translatedCid}</p>
+                        <p className="w-screen text-lg md:text-2xl">
+                          {translatedCid}
+                        </p>
                         <Button
                           buttonAction={decodeCid}
                           buttonColor="bg-green-600"
                           buttonText="decode cid"
                         />
                         {decodedCid && <p>{decodedCid}</p>}
+                        <Link href={`/r/${castHash}`}>visit cast</Link>
                       </div>
                     ) : (
                       <div>
@@ -240,7 +248,7 @@ const FarcasterPage = () => {
                 )}
               </div>
             ) : (
-              <div className="w-full">
+              <div className="w-full h-full">
                 <p>target writing time:</p>
                 <input
                   type="number"
@@ -266,11 +274,19 @@ const FarcasterPage = () => {
                     placeholder="embed number one..."
                   />
                 </div> */}
-                <Button
-                  buttonAction={handleCast}
-                  buttonColor="bg-purple-600 w-fit mx-auto"
-                  buttonText={isCasting ? "casting" : "cast"}
-                />
+                <div className="flex justify-center w-64 mx-auto">
+                  <Button
+                    buttonAction={handleCast}
+                    buttonColor="bg-purple-600 w-24"
+                    buttonText={isCasting ? "casting" : "cast"}
+                  />
+                  <Link href="/library">
+                    <Button
+                      buttonColor="bg-green-600 w-24"
+                      buttonText="library"
+                    />
+                  </Link>
+                </div>
               </div>
             )}
           </div>
