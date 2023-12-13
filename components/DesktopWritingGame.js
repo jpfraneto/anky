@@ -27,6 +27,7 @@ const DesktopWritingGame = ({
   setLifeBarLength,
   setLoadButtons,
   ankyverseDate,
+  setDisableButton,
   userAppInformation,
   setDisplayWritingGameLanding,
   displayWritingGameLanding,
@@ -142,6 +143,7 @@ const DesktopWritingGame = ({
     audioRef.current.pause();
     setCopyText("Copy my writing");
     setTime(0);
+    setDisableButton(false);
     setLifeBarLength(100);
     setText("");
     setSavingRound(false);
@@ -154,6 +156,7 @@ const DesktopWritingGame = ({
   const handleTextChange = (event) => {
     setText(event.target.value);
     if (!isActive && event.target.value.length > 0) {
+      setDisableButton(true);
       setIsActive(true);
       setFailureMessage("");
       setStartTime(Date.now());

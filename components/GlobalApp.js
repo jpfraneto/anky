@@ -63,6 +63,7 @@ const GlobalApp = ({ alchemy }) => {
   const [displayManaInfo, setDisplayManaInfo] = useState(false);
   const [checkingIfYouOwnAnky, setCheckingIfYouOwnAnky] = useState(false);
   const [ankyButtonText, setAnkyButtonText] = useState("i already own one");
+  const [disableButton, setDisableButton] = useState(false);
   const [displayWritingGameLanding, setDisplayWritingGameLanding] =
     useState(false);
   const [userWallet, setUserWallet] = useState(null);
@@ -295,8 +296,11 @@ const GlobalApp = ({ alchemy }) => {
 
   return (
     <div className="text-center w-screen text-white h-screen flex flex-col">
-      <div className="text-gray-400 w-full h-8 hidden md:flex justify-between items-center">
-        <span onClick={() => setDisplayWritingGameLanding(false)}>
+      <div className="text-gray-400 w-full h-8  justify-between items-center">
+        <span
+          className="hidden md:flex"
+          onClick={() => setDisplayWritingGameLanding(false)}
+        >
           <Link
             className="hover:text-red-300 hover:cursor-pointer px-4 active:text-red-400"
             href="/"
@@ -377,7 +381,7 @@ const GlobalApp = ({ alchemy }) => {
         </div>
       </div>
       <div
-        className={`${righteous.className} h-3/4 standalone:h-screen-[33px] text-black relative standalone:pt-12  items-center justify-center`}
+        className={`${righteous.className} h-full standalone:h-screen-[33px] text-black relative standalone:pt-12  items-center justify-center`}
         style={{
           backgroundImage:
             "linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/images/mintbg.jpg')",
@@ -396,22 +400,25 @@ const GlobalApp = ({ alchemy }) => {
               userAppInformation={userAppInformation}
               setLifeBarLength={setLifeBarLength}
               lifeBarLength={lifeBarLength}
+              setDisableButton={setDisableButton}
               displayWritingGameLanding={displayWritingGameLanding}
               setDisplayWritingGameLanding={setDisplayWritingGameLanding}
             />
-            <div
-              onClick={() => setDisplayWritingGameLanding((x) => !x)}
-              className="absolute hover:bg-red-700 hover:cursor-pointer h-16 w-16 bottom-3 right-3 border-black border-2 active:bg-red-500 rounded-full text-green-400 bg-red-500 z-10 flex items-center justify-center"
-            >
-              <IoArrowBack size={28} color="black" />
-            </div>
+            {!disableButton && (
+              <div
+                onClick={() => setDisplayWritingGameLanding((x) => !x)}
+                className="fixed hover:bg-red-700 hover:cursor-pointer h-16 w-16 bottom-3 right-3 border-black border-2 active:bg-red-500 rounded-full text-green-400 bg-red-500 z-10 flex items-center justify-center"
+              >
+                <IoArrowBack size={28} color="black" />
+              </div>
+            )}
           </>
         ) : (
           <div className="h-full">
             {getComponentForRoute(router.pathname, router)}
             <div
               onClick={() => setDisplayWritingGameLanding((x) => !x)}
-              className="absolute hover:bg-purple-700 hover:cursor-pointer h-16 w-16 bottom-3 right-3 border-black border-2 active:bg-purple-500 rounded-full text-green-400 bg-purple-600 z-10 flex items-center justify-center"
+              className="fixed hover:bg-purple-700 hover:cursor-pointer h-16 w-16 bottom-3 right-3 border-black border-2 active:bg-purple-500 rounded-full text-green-400 bg-purple-600 z-10 flex items-center justify-center"
             >
               <FaPencilAlt size={28} color="black" />
             </div>
