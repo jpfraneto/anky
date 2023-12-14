@@ -10,11 +10,12 @@ import {
   decodeFromAnkyverseLanguage,
 } from "../lib/ankyverse";
 
-const FarcasterPage = () => {
+const FarcasterPage = ({ setDisplayWritingGameLanding, setGameProps }) => {
   const [loading, setLoading] = useState();
   const [farcasterUser, setFarcasterUser] = useState(null);
   const [text, setText] = useState("");
   const [cid, setCid] = useState("");
+  const [copiedText, setCopiedText] = useState("or copy the url");
   const [translatedCid, setTranslatedCid] = useState("");
   const [isCasting, setIsCasting] = useState(false);
   const [embedOne, setEmbedOne] = useState(
@@ -114,6 +115,8 @@ const FarcasterPage = () => {
   }, [farcasterUser]);
 
   async function handleSignIn() {
+    setGameProps({});
+    return setDisplayWritingGameLanding(true);
     setLoading(true);
     await createAndStoreSigner();
     setLoading(false);
@@ -210,6 +213,12 @@ const FarcasterPage = () => {
     setDecodedCid(decoded);
   };
 
+  const copyText = async () => {
+    if (!farcasterUser.signer_approval_url) return;
+    await navigator.clipboard.writeText(farcasterUser.signer_approval_url);
+    setCopiedText("copied");
+  };
+
   return (
     <div className="text-white pt-5 h-full">
       {!farcasterUser?.status && (
@@ -260,12 +269,19 @@ const FarcasterPage = () => {
             <p className="mb-2">
               scan this qr code to authenticate with warpcast
             </p>
-            <p className="mb-4">(you need to have a farcaster account)</p>
-            <div className="px-8 py-2 bg-black rounded-xl w-fit mx-auto">
+            <div className="hidden md:flex px-8 py-2 bg-black rounded-xl w-fit mx-auto">
               <div className="hidden w-full md:flex justify-center my-4">
                 <QRCode value={farcasterUser.signer_approval_url} />
               </div>
             </div>
+            <p>
+              <span
+                className="hover:text-purple-600 active:text-yellow-500"
+                onClick={copyText}
+              >
+                {copiedText}
+              </span>
+            </p>
             <div className="mt-8 w-96 mx-auto ">
               <Link href="/what-is-this" passHref>
                 <Button
@@ -275,14 +291,17 @@ const FarcasterPage = () => {
               </Link>
             </div>
 
-            <a
-              className="bg-gradient-to-r md:hidden from-red-500 via-yellow-600 to-violet-500 text-black p-2 rounded-xl mt-24"
-              href={farcasterUser.signer_approval_url}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Login with warpcast
-            </a>
+            <div className="mt-12">
+              {" "}
+              <a
+                className="bg-gradient-to-r md:hidden from-red-500 via-yellow-600 to-violet-500 text-black p-2 rounded-xl mt-48"
+                href={farcasterUser.signer_approval_url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Login with warpcast
+              </a>
+            </div>
           </div>
         )}
 

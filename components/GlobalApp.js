@@ -61,6 +61,7 @@ const GlobalApp = ({ alchemy }) => {
   const router = useRouter();
   const [lifeBarLength, setLifeBarLength] = useState(100);
   const [displayManaInfo, setDisplayManaInfo] = useState(false);
+  const [gameProps, setGameProps] = useState({});
   const [checkingIfYouOwnAnky, setCheckingIfYouOwnAnky] = useState(false);
   const [ankyButtonText, setAnkyButtonText] = useState("i already own one");
   const [disableButton, setDisableButton] = useState(false);
@@ -178,7 +179,12 @@ const GlobalApp = ({ alchemy }) => {
       case "/welcome":
         return <WelcomePage />;
       case "/farcaster":
-        return <FarcasterPage />;
+        return (
+          <FarcasterPage
+            setGameProps={setGameProps}
+            setDisplayWritingGameLanding={setDisplayWritingGameLanding}
+          />
+        );
       case "/what-is-this":
         return <WhatIsThisPage />;
       case `/r/${route.split("/").pop()}`:

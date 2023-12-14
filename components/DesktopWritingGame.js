@@ -27,6 +27,7 @@ const DesktopWritingGame = ({
   setLifeBarLength,
   setLoadButtons,
   ankyverseDate,
+  gamePrompts = {},
   setDisableButton,
   userAppInformation,
   setDisplayWritingGameLanding,
