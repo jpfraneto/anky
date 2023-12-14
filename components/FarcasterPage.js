@@ -115,7 +115,7 @@ const FarcasterPage = ({ setDisplayWritingGameLanding, setGameProps }) => {
   }, [farcasterUser]);
 
   async function handleSignIn() {
-    //setGameProps({});
+    // setGameProps({});
     // return setDisplayWritingGameLanding(true);
     setLoading(true);
     await createAndStoreSigner();
@@ -269,10 +269,8 @@ const FarcasterPage = ({ setDisplayWritingGameLanding, setGameProps }) => {
             <p className="mb-2">
               scan this qr code to authenticate with warpcast
             </p>
-            <div className="hidden md:flex px-8 py-2 bg-black rounded-xl w-fit mx-auto">
-              <div className="hidden w-full md:flex justify-center my-4">
-                <QRCode value={farcasterUser.signer_approval_url} />
-              </div>
+            <div className="hidden w-full md:flex justify-center my-4">
+              <QRCode value={farcasterUser.signer_approval_url} />
             </div>
             <p>
               <span
