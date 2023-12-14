@@ -115,8 +115,8 @@ const FarcasterPage = ({ setDisplayWritingGameLanding, setGameProps }) => {
   }, [farcasterUser]);
 
   async function handleSignIn() {
-    setGameProps({});
-    return setDisplayWritingGameLanding(true);
+    //setGameProps({});
+    // return setDisplayWritingGameLanding(true);
     setLoading(true);
     await createAndStoreSigner();
     setLoading(false);
