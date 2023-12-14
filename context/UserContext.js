@@ -93,6 +93,9 @@ export const UserProvider = ({ children }) => {
         setAppLoading(false);
         return;
       }
+      setTimeout(() => {
+        setMainAppLoading(false);
+      }, 5000);
       if (!wallet) return;
       await changeChain();
       const response = await fetchUsersAnky();
