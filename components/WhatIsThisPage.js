@@ -2,8 +2,10 @@ import React from "react";
 import Button from "./Button";
 import { usePrivy } from "@privy-io/react-auth";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 const WhatIsThisPage = () => {
+  const router = useRouter();
   const { login, authenticated } = usePrivy();
   return (
     <div className="mt-3 text-white md:w-1/2 mx-auto">
@@ -14,41 +16,47 @@ const WhatIsThisPage = () => {
             We believe in the transformative power of writing.
           </p>
           <p className="mb-2">
-            This practice is not just a means of communication; it&apos;s a pathway
-            to deeper self-awareness and mindfulness. Here, you embark on a
-            journey of self-discovery, using writing as a tool to explore your
-            inner world and connect with your thoughts and emotions in a
+            This practice is not just a means of communication; it&apos;s a
+            pathway to deeper self-awareness and mindfulness. Here, you embark
+            on a journey of self-discovery, using writing as a tool to explore
+            your inner world and connect with your thoughts and emotions in a
             meaningful way.
           </p>
           <p className="mb-2">
-            Our mission is to guide you through this introspective process.
+            The mission of this place is to guide you through this introspective
+            process.
           </p>
           <p className="mb-2"></p>
           <p className="mb-2">
             Anky harnesses the serenity of meditation and the clarity of writing
             to create a pioneering system designed to enrich your mental
-            well-being. Whether you&apos;re journaling your thoughts, penning down
-            your aspirations, or simply reflecting on your day, Anky provides a
-            serene and focused environment for you to dive deep into the essence
-            of your mind.
+            well-being. Whether you&apos;re journaling your thoughts, penning
+            down your aspirations, or simply reflecting on your day, Anky
+            provides a serene and focused environment for you to dive deep into
+            the essence of your mind.
+          </p>
+          <p className="mb-2">
+            And to discover how that looks like, both for you, and for others.
+            Identified, or anonymous. In here, there is space for everything.
           </p>
           <p className="mb-2">
             The challenge? To break free from the noise and distractions of
-            everyday life and discover the power of your own voice. In doing so,
-            you&apos;ll find a sense of peace, gain new perspectives, and cultivate a
-            practice that nurtures your mental health.
+            everyday life and discover the power of your own voice.
           </p>
           <p className="mb-2">
             Let Anky be your guide to finding tranquility and insight through
-            the art of writing. Experience the power of writing, not just as a
-            habit, but as a meditative practice that can illuminate your path to
-            personal growth and inner peace.
+            the art of writing.
+          </p>
+          <p className="mb-2">
+            Experience the power of this practice, not just as a habit, but as a
+            meditative practice that can illuminate your path to personal growth
+            and inner peace.
           </p>
           <div className="w-48 mx-auto mt-2">
             <Button
-              buttonAction={login}
+              buttonAction={() => router.back()}
               buttonColor="bg-green-600"
-              buttonText="Create Account"
+              buttonText="go back"
             />
           </div>
         </div>
@@ -58,15 +66,14 @@ const WhatIsThisPage = () => {
           <p className="mb-2">Your account was created.</p>
           <p className="mb-2">Now, just write.</p>
           <div className="w-48 mx-auto mt-2">
-          <Link passHref href='/write?p=explain-how-it-feels-to-be-you'>
-            <Button
-              buttonText="write"
-              buttonAction={null}
-              buttonColor="bg-purple-600"
-            />
-          </Link>
+            <Link passHref href="/write?p=explain-how-it-feels-to-be-you">
+              <Button
+                buttonText="write"
+                buttonAction={null}
+                buttonColor="bg-purple-600"
+              />
+            </Link>
           </div>
-         
         </div>
       )}
     </div>

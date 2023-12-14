@@ -132,11 +132,9 @@ const FarcasterPage = () => {
     setIsCasting(true);
     setAnkyTranslatingCast(true);
     try {
-      console.log("THEEEEE TEXT IS: ", text);
       const responseFromIrys = await axios.post(`${apiRoute}/upload-writing`, {
         text,
       });
-      console.log("IN HERE, THE IRYS CID IS: ", responseFromIrys.data);
       const cid = responseFromIrys.data.cid;
       setCid(cid);
       setAnkyTranslatingCast(false);
@@ -144,8 +142,8 @@ const FarcasterPage = () => {
       const kannadaCid = encodeToAnkyverseLanguage(cid);
       setTranslatedCid(kannadaCid);
 
-      const newCastText = `${kannadaCid}\n\nwritten as anky`;
-      let embeds = [{ url: `https://www.anky.lat/r/${cid}` }];
+      const newCastText = `${kannadaCid}\n\nwritten as anky - you can decode this by clicking on the embed on the next cast`;
+      // let embeds = [{ url: `https://www.anky.lat/r/${cid}` }];
       // if (embedOne && embedOne.length > 0) {
       //   embeds.push({ url: embedOne });
       // }
@@ -155,18 +153,38 @@ const FarcasterPage = () => {
       const response = await axios.post(`${apiRoute}/farcaster/api/cast`, {
         text: newCastText,
         signer_uuid: farcasterUser?.signer_uuid,
-        embeds: embeds,
       });
       console.log("the response is: ", response);
       if (response.status === 200) {
-        setText(""); // Clear the text field
-        setWasSuccessfullyCasted(true);
         setCastHash(response.data.cast.hash);
+
+        const secondCastText = `welcome to a limitless era of farcaster:`;
+        console.log("sending the second cast");
+        const secondResponse = await axios.post(
+          `${apiRoute}/farcaster/api/cast`,
+          {
+            parent: response.data.cast.hash,
+            text: secondCastText,
+            signer_uuid: farcasterUser?.signer_uuid,
+            embeds: [
+              { url: `https://www.anky.lat/r/${response.data.cast.hash}` },
+            ],
+          }
+        );
+        console.log("the second cast was sent");
+        if (secondResponse.status === 200) {
+          setText(""); // Clear the text field
+          setWasSuccessfullyCasted(true);
+        }
       }
     } catch (error) {
       setIsCasting(false);
       console.error("Could not send the cast", error);
     }
+  };
+
+  const handleAnonCast = async () => {
+    alert("cast to ankycaster");
   };
 
   const decodeCid = () => {
@@ -181,6 +199,13 @@ const FarcasterPage = () => {
           <p className="text-white">
             all of this is being developed now! use at your own risk
           </p>
+          <p className="text-white">
+            if you want to be an active part of the development of this place,
+            consider joining this telegram group:
+          </p>
+          <a href="https://t.me/ankycommunity" target="_blank">
+            open telegram
+          </a>
           <Button
             buttonAction={handleSignIn}
             buttonColor="w-96 mx-auto bg-green-600 mt-4"
@@ -192,12 +217,26 @@ const FarcasterPage = () => {
       {farcasterUser?.status == "pending_approval" &&
         farcasterUser?.signer_approval_url && (
           <div className="signer-approval-container pt-12">
-            <div className="hidden w-full md:flex justify-center my-4">
-              <QRCode value={farcasterUser.signer_approval_url} />
+            <p className="mb-2">
+              scan this qr code to authenticate with warpcast
+            </p>
+            <p className="mb-4">(you need to have a farcaster account)</p>
+            <div className="px-8 py-2 bg-black rounded-xl w-fit mx-auto">
+              <div className="hidden w-full md:flex justify-center my-4">
+                <QRCode value={farcasterUser.signer_approval_url} />
+              </div>
+            </div>
+            <div className="mt-8 w-96 mx-auto ">
+              <Link href="/what-is-this" passHref>
+                <Button
+                  buttonText="wtf is this?"
+                  buttonColor="bg-gradient-to-r from-red-500 via-yellow-600 to-violet-500 text-black"
+                />
+              </Link>
             </div>
 
             <a
-              className="bg-gradient-to-r from-red-500 via-yellow-600 to-violet-500 text-black p-2 rounded-xl mt-24"
+              className="bg-gradient-to-r md:hidden from-red-500 via-yellow-600 to-violet-500 text-black p-2 rounded-xl mt-24"
               href={farcasterUser.signer_approval_url}
               target="_blank"
               rel="noopener noreferrer"
@@ -215,14 +254,14 @@ const FarcasterPage = () => {
                 {ankyTranslatingCast ? (
                   <p>anky is translating your cast...</p>
                 ) : (
-                  <div className="w-full">
+                  <div className="w-full mx-auto">
                     {isCastBeingBroadcasted ? (
-                      <div className="w-full">
+                      <div className="w-full flex flex-col items-center">
                         <p>
                           your cast was translated into the language of the
                           ankyverse
                         </p>
-                        <p className="w-screen text-lg md:text-2xl">
+                        <p className="w-fit mx-auto text-center text-lg md:text-2xl">
                           {translatedCid}
                         </p>
                         <Button
@@ -258,6 +297,15 @@ const FarcasterPage = () => {
                   onChange={(e) => setTargetWritingTime(e.target.value)}
                   value={targetWritingTime}
                 />
+                <p className="mb-2">
+                  (there is no character limit in here. write as much as you
+                  can)
+                </p>
+                <p className="mb-2">
+                  what you write will be casted on the language of the
+                  ankyverse, and only people that access that cast from anky
+                  will be able to decode it.
+                </p>
                 <textarea
                   className="text-black p-2 rounded-xl mb-2 w-full"
                   placeholder={DEFAULT_CAST}
@@ -274,16 +322,21 @@ const FarcasterPage = () => {
                     placeholder="embed number one..."
                   />
                 </div> */}
-                <div className="flex justify-center w-64 mx-auto">
+                <div className="flex justify-center w-96 mx-auto">
                   <Button
                     buttonAction={handleCast}
-                    buttonColor="bg-purple-600 w-24"
+                    buttonColor="bg-purple-600 w-fit"
                     buttonText={isCasting ? "casting" : "cast"}
                   />
+                  {/* <Button
+                    buttonAction={handleAnonCast}
+                    buttonColor="bg-green-600 w-fit"
+                    buttonText={isCasting ? "casting" : "cast anon"}
+                  /> */}
                   <Link href="/library">
                     <Button
-                      buttonColor="bg-green-600 w-24"
-                      buttonText="library"
+                      buttonColor="bg-red-600 w-fit"
+                      buttonText="go back"
                     />
                   </Link>
                 </div>

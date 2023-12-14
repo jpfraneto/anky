@@ -47,13 +47,19 @@ const ReadCastPage = () => {
         if (response.data.cast) {
           setCast(response.data.cast);
           console.log("the cast is: ", response.data.cast);
-          const encodedCid = response.data.cast.text.split("\n")[0];
-          const decodedCid = decodeFromAnkyverseLanguage(encodedCid);
-          const writingText = await getOneWriting(decodedCid);
-          setWriting(writingText.text);
+          const lastChars = response.data.cast.text.slice(-4);
+          if (lastChars == "anky") {
+            console.log("the last chars are: ", lastChars);
+            const encodedCid = response.data.cast.text.split("\n")[0];
+            const decodedCid = decodeFromAnkyverseLanguage(encodedCid);
+            const writingText = await getOneWriting(decodedCid);
+            setWriting(writingText.text);
+          } else {
+            setWriting(response.data.cast.text);
+          }
+
           setLoading(false);
         } else {
-          console.log("onaksjc");
           setLoading(false);
         }
       } catch (error) {
@@ -63,7 +69,7 @@ const ReadCastPage = () => {
     fetchCastByHash(id);
   }, [id]);
   async function handleDisplayComments() {
-    alert("display comments");
+    setDisplayComments((x) => !x);
   }
   async function handleRecast() {
     alert("recast!");
@@ -82,7 +88,7 @@ const ReadCastPage = () => {
     );
 
   return (
-    <div className="h-screen w-full">
+    <div className="h-full pb-8 h-full w-full">
       <Head>
         <title>Ankycaster</title>
         <meta property="og:title" content="Tell us who you are" />
@@ -94,13 +100,13 @@ const ReadCastPage = () => {
         <meta property="og:url" content={`https://www.anky.lat/r/${id}`} />
         <meta property="og:type" content="website" />
       </Head>
-      <div className="w-full h-screen flex flex-col relative">
-        <div className="w-full md:w-6/12 mx-auto standalone:pt-12 pt-2 pb-16 h-screen bg-purple-500 text-black p-2 ">
+      <div className="w-full h-5/6 bg-red-200 flex flex-col relative">
+        <div className="w-full md:w-6/12 mx-auto standalone:pt-12 h-full flex flex-col pt-2 flex-grow bg-purple-500 text-black px-2 ">
           <p className="text-xs italic flex-none h-4 flex items-center">
             {new Date(cast.timestamp).toLocaleDateString("en-US", options)} - @
             {cast.author.username}
           </p>
-          <div className="border-black grow h-full border-2 rounded px-2 py-1 overflow-y-scroll  bg-purple-300 my-2">
+          <div className="border-black flex-grow border-2 rounded px-2 py-1 overflow-y-scroll  bg-purple-300 my-2">
             {writing ? (
               writing.includes("\n") ? (
                 writing.split("\n").map((x, i) => (
@@ -113,7 +119,13 @@ const ReadCastPage = () => {
               )
             ) : null}
           </div>
-          {cast.embeds &&
+          {displayComments && (
+            <div className="border-black grow h-2/5 border-2 rounded px-2 py-1 overflow-y-scroll  bg-purple-300 my-2">
+              {comments && <div>comments</div>}
+            </div>
+          )}
+
+          {/* {cast.embeds &&
             cast.embeds.length > 0 &&
             cast.embeds.map((x, i) => {
               return (
@@ -121,9 +133,76 @@ const ReadCastPage = () => {
                   <OgDisplay url={x.url} />
                 </div>
               );
-            })}
+            })} */}
 
-          <div className="ml-2 flex space-x-4">
+          <div className="ml-2 flex h-22 space-x-4 relative">
+            <div
+              onClick={handleDisplayComments}
+              className="flex space-x-1 items-center hover:text-gray-500 cursor-pointer"
+            >
+              <FaRegCommentAlt />
+              <span>{cast.replies.count}</span>
+            </div>
+            <div
+              onClick={handleRecast}
+              className="flex space-x-1 items-center hover:text-green-700 cursor-pointer"
+            >
+              <BsArrowRepeat size={19} />
+              <span>{cast.reactions.recasts.length}</span>
+            </div>
+            <div
+              onClick={handleAddLike}
+              className="flex space-x-1 items-center hover:text-red-600 cursor-pointer"
+            >
+              <FaRegHeart />
+              <span>{cast.reactions.likes.length}</span>
+            </div>
+            <a
+              target="_blank"
+              href="https://warpcast.com/jpfraneto/0x14619bb5"
+              className="absolute right-2 bottom-1 hover:text-red-200"
+            >
+              open in warpcast
+            </a>
+          </div>
+        </div>
+      </div>
+      <div className="w-full my-4 h-5/6 bg-red-200 flex flex-col relative">
+        <div className="w-full md:w-6/12 mx-auto standalone:pt-12 h-full flex flex-col pt-2 flex-grow bg-purple-500 text-black px-2 ">
+          <p className="text-xs italic flex-none h-4 flex items-center">
+            {new Date(cast.timestamp).toLocaleDateString("en-US", options)} - @
+            {cast.author.username}
+          </p>
+          <div className="border-black flex-grow border-2 rounded px-2 py-1 overflow-y-scroll  bg-purple-300 my-2">
+            {writing ? (
+              writing.includes("\n") ? (
+                writing.split("\n").map((x, i) => (
+                  <p className="mb-4" key={i}>
+                    {x}
+                  </p>
+                ))
+              ) : (
+                <p className="my-2">{writing}</p>
+              )
+            ) : null}
+          </div>
+          {displayComments && (
+            <div className="border-black grow h-full border-2 rounded px-2 py-1 overflow-y-scroll  bg-purple-300 my-2">
+              {comments && <div>comments</div>}
+            </div>
+          )}
+
+          {/* {cast.embeds &&
+            cast.embeds.length > 0 &&
+            cast.embeds.map((x, i) => {
+              return (
+                <div key={i}>
+                  <OgDisplay url={x.url} />
+                </div>
+              );
+            })} */}
+
+          <div className="ml-2 flex h-22 space-x-4">
             <div
               onClick={handleDisplayComments}
               className="flex space-x-1 items-center hover:text-gray-500 cursor-pointer"
@@ -147,11 +226,126 @@ const ReadCastPage = () => {
             </div>
           </div>
         </div>
-        {/* {displayComments && (
-          <div className="w-6/12 h-32 flex-none mx-auto rounded-xl mt-2 bg-purple-200 text-black p-2">
-            comments
+      </div>
+      <div className="w-full my-4 h-5/6 bg-red-200 flex flex-col relative">
+        <div className="w-full md:w-6/12 mx-auto standalone:pt-12 h-full flex flex-col pt-2 flex-grow bg-purple-500 text-black px-2 ">
+          <p className="text-xs italic flex-none h-4 flex items-center">
+            {new Date(cast.timestamp).toLocaleDateString("en-US", options)} - @
+            {cast.author.username}
+          </p>
+          <div className="border-black flex-grow border-2 rounded px-2 py-1 overflow-y-scroll  bg-purple-300 my-2">
+            {writing ? (
+              writing.includes("\n") ? (
+                writing.split("\n").map((x, i) => (
+                  <p className="mb-4" key={i}>
+                    {x}
+                  </p>
+                ))
+              ) : (
+                <p className="my-2">{writing}</p>
+              )
+            ) : null}
           </div>
-        )} */}
+          {displayComments && (
+            <div className="border-black grow h-full border-2 rounded px-2 py-1 overflow-y-scroll  bg-purple-300 my-2">
+              {comments && <div>comments</div>}
+            </div>
+          )}
+
+          {/* {cast.embeds &&
+            cast.embeds.length > 0 &&
+            cast.embeds.map((x, i) => {
+              return (
+                <div key={i}>
+                  <OgDisplay url={x.url} />
+                </div>
+              );
+            })} */}
+
+          <div className="ml-2 flex h-22 space-x-4">
+            <div
+              onClick={handleDisplayComments}
+              className="flex space-x-1 items-center hover:text-gray-500 cursor-pointer"
+            >
+              <FaRegCommentAlt />
+              <span>{cast.replies.count}</span>
+            </div>
+            <div
+              onClick={handleRecast}
+              className="flex space-x-1 items-center hover:text-green-700 cursor-pointer"
+            >
+              <BsArrowRepeat size={19} />
+              <span>{cast.reactions.recasts.length}</span>
+            </div>
+            <div
+              onClick={handleAddLike}
+              className="flex space-x-1 items-center hover:text-red-600 cursor-pointer"
+            >
+              <FaRegHeart />
+              <span>{cast.reactions.likes.length}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="w-full my-4 h-5/6 bg-red-200 flex flex-col relative">
+        <div className="w-full md:w-6/12 mx-auto standalone:pt-12 h-full flex flex-col pt-2 flex-grow bg-purple-500 text-black px-2 ">
+          <p className="text-xs italic flex-none h-4 flex items-center">
+            {new Date(cast.timestamp).toLocaleDateString("en-US", options)} - @
+            {cast.author.username}
+          </p>
+          <div className="border-black flex-grow border-2 rounded px-2 py-1 overflow-y-scroll  bg-purple-300 my-2">
+            {writing ? (
+              writing.includes("\n") ? (
+                writing.split("\n").map((x, i) => (
+                  <p className="mb-4" key={i}>
+                    {x}
+                  </p>
+                ))
+              ) : (
+                <p className="my-2">{writing}</p>
+              )
+            ) : null}
+          </div>
+          {displayComments && (
+            <div className="border-black grow h-full border-2 rounded px-2 py-1 overflow-y-scroll  bg-purple-300 my-2">
+              {comments && <div>comments</div>}
+            </div>
+          )}
+
+          {/* {cast.embeds &&
+            cast.embeds.length > 0 &&
+            cast.embeds.map((x, i) => {
+              return (
+                <div key={i}>
+                  <OgDisplay url={x.url} />
+                </div>
+              );
+            })} */}
+
+          <div className="ml-2 flex h-22 space-x-4">
+            <div
+              onClick={handleDisplayComments}
+              className="flex space-x-1 items-center hover:text-gray-500 cursor-pointer"
+            >
+              <FaRegCommentAlt />
+              <span>{cast.replies.count}</span>
+            </div>
+            <div
+              onClick={handleRecast}
+              className="flex space-x-1 items-center hover:text-green-700 cursor-pointer"
+            >
+              <BsArrowRepeat size={19} />
+              <span>{cast.reactions.recasts.length}</span>
+            </div>
+            <div
+              onClick={handleAddLike}
+              className="flex space-x-1 items-center hover:text-red-600 cursor-pointer"
+            >
+              <FaRegHeart />
+              <span>{cast.reactions.likes.length}</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

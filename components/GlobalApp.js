@@ -296,18 +296,10 @@ const GlobalApp = ({ alchemy }) => {
 
   return (
     <div className="text-center w-screen text-white h-screen flex flex-col">
-      <div className="text-gray-400 w-full h-8  justify-between items-center">
-        <span
-          className="hidden md:flex"
-          onClick={() => setDisplayWritingGameLanding(false)}
-        >
-          <Link
-            className="hover:text-red-300 hover:cursor-pointer px-4 active:text-red-400"
-            href="/"
-          >
-            anky
-          </Link>
-        </span>
+      <div className="text-gray-400 w-full h-8 justify-between flex px-2 items-center">
+        <Link href="/">
+          <span className="hover:text-purple-600 pr-2">anky</span>
+        </Link>
         <div className="h-full w-full">
           <div
             className="h-full opacity-50"
@@ -317,10 +309,9 @@ const GlobalApp = ({ alchemy }) => {
             }}
           ></div>
         </div>
-
-        <div className="px-4 w-fit flex flex-col h-8 flex-col justify-center items-center">
+        <div className="h-8 w-fit px-2 flex justify-center items-center relative">
           {authenticated ? (
-            <div className="flex space-x-2  relative w-fit items-center">
+            <div className="flex h-full space-x-2 top-0 w-full items-center">
               {displayManaInfo && (
                 <span className="absolute p-1 top-8 z-50 rounded-xl border-white text-white border-2 bg-purple-400">
                   <p className="text-left">
@@ -332,7 +323,7 @@ const GlobalApp = ({ alchemy }) => {
               <span
                 onMouseEnter={() => setDisplayManaInfo(true)}
                 onMouseLeave={() => setDisplayManaInfo(false)}
-                className="rounded-xl bg-purple-600 border-white border hover:cursor-pointer hover:text-white  px-2 flex space-x-2"
+                className="rounded-xl bg-purple-600 border-white border hover:cursor-pointer hover:text-white px-2 flex space-x-2"
               >
                 220
                 <GiRollingEnergy
@@ -341,7 +332,10 @@ const GlobalApp = ({ alchemy }) => {
                   className="ml-2 translate-y-1"
                 />
               </span>
-              <span onClick={() => setDisplayWritingGameLanding(false)}>
+              <span
+                className="w-fit"
+                onClick={() => setDisplayWritingGameLanding(false)}
+              >
                 <Link
                   href="/settings"
                   className="hover:text-purple-600 cursor-pointer"
@@ -349,12 +343,12 @@ const GlobalApp = ({ alchemy }) => {
                   settings
                 </Link>
               </span>
-              <button
-                className="hover:text-purple-600 cursor-pointer"
+              <span
+                className="hover:text-purple-600 cursor-pointer w-fit"
                 onClick={() => setDisplayWritingGameLanding(true)}
               >
                 write
-              </button>
+              </span>
               <span onClick={() => setDisplayWritingGameLanding(false)}>
                 <Link
                   href="/library"
@@ -363,12 +357,12 @@ const GlobalApp = ({ alchemy }) => {
                   library
                 </Link>
               </span>
-              <button
+              <span
                 className="hover:text-purple-600 cursor-pointer"
                 onClick={logout}
               >
                 logout
-              </button>
+              </span>
             </div>
           ) : (
             <button
@@ -380,6 +374,7 @@ const GlobalApp = ({ alchemy }) => {
           )}
         </div>
       </div>
+
       <div
         className={`${righteous.className} h-full standalone:h-screen-[33px] text-black relative standalone:pt-12  items-center justify-center`}
         style={{
