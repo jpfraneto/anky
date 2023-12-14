@@ -48,7 +48,7 @@ const ReadCastPage = () => {
           setCast(response.data.cast);
           console.log("the cast is: ", response.data.cast);
           const lastChars = response.data.cast.text.slice(-4);
-          if (lastChars == "anky") {
+          if (true || lastChars == "anky") {
             console.log("the last chars are: ", lastChars);
             const encodedCid = response.data.cast.text.split("\n")[0];
             const decodedCid = decodeFromAnkyverseLanguage(encodedCid);
