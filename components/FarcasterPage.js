@@ -358,7 +358,7 @@ const FarcasterPage = ({
                 )}
               </div>
             ) : (
-              <div className="w-full h-full p-3">
+              <div className="w-full h-full flex flex-col items-center">
                 <p>target writing time (seconds)*:</p>
                 <small className="text-xs text-purple-300">
                   *(if set to 0, there won&apos;t be time limit)
@@ -393,11 +393,6 @@ const FarcasterPage = ({
                   />
                 </div> */}
                 <div className="flex justify-center w-96 mx-auto">
-                  {/* <Button
-                    buttonAction={handleCast}
-                    buttonColor="bg-purple-600 w-fit"
-                    buttonText={isCasting ? "casting" : "cast"}
-                  /> */}
                   <Button
                     buttonAction={() => {
                       setDisplayWritingGameLanding(true);
@@ -409,17 +404,6 @@ const FarcasterPage = ({
                         : "write without limits"
                     } `}
                   />
-                  {/* <Button
-                    buttonAction={handleAnonCast}
-                    buttonColor="bg-green-600 w-fit"
-                    buttonText={isCasting ? "casting" : "cast anon"}
-                  /> */}
-                  {/* <Link href="/">
-                    <Button
-                      buttonColor="bg-red-600 w-fit"
-                      buttonText="go back"
-                    />
-                  </Link> */}
                 </div>
               </div>
             )}

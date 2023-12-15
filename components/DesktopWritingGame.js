@@ -334,12 +334,46 @@ const DesktopWritingGame = ({
 
   const handleAnonCast = async () => {
     try {
-      const secondResponse = await axios.post(
+      const responseFromIrys = await axios.post(`${apiRoute}/upload-writing`, {
+        text,
+      });
+      const cid = responseFromIrys.data.cid;
+
+      const kannadaCid = encodeToAnkyverseLanguage(cid);
+      const newCastText = `${kannadaCid}\n\nwritten as anky - you can decode this by clicking on the embed on the next cast`;
+
+      const firstCastResponse = await axios.post(
         `${apiRoute}/farcaster/api/cast/anon`,
         {
-          text: text,
+          text: newCastText,
+          parent: "",
+          embeds: [],
         }
       );
+
+      console.log("the responseeeee is: ", firstCastResponse);
+      if (firstCastResponse.status === 200) {
+        const secondCastText = `welcome to a limitless era of farcaster:\n\nhttps://www.anky.lat/r/${firstCastResponse.data.cast.hash}`;
+        console.log("sending the second cast");
+        const secondResponse = await axios.post(
+          `${apiRoute}/farcaster/api/cast/anon-reply`,
+          {
+            parent: firstCastResponse.data.cast.hash,
+            text: secondCastText,
+            embeds: [],
+          }
+        );
+        console.log("the second cast was sent", secondResponse);
+        if (secondResponse.status === 200) {
+          setText(""); // Clear the text field
+          setDisplayWritingGameLanding(false);
+          router.push(
+            `https://www.anky.lat/r/${firstCastResponse.data.cast.hash}`
+          );
+          //setWasSuccessfullyCasted(true);
+        }
+      }
+
       console.log("the second response is: ", secondResponse);
     } catch (error) {
       alert("there was an error casting your cast anon");
@@ -458,7 +492,7 @@ const DesktopWritingGame = ({
                         {farcasterUser ? (
                           <div className="p-4 bg-black w-2/3 md:w-fit rounded-xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] z-50">
                             <p>you are logged in on farcaster</p>
-                            <div className="flex flex-col md:flex-row space-y-2 space-x-2 mt-2">
+                            <div className="flex flex-col md:flex-row md:space-y-0 space-y-2 space-x-2 mt-2">
                               <Button
                                 buttonText="cast anon"
                                 buttonAction={handleAnonCast}
@@ -525,9 +559,9 @@ const DesktopWritingGame = ({
                       (countdownTarget > 0 && time === 0) ? (
                         <div className="p-4 bg-black w-2/3 md:w-fit rounded-xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] z-50">
                           <p>you are logged in on farcaster</p>
-                          <div className="flex space-x-2 mt-2">
+                          <div className="flex space-x-2 flex-col md:flex-row ">
                             <Button
-                              buttonText="cast anon"
+                              buttonText="cast anosn"
                               buttonAction={handleAnonCast}
                               buttonColor="bg-purple-600"
                             />
