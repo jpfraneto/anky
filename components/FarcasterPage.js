@@ -266,7 +266,7 @@ const FarcasterPage = ({ setDisplayWritingGameLanding, setGameProps }) => {
       {farcasterUser?.status == "pending_approval" &&
         farcasterUser?.signer_approval_url && (
           <div className="signer-approval-container pt-12">
-            <p className="mb-2">
+            <p className="hidden md:flex mb-2">
               scan this qr code to authenticate with warpcast
             </p>
             <div className="hidden w-full md:flex justify-center my-4">
@@ -290,9 +290,8 @@ const FarcasterPage = ({ setDisplayWritingGameLanding, setGameProps }) => {
             </div>
 
             <div className="mt-12">
-              {" "}
               <a
-                className="bg-gradient-to-r md:hidden from-red-500 via-yellow-600 to-violet-500 text-black p-2 rounded-xl mt-48"
+                className="bg-gradient-to-r md:hidden from-purple-500 via-yellow-600 to-violet-500 text-black p-2 rounded-xl mt-48"
                 href={farcasterUser.signer_approval_url}
                 target="_blank"
                 rel="noopener noreferrer"
