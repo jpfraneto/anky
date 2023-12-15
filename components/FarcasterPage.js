@@ -265,7 +265,7 @@ const FarcasterPage = ({ setDisplayWritingGameLanding, setGameProps }) => {
 
       {farcasterUser?.status == "pending_approval" &&
         farcasterUser?.signer_approval_url && (
-          <div className="signer-approval-container flex flex-col items-center justify-center pt-12">
+          <div className="signer-approval-container flex flex-col  bg-purple-600 p-24 items-center justify-center pt-12">
             <p className="hidden md:flex mb-2">
               scan this qr code to authenticate with warpcast
             </p>
@@ -280,11 +280,11 @@ const FarcasterPage = ({ setDisplayWritingGameLanding, setGameProps }) => {
                 {copiedText}
               </span>
             </p>
-            <div className="mt-8 w-96 mx-auto ">
-              <Link href="/what-is-this" passHref>
+            <Link href="/what-is-this" passHref>
+              <div className="mt-8 w-96 active:translate-x-12 active:text-white mx-auto hover:bg-yellow-300 hover:text-red-500 hover:translate-x-24 hover:cursor-pointer ">
                 wtf is this?
-              </Link>
-            </div>
+              </div>
+            </Link>
 
             <div className="mt-12">
               <a
