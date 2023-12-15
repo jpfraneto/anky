@@ -73,6 +73,7 @@ const DesktopWritingGame = ({
   const [errorProblem, setErrorProblem] = useState(false);
   const [castHash, setCastHash] = useState("");
   const [failureMessage, setFailureMessage] = useState("");
+  const [missionAccomplished, setMissionAccomplished] = useState(false);
   const [secondLoading, setSecondLoading] = useState(false);
   const [thirdLoading, setThirdLoading] = useState(false);
   const [copyText, setCopyText] = useState("copy my writing");
@@ -103,7 +104,7 @@ const DesktopWritingGame = ({
           if (time < 1) {
             setTime(countdownTarget);
             setFinished(true);
-            setIsDone(true);
+            setMissionAccomplished(true);
             setIsActive(false);
           }
         }, 1000);
@@ -141,6 +142,7 @@ const DesktopWritingGame = ({
   }, [isActive, lastKeystroke]);
 
   const finishRun = async () => {
+    if (countdownTarget === 0) setMissionAccomplished(true);
     setLifeBarLength(0);
     audioRef.current.volume = 0.1;
     // audioRef.current.play();
@@ -446,7 +448,8 @@ const DesktopWritingGame = ({
             >
               {finished && (
                 <>
-                  {isDone || (countdownTarget > 0 && time === 0) ? (
+                  {missionAccomplished ||
+                  (countdownTarget > 0 && time === 0) ? (
                     <>
                       <>
                         {farcasterUser ? (
