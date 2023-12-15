@@ -385,7 +385,7 @@ const DesktopWritingGame = ({
       <audio ref={audioRef}>
         <source src="/sounds/bell.mp3" />
       </audio>
-      <div className="md:block text-white relative standalone:mt-16 w-full h-full mx-auto">
+      <div className="md:block text-white relative  w-full h-full mx-auto">
         <div className="flex h-full flex-col">
           <div
             className={`${righteous.className} w-full bg-black/50 py-2 justify-center items-center flex h-fit items-center px-2 flex `}

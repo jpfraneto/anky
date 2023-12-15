@@ -402,7 +402,7 @@ const GlobalApp = ({ alchemy }) => {
       </div>
 
       <div
-        className={`${righteous.className} h-full standalone:h-screen-[33px] text-black relative standalone:pt-12  items-center justify-center`}
+        className={`${righteous.className} h-full text-black relative  items-center justify-center`}
         style={{
           backgroundImage:
             "linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/images/mintbg.jpg')",
