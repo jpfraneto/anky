@@ -333,7 +333,6 @@ const DesktopWritingGame = ({
   };
 
   const handleAnonCast = async () => {
-    return alert("im figuring out how to do this");
     try {
       const secondResponse = await axios.post(
         `${apiRoute}/farcaster/api/cast/anon`,
@@ -341,7 +340,11 @@ const DesktopWritingGame = ({
           text: text,
         }
       );
-    } catch (error) {}
+      console.log("the second response is: ", secondResponse);
+    } catch (error) {
+      alert("there was an error casting your cast anon");
+      console.log(error);
+    }
   };
 
   if (errorProblem)
@@ -455,7 +458,7 @@ const DesktopWritingGame = ({
                         {farcasterUser ? (
                           <div className="p-4 bg-black w-2/3 md:w-fit rounded-xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] z-50">
                             <p>you are logged in on farcaster</p>
-                            <div className="flex space-x-2 mt-2">
+                            <div className="flex flex-col md:flex-row space-y-2 space-x-2 mt-2">
                               <Button
                                 buttonText="cast anon"
                                 buttonAction={handleAnonCast}

@@ -358,7 +358,7 @@ const FarcasterPage = ({
                 )}
               </div>
             ) : (
-              <div className="w-full h-full">
+              <div className="w-full h-full p-3">
                 <p>target writing time (seconds)*:</p>
                 <small className="text-xs text-purple-300">
                   *(if set to 0, there won&apos;t be time limit)
