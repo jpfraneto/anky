@@ -309,7 +309,7 @@ const FarcasterPage = ({ setDisplayWritingGameLanding, setGameProps }) => {
                 ) : (
                   <div className="w-full mx-auto">
                     {isCastBeingBroadcasted ? (
-                      <div className="w-full flex flex-col items-center">
+                      <div className="w-full flex flex-col items-center justify-center">
                         <p>
                           your cast was translated into the language of the
                           ankyverse
@@ -317,13 +317,16 @@ const FarcasterPage = ({ setDisplayWritingGameLanding, setGameProps }) => {
                         <p className="w-fit mx-auto text-center text-lg md:text-2xl">
                           {translatedCid}
                         </p>
-                        <Button
+                        {/* <Button
                           buttonAction={decodeCid}
                           buttonColor="bg-green-600"
                           buttonText="decode cid"
                         />
-                        {decodedCid && <p>{decodedCid}</p>}
-                        <Link href={`/r/${castHash}`}>visit cast</Link>
+                        {decodedCid && <p>{decodedCid}</p>} */}
+                        {/* <a href={`https://www.warpcast.com/`} className="p-2 bg-green-600 border border-white">
+                          see on warpcast
+                        </a> */}
+                        <Link href={`/r/${castHash}`}>see cast</Link>
                       </div>
                     ) : (
                       <div>
