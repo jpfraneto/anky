@@ -302,7 +302,7 @@ const GlobalApp = ({ alchemy }) => {
 
   return (
     <div className="text-center w-screen text-white h-screen flex flex-col">
-      <div className="text-gray-400 w-full h-8 justify-between flex px-2 items-center">
+      <div className="hidden text-gray-400 w-full h-8 justify-between md:flex px-2 items-center">
         <Link href="/">
           <span className="hover:text-purple-600 pr-2">anky</span>
         </Link>
@@ -419,7 +419,7 @@ const GlobalApp = ({ alchemy }) => {
             {getComponentForRoute(router.pathname, router)}
             <div
               onClick={() => setDisplayWritingGameLanding((x) => !x)}
-              className="fixed hover:bg-purple-700 hover:cursor-pointer h-16 w-16 bottom-3 right-3 border-black border-2 active:bg-purple-500 rounded-full text-green-400 bg-purple-600 z-10 flex items-center justify-center"
+              className="fixed hover:bg-purple-700 hover:cursor-pointer h-16 w-16 bottom-6 right-3 border-black border-2 active:bg-purple-500 rounded-full text-green-400 bg-purple-600 z-10 flex items-center justify-center"
             >
               <FaPencilAlt size={28} color="black" />
             </div>
