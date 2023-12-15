@@ -322,7 +322,7 @@ const DesktopWritingGame = ({
         if (secondResponse.status === 200) {
           setText(""); // Clear the text field
           setDisplayWritingGameLanding(false);
-          router.push(`http://localhost:3001/r/${response.data.cast.hash}`);
+          router.push(`https://www.anky.lat/r/${response.data.cast.hash}`);
           //setWasSuccessfullyCasted(true);
         }
       }
