@@ -130,7 +130,6 @@ const FarcasterPage = ({
   }
 
   function manageEmbeds(e) {
-    console.log("e", e.target.value);
     setEmbeds((prev) => {
       console.log("prev");
     });
@@ -138,15 +137,12 @@ const FarcasterPage = ({
 
   async function createAndStoreSigner() {
     try {
-      console.log("inside the create and store signer function");
       const response = await axios.post(`${apiRoute}/farcaster/api/signer`);
-      console.log("the response is: ", response);
       if (response.status === 200) {
         localStorage.setItem(
           LOCAL_STORAGE_KEYS.FARCASTER_USER,
           JSON.stringify(response.data)
         );
-        console.log("the repsonse data is: ", response.data);
         setFarcasterUser(response.data);
       }
     } catch (error) {
@@ -182,12 +178,10 @@ const FarcasterPage = ({
         text: newCastText,
         signer_uuid: farcasterUser?.signer_uuid,
       });
-      console.log("the response is: ", response);
       if (response.status === 200) {
         setCastHash(response.data.cast.hash);
 
         const secondCastText = `welcome to a limitless era of farcaster:`;
-        console.log("sending the second cast");
         const secondResponse = await axios.post(
           `${apiRoute}/farcaster/api/cast`,
           {
@@ -199,7 +193,6 @@ const FarcasterPage = ({
             ],
           }
         );
-        console.log("the second cast was sent");
         if (secondResponse.status === 200) {
           setText(""); // Clear the text field
           setWasSuccessfullyCasted(true);
@@ -209,17 +202,6 @@ const FarcasterPage = ({
       setIsCasting(false);
       console.error("Could not send the cast", error);
     }
-  };
-
-  const handleAnonCast = async () => {
-    try {
-      const secondResponse = await axios.post(
-        `${apiRoute}/farcaster/api/cast/anon`,
-        {
-          text: text,
-        }
-      );
-    } catch (error) {}
   };
 
   const decodeCid = () => {

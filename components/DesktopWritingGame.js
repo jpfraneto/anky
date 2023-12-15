@@ -374,8 +374,6 @@ const DesktopWritingGame = ({
           //setWasSuccessfullyCasted(true);
         }
       }
-
-      console.log("the second response is: ", secondResponse);
     } catch (error) {
       alert("there was an error casting your cast anon");
       console.log(error);

@@ -39,17 +39,13 @@ const ReadCastPage = () => {
     if (!id) return;
     async function fetchCastByHash(id) {
       try {
-        console.log("fetching the cast");
         const response = await axios.get(
           `${apiRoute}/farcaster/api/cast/${id}`
         );
-        console.log("the response is: ", response.data);
         if (response.data.cast) {
           setCast(response.data.cast);
-          console.log("the cast is: ", response.data.cast);
           const lastChars = response.data.cast.text.slice(-4);
           if (true || lastChars == "anky") {
-            console.log("the last chars are: ", lastChars);
             const encodedCid = response.data.cast.text.split("\n")[0];
             const decodedCid = decodeFromAnkyverseLanguage(encodedCid);
             const writingText = await getOneWriting(decodedCid);
@@ -169,10 +165,9 @@ const ReadCastPage = () => {
 
             <a
               target="_blank"
-              href={`https://warpcast.com/jpfraneto/${cast.hash.substring(
-                0,
-                10
-              )}`}
+              href={`https://warpcast.com/${
+                cast.author.username
+              }/${cast.hash.substring(0, 10)}`}
               className="ml-auto hover:text-red-200"
             >
               open in warpcast
