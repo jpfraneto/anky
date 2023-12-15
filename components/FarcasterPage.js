@@ -9,10 +9,16 @@ import {
   encodeToAnkyverseLanguage,
   decodeFromAnkyverseLanguage,
 } from "../lib/ankyverse";
+import { useUser } from "../context/UserContext";
 
-const FarcasterPage = ({ setDisplayWritingGameLanding, setGameProps }) => {
+const FarcasterPage = ({
+  setDisplayWritingGameLanding,
+  setGameProps,
+  setCountdownTarget,
+  countdownTarget,
+}) => {
+  const { farcasterUser, setFarcasterUser } = useUser();
   const [loading, setLoading] = useState();
-  const [farcasterUser, setFarcasterUser] = useState(null);
   const [text, setText] = useState("");
   const [cid, setCid] = useState("");
   const [copiedText, setCopiedText] = useState("or copy the url");
@@ -54,6 +60,7 @@ const FarcasterPage = ({ setDisplayWritingGameLanding, setGameProps }) => {
   }, []);
 
   useEffect(() => {
+    setCountdownTarget(480);
     const storedData = localStorage.getItem(LOCAL_STORAGE_KEYS.FARCASTER_USER);
     if (storedData) {
       const user = JSON.parse(storedData);
@@ -205,7 +212,14 @@ const FarcasterPage = ({ setDisplayWritingGameLanding, setGameProps }) => {
   };
 
   const handleAnonCast = async () => {
-    alert("cast to ankycaster");
+    try {
+      const secondResponse = await axios.post(
+        `${apiRoute}/farcaster/api/cast/anon`,
+        {
+          text: text,
+        }
+      );
+    } catch (error) {}
   };
 
   const decodeCid = () => {
@@ -220,17 +234,18 @@ const FarcasterPage = ({ setDisplayWritingGameLanding, setGameProps }) => {
   };
 
   return (
-    <div className="text-white pt-5 h-full">
+    <div className="text-white pt-5 h-full bg-black">
       {!farcasterUser?.status && (
         <div className="w-96 mx-auto">
-          <p className="text-white">
-            all of this is being developed now! use at your own risk
-          </p>
           <p className="text-white">
             if you want to be an active part of the development of this place,
             consider joining this telegram group:
           </p>
-          <a href="https://t.me/ankycommunity" target="_blank">
+          <a
+            href="https://t.me/ankycommunity"
+            className="hover:text-purple-600"
+            target="_blank"
+          >
             open telegram
           </a>
           <Button
@@ -274,7 +289,7 @@ const FarcasterPage = ({ setDisplayWritingGameLanding, setGameProps }) => {
             </div>
             <p className="hidden md:flex">
               <span
-                className="hover:text-purple-600 active:text-yellow-500"
+                className="hover:text-red-600 cursor-pointer active:text-yellow-500"
                 onClick={copyText}
               >
                 {copiedText}
@@ -344,31 +359,31 @@ const FarcasterPage = ({ setDisplayWritingGameLanding, setGameProps }) => {
               </div>
             ) : (
               <div className="w-full h-full">
-                <p>target writing time:</p>
+                <p>target writing time (seconds):</p>
                 <input
                   type="number"
                   placeholder="480"
                   className="bg-purple-200 text-black my-2 p-2 rounded-xl text-center"
                   min={0}
-                  onChange={(e) => setTargetWritingTime(e.target.value)}
-                  value={targetWritingTime}
+                  onChange={(e) => setCountdownTarget(e.target.value)}
+                  value={countdownTarget}
                 />
                 <p className="mb-2">
                   (there is no character limit in here. write as much as you
                   can)
                 </p>
                 <p className="mb-2">
-                  what you write will be casted on the language of the
-                  ankyverse, and only people that access that cast from anky
-                  will be able to decode it.
+                  the recommendation is to do this daily for at least 8 minutes
+                  - 480 seconds
                 </p>
-                <textarea
-                  className="text-black p-2 rounded-xl mb-2 w-full"
-                  placeholder={DEFAULT_CAST}
-                  value={text}
-                  onChange={(e) => setText(e.target.value)}
-                  rows={5}
-                />
+                <p className="mb-2">
+                  what you write will be casted on the language of the
+                  ankyverse, and only people that access it from anky will be
+                  able to decode it.
+                </p>
+                <p className="mb-2">you can cast it as you or anonymously</p>
+                <p className="mb-2">don&apos;t hold anything back</p>
+
                 {/* <div className="bg-purple-200 mb-4 p-2 rounded-xl w-96 text-black">
                   <p>embeds</p>
                   <input
@@ -379,22 +394,33 @@ const FarcasterPage = ({ setDisplayWritingGameLanding, setGameProps }) => {
                   />
                 </div> */}
                 <div className="flex justify-center w-96 mx-auto">
-                  <Button
+                  {/* <Button
                     buttonAction={handleCast}
                     buttonColor="bg-purple-600 w-fit"
                     buttonText={isCasting ? "casting" : "cast"}
+                  /> */}
+                  <Button
+                    buttonAction={() => {
+                      setDisplayWritingGameLanding(true);
+                    }}
+                    buttonColor="bg-purple-600 text-black w-fit"
+                    buttonText={`${
+                      countdownTarget > 0
+                        ? `write for ${countdownTarget} seconds`
+                        : "write without limits"
+                    } `}
                   />
                   {/* <Button
                     buttonAction={handleAnonCast}
                     buttonColor="bg-green-600 w-fit"
                     buttonText={isCasting ? "casting" : "cast anon"}
                   /> */}
-                  <Link href="/library">
+                  {/* <Link href="/">
                     <Button
                       buttonColor="bg-red-600 w-fit"
                       buttonText="go back"
                     />
-                  </Link>
+                  </Link> */}
                 </div>
               </div>
             )}

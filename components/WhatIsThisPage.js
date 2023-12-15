@@ -8,24 +8,18 @@ const WhatIsThisPage = () => {
   const router = useRouter();
   const { login, authenticated } = usePrivy();
   return (
-    <div className="mt-3 text-white md:w-1/2 mx-auto">
+    <div className="text-gray-500 md:w-1/2 mx-auto bg-black p-12">
       <div className="px-2 mb-12">
         <h2 className="text-3xl mb-4">What is this?</h2>
         <p className="mb-2">
           We believe in the transformative power of writing.
         </p>
         <p className="mb-2">
-          This practice is not just a means of communication; it&apos;s a
-          pathway to deeper self-awareness and mindfulness. Here, you embark on
-          a journey of self-discovery, using writing as a tool to explore your
-          inner world and connect with your thoughts and emotions in a
-          meaningful way.
+          Here, you will embark on a journey of self-discovery, using writing as
+          a tool to explore your inner world and connect with your thoughts and
+          emotions in a meaningful way.
         </p>
-        <p className="mb-2">
-          The mission of this place is to guide you through this introspective
-          process.
-        </p>
-        <p className="mb-2"></p>
+
         <p className="mb-2">
           Anky harnesses the serenity of meditation and the clarity of writing
           to create a pioneering system designed to enrich your mental
@@ -51,7 +45,7 @@ const WhatIsThisPage = () => {
           meditative practice that can illuminate your path to personal growth
           and inner peace.
         </p>
-        <div className="w-48 mx-auto mt-2">
+        <div className="w-48 mx-auto  text-black mt-2">
           <Button
             buttonAction={() => router.back()}
             buttonColor="bg-green-600"

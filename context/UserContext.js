@@ -27,6 +27,7 @@ export const UserProvider = ({ children }) => {
   const [appLoading, setAppLoading] = useState(true);
   const [loadingLibrary, setLoadingLibrary] = useState(false);
   const [userIsReadyNow, setUserIsReadyNow] = useState(false);
+  const [farcasterUser, setFarcasterUser] = useState({});
   const [usersAnkyImage, setUsersAnkyImage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [usersAnkyUri, setUsersAnkyUri] = useState("");
@@ -431,6 +432,8 @@ export const UserProvider = ({ children }) => {
         setMainAppLoading,
         usersAnky,
         usersAnkyImage,
+        farcasterUser,
+        setFarcasterUser,
       }}
     >
       {showProgressModal && (

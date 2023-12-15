@@ -6,9 +6,11 @@ import { WebIrys } from "@irys/sdk";
 import { useWallets } from "@privy-io/react-auth";
 import { saveTextAnon } from "../lib/backend";
 import { ethers } from "ethers";
+import axios from "axios";
 import LoggedInUser from "./LoggedInUser";
 import { useRouter } from "next/router";
 import buildersABI from "../lib/buildersABI.json";
+import { encodeToAnkyverseLanguage } from "../lib/ankyverse";
 
 import { usePrivy } from "@privy-io/react-auth";
 import Spinner from "./Spinner";
@@ -33,21 +35,25 @@ const DesktopWritingGame = ({
   setDisplayWritingGameLanding,
   displayWritingGameLanding,
   lifeBarLength,
+  farcasterUser,
+  countdownTarget,
 }) => {
   const router = useRouter();
   const { login, authenticated, user } = usePrivy();
   const audioRef = useRef();
   const [text, setText] = useState("");
-  const [time, setTime] = useState(0);
+  const [time, setTime] = useState(countdownTarget || 0);
   const [preparing, setPreparing] = useState(true);
   const [saveText, setSaveText] = useState("save anon");
   const [upscaledUrls, setUpscaledUrls] = useState([]);
   const [isActive, setIsActive] = useState(false);
+  const [isCasting, setIsCasting] = useState(false);
   const [savingRound, setSavingRound] = useState(false);
   const [moreThanMinRun, setMoreThanMinRound] = useState(null);
   const [chosenUpscaledImage, setChosenUpscaledImage] = useState("");
   const [savingTextAnon, setSavingTextAnon] = useState(false);
   const [savedText, setSavedText] = useState(false);
+  const [cid, setCid] = useState("");
 
   const [generatedImages, setGeneratedImages] = useState("");
   const [loadingAnkyResponse, setLoadingAnkyResponse] = useState(false);
@@ -65,6 +71,7 @@ const DesktopWritingGame = ({
   const [lastKeystroke, setLastKeystroke] = useState(Date.now());
   const [finished, setFinished] = useState(false);
   const [errorProblem, setErrorProblem] = useState(false);
+  const [castHash, setCastHash] = useState("");
   const [failureMessage, setFailureMessage] = useState("");
   const [secondLoading, setSecondLoading] = useState(false);
   const [thirdLoading, setThirdLoading] = useState(false);
@@ -83,12 +90,29 @@ const DesktopWritingGame = ({
   const keystrokeIntervalRef = useRef(null);
   const thisWallet = wallets[0];
 
+  const apiRoute =
+    self.location.hostname === "localhost"
+      ? "http://localhost:3000"
+      : "https://api.anky.lat";
+
   useEffect(() => {
     if (isActive && !isDone) {
-      intervalRef.current = setInterval(() => {
-        setTime((time) => time + 1);
-      }, 1000);
-    } else if (!isActive && !isDone) {
+      if (countdownTarget > 0) {
+        intervalRef.current = setInterval(() => {
+          setTime((time) => +time - 1);
+          if (time < 1) {
+            setTime(countdownTarget);
+            setFinished(true);
+            setIsDone(true);
+            setIsActive(false);
+          }
+        }, 1000);
+      } else {
+        intervalRef.current = setInterval(() => {
+          setTime((time) => +time + 1);
+        }, 1000);
+      }
+    } else if ((countdownTarget > 0 && time === 0) || (!isActive && !isDone)) {
       clearInterval(intervalRef.current);
     }
     return () => clearInterval(intervalRef.current);
@@ -130,7 +154,7 @@ const DesktopWritingGame = ({
     setMoreThanMinRound(true);
     setFailureMessage(`You're done! This run lasted ${time}.}`);
     if (time > 30) {
-      setLoadButtons(true);
+      // setLoadButtons(true);
     }
   };
 
@@ -152,6 +176,21 @@ const DesktopWritingGame = ({
     setIsDone(false);
     setFinished(false);
     setSavedText(false);
+  };
+
+  const startNewCountdownRun = () => {
+    copyToClipboard();
+    audioRef.current.pause();
+    setCopyText("Copy my writing");
+    setTime(countdownTarget);
+    setDisableButton(false);
+    setLifeBarLength(100);
+    setText("");
+    // setSavingRound(false);
+    // setSavedToDb(false);
+    setIsDone(false);
+    setFinished(false);
+    // setSavedText(false);
   };
 
   const handleTextChange = (event) => {
@@ -230,6 +269,79 @@ const DesktopWritingGame = ({
     }
   };
 
+  const handleCast = async () => {
+    if (!!farcasterUser.status === "approved")
+      return alert("you are not completely logged in yet");
+    if (!text) return alert("please write something");
+
+    setIsCasting(true);
+    //setAnkyTranslatingCast(true);
+    try {
+      const responseFromIrys = await axios.post(`${apiRoute}/upload-writing`, {
+        text,
+      });
+      const cid = responseFromIrys.data.cid;
+      setCid(cid);
+      //setAnkyTranslatingCast(false);
+      // setIsCastBeingBroadcasted(true);
+      const kannadaCid = encodeToAnkyverseLanguage(cid);
+      // setTranslatedCid(kannadaCid);
+
+      const newCastText = `${kannadaCid}\n\nwritten as anky - you can decode this by clicking on the embed on the next cast`;
+      // let embeds = [{ url: `https://www.anky.lat/r/${cid}` }];
+      // if (embedOne && embedOne.length > 0) {
+      //   embeds.push({ url: embedOne });
+      // }
+      // if (embedTwo && embedTwo.length > 0) {
+      //   embeds.push({ url: embedTwo });
+      // }
+      const response = await axios.post(`${apiRoute}/farcaster/api/cast`, {
+        text: newCastText,
+        signer_uuid: farcasterUser?.signer_uuid,
+      });
+      console.log("the response is: ", response);
+      if (response.status === 200) {
+        setCastHash(response.data.cast.hash);
+
+        const secondCastText = `welcome to a limitless era of farcaster:`;
+        console.log("sending the second cast");
+        const secondResponse = await axios.post(
+          `${apiRoute}/farcaster/api/cast`,
+          {
+            parent: response.data.cast.hash,
+            text: secondCastText,
+            signer_uuid: farcasterUser?.signer_uuid,
+            embeds: [
+              { url: `https://www.anky.lat/r/${response.data.cast.hash}` },
+            ],
+          }
+        );
+        console.log("the second cast was sent");
+        if (secondResponse.status === 200) {
+          setText(""); // Clear the text field
+          setDisplayWritingGameLanding(false);
+          router.push(`http://localhost:3001/r/${response.data.cast.hash}`);
+          //setWasSuccessfullyCasted(true);
+        }
+      }
+    } catch (error) {
+      setIsCasting(false);
+      console.error("Could not send the cast", error);
+    }
+  };
+
+  const handleAnonCast = async () => {
+    return alert("im figuring out how to do this");
+    try {
+      const secondResponse = await axios.post(
+        `${apiRoute}/farcaster/api/cast/anon`,
+        {
+          text: text,
+        }
+      );
+    } catch (error) {}
+  };
+
   if (errorProblem)
     return (
       <div
@@ -305,7 +417,7 @@ const DesktopWritingGame = ({
             ></textarea>
 
             {text.length > 0 ||
-              (time === 0 && (
+              (!finished && (
                 <div>
                   <div className="flex w-48 justify-center mx-auto mt-4">
                     <Button
@@ -333,32 +445,125 @@ const DesktopWritingGame = ({
               } flex flex-col justify-center items-center absolute w-screen top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-opacity-20 mb-4`}
             >
               {finished && (
-                <div className="p-4 bg-black w-2/3 md:w-1/3 rounded-xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] z-50">
-                  <p
-                    className={`${righteous.className} mb-2 text-xl font-bold`}
-                  >
-                    great job.
-                  </p>
-                  <p
-                    className={`${righteous.className} mb-2 text-xl font-bold`}
-                  >
-                    you can add what you wrote to a special notebook that will
-                    be stored forever.
-                  </p>
+                <>
+                  {isDone || (countdownTarget > 0 && time === 0) ? (
+                    <>
+                      <>
+                        {farcasterUser ? (
+                          <div className="p-4 bg-black w-2/3 md:w-fit rounded-xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] z-50">
+                            <p>you are logged in on farcaster</p>
+                            <div className="flex space-x-2 mt-2">
+                              <Button
+                                buttonText="cast anon"
+                                buttonAction={handleAnonCast}
+                                buttonColor="bg-purple-600"
+                              />
+                              <Button
+                                buttonText={`${
+                                  isCasting ? "casting..." : "cast as you"
+                                }`}
+                                buttonAction={handleCast}
+                                buttonColor="bg-green-600"
+                              />
+                              <Button
+                                buttonText={`copy written text and go back`}
+                                buttonAction={() => {
+                                  pasteText();
+                                  setText("");
+                                  setTime(0);
+                                  router.push("/");
+                                  setDisplayWritingGameLanding(false);
+                                }}
+                                buttonColor="bg-red-600"
+                              />
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="p-4 bg-black w-2/3 md:w-1/3 rounded-xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] z-50">
+                            <button onClick={() => console.log(farcasterUser)}>
+                              aloja
+                            </button>
+                            <p
+                              className={`${righteous.className} mb-2 text-xl font-bold`}
+                            >
+                              great job.
+                            </p>
+                            <p
+                              className={`${righteous.className} mb-2 text-xl font-bold`}
+                            >
+                              you can add what you wrote to a special notebook
+                              that will be stored forever.
+                            </p>
 
-                  <div className="flex justify-center ">
-                    <Button
-                      buttonAction={sendTextToIrys}
-                      buttonColor="bg-green-600 text-black"
-                      buttonText={savingTextAnon ? "saving..." : "save text"}
-                    />
-                    <Button
-                      buttonAction={startNewRun}
-                      buttonColor="bg-cyan-200 text-black"
-                      buttonText="start again"
-                    />
-                  </div>
-                </div>
+                            <div className="flex justify-center ">
+                              <Button
+                                buttonAction={sendTextToIrys}
+                                buttonColor="bg-green-600 text-black"
+                                buttonText={
+                                  savingTextAnon ? "saving..." : "save text"
+                                }
+                              />
+                              <Button
+                                buttonAction={startNewRun}
+                                buttonColor="bg-cyan-200 text-black"
+                                buttonText="start again"
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </>
+                    </>
+                  ) : (
+                    <>
+                      {countdownTarget > 0 && time === 0 ? (
+                        <div className="p-4 bg-black w-2/3 md:w-fit rounded-xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] z-50">
+                          <p>you are logged in on farcaster</p>
+                          <div className="flex space-x-2 mt-2">
+                            <Button
+                              buttonText="cast anon"
+                              buttonAction={handleAnonCast}
+                              buttonColor="bg-purple-600"
+                            />
+                            <Button
+                              buttonText={`${
+                                isCasting ? "casting..." : "cast as you"
+                              }`}
+                              buttonAction={handleCast}
+                              buttonColor="bg-green-600"
+                            />
+                            <Button
+                              buttonText={`copy written text and go back`}
+                              buttonAction={() => {
+                                pasteText();
+                                setDisplayWritingGameLanding(false);
+                                setText("");
+                                setTime(0);
+                              }}
+                              buttonColor="bg-red-600"
+                            />
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="bg-black p-4 rounded-xl">
+                          <p className="mb-2">you didnt finish</p>
+                          <p className="mb-2">
+                            you said you would write for {countdownTarget}{" "}
+                            seconds
+                          </p>
+                          <p className="mb-2">
+                            (what you wrote is on your clipboard)
+                          </p>
+
+                          <Button
+                            buttonAction={startNewCountdownRun}
+                            buttonColor="bg-cyan-200 text-black"
+                            buttonText="start again"
+                          />
+                        </div>
+                      )}
+                    </>
+                  )}
+                </>
               )}
             </div>
           )}

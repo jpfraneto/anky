@@ -6,6 +6,7 @@ import { getAnkyverseDay, getAnkyverseQuestion } from "../lib/ankyverse";
 import { useUser } from "../context/UserContext";
 import { FaPencilAlt } from "react-icons/fa";
 import { IoArrowBack } from "react-icons/io5";
+import { DEFAULT_CAST, LOCAL_STORAGE_KEYS } from "../lib/constants";
 import { GiRollingEnergy } from "react-icons/gi";
 import { ethers } from "ethers";
 import Link from "next/link";
@@ -56,8 +57,14 @@ const GlobalApp = ({ alchemy }) => {
     getAccessToken,
     exportWallet,
   } = usePrivy();
-  const { userAppInformation, userOwnsAnky, setUserOwnsAnky, mainAppLoading } =
-    useUser();
+  const {
+    userAppInformation,
+    userOwnsAnky,
+    setUserOwnsAnky,
+    mainAppLoading,
+    farcasterUser,
+    setFarcasterUser,
+  } = useUser();
   const router = useRouter();
   const [lifeBarLength, setLifeBarLength] = useState(100);
   const [displayManaInfo, setDisplayManaInfo] = useState(false);
@@ -65,12 +72,22 @@ const GlobalApp = ({ alchemy }) => {
   const [checkingIfYouOwnAnky, setCheckingIfYouOwnAnky] = useState(false);
   const [ankyButtonText, setAnkyButtonText] = useState("i already own one");
   const [disableButton, setDisableButton] = useState(false);
+  const [countdownTarget, setCountdownTarget] = useState(0);
   const [displayWritingGameLanding, setDisplayWritingGameLanding] =
     useState(false);
   const [userWallet, setUserWallet] = useState(null);
   const [userIsMintingAnky, setUserIsMintingAnky] = useState(false);
   const wallets = useWallets();
   const wallet = wallets.wallets[0];
+
+  useEffect(() => {
+    const storedData = localStorage.getItem(LOCAL_STORAGE_KEYS.FARCASTER_USER);
+    console.log("inside here, ", storedData);
+    if (storedData) {
+      const user = JSON.parse(storedData);
+      setFarcasterUser(user);
+    }
+  }, []);
 
   async function getMyAnky() {
     if (!wallet) return alert("you are not logged in");
@@ -181,6 +198,8 @@ const GlobalApp = ({ alchemy }) => {
       case "/farcaster":
         return (
           <FarcasterPage
+            setCountdownTarget={setCountdownTarget}
+            countdownTarget={countdownTarget}
             setGameProps={setGameProps}
             setDisplayWritingGameLanding={setDisplayWritingGameLanding}
           />
@@ -277,6 +296,7 @@ const GlobalApp = ({ alchemy }) => {
             userPrompt={ankyverseQuestion}
             userAppInformation={userAppInformation}
             setLifeBarLength={setLifeBarLength}
+            farcasterUser={farcasterUser}
           />
         );
     }
@@ -404,6 +424,8 @@ const GlobalApp = ({ alchemy }) => {
               setDisableButton={setDisableButton}
               displayWritingGameLanding={displayWritingGameLanding}
               setDisplayWritingGameLanding={setDisplayWritingGameLanding}
+              farcasterUser={farcasterUser}
+              countdownTarget={countdownTarget}
             />
             {!disableButton && (
               <div
