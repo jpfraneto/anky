@@ -334,6 +334,7 @@ const DesktopWritingGame = ({
 
   const handleAnonCast = async () => {
     try {
+      setIsCasting(true);
       const responseFromIrys = await axios.post(`${apiRoute}/upload-writing`, {
         text,
       });
@@ -494,7 +495,9 @@ const DesktopWritingGame = ({
                             <p>you are logged in on farcaster</p>
                             <div className="flex flex-col md:flex-row md:space-y-0 space-y-2 space-x-2 mt-2">
                               <Button
-                                buttonText="cast anon"
+                                buttonText={`${
+                                  isCasting ? "casting..." : "cast anon"
+                                }`}
                                 buttonAction={handleAnonCast}
                                 buttonColor="bg-purple-600"
                               />
