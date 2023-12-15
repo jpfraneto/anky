@@ -75,7 +75,9 @@ const ReadCastPage = () => {
     alert("recast!");
   }
   async function handleAddLike() {
-    alert("like!");
+    alert(
+      "react! how? is this a like? or is this something different? lets explore together"
+    );
   }
   if (loading) return <p>loading...</p>;
   if (!cast)
