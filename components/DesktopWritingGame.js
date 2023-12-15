@@ -518,7 +518,8 @@ const DesktopWritingGame = ({
                     </>
                   ) : (
                     <>
-                      {countdownTarget > 0 && time === 0 ? (
+                      {countdownTarget == 0 ||
+                      (countdownTarget > 0 && time === 0) ? (
                         <div className="p-4 bg-black w-2/3 md:w-fit rounded-xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] z-50">
                           <p>you are logged in on farcaster</p>
                           <div className="flex space-x-2 mt-2">
@@ -556,12 +557,24 @@ const DesktopWritingGame = ({
                           <p className="mb-2">
                             (what you wrote is on your clipboard)
                           </p>
-
-                          <Button
-                            buttonAction={startNewCountdownRun}
-                            buttonColor="bg-cyan-200 text-black"
-                            buttonText="start again"
-                          />
+                          <div className="w-fit flex space-x-2">
+                            <Button
+                              buttonAction={startNewCountdownRun}
+                              buttonColor="bg-cyan-200 text-black"
+                              buttonText="start again"
+                            />
+                            <Button
+                              buttonAction={() => {
+                                pasteText();
+                                setText("");
+                                setTime(0);
+                                router.push("/what-is-this");
+                                setDisplayWritingGameLanding(false);
+                              }}
+                              buttonColor="bg-red-600 text-black"
+                              buttonText="copy text and escape"
+                            />
+                          </div>
                         </div>
                       )}
                     </>

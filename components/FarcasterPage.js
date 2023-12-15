@@ -359,7 +359,10 @@ const FarcasterPage = ({
               </div>
             ) : (
               <div className="w-full h-full">
-                <p>target writing time (seconds):</p>
+                <p>target writing time (seconds)*:</p>
+                <small className="text-xs text-purple-300">
+                  *(if set to 0, there won&apos;t be time limit)
+                </small>
                 <input
                   type="number"
                   placeholder="480"
@@ -368,10 +371,6 @@ const FarcasterPage = ({
                   onChange={(e) => setCountdownTarget(e.target.value)}
                   value={countdownTarget}
                 />
-                <p className="mb-2">
-                  (there is no character limit in here. write as much as you
-                  can)
-                </p>
                 <p className="mb-2">
                   the recommendation is to do this daily for at least 8 minutes
                   - 480 seconds
