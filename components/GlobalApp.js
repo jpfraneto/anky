@@ -465,7 +465,16 @@ const GlobalApp = ({ alchemy }) => {
             />
             {!disableButton && (
               <div
-                onClick={() => setDisplayWritingGameLanding((x) => !x)}
+                onClick={() => {
+                  console.log("in here");
+                  if (
+                    router.pathname.includes("write") ||
+                    router.pathname.includes("w")
+                  ) {
+                    router.push("/");
+                  }
+                  setDisplayWritingGameLanding((x) => !x);
+                }}
                 className="fixed hover:bg-red-700 hover:cursor-pointer h-16 w-16 bottom-3 right-3 border-black border-2 active:bg-red-500 rounded-full text-green-400 bg-red-500 z-10 flex items-center justify-center"
               >
                 <IoArrowBack size={28} color="black" />
@@ -476,7 +485,16 @@ const GlobalApp = ({ alchemy }) => {
           <div className="h-full">
             {getComponentForRoute(router.pathname, router)}
             <div
-              onClick={() => setDisplayWritingGameLanding((x) => !x)}
+              onClick={() => {
+                console.log("in here");
+                if (
+                  router.pathname.includes("write") ||
+                  router.pathname.includes("w")
+                ) {
+                  router.push("/");
+                }
+                setDisplayWritingGameLanding((x) => !x);
+              }}
               className="fixed hover:bg-purple-700 hover:cursor-pointer h-16 w-16 bottom-6 right-3 border-black border-2 active:bg-purple-500 rounded-full text-green-400 bg-purple-600 z-10 flex items-center justify-center"
             >
               <FaPencilAlt size={28} color="black" />

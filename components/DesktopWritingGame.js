@@ -445,6 +445,13 @@ const DesktopWritingGame = ({
                       buttonColor="bg-red-600"
                       buttonAction={() => {
                         if (displayWritingGameLanding) {
+                          console.log("in here!", router.pathname);
+                          if (
+                            router.pathname.includes("write") ||
+                            router.pathname.includes("w")
+                          ) {
+                            router.push("/");
+                          }
                           setDisplayWritingGameLanding(false);
                         } else {
                           if (
@@ -502,6 +509,7 @@ const DesktopWritingGame = ({
                                   pasteText();
                                   setText("");
                                   setTime(0);
+                                  setIsActive(false);
                                   router.push("/");
                                   setDisplayWritingGameLanding(false);
                                 }}
@@ -573,6 +581,7 @@ const DesktopWritingGame = ({
                               buttonAction={() => {
                                 pasteText();
                                 setText("");
+                                setIsActive(false);
                                 setTime(0);
                                 router.push("/");
                                 setDisplayWritingGameLanding(false);
