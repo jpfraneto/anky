@@ -395,14 +395,14 @@ const DesktopWritingGame = ({
     );
 
   return (
-    <>
+    <div className="h-full">
       <audio ref={audioRef}>
         <source src="/sounds/bell.mp3" />
       </audio>
-      <div className="md:block text-white relative  w-full h-full mx-auto">
+      <div className="md:block text-white relative w-full h-full mx-auto">
         <div className="flex h-full flex-col">
           <div
-            className={`${righteous.className} w-full bg-black/50 py-2 justify-center items-center flex h-fit items-center px-2 flex `}
+            className={`${righteous.className} w-full grow-0 bg-black/50 py-2 justify-center items-center flex h-fit items-center px-2 flex `}
           >
             <p
               className={`text-left h-fit w-10/12 text-purple-600 md:mt-0 text-lg md:text-3xl overflow-y-scroll  drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]`}
@@ -414,7 +414,7 @@ const DesktopWritingGame = ({
             </p>
           </div>
 
-          <div className="w-full flex-grow relative">
+          <div className="w-full grow relative">
             <textarea
               ref={textareaRef}
               disabled={finished}
@@ -604,7 +604,7 @@ const DesktopWritingGame = ({
           )}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

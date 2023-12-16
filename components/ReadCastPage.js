@@ -8,6 +8,7 @@ import { FaRegCommentAlt, FaRegHeart, FaPencilAlt } from "react-icons/fa";
 import { BsArrowRepeat } from "react-icons/bs";
 import Head from "next/head";
 import OgDisplay from "./OgDisplay";
+import { useUser } from "../context/UserContext";
 
 var options = {
   weekday: "long",
@@ -22,6 +23,7 @@ var options = {
 
 const ReadCastPage = () => {
   const router = useRouter();
+  const { farcasterUser } = useUser();
   const { id } = router.query;
   const apiRoute =
     self.location.hostname === "localhost"
@@ -31,6 +33,9 @@ const ReadCastPage = () => {
   const [cast, setCast] = useState();
   const [castInfo, setCastInfo] = useState({});
   const [loading, setLoading] = useState(true);
+  const [hasUserCommented, setHasUserCommented] = useState(false);
+  const [hasUserRecasted, setHasUserRecasted] = useState(false);
+  const [hasUserLiked, setHasUserLiked] = useState(false);
   const [displayComments, setDisplayComments] = useState(false);
   const [comments, setComments] = useState([]);
   const [writing, setWriting] = useState("");
@@ -68,14 +73,37 @@ const ReadCastPage = () => {
     setDisplayComments((x) => !x);
   }
   async function handleRecast() {
-    alert("recast!");
+    const prev = hasUserRecasted;
+    setHasUserRecasted(!prev);
+    const response = await axios.post(`${apiRoute}/farcaster/api/reaction`, {
+      reactionType: "recast",
+      hash: cast.hash,
+      signer_uuid: farcasterUser.signer_uuid,
+    });
+    if (response.status !== 200) {
+      alert("there was an error recasting");
+      setHasUserRecasted(!prev);
+    }
   }
-  async function handleAddLike() {
-    alert(
-      "react! how? is this a like? or is this something different? lets explore together"
+  async function handleLike() {
+    const prev = hasUserLiked;
+    setHasUserLiked(!prev);
+    const response = await axios.post(`${apiRoute}/farcaster/api/reaction`, {
+      reactionType: "like",
+      hash: cast.hash,
+      signer_uuid: farcasterUser.signer_uuid,
+    });
+    if (response.status !== 200) {
+      alert("there was an error recasting");
+      setHasUserLiked(!prev);
+    }
+  }
+  if (loading)
+    return (
+      <div className="text-white">
+        <p>the cast is being translated...</p>
+      </div>
     );
-  }
-  if (loading) return <p>loading...</p>;
   if (!cast)
     return (
       <div className="text-white pt-4">
@@ -86,7 +114,7 @@ const ReadCastPage = () => {
     );
 
   return (
-    <div className="h-full h-screen w-full">
+    <div className="h-full h-full w-full ">
       <Head>
         <title>Ankycaster</title>
         <meta property="og:title" content="Tell us who you are" />
@@ -98,13 +126,13 @@ const ReadCastPage = () => {
         <meta property="og:url" content={`https://www.anky.lat/r/${id}`} />
         <meta property="og:type" content="website" />
       </Head>
-      <div className="w-full h-screen  md:max-w-2xl md:mx-auto flex flex-col relative">
+      <div className="active:none w-full h-full md:max-w-2xl md:mx-auto flex flex-col relative">
         <div className="w-full md:w-6/12 mx-auto  h-full flex flex-col pt-2 flex-grow bg-purple-500 text-black px-2 ">
           <p className="text-xs italic flex-none h-4 flex items-center">
             {new Date(cast.timestamp).toLocaleDateString("en-US", options)} - @
             {cast.author.username}
           </p>
-          <div className="border-black flex-grow border-2 rounded px-2 py-1 overflow-y-scroll  bg-purple-300 my-2">
+          <div className="border-black h-96 grow border-2 rounded px-2 py-1 overflow-y-scroll bg-purple-300 my-2">
             {writing ? (
               writing.includes("\n") ? (
                 writing.split("\n").map((x, i) => (
@@ -118,7 +146,9 @@ const ReadCastPage = () => {
             ) : null}
           </div>
           {displayComments && (
-            <div className="border-black grow h-2/5 border-2 rounded px-2 py-1 overflow-y-scroll  bg-purple-300 my-2">
+            <div
+              className={`border-black border-2 rounded px-2 py-1 overflow-y-scroll h-2/5 bg-purple-300 my-2`}
+            >
               {comments && (
                 <div>
                   display the comments in a cool and smooth way (they are the
@@ -128,35 +158,31 @@ const ReadCastPage = () => {
             </div>
           )}
 
-          {/* {cast.embeds &&
-            cast.embeds.length > 0 &&
-            cast.embeds.map((x, i) => {
-              return (
-                <div key={i}>
-                  <OgDisplay url={x.url} />
-                </div>
-              );
-            })} */}
-
-          <div className="ml-2 flex h-5 pb-2 space-x-4 relative justify-between items-center">
+          <div className="ml-2 flex h-6 pb-2 space-x-4 relative justify-between items-center">
             <div className="flex space-x-4 h-full">
               <div
                 onClick={handleDisplayComments}
-                className="flex space-x-1 items-center hover:text-gray-500 cursor-pointer"
+                className={`flex space-x-1 items-center ${
+                  hasUserCommented && "text-gray-500"
+                } hover:text-gray-500 cursor-pointer`}
               >
                 <FaRegCommentAlt />
                 <span>{cast.replies.count}</span>
               </div>
               <div
                 onClick={handleRecast}
-                className="flex space-x-1 items-center hover:text-green-700 cursor-pointer"
+                className={`flex space-x-1 items-center ${
+                  hasUserRecasted && "text-green-300"
+                } hover:text-green-300 cursor-pointer`}
               >
                 <BsArrowRepeat size={19} />
                 <span>{cast.reactions.recasts.length}</span>
               </div>
               <div
-                onClick={handleAddLike}
-                className="flex space-x-1 items-center hover:text-red-600 cursor-pointer"
+                onClick={handleLike}
+                className={`flex space-x-1 items-center ${
+                  hasUserLiked && "text-red-300"
+                } hover:text-red-500 cursor-pointer`}
               >
                 <FaRegHeart />
                 <span>{cast.reactions.likes.length}</span>
