@@ -322,6 +322,15 @@ const GlobalApp = ({ alchemy }) => {
 
   return (
     <div className="text-center w-screen text-white h-screen flex flex-col">
+      <div className="md:hidden h-8 w-full">
+        <div
+          className="h-full opacity-50"
+          style={{
+            width: `${lifeBarLength}%`,
+            backgroundColor: lifeBarLength > 30 ? "green" : "red",
+          }}
+        ></div>
+      </div>
       <div className="hidden text-gray-400 w-full h-8 justify-between md:flex px-2 items-center">
         <Link href="/">
           <span className="hover:text-purple-600 pr-2">anky</span>

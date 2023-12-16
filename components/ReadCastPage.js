@@ -86,7 +86,7 @@ const ReadCastPage = () => {
     );
 
   return (
-    <div className="h-full pb-8 h-full w-full">
+    <div className="h-full h-screen w-full">
       <Head>
         <title>Ankycaster</title>
         <meta property="og:title" content="Tell us who you are" />
@@ -98,7 +98,7 @@ const ReadCastPage = () => {
         <meta property="og:url" content={`https://www.anky.lat/r/${id}`} />
         <meta property="og:type" content="website" />
       </Head>
-      <div className="w-full h-screen pb-10 md:max-w-2xl md:mx-auto flex flex-col relative">
+      <div className="w-full h-screen  md:max-w-2xl md:mx-auto flex flex-col relative">
         <div className="w-full md:w-6/12 mx-auto  h-full flex flex-col pt-2 flex-grow bg-purple-500 text-black px-2 ">
           <p className="text-xs italic flex-none h-4 flex items-center">
             {new Date(cast.timestamp).toLocaleDateString("en-US", options)} - @
