@@ -447,7 +447,10 @@ const DesktopWritingGame = ({
                         if (displayWritingGameLanding) {
                           setDisplayWritingGameLanding(false);
                         } else {
-                          if (router.pathname.includes("write"))
+                          if (
+                            router.pathname.includes("write") ||
+                            router.pathname.includes("w")
+                          )
                             return router.push("/");
                           router.back();
                         }
