@@ -72,6 +72,7 @@ const GlobalApp = ({ alchemy }) => {
   const [checkingIfYouOwnAnky, setCheckingIfYouOwnAnky] = useState(false);
   const [ankyButtonText, setAnkyButtonText] = useState("i already own one");
   const [disableButton, setDisableButton] = useState(false);
+  const [thisIsThePrompt, setThisIsThePrompt] = useState("");
   const [countdownTarget, setCountdownTarget] = useState(0);
   const [displayWritingGameLanding, setDisplayWritingGameLanding] =
     useState(false);
@@ -204,6 +205,29 @@ const GlobalApp = ({ alchemy }) => {
             setDisplayWritingGameLanding={setDisplayWritingGameLanding}
           />
         );
+
+      case `/w/${route.split("/").pop()}`:
+        if (!router.isReady) return null;
+        console.log("the router.query is: ", router.query);
+        if (
+          router.query.prompt == undefined ||
+          !router.query?.prompt?.length > 0
+        )
+          return (
+            <DesktopWritingGame
+              ankyverseDate={`sojourn ${ankyverseToday.currentSojourn} - wink ${
+                ankyverseToday.wink
+              } - ${ankyverseToday.currentKingdom.toLowerCase()}`}
+              userPrompt="just write what comes"
+              userAppInformation={userAppInformation}
+              setLifeBarLength={setLifeBarLength}
+            />
+          );
+        let formattedPrompt2 = router.query.prompt.replaceAll("-", " ");
+        if (!formattedPrompt2) formattedPrompt = "";
+        setThisIsThePrompt(formattedPrompt2);
+        setDisplayWritingGameLanding(true);
+
       case "/what-is-this":
         return <WhatIsThisPage />;
       case `/r/${route.split("/").pop()}`:
@@ -429,7 +453,7 @@ const GlobalApp = ({ alchemy }) => {
               ankyverseDate={`sojourn ${ankyverseToday.currentSojourn} - wink ${
                 ankyverseToday.wink
               } - ${ankyverseToday.currentKingdom.toLowerCase()}`}
-              userPrompt={ankyverseQuestion}
+              userPrompt={thisIsThePrompt || ankyverseQuestion}
               userAppInformation={userAppInformation}
               setLifeBarLength={setLifeBarLength}
               lifeBarLength={lifeBarLength}

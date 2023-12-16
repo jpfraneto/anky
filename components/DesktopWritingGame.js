@@ -394,6 +394,7 @@ const DesktopWritingGame = ({
       </div>
     );
 
+  console.log("THE FARCASTER USER IS: ", farcasterUser);
   return (
     <div className="h-full">
       <audio ref={audioRef}>
@@ -471,7 +472,9 @@ const DesktopWritingGame = ({
                       <>
                         {farcasterUser ? (
                           <div className="p-4 bg-black w-2/3 md:w-fit rounded-xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] z-50">
-                            <p>you are logged in on farcaster</p>
+                            {farcasterUser.status === "approved" && (
+                              <p>you are logged in on farcaster</p>
+                            )}
                             <div className="flex flex-col md:flex-row md:space-y-0 space-y-2 space-x-2 mt-2">
                               <Button
                                 buttonText={`${
@@ -480,13 +483,16 @@ const DesktopWritingGame = ({
                                 buttonAction={handleAnonCast}
                                 buttonColor="bg-purple-600"
                               />
-                              <Button
-                                buttonText={`${
-                                  isCasting ? "casting..." : "cast as you"
-                                }`}
-                                buttonAction={handleCast}
-                                buttonColor="bg-green-600"
-                              />
+                              {farcasterUser.status === "approved" && (
+                                <Button
+                                  buttonText={`${
+                                    isCasting ? "casting..." : "cast as you"
+                                  }`}
+                                  buttonAction={handleCast}
+                                  buttonColor="bg-green-600"
+                                />
+                              )}
+
                               <Button
                                 buttonText={`copy written text and go back`}
                                 buttonAction={() => {
@@ -540,27 +546,33 @@ const DesktopWritingGame = ({
                       {countdownTarget == 0 ||
                       (countdownTarget > 0 && time === 0) ? (
                         <div className="p-4 bg-black w-2/3 md:w-fit rounded-xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] z-50">
-                          <p>you are logged in on farcaster</p>
+                          {farcasterUser.status === "approved" && (
+                            <p>you are logged in on farcaster</p>
+                          )}
                           <div className="flex space-x-2 flex-col md:flex-row ">
                             <Button
                               buttonText="cast anosn"
                               buttonAction={handleAnonCast}
                               buttonColor="bg-purple-600"
                             />
-                            <Button
-                              buttonText={`${
-                                isCasting ? "casting..." : "cast as you"
-                              }`}
-                              buttonAction={handleCast}
-                              buttonColor="bg-green-600"
-                            />
+                            {farcasterUser.status === "approved" && (
+                              <Button
+                                buttonText={`${
+                                  isCasting ? "casting..." : "cast as you"
+                                }`}
+                                buttonAction={handleCast}
+                                buttonColor="bg-green-600"
+                              />
+                            )}
+
                             <Button
                               buttonText={`copy written text and go back`}
                               buttonAction={() => {
                                 pasteText();
-                                setDisplayWritingGameLanding(false);
                                 setText("");
                                 setTime(0);
+                                router.push("/");
+                                setDisplayWritingGameLanding(false);
                               }}
                               buttonColor="bg-red-600"
                             />
