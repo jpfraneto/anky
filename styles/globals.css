@@ -23,6 +23,18 @@ a {
   box-sizing: border-box;
 }
 
+.comments-collapsed {
+  max-height: 0;
+  transition: max-height 2s ease-out;
+  overflow: hidden;
+}
+
+.comments-expanded {
+  max-height: 300px; /* This should be roughly equivalent to 2/5 of the screen height, adjust as needed */
+  transition: max-height 2s ease-in;
+}
+
+
 .lds-ellipsis {
   display: inline-block;
   position: relative;

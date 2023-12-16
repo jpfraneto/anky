@@ -145,18 +145,20 @@ const ReadCastPage = () => {
               )
             ) : null}
           </div>
-          {displayComments && (
-            <div
-              className={`border-black border-2 rounded px-2 py-1 overflow-y-scroll h-2/5 bg-purple-300 my-2`}
-            >
-              {comments && (
-                <div>
-                  display the comments in a cool and smooth way (they are the
-                  same comments that you will see on farcaster)
-                </div>
-              )}
-            </div>
-          )}
+          <div
+            className={`border-black ${
+              displayComments && "border-2 rounded px-2 py-1 my-2 "
+            } bg-purple-300 transition-max-height duration-700 ease-in-out overflow-hidden ${
+              displayComments ? "max-h-1/2" : "max-h-0"
+            }`}
+          >
+            {displayComments && comments && (
+              <div className="overflow-y-scroll h-full">
+                display the comments in a cool and smooth way (they are the same
+                comments that you will see on farcaster)
+              </div>
+            )}
+          </div>
 
           <div className="ml-2 flex h-6 pb-2 space-x-4 relative justify-between items-center">
             <div className="flex space-x-4 h-full">
