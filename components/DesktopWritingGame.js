@@ -352,10 +352,10 @@ const DesktopWritingGame = ({
       if (response.status === 200) {
         setText(""); // Clear the text field
         setDisplayWritingGameLanding(false);
+        router.push(`https://www.anky.lat/r/${response.data.cast.hash}`);
         setTimeout(() => {
           setDisplayWritingGameLanding(false);
         }, 111);
-        router.push(`https://www.anky.lat/r/${response.data.cast.hash}`);
         //setWasSuccessfullyCasted(true);
       }
     } catch (error) {
