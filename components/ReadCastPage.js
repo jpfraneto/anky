@@ -6,6 +6,7 @@ import { getOneWriting } from "../lib/irys";
 import Link from "next/link";
 import { FaRegCommentAlt, FaRegHeart, FaPencilAlt } from "react-icons/fa";
 import { BsArrowRepeat } from "react-icons/bs";
+import Image from "next/image";
 import Head from "next/head";
 import OgDisplay from "./OgDisplay";
 import { useUser } from "../context/UserContext";
@@ -32,12 +33,12 @@ const ReadCastPage = () => {
 
   const [cast, setCast] = useState();
   const [castInfo, setCastInfo] = useState({});
+  const [castReplies, setCastReplies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [hasUserCommented, setHasUserCommented] = useState(false);
   const [hasUserRecasted, setHasUserRecasted] = useState(false);
   const [hasUserLiked, setHasUserLiked] = useState(false);
   const [displayComments, setDisplayComments] = useState(false);
-  const [comments, setComments] = useState([]);
   const [writing, setWriting] = useState("");
 
   useEffect(() => {
@@ -47,16 +48,41 @@ const ReadCastPage = () => {
         const response = await axios.get(
           `${apiRoute}/farcaster/api/cast/${id}`
         );
-        if (response.data.cast) {
-          setCast(response.data.cast);
-          const lastChars = response.data.cast.text.slice(-4);
+        console.log("the respooonse is: ", response);
+        if (response.status == 200 && response.data.cast) {
+          console.log("IN HERE", response.data);
+          let thisCast = response.data.cast;
+
+          setCast(thisCast);
+          console.log("the cast is:", thisCast);
+          const hasUserLikedBool = thisCast.reactions.likes.filter(
+            (x) => x.fid == farcasterUser.fid
+          );
+          const hasUserRecastedBool = thisCast.reactions.recasts.filter(
+            (x) => x.fid == farcasterUser.fid
+          );
+          setHasUserLiked(hasUserLikedBool);
+          setHasUserRecasted(hasUserRecastedBool);
+          const lastChars = thisCast.text.slice(-4);
           if (true || lastChars == "anky") {
-            const encodedCid = response.data.cast.text.split("\n")[0];
+            const encodedCid = thisCast.text.split("\n")[0];
             const decodedCid = decodeFromAnkyverseLanguage(encodedCid);
             const writingText = await getOneWriting(decodedCid);
             setWriting(writingText.text);
           } else {
-            setWriting(response.data.cast.text);
+            setWriting(thisCast.text);
+          }
+
+          if (response.status == 200 && thisCast.replies.count > 0) {
+            console.log("calling for the felies");
+            const repliesResponse = await axios.post(
+              `${apiRoute}/farcaster/api/cast/replies/${id}`,
+              {
+                viewerFid: farcasterUser.fid,
+                threadHash: thisCast.hash,
+              }
+            );
+            setCastReplies(repliesResponse.data.casts);
           }
 
           setLoading(false);
@@ -72,7 +98,8 @@ const ReadCastPage = () => {
   async function handleDisplayComments() {
     setDisplayComments((x) => !x);
   }
-  async function handleRecast() {
+  async function handleRecast(e) {
+    e.currentTarget.blur();
     const prev = hasUserRecasted;
     setHasUserRecasted(!prev);
     const response = await axios.post(`${apiRoute}/farcaster/api/reaction`, {
@@ -85,7 +112,9 @@ const ReadCastPage = () => {
       setHasUserRecasted(!prev);
     }
   }
-  async function handleLike() {
+  async function handleLike(e) {
+    console.log("THE EEEEE IS: ", e);
+    e.currentTarget.blur();
     const prev = hasUserLiked;
     setHasUserLiked(!prev);
     const response = await axios.post(`${apiRoute}/farcaster/api/reaction`, {
@@ -112,6 +141,7 @@ const ReadCastPage = () => {
         <Link href="/farcaster">write</Link>
       </div>
     );
+  console.log("the cast replioes are :", castReplies);
 
   return (
     <div className="h-full h-full w-full ">
@@ -146,18 +176,19 @@ const ReadCastPage = () => {
             ) : null}
           </div>
           <div
-            className={`border-black ${
-              displayComments && "border-2 rounded px-2 py-1 my-2 "
-            } bg-purple-300 transition-max-height duration-700 ease-in-out overflow-hidden ${
-              displayComments ? "max-h-1/2" : "max-h-0"
-            }`}
+            className={`${
+              displayComments &&
+              "border-black border-2 bg-purple-300 rounded px-2 py-1 my-2"
+            } overflow-hidden ${displayComments ? "animate-growHeight" : ""}`}
           >
-            {displayComments && comments && (
-              <div className="overflow-y-scroll h-full">
-                display the comments in a cool and smooth way (they are the same
-                comments that you will see on farcaster)
-              </div>
-            )}
+            {displayComments &&
+              castReplies &&
+              castReplies.length > 0 &&
+              castReplies.map((reply, i) => (
+                <>
+                  <ReplyComponent key={i} cast={reply} />
+                </>
+              ))}
           </div>
 
           <div className="ml-2 flex h-6 pb-2 space-x-4 relative justify-between items-center">
@@ -203,6 +234,22 @@ const ReadCastPage = () => {
           </div>
         </div>
       </div>
+    </div>
+  );
+};
+
+const ReplyComponent = ({ cast }) => {
+  console.log("the cast is: ", cast);
+  return (
+    <div className="px-2 relative w-full text-center w-fit justify-center items-center flex flex-col rounded-xl bg-purple-400 my-4">
+      <div className="w-fit h-fit rounded-full border-white overflow-hidden border-2 absolute w-12 h-12 -top-4 -left-4">
+        <Image src={cast.author.pfp.url} fill />
+      </div>
+      <div className="pl-8">{cast.text}</div>
+      <p className="text-xs italic flex-none h-4 flex items-center">
+        {new Date(cast.timestamp).toLocaleDateString("en-US", options)} - @
+        {cast.author.username}
+      </p>
     </div>
   );
 };

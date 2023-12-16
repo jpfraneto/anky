@@ -18,6 +18,10 @@ module.exports = {
           "0%": { transform: "rotate(0)" },
           "100%": { transform: "rotate(360)" },
         },
+        growHeight: {
+          "0%": { maxHeight: "0px" },
+          "100%": { maxHeight: "400px" }, // Adjust this value as needed
+        },
         shrink: {
           "0%": { transform: "scale(1)" },
           "100%": { transform: "scale(0)" },
@@ -46,6 +50,7 @@ module.exports = {
         grow: "grow 0.1s forwards",
         fadeOut: "fadeOut 0.1s forwards",
         wave: "wave 1.5s infinite",
+        growHeight: "growHeight 2s ease-in-out forwards", // 2s duration, ease-in-out timing function
       },
     },
   },

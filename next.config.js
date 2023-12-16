@@ -1,17 +1,17 @@
-const Buffer = require('buffer').Buffer;
+const Buffer = require("buffer").Buffer;
 
 module.exports = {
   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
     if (!isServer) {
       config.resolve.fallback = {
         ...config.resolve.fallback,
-        buffer: require.resolve('buffer/'),
+        buffer: require.resolve("buffer/"),
       };
     }
 
     config.plugins.push(
       new webpack.ProvidePlugin({
-        Buffer: ['buffer', 'Buffer'],
+        Buffer: ["buffer", "Buffer"],
       })
     );
 
@@ -21,22 +21,28 @@ module.exports = {
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: '88minutes.xyz',
-        port: '',
-        pathname: '/**',
+        protocol: "https",
+        hostname: "i.imgur.com",
+        port: "",
+        pathname: "/**",
       },
       {
-        protocol: 'https',
-        hostname: 'i.seadn.io',
-        port: '',
-        pathname: '/**',
+        protocol: "https",
+        hostname: "88minutes.xyz",
+        port: "",
+        pathname: "/**",
       },
       {
-        protocol: 'https',
-        hostname: 'ipfs.io',
-        port: '',
-        pathname: '/**',
+        protocol: "https",
+        hostname: "i.seadn.io",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "ipfs.io",
+        port: "",
+        pathname: "/**",
       },
     ],
   },

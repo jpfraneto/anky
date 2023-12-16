@@ -30,7 +30,7 @@ a {
 }
 
 .comments-expanded {
-  max-height: 300px; /* This should be roughly equivalent to 2/5 of the screen height, adjust as needed */
+  max-height: 400px; /* This should be roughly equivalent to 2/5 of the screen height, adjust as needed */
   transition: max-height 2s ease-in;
 }
 
