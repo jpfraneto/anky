@@ -300,13 +300,12 @@ const DesktopWritingGame = ({
       const response = await axios.post(`${apiRoute}/farcaster/api/cast`, {
         text: newCastText,
         signer_uuid: farcasterUser?.signer_uuid,
+        parent: "https://warpcast.com/~/channel/anky",
       });
-      console.log("the response is: ", response);
       if (response.status === 200) {
         setCastHash(response.data.cast.hash);
 
         const secondCastText = `welcome to a limitless era of farcaster:`;
-        console.log("sending the second cast");
         const secondResponse = await axios.post(
           `${apiRoute}/farcaster/api/cast`,
           {
@@ -343,36 +342,18 @@ const DesktopWritingGame = ({
       const kannadaCid = encodeToAnkyverseLanguage(cid);
       const newCastText = `${kannadaCid}\n\nwritten as anky - you can decode this by clicking on the embed on the next cast`;
 
-      const firstCastResponse = await axios.post(
-        `${apiRoute}/farcaster/api/cast/anon`,
-        {
-          text: newCastText,
-          parent: "",
-          embeds: [],
-        }
-      );
+      const response = await axios.post(`${apiRoute}/farcaster/api/cast/anon`, {
+        text: newCastText,
+        parent: "",
+        embeds: [],
+      });
+      console.log("the response is: ", response);
 
-      console.log("the responseeeee is: ", firstCastResponse);
-      if (firstCastResponse.status === 200) {
-        const secondCastText = `welcome to a limitless era of farcaster:\n\nhttps://www.anky.lat/r/${firstCastResponse.data.cast.hash}`;
-        console.log("sending the second cast");
-        const secondResponse = await axios.post(
-          `${apiRoute}/farcaster/api/cast/anon-reply`,
-          {
-            parent: firstCastResponse.data.cast.hash,
-            text: secondCastText,
-            embeds: [],
-          }
-        );
-        console.log("the second cast was sent", secondResponse);
-        if (secondResponse.status === 200) {
-          setText(""); // Clear the text field
-          setDisplayWritingGameLanding(false);
-          router.push(
-            `https://www.anky.lat/r/${firstCastResponse.data.cast.hash}`
-          );
-          //setWasSuccessfullyCasted(true);
-        }
+      if (response.status === 200) {
+        setText(""); // Clear the text field
+        setDisplayWritingGameLanding(false);
+        router.push(`https://www.anky.lat/r/${response.data.cast.hash}`);
+        //setWasSuccessfullyCasted(true);
       }
     } catch (error) {
       alert("there was an error casting your cast anon");
