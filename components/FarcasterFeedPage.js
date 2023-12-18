@@ -19,7 +19,9 @@ const FarcasterFeedPage = () => {
         const response = await axios.get(`${apiRoute}/farcaster/feed`);
         console.log("the response from the feed is: ", response.data);
         setFeedCasts(response.data.feed.casts);
-        setLoading(false);
+        setTimeout(() => {
+          setLoading(false);
+        }, 2222);
       } catch (error) {
         setError(true);
       }
