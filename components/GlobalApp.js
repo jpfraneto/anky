@@ -42,6 +42,8 @@ import UserFeed from "./UserFeed";
 import GlobalFeed from "./GlobalFeed";
 import SettingsPage from "./SettingsPage";
 import FarcasterPage from "./FarcasterPage";
+import ManaPage from "./mana/ManaPage";
+import FarcasterFeedPage from "./FarcasterFeedPage";
 
 const righteous = Righteous({ weight: "400", subsets: ["latin"] });
 const ankyverseToday = getAnkyverseDay(new Date());
@@ -206,6 +208,8 @@ const GlobalApp = ({ alchemy }) => {
           />
         );
 
+      case "/farcaster/feed":
+        return <FarcasterFeedPage />;
       case `/w/${route.split("/").pop()}`:
         if (!router.isReady) return null;
         console.log("the router.query is: ", router.query);
@@ -230,6 +234,8 @@ const GlobalApp = ({ alchemy }) => {
 
       case "/what-is-this":
         return <WhatIsThisPage />;
+      case "/mana":
+        return <ManaPage />;
       case `/r/${route.split("/").pop()}`:
         return <ReadCastPage />;
       case "/dementor":
@@ -387,12 +393,14 @@ const GlobalApp = ({ alchemy }) => {
                 onMouseLeave={() => setDisplayManaInfo(false)}
                 className="rounded-xl bg-purple-600 border-white border hover:cursor-pointer hover:text-white px-2 flex space-x-2"
               >
-                220
-                <GiRollingEnergy
-                  size={16}
-                  color={`${displayManaInfo ? "white" : "#9CA38F"}`}
-                  className="ml-2 translate-y-1"
-                />
+                <Link href="/mana" passHref className="flex ">
+                  220
+                  <GiRollingEnergy
+                    size={16}
+                    color={`${displayManaInfo ? "white" : "#9CA38F"}`}
+                    className="ml-2 translate-y-1"
+                  />
+                </Link>
               </span>
               <span
                 className="w-fit"

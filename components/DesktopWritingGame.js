@@ -142,12 +142,13 @@ const DesktopWritingGame = ({
   }, [isActive, lastKeystroke]);
 
   const finishRun = async () => {
+    const finishTimestamp = Date.now();
     if (countdownTarget === 0) setMissionAccomplished(true);
     setLifeBarLength(0);
     audioRef.current.volume = 0.1;
     // audioRef.current.play();
     setFinished(true);
-    setEndTime(Date.now());
+    setEndTime(finishTimestamp);
     setIsDone(true);
     setIsActive(false);
     clearInterval(intervalRef.current);
@@ -155,6 +156,10 @@ const DesktopWritingGame = ({
     await navigator.clipboard.writeText(text);
     setMoreThanMinRound(true);
     setFailureMessage(`You're done! This run lasted ${time}.}`);
+    const frontendWrittenTime = Math.floor(
+      (finishTimestamp - startTime) / 1000
+    );
+    pingServerToEndWritingSession(finishTimestamp, frontendWrittenTime);
     if (time > 30) {
       // setLoadButtons(true);
     }
@@ -197,14 +202,40 @@ const DesktopWritingGame = ({
 
   const handleTextChange = (event) => {
     setText(event.target.value);
+    const now = Date.now();
     if (!isActive && event.target.value.length > 0) {
+      console.log("IN HEEEEREAKHCJKAS");
       setDisableButton(true);
       setIsActive(true);
       setFailureMessage("");
-      setStartTime(Date.now());
+      setStartTime(now);
+      if (user) {
+        pingServerToStartWritingSession(now);
+      }
     }
-    setLastKeystroke(Date.now());
+    setLastKeystroke(now);
   };
+
+  async function pingServerToStartWritingSession(now) {
+    try {
+      const response = await axios.post(`${apiRoute}/mana/session-start`, {
+        timestamp: now,
+        user: user.id.replace("did:privy:", ""),
+      });
+      console.log("the response is: ", response);
+    } catch (error) {}
+  }
+
+  async function pingServerToEndWritingSession(now, frontendWrittenTime) {
+    try {
+      const response = await axios.post(`${apiRoute}/mana/session-end`, {
+        timestamp: now,
+        user: user.id.replace("did:privy:", ""),
+        frontendWrittenTime,
+      });
+      console.log("the response is: ", response);
+    } catch (error) {}
+  }
 
   const pasteText = async () => {
     await navigator.clipboard.writeText(text);
@@ -397,7 +428,6 @@ const DesktopWritingGame = ({
       </div>
     );
 
-  console.log("THE FARCASTER USER IS: ", farcasterUser);
   return (
     <div className="h-full">
       <audio ref={audioRef}>
