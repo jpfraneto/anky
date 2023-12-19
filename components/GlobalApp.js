@@ -60,6 +60,7 @@ const GlobalApp = ({ alchemy }) => {
     exportWallet,
   } = usePrivy();
   const {
+    setUserAppInformation,
     userAppInformation,
     userOwnsAnky,
     setUserOwnsAnky,
@@ -462,6 +463,7 @@ const GlobalApp = ({ alchemy }) => {
                 ankyverseToday.wink
               } - ${ankyverseToday.currentKingdom.toLowerCase()}`}
               userPrompt={thisIsThePrompt || ankyverseQuestion}
+              setUserAppInformation={setUserAppInformation}
               userAppInformation={userAppInformation}
               setLifeBarLength={setLifeBarLength}
               lifeBarLength={lifeBarLength}

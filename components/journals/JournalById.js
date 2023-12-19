@@ -2,18 +2,13 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
 import { ethers } from "ethers";
 import Button from "../Button";
-import { formatUserJournal } from "../../lib/notebooks.js";
-import {
-  fetchContentFromIrys,
-  getContainerInfoFromIrys,
-} from "../../lib/irys.js";
+import { getContainerInfoFromIrys } from "../../lib/irys.js";
 import { WebIrys } from "@irys/sdk";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
 import Image from "next/image";
 import Link from "next/link";
 import WritingGameComponent from "../WritingGameComponent";
 import Spinner from "../Spinner";
-import AnkyJournalsAbi from "../../lib/journalsABI.json"; // Assuming you have the ABI
 import { useUser } from "../../context/UserContext";
 import { setUserData } from "../../lib/idbHelper";
 
@@ -272,23 +267,6 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
       console.error("Failed to write to notebook:", error);
     }
   };
-
-  async function getPasswords() {
-    const provider = await thisWallet.getEthersProvider();
-    let signer = await provider.getSigner();
-    const journalsContract = new ethers.Contract(
-      process.env.NEXT_PUBLIC_JOURNALS_CONTRACT_ADDRESS,
-      AnkyJournalsAbi,
-      signer
-    );
-
-    const tx = await journalsContract.getPasswordCID(router.query.id);
-    // check for the passwords to create the thread that will allow me to write on that page with the provenance chain.
-    // the notebook is the provenance chain itself, and the decryption process happens because of that being real.
-    console.log("the tx is: ", tx);
-    const passwords = await fetchContentFromIrys(tx);
-    return passwords;
-  }
 
   function renderModal() {
     let content;

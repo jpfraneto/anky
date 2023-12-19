@@ -31,6 +31,7 @@ const DesktopWritingGame = ({
   ankyverseDate,
   gamePrompts = {},
   setDisableButton,
+  setUserAppInformation,
   userAppInformation,
   setDisplayWritingGameLanding,
   displayWritingGameLanding,
@@ -38,12 +39,11 @@ const DesktopWritingGame = ({
   farcasterUser,
   countdownTarget,
 }) => {
-  console.log("the user app informationis: ", userAppInformation);
-  const mappedUserJournals = userAppInformation.userJournals.map(
-    (x) => x.title
-  );
+  console.log("the user app information is: ", userAppInformation);
+  const mappedUserJournals =
+    [] || userAppInformation?.userJournals?.map((x) => x.title);
   const router = useRouter();
-  const { login, authenticated, user } = usePrivy();
+  const { login, authenticated, user, getAccessToken } = usePrivy();
   const audioRef = useRef();
   const [text, setText] = useState("");
   const [time, setTime] = useState(countdownTarget || 0);
@@ -51,6 +51,7 @@ const DesktopWritingGame = ({
   const [saveText, setSaveText] = useState("save anon");
   const [upscaledUrls, setUpscaledUrls] = useState([]);
   const [isActive, setIsActive] = useState(false);
+  const [savingRoundLoading, setSavingRoundLoading] = useState(false);
   const [isCasting, setIsCasting] = useState(false);
   const [savingRound, setSavingRound] = useState(false);
   const [castAs, setCastAs] = useState("");
@@ -213,7 +214,7 @@ const DesktopWritingGame = ({
     setText(event.target.value);
     const now = Date.now();
     if (!isActive && event.target.value.length > 0) {
-      console.log("IN HEEEEREAKHCJKAS");
+      console.log("IN HEEEEREAKHCJKAS", user);
       setDisableButton(true);
       setIsActive(true);
       setFailureMessage("");
@@ -227,23 +228,49 @@ const DesktopWritingGame = ({
 
   async function pingServerToStartWritingSession(now) {
     try {
-      const response = await axios.post(`${apiRoute}/mana/session-start`, {
-        timestamp: now,
-        user: user.id.replace("did:privy:", ""),
-      });
+      if (!authenticated) alert("you need to login first");
+      const authToken = await getAccessToken();
+      const response = await axios.post(
+        `${apiRoute}/mana/session-start`,
+        {
+          timestamp: now,
+          user: user.id.replace("did:privy:", ""),
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
       console.log("the response is: ", response);
-    } catch (error) {}
+    } catch (error) {
+      console.log("there was an error requesting to ping the serve", error);
+    }
   }
 
   async function pingServerToEndWritingSession(now, frontendWrittenTime) {
     try {
-      const response = await axios.post(`${apiRoute}/mana/session-end`, {
-        timestamp: now,
-        user: user.id.replace("did:privy:", ""),
-        frontendWrittenTime,
-      });
+      if (!authenticated) alert("you need to login first");
+      const authToken = await getAccessToken();
+      const response = await axios.post(
+        `${apiRoute}/mana/session-end`,
+        {
+          timestamp: now,
+          user: user.id.replace("did:privy:", ""),
+          frontendWrittenTime,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
       console.log("the response is: ", response);
-    } catch (error) {}
+    } catch (error) {
+      console.log("there was an error pinging the server here.");
+    }
   }
 
   const pasteText = async () => {
@@ -470,6 +497,7 @@ const DesktopWritingGame = ({
 
   async function handleSaveRun() {
     try {
+      setSavingRoundLoading(true);
       if (castAs == "anon") await handleAnonCast();
       if (castAs == "me") await handleCast();
       if (journalIdToSave != "") {
@@ -482,6 +510,7 @@ const DesktopWritingGame = ({
         "it all worked perfectly fine and we are out here checking things out"
       );
       setEverythingWasUploaded(true);
+      setSavingRoundLoading(true);
     } catch (error) {
       console.log("there was an error in here, saving the run", error);
     }
@@ -646,46 +675,48 @@ const DesktopWritingGame = ({
                   {finished && (
                     <div className="bg-black p-4 text-white">
                       <p className="text-3xl">Save this run</p>
-
-                      <div className="bg-purple-500 text-black p-2 my-2 rounded-xl flex space-x-2 items-center justify-center">
-                        {farcasterUser.status == "approved" && (
-                          <div className="flex space-x-2 items-center">
-                            <p>send to farcaster?</p>
-                            <div className="flex space-x-2">
-                              <p
-                                onClick={() => setCastAs("")}
-                                className={` p-2 border-black   cursor-pointer rounded-xl ${
-                                  castAs == ""
-                                    ? "bg-red-500 border-2"
-                                    : "bg-red-200 hover:bg-red-300 "
-                                }`}
-                              >
-                                don&apos;t cast
-                              </p>
-                              <p
-                                onClick={() => setCastAs("me")}
-                                className={` p-2 border-black  cursor-pointer rounded-xl ${
-                                  castAs == "me"
-                                    ? "bg-green-500 border-2"
-                                    : "bg-green-300 hover:bg-green-300"
-                                }`}
-                              >
-                                cast as {farcasterUser.fid}
-                              </p>
-                              <p
-                                onClick={() => setCastAs("anon")}
-                                className={` p-2 border-black   cursor-pointer rounded-xl ${
-                                  castAs == "anon"
-                                    ? "bg-purple-500 border-2"
-                                    : "bg-purple-200 hover:bg-purple-300"
-                                }`}
-                              >
-                                cast anon
-                              </p>
+                      {farcasterUser.status == "approved" && (
+                        <div className="bg-purple-500 text-black p-2 my-2 rounded-xl flex space-x-2 items-center justify-center">
+                          {farcasterUser.status == "approved" && (
+                            <div className="flex space-x-2 items-center">
+                              <p>send to farcaster?</p>
+                              <div className="flex space-x-2">
+                                <p
+                                  onClick={() => setCastAs("")}
+                                  className={` p-2 border-black   cursor-pointer rounded-xl ${
+                                    castAs == ""
+                                      ? "bg-red-500 border-2"
+                                      : "bg-red-200 hover:bg-red-300 "
+                                  }`}
+                                >
+                                  don&apos;t cast
+                                </p>
+                                <p
+                                  onClick={() => setCastAs("me")}
+                                  className={` p-2 border-black  cursor-pointer rounded-xl ${
+                                    castAs == "me"
+                                      ? "bg-green-500 border-2"
+                                      : "bg-green-300 hover:bg-green-300"
+                                  }`}
+                                >
+                                  cast as {farcasterUser.fid}
+                                </p>
+                                <p
+                                  onClick={() => setCastAs("anon")}
+                                  className={` p-2 border-black   cursor-pointer rounded-xl ${
+                                    castAs == "anon"
+                                      ? "bg-purple-500 border-2"
+                                      : "bg-purple-200 hover:bg-purple-300"
+                                  }`}
+                                >
+                                  cast anon
+                                </p>
+                              </div>
                             </div>
-                          </div>
-                        )}
-                      </div>
+                          )}
+                        </div>
+                      )}
+
                       <div className="bg-purple-500 text-black p-2 my-2 rounded-xl flex space-x-2 items-center justify-center">
                         <p>save to journal? </p>
                         {userAppInformation.userJournals &&
@@ -721,7 +752,11 @@ const DesktopWritingGame = ({
                               <div className="p-4 bg-black w-full mx-auto md:w-fit rounded-xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] z-50">
                                 <div className="flex flex-col md:flex-row md:space-y-0 justify-center w-full space-y-2 space-x-2 mt-2">
                                   <Button
-                                    buttonText="save run"
+                                    buttonText={
+                                      savingRoundLoading
+                                        ? `saving...`
+                                        : `save run`
+                                    }
                                     buttonAction={handleSaveRun}
                                     buttonColor="bg-green-600"
                                   />
