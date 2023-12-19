@@ -41,24 +41,6 @@ const FarcasterPage = ({
       ? "http://localhost:3000"
       : "https://api.anky.lat";
 
-  // Load the Neynar script and define the callback
-  useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://neynarxyz.github.io/siwn/raw/1.0.0/index.js";
-    script.async = true;
-    document.body.appendChild(script);
-
-    window.onSignInSuccess = (data) => {
-      console.log("Sign-in success with data:", data);
-      // Your code to handle the sign-in data
-    };
-
-    return () => {
-      // Cleanup the script when the component unmounts
-      document.body.removeChild(script);
-    };
-  }, []);
-
   useEffect(() => {
     setCountdownTarget(480);
     const storedData = localStorage.getItem(LOCAL_STORAGE_KEYS.FARCASTER_USER);
@@ -237,28 +219,6 @@ const FarcasterPage = ({
           />
         </div>
       )}
-
-      {/* {!farcasterUser?.status && (
-        <div className="w-96 mx-auto">
-          <p className="text-white">
-            all of this is being developed now! use at your own risk
-          </p>
-          <p className="text-white">
-            if you want to be an active part of the development of this place,
-            consider joining this telegram group:
-          </p>
-          <a href="https://t.me/ankycommunity" target="_blank">
-            open telegram
-          </a>
-          <div className="neynar_signin_container">
-            <div
-              className="neynar_signin"
-              data-client_id="f4625c2d-aa4d-4870-8798-8df8e6b47cee"
-              data-theme="dark"
-            ></div>
-          </div>
-        </div>
-      )} */}
 
       {farcasterUser?.status == "pending_approval" &&
         farcasterUser?.signer_approval_url && (

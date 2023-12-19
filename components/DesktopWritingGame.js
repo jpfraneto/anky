@@ -38,6 +38,10 @@ const DesktopWritingGame = ({
   farcasterUser,
   countdownTarget,
 }) => {
+  console.log("the user app informationis: ", userAppInformation);
+  const mappedUserJournals = userAppInformation.userJournals.map(
+    (x) => x.title
+  );
   const router = useRouter();
   const { login, authenticated, user } = usePrivy();
   const audioRef = useRef();
@@ -49,11 +53,13 @@ const DesktopWritingGame = ({
   const [isActive, setIsActive] = useState(false);
   const [isCasting, setIsCasting] = useState(false);
   const [savingRound, setSavingRound] = useState(false);
+  const [castAs, setCastAs] = useState("");
   const [moreThanMinRun, setMoreThanMinRound] = useState(null);
   const [chosenUpscaledImage, setChosenUpscaledImage] = useState("");
   const [savingTextAnon, setSavingTextAnon] = useState(false);
   const [savedText, setSavedText] = useState(false);
   const [cid, setCid] = useState("");
+  const [everythingWasUploaded, setEverythingWasUploaded] = useState(false);
 
   const [generatedImages, setGeneratedImages] = useState("");
   const [loadingAnkyResponse, setLoadingAnkyResponse] = useState(false);
@@ -73,10 +79,12 @@ const DesktopWritingGame = ({
   const [errorProblem, setErrorProblem] = useState(false);
   const [castHash, setCastHash] = useState("");
   const [failureMessage, setFailureMessage] = useState("");
+  const [journalIdToSave, setJournalIdToSave] = useState("");
   const [missionAccomplished, setMissionAccomplished] = useState(false);
   const [secondLoading, setSecondLoading] = useState(false);
   const [thirdLoading, setThirdLoading] = useState(false);
   const [copyText, setCopyText] = useState("copy my writing");
+  const [hardcoreContinue, setHardcoreContinue] = useState(false);
   const [metadata, setMetadata] = useState(null);
   const [writingSaved, setWritingSaved] = useState(false);
   const [writingSavingLoading, setWritingSavingLoading] = useState(false);
@@ -142,6 +150,7 @@ const DesktopWritingGame = ({
   }, [isActive, lastKeystroke]);
 
   const finishRun = async () => {
+    console.log("INSIDE THE FINISH RUN: ", userAppInformation);
     const finishTimestamp = Date.now();
     if (countdownTarget === 0) setMissionAccomplished(true);
     setLifeBarLength(0);
@@ -362,6 +371,122 @@ const DesktopWritingGame = ({
     }
   };
 
+  async function saveTextToJournal() {
+    console.log("the journal id to save is: ", journalIdToSave);
+    const chosenJournal = userAppInformation.userJournals.filter(
+      (x) => x.journalId == journalIdToSave
+    )[0];
+    console.log("the chosen journal is: ", chosenJournal);
+    const getWebIrys = async () => {
+      // Ethers5 provider
+      // await window.ethereum.enable();
+      if (!thisWallet) return;
+      // const provider = new providers.Web3Provider(window.ethereum);
+      console.log("thiiiiis wallet is: ", thisWallet);
+      const provider = await thisWallet.getEthersProvider();
+
+      const url = "https://node2.irys.xyz";
+      const token = "ethereum";
+      const rpcURL = "https://rpc-mumbai.maticvigil.com"; // Optional parameter
+
+      // Create a wallet object
+      const wallet = { rpcUrl: rpcURL, name: "ethersv5", provider: provider };
+      // Use the wallet object
+      const webIrys = new WebIrys({ url, token, wallet });
+      await webIrys.ready();
+      return webIrys;
+    };
+    const webIrys = await getWebIrys();
+    let previousPageCid = 0;
+    console.log("JHSALCHSAKJHCAS", chosenJournal.entries);
+    if (chosenJournal.entries.length > 0) {
+      previousPageCid =
+        chosenJournal.entries[chosenJournal.entries.length - 1].cid;
+    }
+    const tags = [
+      { name: "Content-Type", value: "text/plain" },
+      { name: "application-id", value: "Anky Dementors" },
+      { name: "container-type", value: "journal" },
+      { name: "container-id", value: journalIdToSave },
+      { name: "page-number", value: chosenJournal.entries.length.toString() },
+      {
+        name: "smart-contract-address",
+        value: process.env.NEXT_PUBLIC_JOURNALS_CONTRACT_ADDRESS,
+      },
+      {
+        name: "previous-page",
+        value: previousPageCid.toString(),
+      },
+    ];
+    try {
+      const receipt = await webIrys.upload(text, { tags });
+      console.log(`Data uploaded ==> https://gateway.irys.xyz/${receipt.id}`);
+      let newJournalEntry;
+      setUserAppInformation((x) => {
+        // Find the specific journal index by its id
+        const journalIndex = x.userJournals.findIndex(
+          (j) => j.journalId == journalIdToSave
+        );
+
+        newJournalEntry = {
+          text: text,
+          timestamp: new Date().getTime(),
+          pageNumber: chosenJournal.entries.length,
+          previousPageCid: previousPageCid,
+          cid: receipt.id,
+        };
+
+        const updatedJournal = {
+          ...x.userJournals[journalIndex],
+          entries: [...x.userJournals[journalIndex].entries, newJournalEntry],
+        };
+
+        const updatedUserJournals = [
+          ...x.userJournals.slice(0, journalIndex),
+          updatedJournal,
+          ...x.userJournals.slice(journalIndex + 1),
+        ];
+
+        setUserData("userJournals", updatedUserJournals);
+
+        return {
+          ...x,
+          userJournals: updatedUserJournals,
+        };
+      });
+
+      setJournal((x) => {
+        return {
+          ...x,
+          entries: [...chosenJournal.entries, newJournalEntry],
+        };
+      });
+
+      setLifeBarLength(0);
+    } catch (e) {
+      console.log("Error uploading data ", e);
+    }
+  }
+
+  async function handleSaveRun() {
+    try {
+      if (castAs == "anon") await handleAnonCast();
+      if (castAs == "me") await handleCast();
+      if (journalIdToSave != "") {
+        console.log("save to the journal!");
+        await saveTextToJournal();
+      } else {
+        await sendTextToIrys();
+      }
+      console.log(
+        "it all worked perfectly fine and we are out here checking things out"
+      );
+      setEverythingWasUploaded(true);
+    } catch (error) {
+      console.log("there was an error in here, saving the run", error);
+    }
+  }
+
   const handleAnonCast = async () => {
     try {
       setIsCasting(true);
@@ -379,6 +504,7 @@ const DesktopWritingGame = ({
         embeds: [],
       });
       console.log("the response is: ", response);
+      setCastHash(response.data.cast.hash);
 
       if (response.status === 200) {
         setText(""); // Clear the text field
@@ -501,166 +627,267 @@ const DesktopWritingGame = ({
               ))}
           </div>
 
-          {text && (
+          {everythingWasUploaded ? (
             <div
               className={`${
                 text && "fade-in"
               } flex flex-col justify-center items-center absolute w-screen top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-opacity-20 mb-4`}
             >
-              {finished && (
-                <>
-                  {missionAccomplished ||
-                  (countdownTarget > 0 && time === 0) ? (
-                    <>
-                      <>
-                        {farcasterUser ? (
-                          <div className="p-4 bg-black w-2/3 md:w-fit rounded-xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] z-50">
-                            {farcasterUser.status === "approved" && (
-                              <p>you are logged in on farcaster</p>
-                            )}
-                            <div className="flex flex-col md:flex-row md:space-y-0 space-y-2 space-x-2 mt-2">
-                              <Button
-                                buttonText={`${
-                                  isCasting ? "casting..." : "cast anon"
+              everything was was was uploaded.
+            </div>
+          ) : (
+            <>
+              {text && (
+                <div
+                  className={`${
+                    text && "fade-in"
+                  } flex flex-col justify-center items-center absolute w-screen top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-opacity-20 mb-4`}
+                >
+                  {finished && (
+                    <div className="bg-black p-4 text-white">
+                      <p className="text-3xl">Save this run</p>
+
+                      <div className="bg-purple-500 text-black p-2 my-2 rounded-xl flex space-x-2 items-center justify-center">
+                        {farcasterUser.status == "approved" && (
+                          <div className="flex space-x-2 items-center">
+                            <p>send to farcaster?</p>
+                            <div className="flex space-x-2">
+                              <p
+                                onClick={() => setCastAs("")}
+                                className={` p-2 border-black   cursor-pointer rounded-xl ${
+                                  castAs == ""
+                                    ? "bg-red-500 border-2"
+                                    : "bg-red-200 hover:bg-red-300 "
                                 }`}
-                                buttonAction={handleAnonCast}
-                                buttonColor="bg-purple-600"
-                              />
-                              {farcasterUser.status === "approved" && (
-                                <Button
-                                  buttonText={`${
-                                    isCasting ? "casting..." : "cast as you"
-                                  }`}
-                                  buttonAction={handleCast}
-                                  buttonColor="bg-green-600"
-                                />
-                              )}
-
-                              <Button
-                                buttonText={`copy written text and go back`}
-                                buttonAction={() => {
-                                  pasteText();
-                                  setText("");
-                                  setTime(0);
-                                  setIsActive(false);
-                                  router.push("/");
-                                  setDisplayWritingGameLanding(false);
-                                }}
-                                buttonColor="bg-red-600"
-                              />
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="p-4 bg-black w-2/3 md:w-1/3 rounded-xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] z-50">
-                            <button onClick={() => console.log(farcasterUser)}>
-                              aloja
-                            </button>
-                            <p
-                              className={`${righteous.className} mb-2 text-xl font-bold`}
-                            >
-                              great job.
-                            </p>
-                            <p
-                              className={`${righteous.className} mb-2 text-xl font-bold`}
-                            >
-                              you can add what you wrote to a special notebook
-                              that will be stored forever.
-                            </p>
-
-                            <div className="flex justify-center ">
-                              <Button
-                                buttonAction={sendTextToIrys}
-                                buttonColor="bg-green-600 text-black"
-                                buttonText={
-                                  savingTextAnon ? "saving..." : "save text"
-                                }
-                              />
-                              <Button
-                                buttonAction={startNewRun}
-                                buttonColor="bg-cyan-200 text-black"
-                                buttonText="start again"
-                              />
+                              >
+                                don&apos;t cast
+                              </p>
+                              <p
+                                onClick={() => setCastAs("me")}
+                                className={` p-2 border-black  cursor-pointer rounded-xl ${
+                                  castAs == "me"
+                                    ? "bg-green-500 border-2"
+                                    : "bg-green-300 hover:bg-green-300"
+                                }`}
+                              >
+                                cast as {farcasterUser.fid}
+                              </p>
+                              <p
+                                onClick={() => setCastAs("anon")}
+                                className={` p-2 border-black   cursor-pointer rounded-xl ${
+                                  castAs == "anon"
+                                    ? "bg-purple-500 border-2"
+                                    : "bg-purple-200 hover:bg-purple-300"
+                                }`}
+                              >
+                                cast anon
+                              </p>
                             </div>
                           </div>
                         )}
-                      </>
-                    </>
-                  ) : (
-                    <>
-                      {countdownTarget == 0 ||
-                      (countdownTarget > 0 && time === 0) ? (
-                        <div className="p-4 bg-black w-2/3 md:w-fit rounded-xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] z-50">
-                          {farcasterUser.status === "approved" && (
-                            <p>you are logged in on farcaster</p>
+                      </div>
+                      <div className="bg-purple-500 text-black p-2 my-2 rounded-xl flex space-x-2 items-center justify-center">
+                        <p>save to journal? </p>
+                        {userAppInformation.userJournals &&
+                          userAppInformation.userJournals.length > 0 && (
+                            <div>
+                              <select
+                                onChange={(e) => {
+                                  console.log("in here", e.target.value);
+                                  setJournalIdToSave(e.target.value);
+                                }}
+                                className="p-2 text-black rounded-xl my-2"
+                              >
+                                <option value="">
+                                  don&apos;t save to journal
+                                </option>
+                                {userAppInformation.userJournals.map((x, i) => {
+                                  return (
+                                    <option key={i} value={x.journalId}>
+                                      {x.title}
+                                    </option>
+                                  );
+                                })}
+                              </select>
+                            </div>
                           )}
-                          <div className="flex space-x-2 flex-col md:flex-row ">
-                            <Button
-                              buttonText="cast anosn"
-                              buttonAction={handleAnonCast}
-                              buttonColor="bg-purple-600"
-                            />
-                            {farcasterUser.status === "approved" && (
-                              <Button
-                                buttonText={`${
-                                  isCasting ? "casting..." : "cast as you"
-                                }`}
-                                buttonAction={handleCast}
-                                buttonColor="bg-green-600"
-                              />
-                            )}
+                      </div>
 
-                            <Button
-                              buttonText={`copy written text and go back`}
-                              buttonAction={() => {
-                                pasteText();
-                                setText("");
-                                setIsActive(false);
-                                setTime(0);
-                                router.push("/");
-                                setDisplayWritingGameLanding(false);
-                              }}
-                              buttonColor="bg-red-600"
-                            />
-                          </div>
-                        </div>
+                      {missionAccomplished ||
+                      (countdownTarget > 0 && time === 0) ? (
+                        <>
+                          <>
+                            {farcasterUser ? (
+                              <div className="p-4 bg-black w-full mx-auto md:w-fit rounded-xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] z-50">
+                                <div className="flex flex-col md:flex-row md:space-y-0 justify-center w-full space-y-2 space-x-2 mt-2">
+                                  <Button
+                                    buttonText="save run"
+                                    buttonAction={handleSaveRun}
+                                    buttonColor="bg-green-600"
+                                  />
+                                  <Button
+                                    buttonText={`copy written text and go back`}
+                                    buttonAction={() => {
+                                      pasteText();
+                                      setText("");
+                                      setTime(0);
+                                      setIsActive(false);
+                                      router.push("/");
+                                      setDisplayWritingGameLanding(false);
+                                    }}
+                                    buttonColor="bg-red-600"
+                                  />
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="p-4 bg-black w-2/3 md:w-1/3 rounded-xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] z-50">
+                                <button
+                                  onClick={() => console.log(farcasterUser)}
+                                >
+                                  aloja
+                                </button>
+                                <p
+                                  className={`${righteous.className} mb-2 text-xl font-bold`}
+                                >
+                                  great job.
+                                </p>
+                                <p
+                                  className={`${righteous.className} mb-2 text-xl font-bold`}
+                                >
+                                  you can add what you wrote to a special
+                                  notebook that will be stored forever.
+                                </p>
+
+                                <div className="flex justify-center ">
+                                  <Button
+                                    buttonAction={sendTextToIrys}
+                                    buttonColor="bg-green-600 text-black"
+                                    buttonText={
+                                      savingTextAnon ? "saving..." : "save text"
+                                    }
+                                  />
+                                  <Button
+                                    buttonAction={startNewRun}
+                                    buttonColor="bg-cyan-200 text-black"
+                                    buttonText="start again"
+                                  />
+                                </div>
+                              </div>
+                            )}
+                          </>
+                        </>
                       ) : (
-                        <div className="bg-black p-4 rounded-xl">
-                          <p className="mb-2">you didnt finish</p>
-                          <p className="mb-2">
-                            you said you would write for {countdownTarget}{" "}
-                            seconds
-                          </p>
-                          <p className="mb-2">
-                            (what you wrote is on your clipboard)
-                          </p>
-                          <div className="w-fit flex space-x-2">
-                            <Button
-                              buttonAction={startNewCountdownRun}
-                              buttonColor="bg-cyan-200 text-black"
-                              buttonText="start again"
-                            />
-                            <Button
-                              buttonAction={() => {
-                                pasteText();
-                                setText("");
-                                setTime(0);
-                                router.push("/what-is-this");
-                                setDisplayWritingGameLanding(false);
-                              }}
-                              buttonColor="bg-red-600 text-black"
-                              buttonText="copy text and escape"
-                            />
-                          </div>
-                        </div>
+                        <>
+                          {countdownTarget == 0 ||
+                          (countdownTarget > 0 && time === 0) ? (
+                            <div className="p-4 bg-black w-2/3 md:w-fit rounded-xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] z-50">
+                              <div className="flex space-x-2 flex-col md:flex-row ">
+                                <Button
+                                  buttonText="save run"
+                                  buttonAction={handleSaveRun}
+                                  buttonColor="bg-purple-600"
+                                />
+
+                                <Button
+                                  buttonText={`copy written text and go back`}
+                                  buttonAction={() => {
+                                    pasteText();
+                                    setText("");
+                                    setIsActive(false);
+                                    setTime(0);
+                                    router.push("/");
+                                    setDisplayWritingGameLanding(false);
+                                  }}
+                                  buttonColor="bg-red-600"
+                                />
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="bg-black p-4 rounded-xl">
+                              <p className="mb-2">you didnt finish</p>
+                              <p className="mb-2">
+                                you said you would write for {countdownTarget}{" "}
+                                seconds
+                              </p>
+                              <p className="mb-2">
+                                (what you wrote is on your clipboard)
+                              </p>
+                              <div className="w-fit flex space-x-2">
+                                <Button
+                                  buttonAction={startNewCountdownRun}
+                                  buttonColor="bg-cyan-200 text-black"
+                                  buttonText="start again"
+                                />
+                                <Button
+                                  buttonAction={() => {
+                                    pasteText();
+                                    setText("");
+                                    setTime(0);
+                                    router.push("/what-is-this");
+                                    setDisplayWritingGameLanding(false);
+                                  }}
+                                  buttonColor="bg-red-600 text-black"
+                                  buttonText="copy text and escape"
+                                />
+                              </div>
+                            </div>
+                          )}
+                        </>
                       )}
-                    </>
+                    </div>
                   )}
-                </>
+                </div>
               )}
-            </div>
+            </>
           )}
         </div>
       </div>
+      {hardcoreContinue ||
+        (!authenticated && (
+          <div
+            className={`${
+              text && "fade-in"
+            } flex flex-col justify-center text-white items-center absolute w-full bg-black h-fit py-3 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 mb-4`}
+          >
+            {farcasterUser?.fid ? (
+              <div>
+                <p>you are only logged in with farcaster</p>
+                <p>
+                  if you want to store your writings inside this system, login
+                  down here:
+                </p>
+                <div className="flex  space-x-2">
+                  <Button
+                    buttonAction={login}
+                    buttonText="login"
+                    buttonColor="bg-green-600 mx-auto w-fit my-2"
+                  />
+                  <Button
+                    buttonAction={() => setHardcoreContinue(true)}
+                    buttonText="continue without logging in"
+                    buttonColor="bg-purple-600 mx-auto w-fit my-2"
+                  />
+                </div>
+              </div>
+            ) : (
+              <div>
+                <p>you are not logged in</p>
+                <div className="flex space-x-2">
+                  <Button
+                    buttonAction={login}
+                    buttonText="login"
+                    buttonColor="bg-green-600 mx-auto w-fit my-2"
+                  />
+                  <Button
+                    buttonAction={() => setHardcoreContinue(true)}
+                    buttonText="continue without logging in"
+                    buttonColor="bg-purple-600 mx-auto w-fit my-2"
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
     </div>
   );
 };
