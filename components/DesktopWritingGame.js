@@ -39,7 +39,6 @@ const DesktopWritingGame = ({
   farcasterUser,
   countdownTarget,
 }) => {
-  console.log("the user app information is: ", userAppInformation);
   const mappedUserJournals =
     [] || userAppInformation?.userJournals?.map((x) => x.title);
   const router = useRouter();
@@ -62,9 +61,7 @@ const DesktopWritingGame = ({
   const [savedText, setSavedText] = useState(false);
   const [cid, setCid] = useState("");
   const [everythingWasUploaded, setEverythingWasUploaded] = useState(false);
-  const [showOverlay, setShowOverlay] = useState(
-    !authenticated || hardcoreContinue
-  );
+  const [showOverlay, setShowOverlay] = useState(!authenticated);
   const [generatedImages, setGeneratedImages] = useState("");
   const [loadingAnkyResponse, setLoadingAnkyResponse] = useState(false);
 
@@ -604,7 +601,7 @@ const DesktopWritingGame = ({
             className={`${righteous.className} w-full grow-0 bg-black/50 py-2 justify-center items-center flex h-fit items-center px-2 flex `}
           >
             <p
-              className={`text-left h-fit w-10/12 text-purple-600 md:mt-0 text-lg md:text-3xl overflow-y-scroll  drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]`}
+              className={`text-left h-fit w-10/12 text-purple-600 md:mt-0 text-xl md:text-3xl overflow-y-scroll  drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]`}
             >
               {userPrompt}
             </p>
@@ -657,6 +654,7 @@ const DesktopWritingGame = ({
                             router.pathname.includes("w")
                           )
                             return router.push("/");
+                          setDisplayWritingGameLanding(false);
                           router.back();
                         }
                       }}

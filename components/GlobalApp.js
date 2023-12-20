@@ -355,7 +355,12 @@ const GlobalApp = ({ alchemy }) => {
     <div className="text-center w-screen text-white h-screen flex flex-col">
       <div className="hidden text-gray-400 w-full h-8 justify-between md:flex px-2 items-center">
         <Link href="/">
-          <span className="hover:text-purple-600 pr-2">anky</span>
+          <span
+            onClick={() => setDisplayWritingGameLanding(false)}
+            className="hover:text-purple-600 pr-2"
+          >
+            anky
+          </span>
         </Link>
         <div className="h-full w-full">
           <div

@@ -2,7 +2,8 @@ import "../styles/globals.css";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { Righteous } from "next/font/google";
-import { PrivyProvider } from "@privy-io/react-auth";
+import axios from "axios";
+import { PrivyProvider, usePrivy } from "@privy-io/react-auth";
 import { PrivyWagmiConnector } from "@privy-io/wagmi-connector";
 import { base } from "@wagmi/chains";
 import { configureChains, createConfig } from "wagmi";
@@ -29,6 +30,8 @@ const GlobalApp = dynamic(() => import("../components/GlobalApp"));
 function MyApp({ Component, pageProps }) {
   const [isDesktop, setIsDesktop] = useState(false);
   const router = useRouter();
+  const { getAccessToken } = usePrivy();
+
   useEffect(() => {
     // const isStandalone = window.matchMedia(
     //   '(display-mode: standalone)'
@@ -82,7 +85,20 @@ function MyApp({ Component, pageProps }) {
   }, []);
 
   const handleLogin = async (user) => {
-    console.log("the user is logged in", user);
+    try {
+      console.log("the user is logged in");
+
+      // const response = await axios.post(
+      //   `${process.env.NEXT_PUBLIC_API_ROUTE}/user/login`,
+      //   {
+      //     privyId: user.id.split("did:privy:")[1],
+      //   }
+      // );
+
+      // console.log("the response from the user route is:", response.data);
+    } catch (error) {
+      console.log("the error is: ", error);
+    }
   };
 
   return (
