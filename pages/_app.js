@@ -88,14 +88,14 @@ function MyApp({ Component, pageProps }) {
     try {
       console.log("the user is logged in");
 
-      // const response = await axios.post(
-      //   `${process.env.NEXT_PUBLIC_API_ROUTE}/user/login`,
-      //   {
-      //     privyId: user.id.split("did:privy:")[1],
-      //   }
-      // );
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_ROUTE}/user/login`,
+        {
+          privyId: user.id.split("did:privy:")[1],
+        }
+      );
 
-      // console.log("the response from the user route is:", response.data);
+      console.log("the response from the user route is:", response.data);
     } catch (error) {
       console.log("the error is: ", error);
     }

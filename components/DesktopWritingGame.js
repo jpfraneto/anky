@@ -53,6 +53,7 @@ const DesktopWritingGame = ({
   const [isActive, setIsActive] = useState(false);
   const [savingRoundLoading, setSavingRoundLoading] = useState(false);
   const [isCasting, setIsCasting] = useState(false);
+  const [userWantsToCastAnon, setUserWantsToCastAnon] = useState(false);
   const [savingRound, setSavingRound] = useState(false);
   const [castAs, setCastAs] = useState("");
   const [moreThanMinRun, setMoreThanMinRound] = useState(null);
@@ -504,7 +505,7 @@ const DesktopWritingGame = ({
         return router.push("/what-is-this");
       }
       setSavingRoundLoading(true);
-      if (castAs == "anon") await handleAnonCast();
+      if (castAs == "anon" || userWantsToCastAnon) await handleAnonCast();
       if (castAs == "me") await handleCast();
       if (journalIdToSave != "") {
         console.log("save to the journal!");
@@ -724,7 +725,6 @@ const DesktopWritingGame = ({
                           )}
                         </div>
                       )}
-
                       {userAppInformation.userJournals && (
                         <div className="bg-purple-500 text-black p-2 my-2 rounded-xl flex space-x-2 items-center justify-center">
                           <p>save to journal? </p>
@@ -756,6 +756,22 @@ const DesktopWritingGame = ({
                         </div>
                       )}
 
+                      {!farcasterUser ||
+                        (farcasterUser.status != "approved" && (
+                          <div className="bg-purple-600 p-3 rounded-xl flex">
+                            <p className="text-black">
+                              do you want to cast anon?
+                            </p>
+                            <input
+                              className="mx-4"
+                              type="checkbox"
+                              onChange={(e) =>
+                                setUserWantsToCastAnon(e.target.value)
+                              }
+                              value={userWantsToCastAnon}
+                            />
+                          </div>
+                        ))}
                       {missionAccomplished ||
                       (countdownTarget > 0 && time === 0) ? (
                         <>
@@ -789,9 +805,9 @@ const DesktopWritingGame = ({
                                     buttonText={
                                       savingRoundLoading
                                         ? `saving...`
-                                        : `cast anon`
+                                        : `save run`
                                     }
-                                    buttonAction={handleAnonCast}
+                                    buttonAction={handleSaveRun}
                                     buttonColor="bg-green-600"
                                   />
                                   <Button
@@ -905,7 +921,7 @@ const DesktopWritingGame = ({
             )}
           </div>
         ))}
-      <Overlay show={showOverlay}>
+      <Overlay show={!authenticated}>
         <div className="flex flex-col h-full justify-center items-center w-full ">
           <div className="flex flex-col text-white h-48">
             <p>you are not logged in</p>
