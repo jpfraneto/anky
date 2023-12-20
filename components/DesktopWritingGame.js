@@ -50,6 +50,7 @@ const DesktopWritingGame = ({
   const [preparing, setPreparing] = useState(true);
   const [saveText, setSaveText] = useState("save anon");
   const [upscaledUrls, setUpscaledUrls] = useState([]);
+  const [whatIsThis, setWhatIsThis] = useState(false);
   const [isActive, setIsActive] = useState(false);
   const [savingRoundLoading, setSavingRoundLoading] = useState(false);
   const [isCasting, setIsCasting] = useState(false);
@@ -61,7 +62,9 @@ const DesktopWritingGame = ({
   const [savedText, setSavedText] = useState(false);
   const [cid, setCid] = useState("");
   const [everythingWasUploaded, setEverythingWasUploaded] = useState(false);
-
+  const [showOverlay, setShowOverlay] = useState(
+    !authenticated || hardcoreContinue
+  );
   const [generatedImages, setGeneratedImages] = useState("");
   const [loadingAnkyResponse, setLoadingAnkyResponse] = useState(false);
 
@@ -879,9 +882,9 @@ const DesktopWritingGame = ({
           <div
             className={`${
               text && "fade-in"
-            } flex flex-col justify-center text-white items-center absolute w-full bg-black h-fit py-3 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 mb-4`}
+            } flex flex-col justify-center text-white items-center absolute bg-black h-fit py-3 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 mb-4`}
           >
-            {farcasterUser?.fid ? (
+            {farcasterUser?.fid && (
               <div>
                 <p>you are only logged in with farcaster</p>
                 <p>
@@ -901,25 +904,57 @@ const DesktopWritingGame = ({
                   />
                 </div>
               </div>
-            ) : (
-              <div className="">
-                <p>you are not logged in</p>
-                <div className="flex space-x-2">
-                  <Button
-                    buttonAction={login}
-                    buttonText="login"
-                    buttonColor="bg-green-600 mx-auto w-fit my-2"
-                  />
-                  <Button
-                    buttonAction={() => setHardcoreContinue(true)}
-                    buttonText="continue without logging in"
-                    buttonColor="bg-purple-600 mx-auto w-fit my-2"
-                  />
-                </div>
-              </div>
             )}
           </div>
         ))}
+      <Overlay show={showOverlay}>
+        <div className="flex flex-col h-full justify-center items-center w-full ">
+          <div className="flex flex-col text-white h-48">
+            <p>you are not logged in</p>
+            <div className="flex space-x-2 ">
+              <Button
+                buttonAction={login}
+                buttonText="login"
+                buttonColor="bg-green-600 mx-auto w-fit my-2"
+              />
+              <Button
+                buttonAction={() => {
+                  setShowOverlay(false);
+                  setHardcoreContinue(true);
+                }}
+                buttonText="continue without logging in"
+                buttonColor="bg-purple-600 mx-auto w-fit my-2"
+              />
+            </div>
+            <p
+              onClick={() => setWhatIsThis(!whatIsThis)}
+              className={`small  ${
+                whatIsThis ? "text-purple-400" : "text-gray-300"
+              } hover:text-purple-400 cursor-pointer`}
+            >
+              what is this?
+            </p>
+            {whatIsThis && (
+              <div>
+                <p className="text-white mb-2">just write</p>
+                <p className="text-white">
+                  it is all an excuse to get you writing
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      </Overlay>
+    </div>
+  );
+};
+
+const Overlay = ({ show, children }) => {
+  if (!show) return null;
+
+  return (
+    <div className="fixed top-0 h-screen w-screen left-0 right-0 bottom-0 bg-black bg-opacity-60 z-40">
+      {children}
     </div>
   );
 };

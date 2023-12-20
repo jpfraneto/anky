@@ -42,16 +42,16 @@ function LandingPage({
   );
 
   return (
-    <div className="w-screen">
+    <div className="w-screen text-black">
       {/* Hero Section */}
       <div
         className="h-screen w-screen bg-center bg-no-repeat bg-cover"
         style={{
+          height: "calc(100vh - 30px)",
           backgroundImage:
-            "linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('/images/librarian.png')",
+            "linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/images/librarian.png')",
         }}
       >
-        <div className="absolute inset-0 h-screen bg-black opacity-40"></div>
         <div className="relative z-10 flex flex-col items-center justify-center h-full">
           <h1 className="text-5xl text-gray-400 font-bold mt-64 mb-2">
             {authenticated

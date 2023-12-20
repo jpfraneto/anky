@@ -353,18 +353,6 @@ const GlobalApp = ({ alchemy }) => {
 
   return (
     <div className="text-center w-screen text-white h-screen flex flex-col">
-      {displayWritingGameLanding && (
-        <div className="md:hidden h-8 w-full">
-          <div
-            className="h-full opacity-50"
-            style={{
-              width: `${lifeBarLength}%`,
-              backgroundColor: lifeBarLength > 30 ? "green" : "red",
-            }}
-          ></div>
-        </div>
-      )}
-
       <div className="hidden text-gray-400 w-full h-8 justify-between md:flex px-2 items-center">
         <Link href="/">
           <span className="hover:text-purple-600 pr-2">anky</span>
@@ -457,7 +445,7 @@ const GlobalApp = ({ alchemy }) => {
         }}
       >
         {displayWritingGameLanding ? (
-          <>
+          <div className="h-full">
             <DesktopWritingGame
               ankyverseDate={`sojourn ${ankyverseToday.currentSojourn} - wink ${
                 ankyverseToday.wink
@@ -476,21 +464,21 @@ const GlobalApp = ({ alchemy }) => {
             {!disableButton && (
               <div
                 onClick={() => {
-                  console.log("in here");
+                  console.log("in here", router);
                   if (
                     router.pathname.includes("write") ||
                     router.pathname.includes("w")
                   ) {
                     router.push("/");
                   }
-                  setDisplayWritingGameLanding((x) => !x);
+                  setDisplayWritingGameLanding(false);
                 }}
-                className="fixed hover:bg-red-700 hover:cursor-pointer h-16 w-16 bottom-3 right-3 border-black border-2 active:bg-red-500 rounded-full text-green-400 bg-red-500 z-10 flex items-center justify-center"
+                className="fixed hover:bg-red-700 hover:cursor-pointer h-16 w-16 bottom-6 right-3 border-black border-2 active:bg-red-500 rounded-full text-green-400 bg-red-600 z-10 flex items-center justify-center"
               >
                 <IoArrowBack size={28} color="black" />
               </div>
             )}
-          </>
+          </div>
         ) : (
           <div className="h-full">
             {getComponentForRoute(router.pathname, router)}
@@ -503,7 +491,7 @@ const GlobalApp = ({ alchemy }) => {
                 ) {
                   router.push("/");
                 }
-                setDisplayWritingGameLanding((x) => !x);
+                setDisplayWritingGameLanding(true);
               }}
               className="fixed hover:bg-purple-700 hover:cursor-pointer h-16 w-16 bottom-6 right-3 border-black border-2 active:bg-purple-500 rounded-full text-green-400 bg-purple-600 z-10 flex items-center justify-center"
             >
