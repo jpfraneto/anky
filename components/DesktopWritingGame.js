@@ -228,7 +228,7 @@ const DesktopWritingGame = ({
 
   async function pingServerToStartWritingSession(now) {
     try {
-      if (!authenticated) alert("you need to login first");
+      if (!authenticated) return;
       const authToken = await getAccessToken();
       const response = await axios.post(
         `${apiRoute}/mana/session-start`,
@@ -251,7 +251,7 @@ const DesktopWritingGame = ({
 
   async function pingServerToEndWritingSession(now, frontendWrittenTime) {
     try {
-      if (!authenticated) alert("you need to login first");
+      if (!authenticated) return;
       const authToken = await getAccessToken();
       const response = await axios.post(
         `${apiRoute}/mana/session-end`,
@@ -497,6 +497,12 @@ const DesktopWritingGame = ({
 
   async function handleSaveRun() {
     try {
+      if (!authenticated) {
+        if (confirm("You need to login to save your writings")) {
+          return login();
+        }
+        return router.push("/what-is-this");
+      }
       setSavingRoundLoading(true);
       if (castAs == "anon") await handleAnonCast();
       if (castAs == "me") await handleCast();
@@ -519,6 +525,7 @@ const DesktopWritingGame = ({
   const handleAnonCast = async () => {
     try {
       setIsCasting(true);
+      if (!authenticated) setSavingRoundLoading(true);
       const responseFromIrys = await axios.post(`${apiRoute}/upload-writing`, {
         text,
       });
@@ -673,7 +680,7 @@ const DesktopWritingGame = ({
                   } flex flex-col justify-center items-center absolute w-screen top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-opacity-20 mb-4`}
                 >
                   {finished && (
-                    <div className="bg-black p-4 text-white">
+                    <div className="border-white border-2 rounded-xl bg-black p-4 text-white">
                       <p className="text-3xl">Save this run</p>
                       {farcasterUser.status == "approved" && (
                         <div className="bg-purple-500 text-black p-2 my-2 rounded-xl flex space-x-2 items-center justify-center">
@@ -717,38 +724,42 @@ const DesktopWritingGame = ({
                         </div>
                       )}
 
-                      <div className="bg-purple-500 text-black p-2 my-2 rounded-xl flex space-x-2 items-center justify-center">
-                        <p>save to journal? </p>
-                        {userAppInformation.userJournals &&
-                          userAppInformation.userJournals.length > 0 && (
-                            <div>
-                              <select
-                                onChange={(e) => {
-                                  console.log("in here", e.target.value);
-                                  setJournalIdToSave(e.target.value);
-                                }}
-                                className="p-2 text-black rounded-xl my-2"
-                              >
-                                <option value="">
-                                  don&apos;t save to journal
-                                </option>
-                                {userAppInformation.userJournals.map((x, i) => {
-                                  return (
-                                    <option key={i} value={x.journalId}>
-                                      {x.title}
-                                    </option>
-                                  );
-                                })}
-                              </select>
-                            </div>
-                          )}
-                      </div>
+                      {userAppInformation.userJournals && (
+                        <div className="bg-purple-500 text-black p-2 my-2 rounded-xl flex space-x-2 items-center justify-center">
+                          <p>save to journal? </p>
+                          {userAppInformation.userJournals &&
+                            userAppInformation.userJournals.length > 0 && (
+                              <div>
+                                <select
+                                  onChange={(e) => {
+                                    console.log("in here", e.target.value);
+                                    setJournalIdToSave(e.target.value);
+                                  }}
+                                  className="p-2 text-black rounded-xl my-2"
+                                >
+                                  <option value="">
+                                    don&apos;t save to journal
+                                  </option>
+                                  {userAppInformation.userJournals.map(
+                                    (x, i) => {
+                                      return (
+                                        <option key={i} value={x.journalId}>
+                                          {x.title}
+                                        </option>
+                                      );
+                                    }
+                                  )}
+                                </select>
+                              </div>
+                            )}
+                        </div>
+                      )}
 
                       {missionAccomplished ||
                       (countdownTarget > 0 && time === 0) ? (
                         <>
                           <>
-                            {farcasterUser ? (
+                            {farcasterUser.status == "approved" ? (
                               <div className="p-4 bg-black w-full mx-auto md:w-fit rounded-xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] z-50">
                                 <div className="flex flex-col md:flex-row md:space-y-0 justify-center w-full space-y-2 space-x-2 mt-2">
                                   <Button
@@ -764,47 +775,31 @@ const DesktopWritingGame = ({
                                     buttonText={`copy written text and go back`}
                                     buttonAction={() => {
                                       pasteText();
-                                      setText("");
-                                      setTime(0);
-                                      setIsActive(false);
-                                      router.push("/");
-                                      setDisplayWritingGameLanding(false);
+                                      startNewRun();
                                     }}
                                     buttonColor="bg-red-600"
                                   />
                                 </div>
                               </div>
                             ) : (
-                              <div className="p-4 bg-black w-2/3 md:w-1/3 rounded-xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] z-50">
-                                <button
-                                  onClick={() => console.log(farcasterUser)}
-                                >
-                                  aloja
-                                </button>
-                                <p
-                                  className={`${righteous.className} mb-2 text-xl font-bold`}
-                                >
-                                  great job.
-                                </p>
-                                <p
-                                  className={`${righteous.className} mb-2 text-xl font-bold`}
-                                >
-                                  you can add what you wrote to a special
-                                  notebook that will be stored forever.
-                                </p>
-
-                                <div className="flex justify-center ">
+                              <div className="p-4 bg-black w-2/3 md:w-full rounded-xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] z-50">
+                                <div className="flex flex-col md:flex-row md:space-y-0 justify-center w-full space-y-2 space-x-2 mt-2">
                                   <Button
-                                    buttonAction={sendTextToIrys}
-                                    buttonColor="bg-green-600 text-black"
                                     buttonText={
-                                      savingTextAnon ? "saving..." : "save text"
+                                      savingRoundLoading
+                                        ? `saving...`
+                                        : `cast anon`
                                     }
+                                    buttonAction={handleAnonCast}
+                                    buttonColor="bg-green-600"
                                   />
                                   <Button
-                                    buttonAction={startNewRun}
-                                    buttonColor="bg-cyan-200 text-black"
-                                    buttonText="start again"
+                                    buttonText={`copy written text and go back`}
+                                    buttonAction={() => {
+                                      pasteText();
+                                      startNewRun();
+                                    }}
+                                    buttonColor="bg-red-600"
                                   />
                                 </div>
                               </div>
@@ -818,9 +813,11 @@ const DesktopWritingGame = ({
                             <div className="p-4 bg-black w-2/3 md:w-fit rounded-xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] z-50">
                               <div className="flex space-x-2 flex-col md:flex-row ">
                                 <Button
-                                  buttonText="save run"
                                   buttonAction={handleSaveRun}
-                                  buttonColor="bg-purple-600"
+                                  buttonColor="bg-green-600 text-black"
+                                  buttonText={
+                                    savingTextAnon ? "saving..." : "save text"
+                                  }
                                 />
 
                                 <Button
@@ -905,7 +902,7 @@ const DesktopWritingGame = ({
                 </div>
               </div>
             ) : (
-              <div>
+              <div className="">
                 <p>you are not logged in</p>
                 <div className="flex space-x-2">
                   <Button
