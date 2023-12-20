@@ -6,6 +6,7 @@ import { WebIrys } from "@irys/sdk";
 import { useWallets } from "@privy-io/react-auth";
 import { saveTextAnon } from "../lib/backend";
 import { ethers } from "ethers";
+import { setUserData } from "../lib/idbHelper";
 import axios from "axios";
 import LoggedInUser from "./LoggedInUser";
 import { useRouter } from "next/router";
@@ -170,6 +171,7 @@ const DesktopWritingGame = ({
     const frontendWrittenTime = Math.floor(
       (finishTimestamp - startTime) / 1000
     );
+    console.log("before pinging the server);");
     pingServerToEndWritingSession(finishTimestamp, frontendWrittenTime);
     if (time > 30) {
       // setLoadButtons(true);
