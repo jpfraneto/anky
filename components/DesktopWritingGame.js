@@ -914,7 +914,10 @@ const DesktopWritingGame = ({
                     buttonColor="bg-green-600 mx-auto w-fit my-2"
                   />
                   <Button
-                    buttonAction={() => setHardcoreContinue(true)}
+                    buttonAction={() => {
+                      setShowOverlay(false);
+                      setHardcoreContinue(true);
+                    }}
                     buttonText="continue without logging in"
                     buttonColor="bg-purple-600 mx-auto w-fit my-2"
                   />
