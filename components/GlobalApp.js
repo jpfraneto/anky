@@ -289,7 +289,7 @@ const GlobalApp = ({ alchemy }) => {
 
   return (
     <div className="text-center w-screen text-white h-screen flex flex-col">
-      <div className="hidden text-gray-400 w-full h-8 justify-between md:flex px-2 items-center">
+      <div className="text-gray-400 w-full h-8 justify-between md:flex md:px-2 items-center">
         <Link href="/">
           <span
             onClick={() => setDisplayWritingGameLanding(false)}
@@ -327,7 +327,7 @@ const GlobalApp = ({ alchemy }) => {
                       color={`${displayManaInfo ? "white" : "#9CA38F"}`}
                       className="mx-2 translate-y-1"
                     />
-                    Streaks: How many winks in a row have you written in here?
+                    Streaks: How many winks in a row have you written?
                   </p>
                 </span>
               )}
@@ -337,15 +337,18 @@ const GlobalApp = ({ alchemy }) => {
                 className="rounded-xl w-32  bg-purple-600 border-white border hover:cursor-pointer hover:text-white px-2 flex justify-center space-x-2"
               >
                 <Link href="/mana" passHref className="flex ">
-                  {userDatabaseInformation &&
-                    userDatabaseInformation.manaBalance}
+                  {(userDatabaseInformation &&
+                    userDatabaseInformation.manaBalance) ||
+                    "?"}
                   <GiRollingEnergy
                     size={16}
                     color={`${displayManaInfo ? "white" : "#9CA38F"}`}
                     className="ml-2 translate-y-1"
                   />
                   <span className="mx-2">|</span>{" "}
-                  {userDatabaseInformation && userDatabaseInformation.streak}
+                  {(userDatabaseInformation &&
+                    userDatabaseInformation.streak) ||
+                    "?"}
                   <FaChartLine
                     size={16}
                     color={`${displayManaInfo ? "white" : "#9CA38F"}`}

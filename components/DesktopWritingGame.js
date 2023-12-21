@@ -731,7 +731,7 @@ const DesktopWritingGame = ({
                   } flex flex-col justify-center items-center absolute w-screen top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-opacity-20 mb-4`}
                 >
                   {finished && (
-                    <div className="border-white border-2 rounded-xl bg-black p-4 text-white">
+                    <div className="border-white border-2 mx-16 md:mx-auto w-5/6 rounded-xl bg-black p-4 text-white">
                       <p className="text-3xl">Save this run</p>
                       {time < 30 ? (
                         <p className="text-red-400 text-sm">
@@ -818,7 +818,7 @@ const DesktopWritingGame = ({
 
                       {!farcasterUser ||
                         (farcasterUser.status != "approved" && (
-                          <div className="bg-purple-600 p-3 mt-2 mb-0 w-96 rounded-xl mx-auto flex justify-center ">
+                          <div className="bg-purple-600 p-3 mt-2 mb-0 w-fit rounded-xl mx-auto flex justify-center ">
                             <p className="text-black">
                               do you want to cast your writing anon?
                             </p>
@@ -864,8 +864,8 @@ const DesktopWritingGame = ({
                                 </div>
                               </div>
                             ) : (
-                              <div className="p-4 bg-black w-2/3 md:w-full rounded-xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] z-50">
-                                <div className="flex flex-col md:flex-row md:space-y-0 justify-center w-full space-y-2 space-x-2 mt-2">
+                              <div className="p-4 bg-black  md:w-full rounded-xl mx-auto drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] z-50">
+                                <div className="flex flex-col items-center md:flex-row md:space-y-0 justify-center w-full space-y-2 space-x-2 mt-2">
                                   {userWantsToCastAnon && (
                                     <Button
                                       buttonText={
