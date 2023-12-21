@@ -32,6 +32,7 @@ import IndividualNotebookPage from "./notebook/IndividualNotebookPage";
 import IndividualWritingDisplayPage from "./IndividualWritingDisplayPage";
 import JournalById from "./journals/JournalById";
 import BuyNewJournal from "./journals/BuyNewJournal";
+import { FaChartLine } from "react-icons/fa";
 import LitProtocol from "./LitProtocol";
 import Mint from "./MintingComponentBtn";
 import Irys from "./Irys";
@@ -67,6 +68,7 @@ const GlobalApp = ({ alchemy }) => {
     mainAppLoading,
     farcasterUser,
     setFarcasterUser,
+    userDatabaseInformation,
   } = useUser();
   const router = useRouter();
   const [lifeBarLength, setLifeBarLength] = useState(100);
@@ -75,6 +77,7 @@ const GlobalApp = ({ alchemy }) => {
   const [checkingIfYouOwnAnky, setCheckingIfYouOwnAnky] = useState(false);
   const [ankyButtonText, setAnkyButtonText] = useState("i already own one");
   const [disableButton, setDisableButton] = useState(false);
+  const [thisIsTheFlag, setThisIsTheFlag] = useState(false);
   const [thisIsThePrompt, setThisIsThePrompt] = useState("");
   const [countdownTarget, setCountdownTarget] = useState(0);
   const [displayWritingGameLanding, setDisplayWritingGameLanding] =
@@ -92,75 +95,6 @@ const GlobalApp = ({ alchemy }) => {
       setFarcasterUser(user);
     }
   }, []);
-
-  async function getMyAnky() {
-    if (!wallet) return alert("you are not logged in");
-    try {
-      setAnkyButtonText("loading...");
-      setUserIsMintingAnky(true);
-      let provider = await wallet.getEthersProvider();
-      let signer = await provider.getSigner();
-      const authToken = await getAccessToken();
-
-      const serverResponse = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/blockchain/airdrop`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${authToken}`,
-          },
-          body: JSON.stringify({ userWallet: wallet.address }),
-          credentials: "include",
-        }
-      );
-      const data = await serverResponse.json();
-
-      return;
-      router.push("/welcome");
-      setUserIsMintingAnky(false);
-      setUserOwnsAnky(true);
-    } catch (error) {
-      console.log("there was an error", error);
-      setAnkyButtonText("there was an error");
-      setUserIsMintingAnky(false);
-    }
-  }
-
-  function handleOpenWritingModal() {
-    alert("open writing modal!");
-  }
-
-  async function checkIfUserOwnsAnky() {
-    setAnkyButtonText("looking for your anky...");
-    if (!wallet) return alert("you are not logged in");
-    try {
-      console.log("the wallet is: ", wallet);
-      let provider = await wallet.getEthersProvider();
-      console.log("the provider is: ", provider);
-      let signer = await provider.getSigner();
-      const ankyAirdropContract = new ethers.Contract(
-        process.env.NEXT_PUBLIC_ANKY_AIRDROP_SMART_CONTRACT,
-        airdropABI,
-        signer
-      );
-
-      console.log("the anky airdrp contract is: ", ankyAirdropContract);
-      setUserOwnsAnky(true);
-      const usersBalance = await ankyAirdropContract.balanceOf(wallet.address);
-      const usersAnkys = ethers.utils.formatUnits(usersBalance, 0);
-      if (usersAnkys > 0) {
-        setUserOwnsAnky(true);
-      } else {
-        setAnkyButtonText("you dont own an anky airdrop");
-      }
-    } catch (error) {
-      console.log("askdkuahs");
-      console.log("there was an error", error);
-      setUserIsMintingAnky(false);
-      setAnkyButtonText("you dont own an anky airdrop");
-    }
-  }
 
   function getComponentForRoute(route, router) {
     if (!ready || loading) return;
@@ -212,8 +146,7 @@ const GlobalApp = ({ alchemy }) => {
       case "/farcaster/feed":
         return <FarcasterFeedPage />;
       case `/w/${route.split("/").pop()}`:
-        if (!router.isReady) return null;
-        console.log("the router.query is: ", router.query);
+        if (thisIsTheFlag || !router.isReady) return null;
         if (
           router.query.prompt == undefined ||
           !router.query?.prompt?.length > 0
@@ -226,6 +159,7 @@ const GlobalApp = ({ alchemy }) => {
               userPrompt="just write what comes"
               userAppInformation={userAppInformation}
               setLifeBarLength={setLifeBarLength}
+              setThisIsTheFlag={setThisIsTheFlag}
             />
           );
         let formattedPrompt2 = router.query.prompt.replaceAll("-", " ");
@@ -319,12 +253,14 @@ const GlobalApp = ({ alchemy }) => {
         );
 
       default:
+        console.log("IIIIIIN HERE");
         return (
           <DesktopWritingGame
             ankyverseDate={`sojourn ${ankyverseToday.currentSojourn} - wink ${
               ankyverseToday.wink
             } - ${ankyverseToday.currentKingdom.toLowerCase()}`}
             userPrompt={ankyverseQuestion}
+            setThisIsTheFlag={setThisIsTheFlag}
             userAppInformation={userAppInformation}
             setLifeBarLength={setLifeBarLength}
             farcasterUser={farcasterUser}
@@ -375,21 +311,42 @@ const GlobalApp = ({ alchemy }) => {
           {authenticated ? (
             <div className="flex h-full space-x-2 top-0 w-full items-center">
               {displayManaInfo && (
-                <span className="absolute p-1 top-8 z-50 rounded-xl border-white text-white border-2 bg-purple-400">
-                  <p className="text-left">
+                <span className="absolute p-2 top-10 z-50 rounded-xl border-white text-white border-2 bg-purple-400">
+                  <p className="text-left flex space-x-2 bg-purple-600 p-2 rounded-xl">
+                    <GiRollingEnergy
+                      size={48}
+                      color={`${displayManaInfo ? "white" : "#9CA38F"}`}
+                      className="mx-2 translate-y-1"
+                    />
                     Mana: The intention is that every second that you spend
                     writing here, you will earn these.
+                  </p>
+                  <p className="text-left mt-2 flex space-x-2 bg-purple-600 p-2 rounded-xl">
+                    <FaChartLine
+                      size={32}
+                      color={`${displayManaInfo ? "white" : "#9CA38F"}`}
+                      className="mx-2 translate-y-1"
+                    />
+                    Streaks: How many winks in a row have you written in here?
                   </p>
                 </span>
               )}
               <span
                 onMouseEnter={() => setDisplayManaInfo(true)}
                 onMouseLeave={() => setDisplayManaInfo(false)}
-                className="rounded-xl bg-purple-600 border-white border hover:cursor-pointer hover:text-white px-2 flex space-x-2"
+                className="rounded-xl w-32  bg-purple-600 border-white border hover:cursor-pointer hover:text-white px-2 flex justify-center space-x-2"
               >
                 <Link href="/mana" passHref className="flex ">
-                  220
+                  {userDatabaseInformation &&
+                    userDatabaseInformation.manaBalance}
                   <GiRollingEnergy
+                    size={16}
+                    color={`${displayManaInfo ? "white" : "#9CA38F"}`}
+                    className="ml-2 translate-y-1"
+                  />
+                  <span className="mx-2">|</span>{" "}
+                  {userDatabaseInformation && userDatabaseInformation.streak}
+                  <FaChartLine
                     size={16}
                     color={`${displayManaInfo ? "white" : "#9CA38F"}`}
                     className="ml-2 translate-y-1"
@@ -459,6 +416,7 @@ const GlobalApp = ({ alchemy }) => {
               setUserAppInformation={setUserAppInformation}
               userAppInformation={userAppInformation}
               setLifeBarLength={setLifeBarLength}
+              setThisIsTheFlag={setThisIsTheFlag}
               lifeBarLength={lifeBarLength}
               setDisableButton={setDisableButton}
               displayWritingGameLanding={displayWritingGameLanding}

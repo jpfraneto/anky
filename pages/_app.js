@@ -30,7 +30,6 @@ const GlobalApp = dynamic(() => import("../components/GlobalApp"));
 function MyApp({ Component, pageProps }) {
   const [isDesktop, setIsDesktop] = useState(false);
   const router = useRouter();
-  const { getAccessToken } = usePrivy();
 
   useEffect(() => {
     // const isStandalone = window.matchMedia(

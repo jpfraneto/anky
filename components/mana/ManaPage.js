@@ -2,10 +2,12 @@ import React, { useEffect, useState } from "react";
 import { usePrivy } from "@privy-io/react-auth";
 import axios from "axios";
 import Button from "../Button";
+import { useUser } from "../../context/UserContext";
 
 const ManaPage = () => {
   const [userMana, setUserMana] = useState(0);
   const { user, authenticated, ready, login } = usePrivy();
+  const { userDatabaseInformation } = useUser();
 
   const apiRoute =
     self.location.hostname === "localhost"
@@ -35,7 +37,7 @@ const ManaPage = () => {
       {authenticated ? (
         <div>
           <p>your total mana:</p>
-          <p>0</p>
+          <p className="text-4xl">{userDatabaseInformation.manaBalance}</p>
         </div>
       ) : (
         <div>

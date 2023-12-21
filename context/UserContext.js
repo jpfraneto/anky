@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { ethers } from "ethers";
+import axios from "axios";
 import {
   fetchUserEulogias,
   fetchUserTemplates,
@@ -21,9 +22,10 @@ import {
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-  const { authenticated, loading, getAccessToken, ready } = usePrivy();
+  const { authenticated, loading, getAccessToken, ready, user } = usePrivy();
 
   const [userAppInformation, setUserAppInformation] = useState({});
+  const [userDatabaseInformation, setUserDatabaseInformation] = useState({});
   const [appLoading, setAppLoading] = useState(true);
   const [loadingLibrary, setLoadingLibrary] = useState(false);
   const [userIsReadyNow, setUserIsReadyNow] = useState(false);
@@ -155,6 +157,36 @@ export const UserProvider = ({ children }) => {
         !userAppInformation?.ankyTbaAddress?.length > 0)
     );
   };
+
+  useEffect(() => {
+    const loadUserDatabaseInformation = async () => {
+      console.log("the load user database information inside it");
+      try {
+        console.log("authenticated", authenticated);
+        if (!authenticated) return;
+        const authToken = await getAccessToken();
+        const thisUserPrivyId = user.id.replace("did:privy:", "");
+        console.log("IN HERE", thisUserPrivyId, authToken);
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_ROUTE}/user/${thisUserPrivyId}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${authToken}`,
+            },
+          }
+        );
+        setUserDatabaseInformation({
+          streak: response.data.user.streak,
+          manaBalance: response.data.user.manaBalance,
+        });
+        console.log("the response is: ", response.data);
+      } catch (error) {
+        console.log("there was an errror here0, ", error);
+      }
+    };
+    loadUserDatabaseInformation();
+  }, [ready, authenticated]);
 
   const loadUserLibrary = async (fromOutside = false) => {
     try {
@@ -427,6 +459,8 @@ export const UserProvider = ({ children }) => {
         loadingLibrary,
         libraryLoading,
         loadUserLibrary,
+        userDatabaseInformation,
+        setUserDatabaseInformation,
         userOwnsAnky,
         setUserOwnsAnky,
         mainAppLoading,

@@ -8,6 +8,7 @@ import Link from "next/link";
 
 const ConnectFarcasterModal = () => {
   const [copiedText, setCopiedText] = useState("or copy the url");
+  const [wtf, setWtf] = useState(false);
   const { farcasterUser, setFarcasterUser } = useUser();
 
   const apiRoute =
@@ -144,11 +145,17 @@ const ConnectFarcasterModal = () => {
                 {copiedText}
               </span>
             </p>
-            <Link href="/what-is-this" passHref>
-              <div className="mt-8 w-96 active:translate-x-12 active:text-white mx-auto hover:bg-yellow-300 hover:text-red-500 hover:translate-x-24 hover:cursor-pointer ">
-                wtf is this?
+            <div
+              onClick={() => setWtf(!wtf)}
+              className="mt-8 w-96 active:translate-x-12 active:text-white mx-auto hover:bg-yellow-300 hover:text-red-500 hover:translate-x-24 hover:cursor-pointer "
+            >
+              wtf is this?
+            </div>
+            {wtf && (
+              <div>
+                <p>it is all an excuse to get you writing</p>
               </div>
-            </Link>
+            )}
 
             <div className="mt-12">
               <a

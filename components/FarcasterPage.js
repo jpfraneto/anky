@@ -21,6 +21,7 @@ const FarcasterPage = ({
   const [loading, setLoading] = useState();
   const [text, setText] = useState("");
   const [cid, setCid] = useState("");
+  const [wtf, setWtf] = useState(false);
   const [copiedText, setCopiedText] = useState("or copy the url");
   const [translatedCid, setTranslatedCid] = useState("");
   const [isCasting, setIsCasting] = useState(false);
@@ -201,17 +202,8 @@ const FarcasterPage = ({
     <div className="text-white pt-5 h-full bg-black">
       {!farcasterUser?.status && (
         <div className="w-96 mx-auto">
-          <p className="text-white">
-            if you want to be an active part of the development of this place,
-            consider joining this telegram group:
-          </p>
-          <a
-            href="https://t.me/ankycommunity"
-            className="hover:text-purple-600"
-            target="_blank"
-          >
-            open telegram
-          </a>
+          <p className="text-white">welcome to anky.</p>
+
           <Button
             buttonAction={handleSignIn}
             buttonColor="w-96 mx-auto bg-green-600 mt-4"
@@ -237,11 +229,17 @@ const FarcasterPage = ({
                 {copiedText}
               </span>
             </p>
-            <Link href="/what-is-this" passHref>
-              <div className="mt-8 w-96 active:translate-x-12 active:text-white mx-auto hover:bg-yellow-300 hover:text-red-500 hover:translate-x-24 hover:cursor-pointer ">
-                wtf is this?
+            <div
+              onClick={() => setWtf(!wtf)}
+              className="mt-8 w-96 active:translate-x-12 active:text-white mx-auto hover:bg-yellow-300 hover:text-red-500 hover:translate-x-24 hover:cursor-pointer "
+            >
+              wtf is this?
+            </div>
+            {wtf && (
+              <div>
+                <p>it is all an excuse to get you writing</p>
               </div>
-            </Link>
+            )}
 
             <div className="mt-12">
               <a

@@ -16,6 +16,7 @@ import { encodeToAnkyverseLanguage } from "../lib/ankyverse";
 
 import { usePrivy } from "@privy-io/react-auth";
 import Spinner from "./Spinner";
+import { useUser } from "../context/UserContext";
 
 function sleep(ms) {
   return new Promise((resolve) => {
@@ -34,6 +35,7 @@ const DesktopWritingGame = ({
   gamePrompts = {},
   setDisableButton,
   setUserAppInformation,
+  setThisIsTheFlag,
   userAppInformation,
   setDisplayWritingGameLanding,
   displayWritingGameLanding,
@@ -45,6 +47,7 @@ const DesktopWritingGame = ({
     [] || userAppInformation?.userJournals?.map((x) => x.title);
   const router = useRouter();
   const { login, authenticated, user, getAccessToken } = usePrivy();
+  const { setUserDatabaseInformation } = useUser();
   const audioRef = useRef();
   const [text, setText] = useState("");
   const [time, setTime] = useState(countdownTarget || 0);
@@ -59,6 +62,7 @@ const DesktopWritingGame = ({
   const [userWantsToCastAnon, setUserWantsToCastAnon] = useState(true);
   const [savingRound, setSavingRound] = useState(false);
   const [castAs, setCastAs] = useState("");
+  const [thereWasAnError, setThereWasAnError] = useState(false);
   const [moreThanMinRun, setMoreThanMinRound] = useState(null);
   const [chosenUpscaledImage, setChosenUpscaledImage] = useState("");
   const [savingTextAnon, setSavingTextAnon] = useState(false);
@@ -173,10 +177,10 @@ const DesktopWritingGame = ({
     const frontendWrittenTime = Math.floor(
       (finishTimestamp - startTime) / 1000
     );
-    console.log("before pinging the server);");
-    pingServerToEndWritingSession(finishTimestamp, frontendWrittenTime);
-    if (time > 30) {
-      // setLoadButtons(true);
+
+    if (frontendWrittenTime > 30) {
+      console.log("before pinging the server);");
+      pingServerToEndWritingSession(finishTimestamp, frontendWrittenTime);
     }
   };
 
@@ -308,9 +312,17 @@ const DesktopWritingGame = ({
         );
       }
       alert(response.data.message);
+      setUserDatabaseInformation((x) => {
+        console.log(
+          "updating the userdatabaseinformation",
+          x.manaBalance,
+          frontendWrittenTime
+        );
+        return { ...x, manaBalance: x.manaBalance + frontendWrittenTime };
+      });
       console.log("the response is: ", response);
     } catch (error) {
-      console.log("there was an error pinging the server here.");
+      console.log("there was an error pinging the server here.", error);
     }
   }
 
@@ -550,6 +562,7 @@ const DesktopWritingGame = ({
       setSavingRoundLoading(true);
     } catch (error) {
       console.log("there was an error in here, saving the run", error);
+      setThereWasAnError(true);
     }
   }
 
@@ -666,6 +679,7 @@ const DesktopWritingGame = ({
                       buttonText="cancel"
                       buttonColor="bg-red-600"
                       buttonAction={() => {
+                        setThisIsTheFlag(true);
                         if (displayWritingGameLanding) {
                           console.log("in here!", router.pathname);
                           if (
@@ -692,13 +706,22 @@ const DesktopWritingGame = ({
           </div>
 
           {everythingWasUploaded ? (
-            <div
-              className={`${
-                text && "fade-in"
-              } flex flex-col justify-center items-center absolute w-screen top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-opacity-20 mb-4`}
-            >
-              everything was was was uploaded.
-            </div>
+            <>
+              {thereWasAnError ? (
+                <p>
+                  there was an error, but you wrote. that is the important part.
+                  i will fix stuff asap.
+                </p>
+              ) : (
+                <div
+                  className={`${
+                    text && "fade-in"
+                  } flex flex-col justify-center items-center absolute w-screen top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-opacity-20 mb-4`}
+                >
+                  everything was was was uploaded.
+                </div>
+              )}
+            </>
           ) : (
             <>
               {text && (
@@ -710,6 +733,17 @@ const DesktopWritingGame = ({
                   {finished && (
                     <div className="border-white border-2 rounded-xl bg-black p-4 text-white">
                       <p className="text-3xl">Save this run</p>
+                      {time < 30 ? (
+                        <p className="text-red-400 text-sm">
+                          *you need to write more than 30 seconds{" "}
+                          {!authenticated && "(and be logged in)"} to earn $ANKY
+                        </p>
+                      ) : (
+                        <p className="text-red-400 text-sm">
+                          {!authenticated &&
+                            "you need to be logged in to earn $ANKY"}
+                        </p>
+                      )}
                       {farcasterUser.status == "approved" && (
                         <div className="bg-purple-500 text-black p-2 my-2 rounded-xl flex space-x-2 items-center justify-center">
                           {farcasterUser.status == "approved" && (
@@ -751,7 +785,7 @@ const DesktopWritingGame = ({
                           )}
                         </div>
                       )}
-                      {userAppInformation.userJournals && (
+                      {authenticated && userAppInformation.userJournals && (
                         <div className="bg-purple-500 text-black p-2 my-2 rounded-xl flex space-x-2 items-center justify-center">
                           <p>save to journal? </p>
                           {userAppInformation.userJournals &&
@@ -819,6 +853,11 @@ const DesktopWritingGame = ({
                                     buttonAction={() => {
                                       pasteText();
                                       startNewRun();
+                                      setDisplayWritingGameLanding(false);
+                                      setThisIsTheFlag(true);
+                                      setTimeout(() => {
+                                        router.push("/");
+                                      }, 10);
                                     }}
                                     buttonColor="bg-red-600"
                                   />
@@ -845,14 +884,17 @@ const DesktopWritingGame = ({
                                       }
                                       buttonColor="bg-green-600 w-32"
                                     />
-                                  )}{" "}
+                                  )}
                                   <Button
                                     buttonText={`copy written text and go back`}
                                     buttonAction={() => {
                                       pasteText();
                                       startNewRun();
                                       setDisplayWritingGameLanding(false);
-                                      router.push("/");
+                                      setThisIsTheFlag(true);
+                                      setTimeout(() => {
+                                        router.push("/");
+                                      }, 10);
                                     }}
                                     buttonColor="bg-red-600"
                                   />
