@@ -7,6 +7,7 @@ import { useWallets } from "@privy-io/react-auth";
 import { saveTextAnon } from "../lib/backend";
 import { ethers } from "ethers";
 import { setUserData } from "../lib/idbHelper";
+import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 import LoggedInUser from "./LoggedInUser";
 import { useRouter } from "next/router";
@@ -52,9 +53,10 @@ const DesktopWritingGame = ({
   const [upscaledUrls, setUpscaledUrls] = useState([]);
   const [whatIsThis, setWhatIsThis] = useState(false);
   const [isActive, setIsActive] = useState(false);
+  const [randomUUID, setRandomUUID] = useState("");
   const [savingRoundLoading, setSavingRoundLoading] = useState(false);
   const [isCasting, setIsCasting] = useState(false);
-  const [userWantsToCastAnon, setUserWantsToCastAnon] = useState(false);
+  const [userWantsToCastAnon, setUserWantsToCastAnon] = useState(true);
   const [savingRound, setSavingRound] = useState(false);
   const [castAs, setCastAs] = useState("");
   const [moreThanMinRun, setMoreThanMinRound] = useState(null);
@@ -222,30 +224,47 @@ const DesktopWritingGame = ({
       setIsActive(true);
       setFailureMessage("");
       setStartTime(now);
-      if (user) {
-        pingServerToStartWritingSession(now);
-      }
+      pingServerToStartWritingSession(now);
     }
     setLastKeystroke(now);
   };
 
   async function pingServerToStartWritingSession(now) {
+    console.log("inside the ping server to start writing session");
     try {
-      if (!authenticated) return;
-      const authToken = await getAccessToken();
-      const response = await axios.post(
-        `${apiRoute}/mana/session-start`,
-        {
-          timestamp: now,
-          user: user.id.replace("did:privy:", ""),
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${authToken}`,
+      let response;
+      if (authenticated) {
+        const authToken = await getAccessToken();
+        response = await axios.post(
+          `${apiRoute}/mana/session-start`,
+          {
+            timestamp: now,
+            user: user.id.replace("did:privy:", ""),
           },
-        }
-      );
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${authToken}`,
+            },
+          }
+        );
+      } else {
+        const newRandomUUID = uuidv4();
+        setRandomUUID(newRandomUUID);
+        response = await axios.post(
+          `${apiRoute}/mana/anon-session-start`,
+          {
+            timestamp: now,
+            randomUUID: newRandomUUID,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+      }
+
       console.log("the response is: ", response);
     } catch (error) {
       console.log("there was an error requesting to ping the serve", error);
@@ -253,23 +272,42 @@ const DesktopWritingGame = ({
   }
 
   async function pingServerToEndWritingSession(now, frontendWrittenTime) {
+    console.log("inside the ping server to end writing sesh");
+
     try {
-      if (!authenticated) return;
-      const authToken = await getAccessToken();
-      const response = await axios.post(
-        `${apiRoute}/mana/session-end`,
-        {
-          timestamp: now,
-          user: user.id.replace("did:privy:", ""),
-          frontendWrittenTime,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${authToken}`,
+      let response;
+      if (authenticated) {
+        const authToken = await getAccessToken();
+        response = await axios.post(
+          `${apiRoute}/mana/session-end`,
+          {
+            timestamp: now,
+            user: user.id.replace("did:privy:", ""),
+            frontendWrittenTime,
           },
-        }
-      );
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${authToken}`,
+            },
+          }
+        );
+      } else {
+        response = await axios.post(
+          `${apiRoute}/mana/anon-session-end`,
+          {
+            timestamp: now,
+            randomUUID: randomUUID,
+            frontendWrittenTime,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+      }
+      alert(response.data.message);
       console.log("the response is: ", response);
     } catch (error) {
       console.log("there was an error pinging the server here.");
@@ -359,7 +397,7 @@ const DesktopWritingGame = ({
       const kannadaCid = encodeToAnkyverseLanguage(cid);
       // setTranslatedCid(kannadaCid);
 
-      const newCastText = `${kannadaCid}\n\nwritten as anky - you can decode this by clicking on the embed on the next cast`;
+      const newCastText = `${kannadaCid}\n\nwritten as anky - you can decode this by clicking on the embed on the next cast\n\n $SPAM`;
       // let embeds = [{ url: `https://www.anky.lat/r/${cid}` }];
       // if (embedOne && embedOne.length > 0) {
       //   embeds.push({ url: embedOne });
@@ -500,24 +538,14 @@ const DesktopWritingGame = ({
 
   async function handleSaveRun() {
     try {
-      if (!authenticated) {
-        if (confirm("You need to login to save your writings")) {
-          return login();
-        }
-        return router.push("/what-is-this");
-      }
       setSavingRoundLoading(true);
       if (castAs == "anon" || userWantsToCastAnon) await handleAnonCast();
       if (castAs == "me") await handleCast();
       if (journalIdToSave != "") {
-        console.log("save to the journal!");
         await saveTextToJournal();
       } else {
-        await sendTextToIrys();
+        if (authenticated) await sendTextToIrys();
       }
-      console.log(
-        "it all worked perfectly fine and we are out here checking things out"
-      );
       setEverythingWasUploaded(true);
       setSavingRoundLoading(true);
     } catch (error) {
@@ -535,7 +563,7 @@ const DesktopWritingGame = ({
       const cid = responseFromIrys.data.cid;
 
       const kannadaCid = encodeToAnkyverseLanguage(cid);
-      const newCastText = `${kannadaCid}\n\nwritten as anky - you can decode this by clicking on the embed on the next cast`;
+      const newCastText = `${kannadaCid}\n\nwritten as anky - you can decode this by clicking on the embed on the next cast\n\n $SPAM`;
 
       const response = await axios.post(`${apiRoute}/farcaster/api/cast/anon`, {
         text: newCastText,
@@ -547,12 +575,8 @@ const DesktopWritingGame = ({
 
       if (response.status === 200) {
         setText(""); // Clear the text field
-        setDisplayWritingGameLanding(false);
         router.push(`https://www.anky.lat/r/${response.data.cast.hash}`);
-        setTimeout(() => {
-          setDisplayWritingGameLanding(false);
-        }, 111);
-        //setWasSuccessfullyCasted(true);
+        setDisplayWritingGameLanding(false);
       }
     } catch (error) {
       alert("there was an error casting your cast anon");
@@ -760,17 +784,17 @@ const DesktopWritingGame = ({
 
                       {!farcasterUser ||
                         (farcasterUser.status != "approved" && (
-                          <div className="bg-purple-600 p-3 rounded-xl flex">
+                          <div className="bg-purple-600 p-3 mt-2 mb-0 w-96 rounded-xl mx-auto flex justify-center ">
                             <p className="text-black">
-                              do you want to cast anon?
+                              do you want to cast your writing anon?
                             </p>
                             <input
                               className="mx-4"
                               type="checkbox"
-                              onChange={(e) =>
-                                setUserWantsToCastAnon(e.target.value)
-                              }
-                              value={userWantsToCastAnon}
+                              onChange={(e) => {
+                                setUserWantsToCastAnon(!userWantsToCastAnon);
+                              }}
+                              checked={userWantsToCastAnon}
                             />
                           </div>
                         ))}
@@ -780,7 +804,7 @@ const DesktopWritingGame = ({
                           <>
                             {farcasterUser.status == "approved" ? (
                               <div className="p-4 bg-black w-full mx-auto md:w-fit rounded-xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] z-50">
-                                <div className="flex flex-col md:flex-row md:space-y-0 justify-center w-full space-y-2 space-x-2 mt-2">
+                                <div className="flex flex-col md:flex-row md:space-y-0 justify-center w-full space-y-2 space-x-2 mt-0">
                                   <Button
                                     buttonText={
                                       savingRoundLoading
@@ -803,20 +827,32 @@ const DesktopWritingGame = ({
                             ) : (
                               <div className="p-4 bg-black w-2/3 md:w-full rounded-xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] z-50">
                                 <div className="flex flex-col md:flex-row md:space-y-0 justify-center w-full space-y-2 space-x-2 mt-2">
-                                  <Button
-                                    buttonText={
-                                      savingRoundLoading
-                                        ? `saving...`
-                                        : `save run`
-                                    }
-                                    buttonAction={handleSaveRun}
-                                    buttonColor="bg-green-600"
-                                  />
+                                  {userWantsToCastAnon && (
+                                    <Button
+                                      buttonText={
+                                        savingRoundLoading
+                                          ? `saving...`
+                                          : userWantsToCastAnon
+                                          ? `cast anon`
+                                          : `save run`
+                                      }
+                                      buttonAction={
+                                        userWantsToCastAnon
+                                          ? handleSaveRun
+                                          : () => {
+                                              alert("");
+                                            }
+                                      }
+                                      buttonColor="bg-green-600 w-32"
+                                    />
+                                  )}{" "}
                                   <Button
                                     buttonText={`copy written text and go back`}
                                     buttonAction={() => {
                                       pasteText();
                                       startNewRun();
+                                      setDisplayWritingGameLanding(false);
+                                      router.push("/");
                                     }}
                                     buttonColor="bg-red-600"
                                   />
