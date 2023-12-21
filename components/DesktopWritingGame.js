@@ -731,12 +731,12 @@ const DesktopWritingGame = ({
                   } flex flex-col justify-center items-center absolute w-screen top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-opacity-20 mb-4`}
                 >
                   {finished && (
-                    <div className="border-white border-2 mx-16 md:mx-auto w-5/6 rounded-xl bg-black p-4 text-white">
+                    <div className="border-white border-2 mx-16 md:mx-auto w-5/6 md:w-1/3 rounded-xl bg-black p-4 text-white">
                       <p className="text-3xl">Save this run</p>
                       {time < 30 ? (
                         <p className="text-red-400 text-sm">
                           *you need to write more than 30 seconds{" "}
-                          {!authenticated && "(and be logged in)"} to earn $ANKY
+                          {!authenticated && "(and log in)"} to earn $ANKY
                         </p>
                       ) : (
                         <p className="text-red-400 text-sm">
