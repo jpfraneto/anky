@@ -918,7 +918,7 @@ const DesktopWritingGame = ({
                       setShowOverlay(false);
                       setHardcoreContinue(true);
                     }}
-                    buttonText="continue without logging in"
+                    buttonText="continue without logginsg in"
                     buttonColor="bg-purple-600 mx-auto w-fit my-2"
                   />
                 </div>
@@ -926,7 +926,7 @@ const DesktopWritingGame = ({
             )}
           </div>
         ))}
-      <Overlay show={!authenticated}>
+      <Overlay show={showOverlay && !authenticated}>
         <div className="flex flex-col h-full justify-center items-center w-full ">
           <div className="flex flex-col text-white h-48">
             <p>you are not logged in</p>
