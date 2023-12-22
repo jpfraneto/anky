@@ -409,7 +409,7 @@ const DesktopWritingGame = ({
       const kannadaCid = encodeToAnkyverseLanguage(cid);
       // setTranslatedCid(kannadaCid);
 
-      const newCastText = `${kannadaCid}\n\nwritten as anky - you can decode this by clicking on the embed on the next cast\n\n $SPAM`;
+      const newCastText = `${kannadaCid}\n\nwritten as anky - you can decode this by clicking on the embed on the next cast`;
       // let embeds = [{ url: `https://www.anky.lat/r/${cid}` }];
       // if (embedOne && embedOne.length > 0) {
       //   embeds.push({ url: embedOne });
@@ -576,7 +576,7 @@ const DesktopWritingGame = ({
       const cid = responseFromIrys.data.cid;
 
       const kannadaCid = encodeToAnkyverseLanguage(cid);
-      const newCastText = `${kannadaCid}\n\nwritten as anky - you can decode this by clicking on the embed on the next cast\n\n $SPAM`;
+      const newCastText = `${kannadaCid}\n\nwritten as anky - you can decode this by clicking on the embed on the next cast`;
 
       const response = await axios.post(`${apiRoute}/farcaster/api/cast/anon`, {
         text: newCastText,
