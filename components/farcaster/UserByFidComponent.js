@@ -39,14 +39,9 @@ const UserByFidComponent = ({ fid }) => {
   return (
     <div className="w-fit h-screen overflow-y-scroll mx-auto px-2 py-4 text-white">
       <section>
-        <h2 className="text-3xl">{user.displayName}</h2>
-        <small className="text-sm">@{user.username}</small>
         <div className="flex w-full h-48 items-center">
           <div className="h-36 w-36 rounded-full relative border border-white mx-auto my-2 overflow-hidden">
             <Image fill src={user.pfp.url} alt="user image" />
-          </div>
-          <div className="w-1/2  h-full flex items-center justify-center">
-            <p>{user.profile.bio.text}</p>
           </div>
         </div>
 
@@ -66,7 +61,6 @@ const UserByFidComponent = ({ fid }) => {
       </section>
       <hr className="my-3 " />
       <section>
-        <p className="text-5xl">anky feed</p>
         {usersAnkyFeed &&
           usersAnkyFeed.map((cast, i) => {
             return <IndividualCastCard cast={cast} key={i} />;

@@ -43,7 +43,7 @@ const FarcasterFeedPage = () => {
   }
   return (
     <div className="pt-4 text-white">
-      <p className="text-4xl">/anky/ethereum/cryptopunks</p>
+      <p className="text-4xl">/ethereum/cryptopunks</p>
 
       <div className="w-96 h-screen mx-auto flex flex-wrap justify-center mt-8">
         {users &&

@@ -46,7 +46,7 @@ module.exports = {
       },
       {
         protocol: "https",
-        hostname: "noun.pics",
+        hostname: "img.seadn.io",
         port: "",
         pathname: "/**",
       },
