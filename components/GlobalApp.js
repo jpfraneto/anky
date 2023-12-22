@@ -318,8 +318,8 @@ const GlobalApp = ({ alchemy }) => {
                       color={`${displayManaInfo ? "white" : "#9CA38F"}`}
                       className="mx-2 translate-y-1"
                     />
-                    Mana: The intention is that every second that you spend
-                    writing here, you will earn these.
+                    Mana: Every second that you spend writing here, you will
+                    earn these.
                   </p>
                   <p className="text-left mt-2 flex space-x-2 bg-purple-600 p-2 rounded-xl">
                     <FaChartLine

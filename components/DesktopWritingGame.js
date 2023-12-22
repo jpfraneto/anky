@@ -666,7 +666,7 @@ const DesktopWritingGame = ({
                   ? "md:aspect-video md:flex w-full h-full text-left"
                   : "mt-8 w-4/5 md:w-3/5 h-64"
               } p-4 text-white opacity-80 placeholder-white text-xl border border-white rounded-md bg-opacity-10 bg-black`}
-              placeholder="just write..."
+              placeholder="simplemente escribe"
               value={text}
               onChange={handleTextChange}
             ></textarea>
@@ -1007,11 +1007,11 @@ const DesktopWritingGame = ({
       <Overlay show={showOverlay && !authenticated}>
         <div className="flex flex-col h-full justify-center items-center w-full ">
           <div className="flex flex-col text-white h-48">
-            <p>you are not logged in</p>
+            <p>no has iniciado sesión</p>
             <div className="flex space-x-2 ">
               <Button
                 buttonAction={login}
-                buttonText="login"
+                buttonText="iniciar sesión"
                 buttonColor="bg-green-600 mx-auto w-fit my-2"
               />
               <Button
@@ -1019,7 +1019,7 @@ const DesktopWritingGame = ({
                   setShowOverlay(false);
                   setHardcoreContinue(true);
                 }}
-                buttonText="continue without logging in"
+                buttonText="continuar sin identidad"
                 buttonColor="bg-purple-600 mx-auto w-fit my-2"
               />
             </div>
@@ -1029,13 +1029,13 @@ const DesktopWritingGame = ({
                 whatIsThis ? "text-purple-400" : "text-gray-300"
               } hover:text-purple-400 cursor-pointer`}
             >
-              what is this?
+              qué es esto?
             </p>
             {whatIsThis && (
               <div>
-                <p className="text-white mb-2">just write</p>
+                <p className="text-white mb-2">simplemente escribe</p>
                 <p className="text-white">
-                  it is all an excuse to get you writing
+                  es todo una excusa para que escribas
                 </p>
               </div>
             )}
