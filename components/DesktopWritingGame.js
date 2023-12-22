@@ -976,10 +976,10 @@ const DesktopWritingGame = ({
           <div
             className={`${
               text && "fade-in"
-            } flex flex-col justify-center text-white items-center absolute bg-black h-fit py-3 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 mb-4`}
+            } flex flex-col justify-center text-white items-center absolute bg-black h-full opacity-80 w-full py-3 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 mb-4`}
           >
             {farcasterUser?.fid && (
-              <div>
+              <div className="flex flex-col h-fit justify-center items-center w-fit p-12 ">
                 <p>you are only logged in with farcaster</p>
                 <p>
                   if you want to store your writings inside this system, login
@@ -996,7 +996,7 @@ const DesktopWritingGame = ({
                       setShowOverlay(false);
                       setHardcoreContinue(true);
                     }}
-                    buttonText="continue without logginsg in"
+                    buttonText="continue without logging in"
                     buttonColor="bg-purple-600 mx-auto w-fit my-2"
                   />
                 </div>
@@ -1004,7 +1004,7 @@ const DesktopWritingGame = ({
             )}
           </div>
         ))}
-      <Overlay show={showOverlay && !authenticated}>
+      <Overlay show={showOverlay && !authenticated && !farcasterUser?.fid}>
         <div className="flex flex-col h-full justify-center items-center w-full ">
           <div className="flex flex-col text-white h-48">
             <p>no has iniciado sesión</p>

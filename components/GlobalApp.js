@@ -45,6 +45,7 @@ import SettingsPage from "./SettingsPage";
 import FarcasterPage from "./FarcasterPage";
 import ManaPage from "./mana/ManaPage";
 import FarcasterFeedPage from "./FarcasterFeedPage";
+import UserByFidComponent from "./farcaster/UserByFidComponent";
 
 const righteous = Righteous({ weight: "400", subsets: ["latin"] });
 const ankyverseToday = getAnkyverseDay(new Date());
@@ -142,6 +143,9 @@ const GlobalApp = ({ alchemy }) => {
             setDisplayWritingGameLanding={setDisplayWritingGameLanding}
           />
         );
+      case `/u/${route.split("/").pop()}`:
+        console.log("the router.query is: ", router.query);
+        return <UserByFidComponent fid={router.query.fid} />;
 
       case "/farcaster/feed":
         return <FarcasterFeedPage />;
