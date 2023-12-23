@@ -11,7 +11,7 @@ const UserByFidComponent = ({ fid }) => {
   console.log("THE FID IS: ", fid);
   const [usersAnkyFeed, setUsersAnkyFeed] = useState([]);
   useEffect(() => {
-    const fetchUserCastsOnAnky = async () => {
+    const fetchUserInformationOnFarcaster = async () => {
       if (!fid) return;
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_API_ROUTE}/farcaster/u/${fid}`
@@ -29,7 +29,7 @@ const UserByFidComponent = ({ fid }) => {
       console.log("THE RESPONSE HERE IS: ", response.data);
       setUsersAnkyFeed(response.data.feed);
     };
-    fetchUserCastsOnAnky();
+    fetchUserInformationOnFarcaster();
     fetchUsersAnkyFeed();
   }, []);
 
@@ -61,10 +61,34 @@ const UserByFidComponent = ({ fid }) => {
       </section>
       <hr className="my-3 " />
       <section>
-        {usersAnkyFeed &&
+        <p>
+          fetch and display here the casts that this user has written on anky
+        </p>
+        {/* {usersAnkyFeed &&
           usersAnkyFeed.map((cast, i) => {
             return <IndividualCastCard cast={cast} key={i} />;
+          })} */}
+        <div className="w-full mt-4 flex flex-wrap">
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((x, i) => {
+            const random = Math.min(
+              600,
+              100 + 100 * Math.floor(6 * Math.random())
+            );
+            let colorStr;
+            if (random > 300) {
+              colorStr = `bg-green-${random}`;
+            } else {
+              colorStr = `bg-red-${random}`;
+            }
+            console.log(random);
+            return (
+              <div
+                onClick={() => alert("open this cast!")}
+                className={`m-1 h-12 w-12 ${colorStr} rounded-full border border-white`}
+              ></div>
+            );
           })}
+        </div>
       </section>
     </div>
   );

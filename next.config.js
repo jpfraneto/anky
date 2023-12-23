@@ -40,6 +40,12 @@ module.exports = {
       },
       {
         protocol: "https",
+        hostname: "i.ibb.co",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
         hostname: "noun.pics",
         port: "",
         pathname: "/**",

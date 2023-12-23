@@ -127,6 +127,7 @@ const ReadCastPage = () => {
       setHasUserLiked(!prev);
     }
   }
+  console.log("the cast is: ", cast);
   if (loading)
     return (
       <div className="text-white">
@@ -158,11 +159,14 @@ const ReadCastPage = () => {
       </Head>
       <div className="active:none w-full h-full md:max-w-2xl md:mx-auto flex flex-col relative">
         <div className="w-full md:w-6/12 mx-auto  h-full flex flex-col pt-2 flex-grow bg-purple-500 text-black px-2 ">
-          <p className="text-xs italic flex-none h-4 flex items-center">
-            {new Date(cast.timestamp).toLocaleDateString("en-US", options)} - @
-            {cast.author.username}
-          </p>
-          <div className="border-black h-96 grow border-2 rounded px-2 py-1 overflow-y-scroll bg-purple-300 my-2">
+          <div className="text-xs italic py-8 flex-none h-fit flex items-center shadow-[0_35px_10px_10px_rgba(0,0,0,0.3)] justify-center my-2">
+            <Link href={`/u/${cast.author.fid}`} passHref>
+              <div className="w-48 h-48 active:translate-x-2 rounded-full overflow-hidden relative shadow-2xl">
+                <Image src={cast.author.pfp_url} fill />
+              </div>
+            </Link>
+          </div>
+          <div className="h-96 grow rounded px-2 py-4 text-2xl text-left pl-8 overflow-y-scroll my-2">
             {writing ? (
               writing.includes("\n") ? (
                 writing.split("\n").map((x, i) => (
@@ -175,31 +179,32 @@ const ReadCastPage = () => {
               )
             ) : null}
           </div>
-          <div
-            className={`${
-              displayComments &&
-              "border-black border-2 bg-purple-300 rounded px-2 py-1 my-2"
-            } overflow-hidden ${displayComments ? "animate-growHeight" : ""}`}
-          >
-            {displayComments &&
-              castReplies &&
-              castReplies.length > 0 &&
-              castReplies.map((reply, i) => (
-                <>
-                  <ReplyComponent key={i} cast={reply} />
-                </>
-              ))}
-          </div>
+          {displayComments && (
+            <div
+              className={`${
+                displayComments &&
+                "border-black border-2 absolute top-0 left-0 w-full bg-purple-300 rounded px-2 py-1 my-2"
+              } overflow-hidden`}
+            >
+              {castReplies &&
+                castReplies.length > 0 &&
+                castReplies.map((reply, i) => (
+                  <>
+                    <ReplyComponent key={i} cast={reply} />
+                  </>
+                ))}
+            </div>
+          )}
 
-          <div className="ml-2 flex h-6 pb-2 space-x-4 relative justify-between items-center">
-            <div className="flex space-x-4 h-full">
+          <div className="flex h-6 py-4 bg-black text-white w-screen left-0  px-2 -translate-x-2 relative justify-between items-center">
+            <div className="pl-4 flex space-x-4 h-full">
               <div
                 onClick={handleDisplayComments}
                 className={`flex space-x-1 items-center ${
                   hasUserCommented && "text-gray-500"
                 } hover:text-gray-500 cursor-pointer`}
               >
-                <FaRegCommentAlt />
+                <FaRegCommentAlt size={14} />
                 <span>{cast.replies.count}</span>
               </div>
               <div
@@ -241,12 +246,12 @@ const ReadCastPage = () => {
 const ReplyComponent = ({ cast }) => {
   console.log("the cast is: ", cast);
   return (
-    <div className="px-2 relative w-full text-center w-fit justify-center items-center flex flex-col rounded-xl bg-purple-400 my-4">
-      <div className="w-fit h-fit rounded-full border-white overflow-hidden border-2 absolute w-12 h-12 -top-4 -left-4">
+    <div className="px-2 relative w-full text-center w-full justify-center items-center flex flex-col rounded-xl my-4">
+      <div className=" rounded-full border-white overflow-hidden border-2 relative w-36 h-36">
         <Image src={cast.author.pfp.url} fill />
       </div>
       <div className="pl-8">{cast.text}</div>
-      <p className="text-xs italic flex-none h-4 flex items-center">
+      <p className="text-xs italic flex-none flex items-center">
         {new Date(cast.timestamp).toLocaleDateString("en-US", options)} - @
         {cast.author.username}
       </p>
