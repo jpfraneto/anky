@@ -83,6 +83,7 @@ const UserByFidComponent = ({ fid }) => {
             console.log(random);
             return (
               <div
+                key={i}
                 onClick={() => alert("open this cast!")}
                 className={`m-1 h-12 w-12 ${colorStr} rounded-full border border-white`}
               ></div>
