@@ -24,13 +24,16 @@ const FarcasterFeedPage = () => {
       ? "http://localhost:3000"
       : "https://api.anky.lat";
 
-  const loadTheFarcasterCollection = async () => {
+  const loadTheFarcasterCollection = async (collection) => {
     try {
-      if (collectionAddress.length != 42) return;
+      console.log("IN HERE", collection);
+      console.log(collection.length);
+      if (!collection || collection.length < 38) return;
       setLoadingFarcasterUsersForCollection(true);
-      console.log("the collection address is: ", collectionAddress);
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_ROUTE}/farcaster/get-feed/${collectionAddress}`
+        `${process.env.NEXT_PUBLIC_API_ROUTE}/farcaster/get-feed/${
+          collection || collectionAddress
+        }`
       );
       setUsers(response.data.users);
       setLoadingFarcasterUsersForCollection(false);
@@ -47,8 +50,8 @@ const FarcasterFeedPage = () => {
         <select
           onChange={(e) => {
             setUsers([]);
-            loadTheFarcasterCollection(e.target.value);
             setCollectionAddress(e.target.value);
+            loadTheFarcasterCollection(e.target.value);
           }}
           className="p-3 mb-2 text-black rounded-xl"
           value={collectionAddress}
@@ -78,6 +81,8 @@ const FarcasterFeedPage = () => {
           value={collectionAddress}
           onChange={(e) => {
             setCollectionAddress(e.target.value);
+            if (e.target.value == 42)
+              loadTheFarcasterCollection(e.target.value);
           }}
         />
 

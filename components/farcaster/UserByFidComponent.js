@@ -94,45 +94,49 @@ const UserByFidComponent = ({
         </div>
       </section>
       <hr className="my-3 " />
-      <section>
-        {loading ? (
-          <div className="flex flex-col items-center text-white">
-            <Spinner />
-            <p>loading user casts...</p>
-          </div>
-        ) : (
-          <div className="w-full mt-4 flex flex-wrap justify-center">
-            {usersAnkyFeed.map((thisCast, i) => {
-              return (
-                <div
-                  key={i}
-                  onClick={() => setChosenCast(thisCast)}
-                  className={`m-1 h-12 w-12 bg-purple-200 rounded-full border border-white`}
-                ></div>
-              );
-            })}
+      <div className="flex flex-col md:flex-row">
+        <section className="md:w-96 mx-auto">
+          {loading ? (
+            <div className="flex flex-col items-center text-white">
+              <Spinner />
+              <p>loading user casts...</p>
+            </div>
+          ) : (
+            <div className="w-full mt-4 flex flex-wrap justify-center">
+              {usersAnkyFeed.map((thisCast, i) => {
+                return (
+                  <div
+                    key={i}
+                    onClick={() => setChosenCast(thisCast)}
+                    className={`${
+                      chosenCast == thisCast ? "bg-purple-600" : "bg-purple-200"
+                    } hover:cursor-pointer hover:bg-purple-500 m-1 h-12 w-12  rounded-full border border-white`}
+                  ></div>
+                );
+              })}
+            </div>
+          )}
+        </section>
+        {chosenCast && (
+          <div className="md:w-96 mx-auto flex flex-col">
+            <div
+              onClick={() => console.log(chosenCast)}
+              className="text-ellipsis overflow-x-hidden p-2 rounded-xl bg-purple-200 text-black w-full mx-auto mt-4"
+            >
+              {chosenCast.text}
+            </div>
+            <a
+              className="p-2 mt-2 w-48 mx-auto rounded-xl bg-purple-600 border border-black"
+              target="_blank"
+              href={`https://warpcast.com/${
+                chosenCast.author.username
+              }/${chosenCast.hash.substring(0, 10)}`}
+            >
+              open in warpcast
+            </a>
           </div>
         )}
-      </section>
-      {chosenCast && (
-        <div className="flex flex-col">
-          <div
-            onClick={() => console.log(chosenCast)}
-            className="text-ellipsis overflow-x-hidden p-2 rounded-xl bg-purple-200 text-black w-full mx-auto mt-4"
-          >
-            {chosenCast.text}
-          </div>
-          <a
-            className="p-2 mt-2 w-48 mx-auto rounded-xl bg-purple-600 border border-black"
-            target="_blank"
-            href={`https://warpcast.com/${
-              chosenCast.author.username
-            }/${chosenCast.hash.substring(0, 10)}`}
-          >
-            open in warpcast
-          </a>
-        </div>
-      )}
+      </div>
     </div>
   );
 };
