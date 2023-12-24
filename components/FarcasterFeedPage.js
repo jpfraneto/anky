@@ -103,7 +103,7 @@ const FarcasterFeedPage = ({ router }) => {
         )}
       </div>
 
-      <div className="w-full px-4 md:px-0 md:w-96 flex-grow mx-auto flex flex-wrap justify-center mt-8">
+      <div className="w-full px-4 md:px-0 md:w-full flex-grow mx-auto flex flex-wrap items-start justify-center mt-8">
         {loadedCollection &&
           users &&
           (users.length > 0 ? (
@@ -154,7 +154,7 @@ const FarcasterCard = ({ user, setChosenUserToDisplay }) => {
         });
         setChosenUserToDisplay(user);
       }}
-      className="flex m-2 relative w-16 h-16 "
+      className="flex m-1 relative w-16 h-16 "
     >
       <div className="border border-white w-16 h-16 rounded-full overflow-hidden relative hover:border hover:border-white cursor-pointer">
         <Image fill src={user.pfp.url || ""} />
