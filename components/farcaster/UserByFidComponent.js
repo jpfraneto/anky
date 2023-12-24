@@ -12,12 +12,12 @@ const UserByFidComponent = ({
   setChosenUserToDisplay,
 }) => {
   const { farcasterUser } = useUser();
+  console.log("the user is: ", chosenUserToDisplay);
   const [user, setUser] = useState(chosenUserToDisplay);
   const [loading, setLoading] = useState(true);
   const [chosenCast, setChosenCast] = useState(null);
   const [following, setFollowing] = useState(false);
   const [usersAnkyFeed, setUsersAnkyFeed] = useState([]);
-  console.log("IN HERE", chosenUserToDisplay);
 
   useEffect(() => {
     // const fetchUserInformationOnFarcaster = async () => {
@@ -69,7 +69,9 @@ const UserByFidComponent = ({
             <Image fill src={user.pfp.url || null} alt="user image" />
           </div>
         </div>
-
+        <p>
+          {user.displayName} - @{user.username}
+        </p>
         <p>
           Following: {user.followingCount} | Followers: {user.followerCount}
         </p>
@@ -102,19 +104,24 @@ const UserByFidComponent = ({
               <p>loading user casts...</p>
             </div>
           ) : (
-            <div className="w-full mt-4 flex flex-wrap justify-center">
-              {usersAnkyFeed.map((thisCast, i) => {
-                return (
-                  <div
-                    key={i}
-                    onClick={() => setChosenCast(thisCast)}
-                    className={`${
-                      chosenCast == thisCast ? "bg-purple-600" : "bg-purple-200"
-                    } hover:cursor-pointer hover:bg-purple-500 m-1 h-12 w-12  rounded-full border border-white`}
-                  ></div>
-                );
-              })}
-            </div>
+            <>
+              <p>these are this user&apos;s casts:</p>
+              <div className="w-full mt-4 flex flex-wrap justify-center">
+                {usersAnkyFeed.map((thisCast, i) => {
+                  return (
+                    <div
+                      key={i}
+                      onClick={() => setChosenCast(thisCast)}
+                      className={`${
+                        chosenCast == thisCast
+                          ? "bg-purple-600"
+                          : "bg-purple-200"
+                      } hover:cursor-pointer hover:bg-purple-500 m-1 h-12 w-12  rounded-full border border-white`}
+                    ></div>
+                  );
+                })}
+              </div>
+            </>
           )}
         </section>
         {chosenCast && (

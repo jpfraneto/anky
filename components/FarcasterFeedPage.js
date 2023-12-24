@@ -120,9 +120,11 @@ const FarcasterFeedPage = ({ router }) => {
             </>
           ) : (
             <>
-              <p>
-                this collection doesn&apos;t have any users on farcaster yet
-              </p>
+              {!loading && (
+                <p>
+                  this collection doesn&apos;t have any users on farcaster yet
+                </p>
+              )}
             </>
           ))}
       </div>
@@ -144,7 +146,14 @@ const FarcasterCard = ({ user, setChosenUserToDisplay }) => {
   const random = Math.floor(5 * Math.random());
   return (
     <div
-      onClick={() => setChosenUserToDisplay(user)}
+      onClick={() => {
+        window.scroll({
+          top: 0,
+          left: 0,
+          behavior: "smooth",
+        });
+        setChosenUserToDisplay(user);
+      }}
       className="flex m-2 relative w-16 h-16 "
     >
       <div className="border border-white w-16 h-16 rounded-full overflow-hidden relative hover:border hover:border-white cursor-pointer">
