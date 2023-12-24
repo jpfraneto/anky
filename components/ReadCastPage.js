@@ -232,7 +232,7 @@ const ReadCastPage = () => {
               href={`https://warpcast.com/${
                 cast.author.username
               }/${cast.hash.substring(0, 10)}`}
-              className="ml-auto hover:text-red-200"
+              className="ml-auto hover:text-red-200 text-white"
             >
               open in warpcast
             </a>

@@ -4,93 +4,135 @@ import Button from "../Button";
 import Image from "next/image";
 import Link from "next/link";
 import IndividualCastCard from "./IndividualCastCard";
+import { useUser } from "../../context/UserContext";
+import Spinner from "../Spinner";
 
-const UserByFidComponent = ({ fid }) => {
-  const [user, setUser] = useState({});
+const UserByFidComponent = ({
+  chosenUserToDisplay,
+  setChosenUserToDisplay,
+}) => {
+  const { farcasterUser } = useUser();
+  const [user, setUser] = useState(chosenUserToDisplay);
   const [loading, setLoading] = useState(true);
-  console.log("THE FID IS: ", fid);
+  const [chosenCast, setChosenCast] = useState(null);
+  const [following, setFollowing] = useState(false);
   const [usersAnkyFeed, setUsersAnkyFeed] = useState([]);
-  useEffect(() => {
-    const fetchUserInformationOnFarcaster = async () => {
-      if (!fid) return;
-      const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_ROUTE}/farcaster/u/${fid}`
-      );
-      setUser(response.data.user);
+  console.log("IN HERE", chosenUserToDisplay);
 
-      setLoading(false);
-    };
+  useEffect(() => {
+    // const fetchUserInformationOnFarcaster = async () => {
+    //   if (!fid) return;
+    //   const response = await axios.get(
+    //     `${process.env.NEXT_PUBLIC_API_ROUTE}/farcaster/u/${fid}`
+    //   );
+    //   setUser(response.data.user);
+
+    //   setLoading(false);
+    // };
     const fetchUsersAnkyFeed = async () => {
-      if (!fid || !fid > 0) return;
-      console.log("fetching the users anky feed", fid);
-      const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_ROUTE}/farcaster/u/${fid}/feed`
+      if (!chosenUserToDisplay.fid || !chosenUserToDisplay.fid > 0) return;
+      console.log("fetching the users anky feed", chosenUserToDisplay.fid);
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_ROUTE}/farcaster/u/${chosenUserToDisplay.fid}/feed`
       );
       console.log("THE RESPONSE HERE IS: ", response.data);
       setUsersAnkyFeed(response.data.feed);
+      setLoading(false);
     };
-    fetchUserInformationOnFarcaster();
+    // fetchUserInformationOnFarcaster();
     fetchUsersAnkyFeed();
   }, []);
 
-  if (loading) return <p className="text-white">loading user...</p>;
-  console.log("this user is: ", user);
-  console.log("the users anky feed is: ", usersAnkyFeed);
+  const followUnfollowUser = async () => {
+    try {
+      let response;
+      let action;
+      if (following) {
+        action = "unfollow";
+      } else {
+        action = "follow";
+      }
+      response = await axios.post("/follow-unfollow-user", {
+        viewerFid: farcasterUser?.fid,
+        action: action,
+      });
+    } catch (error) {
+      console.log("there was an error here");
+    }
+  };
+
   return (
-    <div className="w-fit h-screen overflow-y-scroll mx-auto px-2 py-4 text-white">
+    <div className="w-screen h-screen overflow-y-scroll mx-auto px-2 py-4 text-white">
       <section>
         <div className="flex w-full h-48 items-center">
-          <div className="h-36 w-36 rounded-full relative border border-white mx-auto my-2 overflow-hidden">
-            <Image fill src={user.pfp.url} alt="user image" />
+          <div className="h-36 w-36 rounded-full relative border border-white mx-auto overflow-hidden">
+            <Image fill src={user.pfp.url || null} alt="user image" />
           </div>
         </div>
 
         <p>
           Following: {user.followingCount} | Followers: {user.followerCount}
         </p>
-        <div className="flex justify-between my-2 w-48 mx-auto">
-          <Button
-            buttonAction={() => alert("follow or unfollow")}
-            buttonText="unfollow"
-            buttonColor="bg-red-600"
-          />
-          <Link href="/farcaster/feed" passHref>
-            <Button buttonText="go back" buttonColor="bg-green-600" />
-          </Link>
+        <div className="flex justify-center items-center my-2 w-64 mx-auto">
+          <div className="w-fit mx-2">
+            <a
+              className={`bg-purple-600 px-4 py-2 mx-auto hover:opacity-70 shadow shadow-slate-500 cursor-pointer rounded-xl border border-black`}
+              target="_blank"
+              href={`https://warpcast.com/${user.username}`}
+            >
+              warpcast
+            </a>
+          </div>
+
+          <div className="w-fit mx-2">
+            <Button
+              buttonAction={() => setChosenUserToDisplay(null)}
+              buttonText="go back"
+              buttonColor=" bg-green-600"
+            />
+          </div>
         </div>
       </section>
       <hr className="my-3 " />
       <section>
-        <p>
-          fetch and display here the casts that this user has written on anky
-        </p>
-        {/* {usersAnkyFeed &&
-          usersAnkyFeed.map((cast, i) => {
-            return <IndividualCastCard cast={cast} key={i} />;
-          })} */}
-        <div className="w-full mt-4 flex flex-wrap">
-          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((x, i) => {
-            const random = Math.min(
-              600,
-              100 + 100 * Math.floor(6 * Math.random())
-            );
-            let colorStr;
-            if (random > 300) {
-              colorStr = `bg-green-${random}`;
-            } else {
-              colorStr = `bg-red-${random}`;
-            }
-            console.log(random);
-            return (
-              <div
-                key={i}
-                onClick={() => alert("open this cast!")}
-                className={`m-1 h-12 w-12 ${colorStr} rounded-full border border-white`}
-              ></div>
-            );
-          })}
-        </div>
+        {loading ? (
+          <div className="flex flex-col items-center text-white">
+            <Spinner />
+            <p>loading user casts...</p>
+          </div>
+        ) : (
+          <div className="w-full mt-4 flex flex-wrap justify-center">
+            {usersAnkyFeed.map((thisCast, i) => {
+              return (
+                <div
+                  key={i}
+                  onClick={() => setChosenCast(thisCast)}
+                  className={`m-1 h-12 w-12 bg-purple-200 rounded-full border border-white`}
+                ></div>
+              );
+            })}
+          </div>
+        )}
       </section>
+      {chosenCast && (
+        <div className="flex flex-col">
+          <div
+            onClick={() => console.log(chosenCast)}
+            className="text-ellipsis overflow-x-hidden p-2 rounded-xl bg-purple-200 text-black w-full mx-auto mt-4"
+          >
+            {chosenCast.text}
+          </div>
+          <a
+            className="p-2 mt-2 w-48 mx-auto rounded-xl bg-purple-600 border border-black"
+            target="_blank"
+            href={`https://warpcast.com/${
+              chosenCast.author.username
+            }/${chosenCast.hash.substring(0, 10)}`}
+          >
+            open in warpcast
+          </a>
+        </div>
+      )}
     </div>
   );
 };
