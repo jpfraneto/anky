@@ -7,12 +7,15 @@ import Link from "next/link";
 import Button from "./Button";
 import UserByFidComponent from "./farcaster/UserByFidComponent";
 
-const FarcasterFeedPage = () => {
+const FarcasterFeedPage = ({ router }) => {
   const [feedCasts, setFeedCasts] = useState([]);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadedCollection, setLoadedCollection] = useState(false);
   const [chosenUserToDisplay, setChosenUserToDisplay] = useState(null);
-  const [collectionAddress, setCollectionAddress] = useState("");
+  const [collectionAddress, setCollectionAddress] = useState(
+    router.query.collectionAddress || ""
+  );
   const [
     loadingFarcasterUsersForCollection,
     setLoadingFarcasterUsersForCollection,
@@ -24,10 +27,14 @@ const FarcasterFeedPage = () => {
       ? "http://localhost:3000"
       : "https://api.anky.lat";
 
+  useEffect(() => {
+    if (collectionAddress) {
+      loadTheFarcasterCollection(collectionAddress);
+    }
+  }, []);
+
   const loadTheFarcasterCollection = async (collection) => {
     try {
-      console.log("IN HERE", collection);
-      console.log(collection.length);
       if (!collection || collection.length < 38) return;
       setLoadingFarcasterUsersForCollection(true);
       const response = await axios.get(
@@ -37,6 +44,7 @@ const FarcasterFeedPage = () => {
       );
       setUsers(response.data.users);
       setLoadingFarcasterUsersForCollection(false);
+      setLoadedCollection(true);
     } catch (error) {
       console.log(
         "there was an error in the load the farcaster collection function",
@@ -85,7 +93,6 @@ const FarcasterFeedPage = () => {
               loadTheFarcasterCollection(e.target.value);
           }}
         />
-
         {loadingFarcasterUsersForCollection && (
           <div className="w-4/5 mx-auto mt-4">
             <p>your farcaster connections are loading.</p>
@@ -97,16 +104,27 @@ const FarcasterFeedPage = () => {
       </div>
 
       <div className="w-full px-4 md:px-0 md:w-96 flex-grow mx-auto flex flex-wrap justify-center mt-8">
-        {users &&
-          users.map((user, i) => {
-            return (
-              <FarcasterCard
-                setChosenUserToDisplay={setChosenUserToDisplay}
-                user={user}
-                key={i}
-              />
-            );
-          })}
+        {loadedCollection &&
+          users &&
+          (users.length > 0 ? (
+            <>
+              {users.map((user, i) => {
+                return (
+                  <FarcasterCard
+                    setChosenUserToDisplay={setChosenUserToDisplay}
+                    user={user}
+                    key={i}
+                  />
+                );
+              })}
+            </>
+          ) : (
+            <>
+              <p>
+                this collection doesn&apos;t have any users on farcaster yet
+              </p>
+            </>
+          ))}
       </div>
       {chosenUserToDisplay && (
         <div className="absolute top-0 left-0 bg-black">

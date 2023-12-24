@@ -148,7 +148,7 @@ const GlobalApp = ({ alchemy }) => {
         return <UserByFidComponent fid={router.query.fid} />;
 
       case "/farcaster/feed":
-        return <FarcasterFeedPage />;
+        return <FarcasterFeedPage router={router} />;
       case `/w/${route.split("/").pop()}`:
         if (thisIsTheFlag || !router.isReady) return null;
         if (
