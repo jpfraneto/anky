@@ -174,9 +174,11 @@ const DesktopWritingGame = ({
     await navigator.clipboard.writeText(text);
     setMoreThanMinRound(true);
     setFailureMessage(`You're done! This run lasted ${time}.}`);
+    console.log("the finishtimestamp is: ", finishTimestamp, startTime);
     const frontendWrittenTime = Math.floor(
       (finishTimestamp - startTime) / 1000
     );
+    console.log("the frontendWrittentime is: ", frontendWrittenTime);
 
     if (frontendWrittenTime > 30) {
       console.log("before pinging the server);");
@@ -318,7 +320,11 @@ const DesktopWritingGame = ({
           x.manaBalance,
           frontendWrittenTime
         );
-        return { ...x, manaBalance: x.manaBalance + frontendWrittenTime };
+        return {
+          ...x,
+          manaBalance: response.data.data.manaBalance,
+          streak: response.data.data.activeStreak,
+        };
       });
       console.log("the response is: ", response);
     } catch (error) {
