@@ -116,9 +116,17 @@ const GlobalApp = ({ alchemy }) => {
               ankyverseDate={`sojourn ${ankyverseToday.currentSojourn} - wink ${
                 ankyverseToday.wink
               } - ${ankyverseToday.currentKingdom.toLowerCase()}`}
-              userPrompt="just write what comes"
+              userPrompt={thisIsThePrompt || ankyverseQuestion}
+              setUserAppInformation={setUserAppInformation}
               userAppInformation={userAppInformation}
               setLifeBarLength={setLifeBarLength}
+              setThisIsTheFlag={setThisIsTheFlag}
+              lifeBarLength={lifeBarLength}
+              setDisableButton={setDisableButton}
+              displayWritingGameLanding={displayWritingGameLanding}
+              setDisplayWritingGameLanding={setDisplayWritingGameLanding}
+              farcasterUser={farcasterUser}
+              countdownTarget={countdownTarget}
             />
           );
         let formattedPrompt = router.query.p.replaceAll("-", " ");
@@ -128,9 +136,17 @@ const GlobalApp = ({ alchemy }) => {
             ankyverseDate={`sojourn ${ankyverseToday.currentSojourn} - wink ${
               ankyverseToday.wink
             } - ${ankyverseToday.currentKingdom.toLowerCase()}`}
-            userPrompt={formattedPrompt}
+            userPrompt={thisIsThePrompt || ankyverseQuestion}
+            setUserAppInformation={setUserAppInformation}
             userAppInformation={userAppInformation}
             setLifeBarLength={setLifeBarLength}
+            setThisIsTheFlag={setThisIsTheFlag}
+            lifeBarLength={lifeBarLength}
+            setDisableButton={setDisableButton}
+            displayWritingGameLanding={displayWritingGameLanding}
+            setDisplayWritingGameLanding={setDisplayWritingGameLanding}
+            farcasterUser={farcasterUser}
+            countdownTarget={countdownTarget}
           />
         );
       case "/welcome":
@@ -161,10 +177,17 @@ const GlobalApp = ({ alchemy }) => {
               ankyverseDate={`sojourn ${ankyverseToday.currentSojourn} - wink ${
                 ankyverseToday.wink
               } - ${ankyverseToday.currentKingdom.toLowerCase()}`}
-              userPrompt="just write what comes"
+              userPrompt={thisIsThePrompt || ankyverseQuestion}
+              setUserAppInformation={setUserAppInformation}
               userAppInformation={userAppInformation}
               setLifeBarLength={setLifeBarLength}
               setThisIsTheFlag={setThisIsTheFlag}
+              lifeBarLength={lifeBarLength}
+              setDisableButton={setDisableButton}
+              displayWritingGameLanding={displayWritingGameLanding}
+              setDisplayWritingGameLanding={setDisplayWritingGameLanding}
+              farcasterUser={farcasterUser}
+              countdownTarget={countdownTarget}
             />
           );
         let formattedPrompt2 = router.query.prompt.replaceAll("-", " ");
@@ -264,11 +287,17 @@ const GlobalApp = ({ alchemy }) => {
             ankyverseDate={`sojourn ${ankyverseToday.currentSojourn} - wink ${
               ankyverseToday.wink
             } - ${ankyverseToday.currentKingdom.toLowerCase()}`}
-            userPrompt={ankyverseQuestion}
-            setThisIsTheFlag={setThisIsTheFlag}
+            userPrompt={thisIsThePrompt || ankyverseQuestion}
+            setUserAppInformation={setUserAppInformation}
             userAppInformation={userAppInformation}
             setLifeBarLength={setLifeBarLength}
+            setThisIsTheFlag={setThisIsTheFlag}
+            lifeBarLength={lifeBarLength}
+            setDisableButton={setDisableButton}
+            displayWritingGameLanding={displayWritingGameLanding}
+            setDisplayWritingGameLanding={setDisplayWritingGameLanding}
             farcasterUser={farcasterUser}
+            countdownTarget={countdownTarget}
           />
         );
     }
@@ -292,6 +321,7 @@ const GlobalApp = ({ alchemy }) => {
       </Transition>
     );
 
+  console.log("the user database information is0", userDatabaseInformation);
   return (
     <div className="relative text-center w-screen text-white h-screen flex flex-col">
       <div className="text-gray-400 w-full h-8 justify-between md:flex md:px-2 items-center">
@@ -343,18 +373,14 @@ const GlobalApp = ({ alchemy }) => {
                 className="rounded-xl w-32  bg-purple-600 border-white border hover:cursor-pointer hover:text-white px-2 flex justify-center space-x-2"
               >
                 <Link href="/mana" passHref className="flex ">
-                  {(userDatabaseInformation &&
-                    userDatabaseInformation.manaBalance) ||
-                    "?"}
+                  {userDatabaseInformation.manaBalance}
                   <GiRollingEnergy
                     size={16}
                     color={`${displayManaInfo ? "white" : "#9CA38F"}`}
                     className="ml-2 translate-y-1"
                   />
                   <span className="mx-2">|</span>{" "}
-                  {(userDatabaseInformation &&
-                    userDatabaseInformation.streak) ||
-                    "?"}
+                  {userDatabaseInformation.streak}
                   <FaChartLine
                     size={16}
                     color={`${displayManaInfo ? "white" : "#9CA38F"}`}

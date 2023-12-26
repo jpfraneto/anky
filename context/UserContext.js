@@ -176,9 +176,10 @@ export const UserProvider = ({ children }) => {
             },
           }
         );
+        console.log("in here, the response is:");
         setUserDatabaseInformation({
-          streak: response.data.user.streak,
-          manaBalance: response.data.user.manaBalance,
+          streak: response.data.user.streak || 0,
+          manaBalance: response.data.user.manaBalance || 0,
         });
         console.log("the response is: ", response.data);
       } catch (error) {

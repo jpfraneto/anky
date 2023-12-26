@@ -91,6 +91,7 @@ const DesktopWritingGame = ({
   const [journalIdToSave, setJournalIdToSave] = useState("");
   const [missionAccomplished, setMissionAccomplished] = useState(false);
   const [secondLoading, setSecondLoading] = useState(false);
+  const [responseFromPinging, setResponseFromPinging] = useState("");
   const [thirdLoading, setThirdLoading] = useState(false);
   const [copyText, setCopyText] = useState("copy my writing");
   const [hardcoreContinue, setHardcoreContinue] = useState(false);
@@ -159,30 +160,29 @@ const DesktopWritingGame = ({
   }, [isActive, lastKeystroke]);
 
   const finishRun = async () => {
-    console.log("INSIDE THE FINISH RUN: ", userAppInformation);
-    const finishTimestamp = Date.now();
-    if (countdownTarget === 0) setMissionAccomplished(true);
-    setLifeBarLength(0);
-    audioRef.current.volume = 0.1;
-    // audioRef.current.play();
-    setFinished(true);
-    setEndTime(finishTimestamp);
-    setIsDone(true);
-    setIsActive(false);
-    clearInterval(intervalRef.current);
-    clearInterval(keystrokeIntervalRef.current);
-    await navigator.clipboard.writeText(text);
-    setMoreThanMinRound(true);
-    setFailureMessage(`You're done! This run lasted ${time}.}`);
-    console.log("the finishtimestamp is: ", finishTimestamp, startTime);
-    const frontendWrittenTime = Math.floor(
-      (finishTimestamp - startTime) / 1000
-    );
-    console.log("the frontendWrittentime is: ", frontendWrittenTime);
+    try {
+      console.log("INSIDE THE FINISH RUN: ", userAppInformation);
+      const finishTimestamp = Date.now();
+      if (countdownTarget === 0) setMissionAccomplished(true);
+      setLifeBarLength(0);
+      setFinished(true);
+      setEndTime(finishTimestamp);
+      setIsDone(true);
+      setIsActive(false);
+      clearInterval(intervalRef.current);
+      clearInterval(keystrokeIntervalRef.current);
+      await navigator.clipboard.writeText(text);
+      setMoreThanMinRound(true);
+      setFailureMessage(`You're done! This run lasted ${time}.}`);
+      const frontendWrittenTime = Math.floor(
+        (finishTimestamp - startTime) / 1000
+      );
 
-    if (frontendWrittenTime > 30) {
-      console.log("before pinging the server);");
-      pingServerToEndWritingSession(finishTimestamp, frontendWrittenTime);
+      if (frontendWrittenTime > 30) {
+        pingServerToEndWritingSession(finishTimestamp, frontendWrittenTime);
+      }
+    } catch (error) {
+      console.log("there was an error", error);
     }
   };
 
@@ -278,8 +278,6 @@ const DesktopWritingGame = ({
   }
 
   async function pingServerToEndWritingSession(now, frontendWrittenTime) {
-    console.log("inside the ping server to end writing sesh");
-
     try {
       let response;
       if (authenticated) {
@@ -313,7 +311,7 @@ const DesktopWritingGame = ({
           }
         );
       }
-      alert(response.data.message);
+      setResponseFromPinging(response.data.message);
       setUserDatabaseInformation((x) => {
         console.log(
           "updating the userdatabaseinformation",
@@ -740,17 +738,18 @@ const DesktopWritingGame = ({
                   } flex flex-col justify-center items-center absolute w-screen top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-opacity-20 mb-4`}
                 >
                   {finished && (
-                    <div className="border-white border-2 mx-16 md:mx-auto w-5/6 md:w-1/3 rounded-xl bg-black p-4 text-white">
+                    <div className="border-white border-2 mx-16 md:mx-auto w-5/6 md:w-2/3 rounded-xl bg-black p-4 text-white">
                       <p className="text-3xl">Save this run</p>
                       {time < 30 ? (
                         <p className="text-red-400 text-sm">
                           *you need to write more than 30 seconds{" "}
-                          {!authenticated && "(and log in)"} to earn $ANKY
+                          {!authenticated && "(and log in)"} to earn $NEWEN
                         </p>
                       ) : (
                         <p className="text-red-400 text-sm">
-                          {!authenticated &&
-                            "you need to be logged in to earn $ANKY"}
+                          {!authenticated
+                            ? "you need to be logged in to earn $NEWEN"
+                            : responseFromPinging}
                         </p>
                       )}
                       {farcasterUser.status == "approved" && (
@@ -763,7 +762,7 @@ const DesktopWritingGame = ({
                                   onClick={() => setCastAs("")}
                                   className={` p-2 border-black   cursor-pointer rounded-xl ${
                                     castAs == ""
-                                      ? "bg-red-500 border-2"
+                                      ? "bg-red-500 shadow-md shadow-black border-2"
                                       : "bg-red-200 hover:bg-red-300 "
                                   }`}
                                 >
@@ -773,7 +772,7 @@ const DesktopWritingGame = ({
                                   onClick={() => setCastAs("me")}
                                   className={` p-2 border-black  cursor-pointer rounded-xl ${
                                     castAs == "me"
-                                      ? "bg-green-500 border-2"
+                                      ? "bg-green-500 shadow-md shadow-black border-2"
                                       : "bg-green-300 hover:bg-green-300"
                                   }`}
                                 >
@@ -783,8 +782,8 @@ const DesktopWritingGame = ({
                                   onClick={() => setCastAs("anon")}
                                   className={` p-2 border-black   cursor-pointer rounded-xl ${
                                     castAs == "anon"
-                                      ? "bg-purple-500 border-2"
-                                      : "bg-purple-200 hover:bg-purple-300"
+                                      ? "bg-purple-600 shadow-md shadow-black border-2"
+                                      : "bg-purple-300 hover:bg-purple-300"
                                   }`}
                                 >
                                   cast anon
@@ -941,7 +940,7 @@ const DesktopWritingGame = ({
                               </div>
                             </div>
                           ) : (
-                            <div className="bg-black p-4 rounded-xl">
+                            <div className="bg-black p-4 flex flex-col items-center rounded-xl">
                               <p className="mb-2">you didnt finish</p>
                               <p className="mb-2">
                                 you said you would write for {countdownTarget}{" "}
