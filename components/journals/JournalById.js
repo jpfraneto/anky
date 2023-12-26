@@ -395,6 +395,7 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
         onChange={(e) => setJournalPrompt(e.target.value)}
         className="mb-2 text-xl text-black md:w-7/12 flex justify-center mx-auto px-2 py-1 rounded-xl"
       />
+
       {journal.entries && journal.entries.length !== 0 ? (
         <div className="p-4 flex rounded-xl bg-yellow-500 md:w-9/12 mx-auto flex-wrap">
           {journal.entries.map((x, i) => {
@@ -405,7 +406,7 @@ const JournalById = ({ setLifeBarLength, lifeBarLength }) => {
                   setEntryForDisplay(i);
                   setIsModalOpen(true);
                 }}
-                className="px-2  py-1 m-1 w-8 h-8 flex justify-center items-center hover:bg-blue-600 cursor-pointer bg-blue-400 rounded-xl"
+                className="px-2 text-black border-black border py-1 m-1 w-12 h-12 flex justify-center items-center hover:shadow-xl hover:shadow-black hover:bg-blue-600 text-2xl cursor-pointer bg-blue-400 rounded-xl"
               >
                 {i + 1}
               </div>
