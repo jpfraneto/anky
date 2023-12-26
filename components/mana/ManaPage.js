@@ -33,7 +33,7 @@ const ManaPage = () => {
       {authenticated ? (
         <div className="flex justify-center mb-4">
           <div className="mx-2 bg-green-400 border-white border-2 text-black p-3 rounded-xl">
-            <p>$MANA balance:</p>
+            <p>$NEWEN balance:</p>
             <p className="text-4xl">{userDatabaseInformation.manaBalance}</p>
           </div>
           <div className="mx-2 bg-purple-400 border-white border-2 text-black p-3 rounded-xl">
@@ -65,22 +65,22 @@ const ManaPage = () => {
         <Button
           buttonAction={() => setDisplayInformation(!displayInformation)}
           buttonColor="bg-purple-600 text-white"
-          buttonText="wtf?"
+          buttonText="what is this?"
         />
       </div>
 
       {displayInformation && (
-        <div className="md:w-2/3 mx-auto mt-4 bg-black bg-opacity-70 p-8">
+        <div className="md:w-2/3 mx-auto mt-4 overflow-y-scroll h-96 bg-black bg-opacity-70 p-8">
           <p className="mb-4">
             there are two kinds of tokenizations inside anky: time and energy
           </p>
           <p className="mb-4">
-            the first one makes reference to the token we call $MANA. this is a
+            the first one makes reference to the token we call $NEWEN. this is a
             representation to the life force that runs through your human
             experience. the old ones in the place where i live used to speak
             about this as newen. in other places it is called prana. anyway.
             this token seeks to be an integral representation of that basic unit
-            of life force, measured in one second. one mana is one second. and
+            of life force, measured in one second. one newen is one second. and
             it is the same for all of us. you can transform the relationship
             that you as a human being answer the questions that will be answered
             in the future through this system, but it will happen. and it will

@@ -157,46 +157,16 @@ const ReadCastPage = () => {
         <meta property="og:url" content={`https://www.anky.lat/r/${id}`} />
         <meta property="og:type" content="website" />
       </Head>
-      <div className="active:none w-full h-full md:max-w-2xl md:mx-auto flex flex-col relative">
-        <div className="w-full md:w-6/12 mx-auto  h-full flex flex-col pt-2 flex-grow bg-purple-500 text-black px-2 ">
-          <div className="text-xs italic py-8 flex-none h-fit flex items-center shadow-[0_35px_10px_10px_rgba(0,0,0,0.3)] justify-center my-2">
+      <div className="active:none w-full h-screen md:max-w-2xl md:mx-auto flex flex-col relative">
+        <div className="w-full md:w-6/12 mx-auto h-full flex flex-col overflow-y-scroll pb-8 mb-8 pt-2 flex-grow bg-gray-300 text-gray-700 ">
+          <div className="text-xs italic py-8 flex-none h-fit flex  items-center shadow-[0_35px_10px_10px_rgba(0,0,0,0.3)] justify-center my-2">
             <Link href={`/u/${cast.author.fid}`} passHref>
               <div className="w-48 h-48 active:translate-x-2 rounded-full overflow-hidden relative shadow-2xl">
                 <Image src={cast.author.pfp_url} fill />
               </div>
             </Link>
           </div>
-          <div className="h-96 grow rounded px-2 py-4 text-2xl text-left pl-8 overflow-y-scroll my-2">
-            {writing ? (
-              writing.includes("\n") ? (
-                writing.split("\n").map((x, i) => (
-                  <p className="mb-4" key={i}>
-                    {x}
-                  </p>
-                ))
-              ) : (
-                <p className="my-2">{writing}</p>
-              )
-            ) : null}
-          </div>
-          {displayComments && (
-            <div
-              className={`${
-                displayComments &&
-                "border-black border-2 absolute top-0 left-0 w-full bg-purple-300 rounded px-2 py-1 my-2"
-              } overflow-hidden`}
-            >
-              {castReplies &&
-                castReplies.length > 0 &&
-                castReplies.map((reply, i) => (
-                  <>
-                    <ReplyComponent key={i} cast={reply} />
-                  </>
-                ))}
-            </div>
-          )}
-
-          <div className="flex h-6 py-4 bg-black text-white w-screen left-0  px-2 -translate-x-2 relative justify-between items-center">
+          <div className="flex h-6 py-4 bg-black text-white w-full left-0 px-2  relative justify-between items-center">
             <div className="pl-4 flex space-x-4 h-full">
               <div
                 onClick={handleDisplayComments}
@@ -237,6 +207,35 @@ const ReadCastPage = () => {
               open in warpcast
             </a>
           </div>
+          <div className="h-96 grow rounded px-2 py-4 text-2xl text-left pl-8  my-2">
+            {writing ? (
+              writing.includes("\n") ? (
+                writing.split("\n").map((x, i) => (
+                  <p className="mb-4" key={i}>
+                    {x}
+                  </p>
+                ))
+              ) : (
+                <p className="my-2">{writing}</p>
+              )
+            ) : null}
+          </div>
+          {displayComments && (
+            <div
+              className={`${
+                displayComments &&
+                "border-black border-2 absolute top-0 left-0 w-full bg-purple-300 rounded px-2 py-1 my-2"
+              } overflow-hidden`}
+            >
+              {castReplies &&
+                castReplies.length > 0 &&
+                castReplies.map((reply, i) => (
+                  <>
+                    <ReplyComponent key={i} cast={reply} />
+                  </>
+                ))}
+            </div>
+          )}
         </div>
       </div>
     </div>

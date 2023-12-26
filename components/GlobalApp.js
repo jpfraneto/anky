@@ -79,6 +79,7 @@ const GlobalApp = ({ alchemy }) => {
   const [ankyButtonText, setAnkyButtonText] = useState("i already own one");
   const [disableButton, setDisableButton] = useState(false);
   const [thisIsTheFlag, setThisIsTheFlag] = useState(false);
+  const [displayRightNavbar, setDisplayRightNavbar] = useState(false);
   const [thisIsThePrompt, setThisIsThePrompt] = useState("");
   const [countdownTarget, setCountdownTarget] = useState(0);
   const [displayWritingGameLanding, setDisplayWritingGameLanding] =
@@ -292,7 +293,7 @@ const GlobalApp = ({ alchemy }) => {
     );
 
   return (
-    <div className="text-center w-screen text-white h-screen flex flex-col">
+    <div className="relative text-center w-screen text-white h-screen flex flex-col">
       <div className="text-gray-400 w-full h-8 justify-between md:flex md:px-2 items-center">
         <Link href="/">
           <span
@@ -311,6 +312,7 @@ const GlobalApp = ({ alchemy }) => {
             }}
           ></div>
         </div>
+
         <div className="h-8 w-fit px-2 flex justify-center items-center relative">
           {authenticated ? (
             <div className="flex h-full space-x-2 top-0 w-full items-center">
@@ -322,7 +324,7 @@ const GlobalApp = ({ alchemy }) => {
                       color={`${displayManaInfo ? "white" : "#9CA38F"}`}
                       className="mx-2 translate-y-1"
                     />
-                    Mana: Every second that you spend writing here, you will
+                    $NEWEN: Every second that you spend writing here, you will
                     earn these.
                   </p>
                   <p className="text-left mt-2 flex space-x-2 bg-purple-600 p-2 rounded-xl">
@@ -331,7 +333,7 @@ const GlobalApp = ({ alchemy }) => {
                       color={`${displayManaInfo ? "white" : "#9CA38F"}`}
                       className="mx-2 translate-y-1"
                     />
-                    Streaks: How many winks in a row have you written?
+                    Streaks: How many days in a row have you written?
                   </p>
                 </span>
               )}
@@ -413,6 +415,11 @@ const GlobalApp = ({ alchemy }) => {
           backgroundRepeat: "no-repeat",
         }}
       >
+        {displayRightNavbar && (
+          <div className="fixed right-0 w-64 bg-black h-screen z-50">
+            <p>loja</p>
+          </div>
+        )}
         {displayWritingGameLanding ? (
           <div className="h-full">
             <DesktopWritingGame

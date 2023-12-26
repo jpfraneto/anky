@@ -7,8 +7,9 @@ import { useUser } from "../../context/UserContext";
 import Link from "next/link";
 
 const ConnectFarcasterModal = () => {
-  const [copiedText, setCopiedText] = useState("or copy the url");
+  const [copiedText, setCopiedText] = useState("or click here to copy the url");
   const [wtf, setWtf] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { farcasterUser, setFarcasterUser } = useUser();
 
   const apiRoute =
@@ -110,17 +111,7 @@ const ConnectFarcasterModal = () => {
     <div>
       {!farcasterUser?.status && (
         <div className="w-96 mx-auto">
-          <p className="text-white">
-            if you want to be an active part of the development of this place,
-            consider joining this telegram group:
-          </p>
-          <a
-            href="https://t.me/ankycommunity"
-            className="hover:text-purple-600"
-            target="_blank"
-          >
-            open telegram
-          </a>
+          <p>You can link your farcaster account to your profile here:</p>
           <Button
             buttonAction={handleSignIn}
             buttonColor="w-96 mx-auto bg-green-600 mt-4"
@@ -145,17 +136,6 @@ const ConnectFarcasterModal = () => {
                 {copiedText}
               </span>
             </p>
-            <div
-              onClick={() => setWtf(!wtf)}
-              className="mt-8 w-96 active:translate-x-12 active:text-white mx-auto hover:bg-yellow-300 hover:text-red-500 hover:translate-x-24 hover:cursor-pointer "
-            >
-              wtf is this?
-            </div>
-            {wtf && (
-              <div>
-                <p>it is all an excuse to get you writing</p>
-              </div>
-            )}
 
             <div className="mt-12">
               <a
