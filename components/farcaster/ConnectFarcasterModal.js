@@ -121,11 +121,11 @@ const ConnectFarcasterModal = () => {
       )}
       {farcasterUser?.status == "pending_approval" &&
         farcasterUser?.signer_approval_url && (
-          <div className="signer-approval-container flex flex-col  bg-black  p-4 items-center justify-center ">
+          <div className="signer-approval-container flex flex-col  bg-black  p-0 items-left justify-center ">
             <p className="hidden md:flex mb-2">
               scan this qr code to authenticate with warpcast
             </p>
-            <div className="hidden w-full md:flex justify-center my-4">
+            <div className="hidden w-full md:flex justify-start my-4">
               <QRCode value={farcasterUser.signer_approval_url} />
             </div>
             <p className="hidden md:flex">

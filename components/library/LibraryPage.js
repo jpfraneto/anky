@@ -360,7 +360,6 @@ const LibraryPage = ({}) => {
                 </>
               ) : (
                 <>
-                  {" "}
                   {allUserWritings &&
                     allUserWritings.map((writing, i) => {
                       return (
@@ -370,7 +369,7 @@ const LibraryPage = ({}) => {
                             setEntryForDisplay(i);
                             setIsModalOpen(true);
                           }}
-                          className="px-2 text-black border-black border py-1 m-1 w-8 h-8 flex justify-center items-center hover:shadow-xl hover:shadow-black hover:bg-blue-600 text-xl cursor-pointer bg-blue-400 rounded-xl"
+                          className="px-2 text-black border-black border py-1 m-1 w-10 h-10 flex justify-center items-center hover:shadow-xl hover:shadow-black hover:bg-blue-600 text-xl cursor-pointer bg-blue-400 rounded-xl"
                         >
                           {i + 1}
                         </div>

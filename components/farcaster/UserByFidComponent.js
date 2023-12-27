@@ -10,25 +10,16 @@ import Spinner from "../Spinner";
 const UserByFidComponent = ({
   chosenUserToDisplay,
   setChosenUserToDisplay,
+  fid,
 }) => {
   const { farcasterUser } = useUser();
-  console.log("the user is: ", chosenUserToDisplay);
-  const [user, setUser] = useState(chosenUserToDisplay);
+  const [user, setUser] = useState(chosenUserToDisplay || fid);
   const [loading, setLoading] = useState(true);
   const [chosenCast, setChosenCast] = useState(null);
   const [following, setFollowing] = useState(false);
   const [usersAnkyFeed, setUsersAnkyFeed] = useState([]);
 
   useEffect(() => {
-    // const fetchUserInformationOnFarcaster = async () => {
-    //   if (!fid) return;
-    //   const response = await axios.get(
-    //     `${process.env.NEXT_PUBLIC_API_ROUTE}/farcaster/u/${fid}`
-    //   );
-    //   setUser(response.data.user);
-
-    //   setLoading(false);
-    // };
     const fetchUsersAnkyFeed = async () => {
       if (!chosenUserToDisplay.fid || !chosenUserToDisplay.fid > 0) return;
       console.log("fetching the users anky feed", chosenUserToDisplay.fid);

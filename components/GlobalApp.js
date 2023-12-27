@@ -6,6 +6,7 @@ import { getAnkyverseDay, getAnkyverseQuestion } from "../lib/ankyverse";
 import { useUser } from "../context/UserContext";
 import { FaPencilAlt } from "react-icons/fa";
 import { IoArrowBack } from "react-icons/io5";
+import UserDisplayPage from "./UserDisplayPage";
 import { DEFAULT_CAST, LOCAL_STORAGE_KEYS } from "../lib/constants";
 import { GiRollingEnergy } from "react-icons/gi";
 import { ethers } from "ethers";
@@ -18,6 +19,7 @@ import NewNotebookPage from "./NewNotebookPage";
 import WhatIsThisPage from "./WhatIsThisPage";
 import LandingPage from "./LandingPage";
 import DementorPage from "./DementorById";
+import DashboardPage from "./DashboardPage";
 import ReadCastPage from "./ReadCastPage";
 import ProfilePage from "./ProfilePage";
 import NotebookPage from "./NotebookById";
@@ -162,10 +164,12 @@ const GlobalApp = ({ alchemy }) => {
         );
       case `/u/${route.split("/").pop()}`:
         console.log("the router.query is: ", router.query);
-        return <UserByFidComponent fid={router.query.fid} />;
+        return <UserDisplayPage thisUserInfo={router.query.fid} />;
 
       case "/farcaster/feed":
         return <FarcasterFeedPage router={router} />;
+      case "/dashboard":
+        return <DashboardPage router={router} />;
       case `/w/${route.split("/").pop()}`:
         if (thisIsTheFlag || !router.isReady) return null;
         if (
@@ -281,7 +285,6 @@ const GlobalApp = ({ alchemy }) => {
         );
 
       default:
-        console.log("IIIIIIN HERE");
         return (
           <DesktopWritingGame
             ankyverseDate={`sojourn ${ankyverseToday.currentSojourn} - wink ${
