@@ -97,8 +97,6 @@ function MyApp({ Component, pageProps }) {
           privyId: user.id.split("did:privy:")[1],
         }
       );
-
-      console.log("the response from the user route is:", response.data);
     } catch (error) {
       console.log("the error is: ", error);
     }

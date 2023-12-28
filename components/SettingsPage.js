@@ -13,6 +13,8 @@ const SettingsPage = () => {
   const openGeneralSettings = () => {
     alert("open the general settings");
   };
+
+  console.log("the farcaster user is: ", farcasterUser);
   const renderSettings = () => {
     switch (chosenTab) {
       case "general":
@@ -146,31 +148,6 @@ const SettingsPage = () => {
           {renderSettings()}
         </div>
       </div>
-
-      {/* {authenticated ? (
-        <div>
-          <p className="mb-4">You are logged in</p>
-          <p className="mb-4">
-            your associated wallet is: {user.wallet.address}
-          </p>
-        </div>
-      ) : (
-        <div></div>
-      )}
-
-      {farcasterUser && farcasterUser.status == "approved" ? (
-        <div>
-          <p className="mb-2">
-            you are connected to farcaster as #{farcasterUser.fid}
-          </p>
-          <p>
-            this means that every time that you finish writing you will be able
-            to cast it. as you, or anonymously.
-          </p>
-        </div>
-      ) : (
-        <ConnectFarcasterModal />
-      )} */}
     </div>
   );
 };

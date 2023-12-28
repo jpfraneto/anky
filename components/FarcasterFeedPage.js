@@ -147,11 +147,6 @@ const FarcasterCard = ({ user, setChosenUserToDisplay }) => {
   return (
     <div
       onClick={() => {
-        window.scroll({
-          top: 0,
-          left: 0,
-          behavior: "smooth",
-        });
         setChosenUserToDisplay(user);
       }}
       className="flex m-1 relative w-16 h-16 "

@@ -45,7 +45,7 @@ const FarcasterPage = ({
   useEffect(() => {
     setCountdownTarget(480);
     const storedData = localStorage.getItem(LOCAL_STORAGE_KEYS.FARCASTER_USER);
-    if (storedData) {
+    if (storedData && !farcasterUser) {
       const user = JSON.parse(storedData);
       setFarcasterUser(user);
     }

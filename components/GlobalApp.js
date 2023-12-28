@@ -48,6 +48,7 @@ import FarcasterPage from "./FarcasterPage";
 import ManaPage from "./mana/ManaPage";
 import FarcasterFeedPage from "./FarcasterFeedPage";
 import UserByFidComponent from "./farcaster/UserByFidComponent";
+import axios from "axios";
 
 const righteous = Righteous({ weight: "400", subsets: ["latin"] });
 const ankyverseToday = getAnkyverseDay(new Date());
@@ -60,6 +61,7 @@ const GlobalApp = ({ alchemy }) => {
     ready,
     loading,
     logout,
+    user,
     getAccessToken,
     exportWallet,
   } = usePrivy();
@@ -96,7 +98,31 @@ const GlobalApp = ({ alchemy }) => {
     console.log("inside here, ", storedData);
     if (storedData) {
       const user = JSON.parse(storedData);
-      setFarcasterUser(user);
+      if (!farcasterUser.fid) setFarcasterUser(user);
+      if (user.fid && !farcasterUser.pfp) {
+        console.log("gonna call the get this user information function now");
+        getThisUserInformation(user.fid);
+      }
+    }
+    async function getThisUserInformation(fid) {
+      try {
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_ROUTE}/farcaster/u/${fid}`
+        );
+        setFarcasterUser((prev) => {
+          return {
+            ...prev,
+            displayName: response.data.user.displayName,
+            followerCount: response.data.user.followerCount,
+            followingCount: response.data.user.followingCount,
+            pfp: response.data.user.pfp.url,
+            bio: response.data.user.profile.bio,
+            username: response.data.user.username,
+          };
+        });
+      } catch (error) {
+        console.log("there was an error getting the user informaton");
+      }
     }
   }, []);
 
@@ -324,7 +350,6 @@ const GlobalApp = ({ alchemy }) => {
       </Transition>
     );
 
-  console.log("the user database information is0", userDatabaseInformation);
   return (
     <div className="relative text-center w-screen text-white h-screen flex flex-col">
       <div className="text-gray-400 w-full h-8 justify-between md:flex md:px-2 items-center">
@@ -376,14 +401,14 @@ const GlobalApp = ({ alchemy }) => {
                 className="rounded-xl w-32  bg-purple-600 border-white border hover:cursor-pointer hover:text-white px-2 flex justify-center space-x-2"
               >
                 <Link href="/mana" passHref className="flex ">
-                  {userDatabaseInformation.manaBalance}
+                  {userDatabaseInformation.manaBalance || 0}
                   <GiRollingEnergy
                     size={16}
                     color={`${displayManaInfo ? "white" : "#9CA38F"}`}
                     className="ml-2 translate-y-1"
                   />
                   <span className="mx-2">|</span>{" "}
-                  {userDatabaseInformation.streak}
+                  {userDatabaseInformation.streak || 0}
                   <FaChartLine
                     size={16}
                     color={`${displayManaInfo ? "white" : "#9CA38F"}`}
@@ -400,6 +425,17 @@ const GlobalApp = ({ alchemy }) => {
                   className="hover:text-purple-600 cursor-pointer"
                 >
                   settings
+                </Link>
+              </span>
+              <span
+                className="w-fit"
+                onClick={() => setDisplayWritingGameLanding(false)}
+              >
+                <Link
+                  href={`/u/${user.id.replace("did:privy:", "")}`}
+                  className="hover:text-purple-600 cursor-pointer"
+                >
+                  profile
                 </Link>
               </span>
               <span

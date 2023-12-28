@@ -1,123 +1,170 @@
-import React, { useEffect, useState } from 'react';
-import { getAllUsersWritings } from '../lib/irys';
-import { usePrivy } from '@privy-io/react-auth';
-import Button from './Button';
-import Link from 'next/link';
-import Spinner from './Spinner';
+import React, { useEffect, useState } from "react";
+import { getAllUsersWritings } from "../lib/irys";
+import { usePrivy } from "@privy-io/react-auth";
+import Button from "./Button";
+import Link from "next/link";
+import Image from "next/image";
+import axios from "axios";
+import Spinner from "./Spinner";
+import { useUser } from "../context/UserContext";
+import NormalCastCard from "./farcaster/NormalCastCard";
 
 var options = {
-  weekday: 'long',
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric',
-  hour: 'numeric',
-  minute: 'numeric',
-  second: 'numeric',
+  weekday: "long",
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+  hour: "numeric",
+  minute: "numeric",
+  second: "numeric",
   hour12: true,
 };
 
 const GlobalFeed = ({ thisWallet }) => {
   const { login } = usePrivy();
+  const { farcasterUser } = useUser();
   const [userWritings, setUserWritings] = useState([]);
+  const [globalFeed, setGlobalFeed] = useState([]);
   const [loadingFeed, setLoadingFeed] = useState(true);
   useEffect(() => {
-    const fetchUserWritings = async () => {
-      if (!thisWallet) return;
-      const allUserWritings = await getAllUsersWritings(thisWallet.address);
-      setUserWritings(allUserWritings);
+    const getGlobalFeed = async () => {
+      console.log("the farcaster user is: ", farcasterUser);
+      if (!farcasterUser && !farcasterUser.fid) return;
+      console.log("fetching the feed for this user");
+      let feedForUser;
+      if (farcasterUser.fid) {
+        feedForUser = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_ROUTE}/farcaster/u/${farcasterUser.fid}/feed`
+        );
+      } else {
+        const randomFid = Math.floor(20000 * Math.random());
+        feedForUser = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_ROUTE}/farcaster/u/${randomFid}/feed`
+        );
+      }
+      console.log("THE FEED FOR USER IS: ", feedForUser);
+      setGlobalFeed(feedForUser.data.casts);
       setLoadingFeed(false);
     };
-    fetchUserWritings();
-  }, [thisWallet]);
-  if (!thisWallet)
-    return (
-      <div>
-        <p className='text-white mt-2'>
-          please{' '}
-          <span
-            className='hover:text-yellow-300 cursor-pointer'
-            onClick={login}
-          >
-            login
-          </span>{' '}
-          first
-        </p>
-      </div>
-    );
+    getGlobalFeed();
+  }, []);
+  // useEffect(() => {
+  //   const fetchUserWritings = async () => {
+  //     if (!thisWallet) return;
+  //     const allUserWritings = await getAllUsersWritings(thisWallet.address);
+  //     setUserWritings(allUserWritings);
+  //     setLoadingFeed(false);
+  //   };
+  //   fetchUserWritings();
+  // }, [thisWallet]);
+  // if (!thisWallet)
+  // return (
+  //   <div>
+  //     <p className="text-white mt-2">
+  //       please{" "}
+  //       <span className="hover:text-yellow-300 cursor-pointer" onClick={login}>
+  //         login
+  //       </span>{" "}
+  //       first
+  //     </p>
+  //   </div>
+  // );
 
   if (loadingFeed) {
     return (
-      <div className='mt-12'>
-        <p className='text-white'>loading...</p>
+      <div className="mt-12">
+        <p className="text-white">loading...</p>
         <Spinner />
       </div>
     );
   }
 
   return (
-    <div className='w-full'>
-      <div className='w-full'>
-        <p className='text-white text-4xl my-2'>Global feed:</p>
+    <div className="w-full">
+      <div className="w-full">
+        <p className="text-white text-4xl my-2">Global feed:</p>
       </div>
-      <div className='w-full px-4 md:w-1/2 mx-auto'>
-        {userWritings.map((x, i) => {
-          return <UserWriting clickable={false} key={x.cid} writing={x} />;
+      <div></div>
+      <div className="w-full px-4 flex justify-around flex-wrap md:w-1/2 mx-auto">
+        {globalFeed.map((x, i) => {
+          console.log("the ux", x);
+          return (
+            <div
+              onClick={() => {
+                window.scroll({
+                  top: 0,
+                  left: 0,
+                  behavior: "smooth",
+                });
+              }}
+              className="flex m-1 relative w-16 h-16 "
+            >
+              <div className="border border-white w-16 h-16 rounded-full overflow-hidden relative hover:border hover:border-white cursor-pointer">
+                <Image fill src={x.author.pfp_url || ""} />
+              </div>
+              <div className="absolute bg-red-600 hover:bg-red-400 px-3 border border-white rounded-full w-1 flex items-center justify-center text-white font-2xl -top-2 -right-0">
+                2
+              </div>
+            </div>
+          );
         })}
       </div>
     </div>
   );
 };
 
-const UserWriting = ({ writing, clickable=true }) => {
+const UserWriting = ({ writing, clickable = true }) => {
   function getColor(containerType) {
     switch (containerType) {
-      case 'journal':
-        return `bg-green-400 ${clickable && 'hover:bg-green-500'}`;
-      case 'dementor':
-        return `bg-red-400 ${clickable && 'hover:bg-red-500'} `;
-      case 'eulogia':
-        return `bg-orange-400 ${clickable && 'hover:bg-orange-500'}`;
-      case 'notebook':
-        return `bg-blue-400 ${clickable && 'hover:bg-blue-500'} `;
+      case "journal":
+        return `bg-green-400 ${clickable && "hover:bg-green-500"}`;
+      case "dementor":
+        return `bg-red-400 ${clickable && "hover:bg-red-500"} `;
+      case "eulogia":
+        return `bg-orange-400 ${clickable && "hover:bg-orange-500"}`;
+      case "notebook":
+        return `bg-blue-400 ${clickable && "hover:bg-blue-500"} `;
       default:
-        return 'bg-black';
+        return "bg-black";
     }
   }
 
   function getContainerLink(writing) {
     switch (writing.writingContainerType) {
-      case 'journal':
+      case "journal":
         return `/journal/${writing.containerId}`;
-      case 'dementor':
+      case "dementor":
         return `/dementor/${writing.containerId}`;
-      case 'eulogia':
+      case "eulogia":
         return `/eulogia/${writing.containerId}`;
-      case 'notebook':
+      case "notebook":
         return `/notebook/${writing.containerId}`;
       default:
-        return '/community-notebook';
+        return "/community-notebook";
     }
   }
-  if(!clickable) {
-    return <div
-    className={`p-2 m-2 rounded-xl border-white border-2  bg-purple-500 text-white`}
-  >
-    <p className='text-sm em'>
-      {new Date(writing.timestamp).toLocaleDateString('en-US', options)}
-    </p>
-    <hr className='w-9/11 mx-auto bg-black text-black my-2' />
-    {writing.text && writing.text ? (
-      writing.text.includes('\n') ? (
-        writing.text.split('\n').map((x, i) => (
-          <p className='my-2' key={i}>
-            {x}
-          </p>
-        ))
-      ) : (
-        <p className='my-2'>{writing.text}</p>
-      )
-    ) : null}
-  </div>
+  if (!clickable) {
+    return (
+      <div
+        className={`p-2 m-2 rounded-xl border-white border-2  bg-purple-500 text-white`}
+      >
+        <p className="text-sm em">
+          {new Date(writing.timestamp).toLocaleDateString("en-US", options)}
+        </p>
+        <hr className="w-9/11 mx-auto bg-black text-black my-2" />
+        {writing.text && writing.text ? (
+          writing.text.includes("\n") ? (
+            writing.text.split("\n").map((x, i) => (
+              <p className="my-2" key={i}>
+                {x}
+              </p>
+            ))
+          ) : (
+            <p className="my-2">{writing.text}</p>
+          )
+        ) : null}
+      </div>
+    );
   }
 
   return (
@@ -127,22 +174,22 @@ const UserWriting = ({ writing, clickable=true }) => {
           writing.writingContainerType
         )} text-white`}
       >
-        <p className='text-sm em'>
-          {new Date(writing.timestamp).toLocaleDateString('en-US', options)}
+        <p className="text-sm em">
+          {new Date(writing.timestamp).toLocaleDateString("en-US", options)}
         </p>
         <p>
           {writing.writingContainerType} - {writing.containerId}
         </p>
-        <hr className='w-9/11 mx-auto bg-black text-black my-2' />
+        <hr className="w-9/11 mx-auto bg-black text-black my-2" />
         {writing.text && writing.text ? (
-          writing.text.includes('\n') ? (
-            writing.text.split('\n').map((x, i) => (
-              <p className='my-2' key={i}>
+          writing.text.includes("\n") ? (
+            writing.text.split("\n").map((x, i) => (
+              <p className="my-2" key={i}>
                 {x}
               </p>
             ))
           ) : (
-            <p className='my-2'>{writing.text}</p>
+            <p className="my-2">{writing.text}</p>
           )
         ) : null}
       </div>

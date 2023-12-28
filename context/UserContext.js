@@ -160,13 +160,10 @@ export const UserProvider = ({ children }) => {
 
   useEffect(() => {
     const loadUserDatabaseInformation = async () => {
-      console.log("the load user database information inside it");
       try {
-        console.log("authenticated", authenticated);
         if (!authenticated) return;
         const authToken = await getAccessToken();
         const thisUserPrivyId = user.id.replace("did:privy:", "");
-        console.log("IN HERE", thisUserPrivyId, authToken);
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_API_ROUTE}/user/${thisUserPrivyId}`,
           {
@@ -176,7 +173,7 @@ export const UserProvider = ({ children }) => {
             },
           }
         );
-        console.log("in here, the response is:");
+
         setUserDatabaseInformation({
           streak: response.data.user.streak || 0,
           manaBalance: response.data.user.manaBalance || 0,

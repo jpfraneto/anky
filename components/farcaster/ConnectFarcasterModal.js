@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { LOCAL_STORAGE_KEYS } from "../../lib/constants";
 import Button from "../Button";
 import axios from "axios";
+import Image from "next/image";
 import QRCode from "qrcode.react";
 import { useUser } from "../../context/UserContext";
 import Link from "next/link";
@@ -117,6 +118,21 @@ const ConnectFarcasterModal = () => {
             buttonColor="w-96 mx-auto bg-green-600 mt-4"
             buttonText={loading ? "loading..." : "connect with farcaster"}
           />
+        </div>
+      )}
+      {farcasterUser?.status == "approved" && (
+        <div className="px-0 py-2">
+          <p>your farcaster user is connected</p>
+          {farcasterUser.pfp && (
+            <>
+              <div className="w-48 h-48 rounded-full overflow-hidden relative">
+                <Image src={farcasterUser.pfp} fill alt="user pfp" />
+              </div>
+              <p>
+                @{farcasterUser.username} - {farcasterUser.displayName}
+              </p>
+            </>
+          )}
         </div>
       )}
       {farcasterUser?.status == "pending_approval" &&
