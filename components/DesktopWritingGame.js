@@ -672,8 +672,8 @@ const DesktopWritingGame = ({
                 text
                   ? "md:aspect-video md:flex w-full h-full text-left"
                   : "mt-8 w-4/5 md:w-3/5 h-64"
-              } p-4 text-white opacity-80 placeholder-white text-xl border border-white rounded-md bg-opacity-10 bg-black`}
-              placeholder="simplemente escribe"
+              } p-4 text-white opacity-80 placeholder-white text-xl border placeholder:text-gray-600 border-white rounded-md bg-opacity-10 bg-black`}
+              placeholder="this is a text box. this is where you write. as soon as you start writing, the green bar on top will start transforming its color. if it reaches 0, you will lose. it is 3 seconds. if you start thinking, you will lose. just write. don't think. how hard can it be?"
               value={text}
               onChange={handleTextChange}
             ></textarea>
