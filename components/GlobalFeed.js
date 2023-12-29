@@ -65,28 +65,6 @@ const GlobalFeed = ({ thisWallet }) => {
     getGlobalFeed();
   }, []);
 
-  // useEffect(() => {
-  //   const fetchUserWritings = async () => {
-  //     if (!thisWallet) return;
-  //     const allUserWritings = await getAllUsersWritings(thisWallet.address);
-  //     setUserWritings(allUserWritings);
-  //     setLoadingFeed(false);
-  //   };
-  //   fetchUserWritings();
-  // }, [thisWallet]);
-  // if (!thisWallet)
-  // return (
-  //   <div>
-  //     <p className="text-white mt-2">
-  //       please{" "}
-  //       <span className="hover:text-yellow-300 cursor-pointer" onClick={login}>
-  //         login
-  //       </span>{" "}
-  //       first
-  //     </p>
-  //   </div>
-  // );
-
   if (loadingFeed) {
     return (
       <div className="mt-12">
@@ -98,7 +76,7 @@ const GlobalFeed = ({ thisWallet }) => {
 
   return (
     <div className="w-full">
-      <div className="w-full px-4 flex justify-around flex-wrap md:w-2/3 mx-auto">
+      <div className="w-full px-4 flex justify-around flex-wrap md:w-2/3  mx-auto">
         {globalFeed.map((x, i) => {
           return (
             <IndividualDecodedCastCard
@@ -107,60 +85,11 @@ const GlobalFeed = ({ thisWallet }) => {
               farcasterUser={farcasterUser}
             />
           );
-          //   <div
-          //     onClick={() => {
-          //       window.scroll({
-          //         top: 0,
-          //         left: 0,
-          //         behavior: "smooth",
-          //       });
-          //     }}
-          //     className="flex m-1 relative w-16 h-16 "
-          //   >
-          //     <div className="border border-white w-16 h-16 rounded-full overflow-hidden relative hover:border hover:border-white cursor-pointer">
-          //       <Image fill src={x.author.pfp_url || ""} />
-          //     </div>
-          //     <div className="absolute bg-red-600 hover:bg-red-400 px-3 border border-white rounded-full w-1 flex items-center justify-center text-white font-2xl -top-2 -right-0">
-          //       2
-          //     </div>
-          //   </div>
-          // );
         })}
       </div>
     </div>
   );
-};
 
-const UserWriting = ({ writing, clickable = true }) => {
-  function getColor(containerType) {
-    switch (containerType) {
-      case "journal":
-        return `bg-green-400 ${clickable && "hover:bg-green-500"}`;
-      case "dementor":
-        return `bg-red-400 ${clickable && "hover:bg-red-500"} `;
-      case "eulogia":
-        return `bg-orange-400 ${clickable && "hover:bg-orange-500"}`;
-      case "notebook":
-        return `bg-blue-400 ${clickable && "hover:bg-blue-500"} `;
-      default:
-        return "bg-black";
-    }
-  }
-
-  function getContainerLink(writing) {
-    switch (writing.writingContainerType) {
-      case "journal":
-        return `/journal/${writing.containerId}`;
-      case "dementor":
-        return `/dementor/${writing.containerId}`;
-      case "eulogia":
-        return `/eulogia/${writing.containerId}`;
-      case "notebook":
-        return `/notebook/${writing.containerId}`;
-      default:
-        return "/community-notebook";
-    }
-  }
   if (!clickable) {
     return (
       <div

@@ -154,8 +154,8 @@ const IndividualDecodedCastCard = ({ cast, farcasterUser }) => {
   if (cast.text == "Not Found") return;
 
   return (
-    <div className="active:none w-full my-2 h-full md:max-w-2xl md:mx-auto flex flex-col relative">
-      <div className="w-full md:w-6/12 mx-auto  h-full flex flex-col pt-2 flex-grow bg-purple-500 text-black px-2 ">
+    <div className="active:none w-full my-2 h-full md:mx-auto flex flex-col relative">
+      <div className="w-full md:w-96 mx-auto  h-full flex flex-col pt-2 flex-grow bg-purple-500 text-black px-2 ">
         <Link
           passHref
           href={`/u/${thisCast.author.fid}`}
@@ -201,7 +201,8 @@ const IndividualDecodedCastCard = ({ cast, farcasterUser }) => {
         <div className="ml-2 flex h-6 pb-2 space-x-4 relative justify-between items-center">
           <div className="flex space-x-4 h-full">
             <div
-              onClick={handleDisplayComments}
+              // onClick={handleDisplayComments}
+              onClick={() => alert("enable the comments feature")}
               className={`flex space-x-1 items-center ${
                 hasUserCommented && "text-gray-500"
               } hover:text-gray-500 cursor-pointer`}
