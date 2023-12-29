@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { getAllUsersWritings } from "../lib/irys";
+import { getOneWriting } from "../lib/irys";
 import { usePrivy } from "@privy-io/react-auth";
 import Button from "./Button";
 import Link from "next/link";
 import Image from "next/image";
 import axios from "axios";
+import { decodeFromAnkyverseLanguage } from "../lib/ankyverse";
+import IndividualDecodedCastCard from "./farcaster/IndividualDecodedCastCard";
 import Spinner from "./Spinner";
 import { useUser } from "../context/UserContext";
 import NormalCastCard from "./farcaster/NormalCastCard";
@@ -26,28 +28,43 @@ const GlobalFeed = ({ thisWallet }) => {
   const [userWritings, setUserWritings] = useState([]);
   const [globalFeed, setGlobalFeed] = useState([]);
   const [loadingFeed, setLoadingFeed] = useState(true);
+  const [translatingCasts, setTranslatingCasts] = useState(false);
   useEffect(() => {
     const getGlobalFeed = async () => {
       console.log("the farcaster user is: ", farcasterUser);
       if (!farcasterUser && !farcasterUser.fid) return;
       console.log("fetching the feed for this user");
-      let feedForUser;
-      if (farcasterUser.fid) {
-        feedForUser = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_ROUTE}/farcaster/u/${farcasterUser.fid}/feed`
-        );
-      } else {
-        const randomFid = Math.floor(20000 * Math.random());
-        feedForUser = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_ROUTE}/farcaster/u/${randomFid}/feed`
-        );
-      }
-      console.log("THE FEED FOR USER IS: ", feedForUser);
-      setGlobalFeed(feedForUser.data.casts);
+      let response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_ROUTE}/farcaster/anky-channel-feed`
+      );
+      let ankyChannelFeed = response.data.feed.casts;
+      setTranslatingCasts(true);
+      console.log("HERE THE ANKY CHANNEL FEED IS: ,", ankyChannelFeed);
+
+      const encodedCids = ankyChannelFeed.map(
+        (cast) => cast.text.split("\n")[0]
+      );
+
+      // Decode cids and fetch their content
+      const fetchPromises = encodedCids.map(async (encodedCid) => {
+        const decodedCid = decodeFromAnkyverseLanguage(encodedCid);
+        const writing = await getOneWriting(decodedCid);
+        return writing.text;
+      });
+      const writings = await Promise.all(fetchPromises);
+
+      const decodedFeed = ankyChannelFeed.map((cast, index) => {
+        return { ...cast, text: writings[index] };
+      });
+      console.log("the decoded feed is: ", decodedFeed);
+      setTranslatingCasts(false);
+      setGlobalFeed(decodedFeed);
+
       setLoadingFeed(false);
     };
     getGlobalFeed();
   }, []);
+
   // useEffect(() => {
   //   const fetchUserWritings = async () => {
   //     if (!thisWallet) return;
@@ -81,32 +98,33 @@ const GlobalFeed = ({ thisWallet }) => {
 
   return (
     <div className="w-full">
-      <div className="w-full">
-        <p className="text-white text-4xl my-2">Global feed:</p>
-      </div>
-      <div></div>
-      <div className="w-full px-4 flex justify-around flex-wrap md:w-1/2 mx-auto">
+      <div className="w-full px-4 flex justify-around flex-wrap md:w-2/3 mx-auto">
         {globalFeed.map((x, i) => {
-          console.log("the ux", x);
           return (
-            <div
-              onClick={() => {
-                window.scroll({
-                  top: 0,
-                  left: 0,
-                  behavior: "smooth",
-                });
-              }}
-              className="flex m-1 relative w-16 h-16 "
-            >
-              <div className="border border-white w-16 h-16 rounded-full overflow-hidden relative hover:border hover:border-white cursor-pointer">
-                <Image fill src={x.author.pfp_url || ""} />
-              </div>
-              <div className="absolute bg-red-600 hover:bg-red-400 px-3 border border-white rounded-full w-1 flex items-center justify-center text-white font-2xl -top-2 -right-0">
-                2
-              </div>
-            </div>
+            <IndividualDecodedCastCard
+              cast={x}
+              key={i}
+              farcasterUser={farcasterUser}
+            />
           );
+          //   <div
+          //     onClick={() => {
+          //       window.scroll({
+          //         top: 0,
+          //         left: 0,
+          //         behavior: "smooth",
+          //       });
+          //     }}
+          //     className="flex m-1 relative w-16 h-16 "
+          //   >
+          //     <div className="border border-white w-16 h-16 rounded-full overflow-hidden relative hover:border hover:border-white cursor-pointer">
+          //       <Image fill src={x.author.pfp_url || ""} />
+          //     </div>
+          //     <div className="absolute bg-red-600 hover:bg-red-400 px-3 border border-white rounded-full w-1 flex items-center justify-center text-white font-2xl -top-2 -right-0">
+          //       2
+          //     </div>
+          //   </div>
+          // );
         })}
       </div>
     </div>

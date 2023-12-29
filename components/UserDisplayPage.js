@@ -126,11 +126,6 @@ const UserDisplayPage = ({ thisUserInfo }) => {
                 <p>longest writing session: </p>
                 <p>2839 s</p>
               </div>
-
-              <div className="flex justify-between px-2 w-full">
-                <p>badges: </p>
-                <p>3</p>
-              </div>
             </div>
             <div className="w-full md:w-2/3 mt-2 md:mt-0 overflow-y-scroll mx-2 h-96 bg-black text-white flex flex-col p-2 justify-start items-start">
               <p className="text-xl ">Writing Feed</p>

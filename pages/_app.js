@@ -97,6 +97,8 @@ function MyApp({ Component, pageProps }) {
           privyId: user.id.split("did:privy:")[1],
         }
       );
+      console.log("the response after the login is: ", response);
+      router.push("/feed");
     } catch (error) {
       console.log("the error is: ", error);
     }
