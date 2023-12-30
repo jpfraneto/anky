@@ -2,25 +2,80 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import axios from "axios";
 import Spinner from "./Spinner";
+import { Bar } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import Link from "next/link";
+import Button from "./Button";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const UserDisplayPage = ({ thisUserInfo }) => {
   const [usersAnkyFeed, setUsersAnkyFeed] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingUser, setLoadingUser] = useState(true);
   const [thisFarcasterUser, setThisFarcasterUser] = useState({});
+  const [userNotFound, setUserNotFound] = useState(false);
   const [thisAnkyUser, setThisAnkyUser] = useState({});
+
+  const [chartData, setChartData] = useState({
+    labels: [],
+    datasets: [
+      {
+        label: "Mana Earned",
+        data: [],
+        backgroundColor: "rgba(53, 162, 235, 0.5)",
+      },
+    ],
+  });
 
   useEffect(() => {
     const fetchUsersInformation = async () => {
-      console.log("the this user info is: ", thisUserInfo);
-      if (!thisUserInfo) return;
-      const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_ROUTE}/user/farcaster/${thisUserInfo}`
-      );
-      console.log("THE RESPONSE HERE IS: ", response.data);
-      setThisFarcasterUser(response.data.farcasterUser);
-      setThisAnkyUser(response.data.ankyUser);
-      setLoadingUser(false);
+      try {
+        console.log("the this user info is: ", thisUserInfo);
+        if (!thisUserInfo) return;
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_ROUTE}/user/farcaster/${thisUserInfo}`
+        );
+        setThisFarcasterUser(response.data.farcasterUser);
+
+        const manaByDate = response.data.manaData;
+        const labels = Object.keys(manaByDate);
+        const data = Object.values(manaByDate);
+        const backgroundColors = data.map(
+          (value) => `rgba(53, 162, ${value % 255}, 0.5)` // Dynamic color based on value
+        );
+        setChartData({
+          labels,
+          datasets: [
+            {
+              label: "Mana Earned",
+              data,
+              backgroundColor: backgroundColors,
+            },
+          ],
+        });
+        setThisAnkyUser(response.data.ankyUser);
+        setLoadingUser(false);
+      } catch (error) {
+        console.log("this user doesnt exist");
+        setLoading(false);
+        setUserNotFound(true);
+      }
     };
     fetchUsersInformation();
   }, []);
@@ -52,6 +107,18 @@ const UserDisplayPage = ({ thisUserInfo }) => {
   //   // fetchUserInformationOnFarcaster();
   //   fetchUsersAnkyFeed();
   // }, []);
+  if (userNotFound) {
+    return (
+      <div className="mt-4 text-white">
+        <p>This user doesn&apos;t exist.</p>
+        <div className="w-48 mt-2 mx-auto">
+          <Link href="/feed" passHref>
+            <Button buttonColor="bg-purple-600" buttonText="back to feed" />
+          </Link>
+        </div>
+      </div>
+    );
+  }
   if (loadingUser)
     return (
       <div>
@@ -59,6 +126,7 @@ const UserDisplayPage = ({ thisUserInfo }) => {
         <p>loading</p>
       </div>
     );
+
   return (
     <div className="w-full px-4 h-full ">
       <div className="md:w-5/6 mt-12 h-48  rounded-xl bg-black border-2 border-white relative mx-auto">
@@ -98,6 +166,7 @@ const UserDisplayPage = ({ thisUserInfo }) => {
               </div>
             </div>
           </div>
+
           <div className="md:w-1/3 flex justify-between h-4 mt-4 z-1 rounded-lg bg-white  mx-auto">
             <div className="h-full w-full">
               <div
@@ -111,22 +180,67 @@ const UserDisplayPage = ({ thisUserInfo }) => {
           </div>
           <p className="text-white">2000 $NEWEN to level 9</p>
           <div className="w-full mt-2 flex flex-col md:flex-row">
-            <div className="w-full md:w-1/3 grow-0 h-fit bg-black text-white flex flex-col p-2 justify-start items-start">
-              <p className="text-xl ">Stats</p>
-              <hr className="text-white h-2" />
-              <div className="flex justify-between px-2 w-full">
-                <p>total $MANA earned: </p>
-                <p>{thisAnkyUser.totalManaEarned}</p>
+            <div className="flex w-1/2 flex-col">
+              <div className="w-full grow-0 h-fit bg-black text-white flex flex-col p-2 justify-start items-start">
+                <p className="text-xl ">Stats</p>
+                <hr className="text-white h-2" />
+                <div className="flex justify-between px-2 w-full">
+                  <p>total $MANA earned: </p>
+                  <p>{thisAnkyUser.totalManaEarned}</p>
+                </div>
+                <div className="flex justify-between px-2 w-full">
+                  <p>longest streak: </p>
+                  <p>88</p>
+                </div>
+                <div className="flex justify-between px-2 w-full">
+                  <p>longest writing session: </p>
+                  <p>2839 s</p>
+                </div>
               </div>
-              <div className="flex justify-between px-2 w-full">
-                <p>longest streak: </p>
-                <p>88</p>
-              </div>
-              <div className="flex justify-between px-2 w-full">
-                <p>longest writing session: </p>
-                <p>2839 s</p>
+              <div className="w-full bg-purple-100 text-black">
+                <Bar
+                  data={chartData}
+                  options={{
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                      x: {
+                        title: {
+                          display: true,
+                          text: "Date",
+                        },
+                      },
+                      y: {
+                        title: {
+                          display: true,
+                          text: "Mana Earned",
+                        },
+                      },
+                    },
+                    plugins: {
+                      tooltip: {
+                        callbacks: {
+                          label: function (context) {
+                            let label = context.dataset.label || "";
+                            if (label) {
+                              label += ": ";
+                            }
+                            if (context.parsed.y !== null) {
+                              label += `${context.parsed.y} mana`;
+                            }
+                            return label;
+                          },
+                        },
+                      },
+                      legend: {
+                        display: false,
+                      },
+                    },
+                  }}
+                />
               </div>
             </div>
+
             <div className="w-full md:w-2/3 mt-2 md:mt-0 overflow-y-scroll mx-2 h-96 bg-black text-white flex flex-col p-2 justify-start items-start">
               <p className="text-xl ">Writing Feed</p>
               <hr className="text-white h-2" />

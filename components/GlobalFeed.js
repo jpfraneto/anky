@@ -39,7 +39,6 @@ const GlobalFeed = ({ thisWallet }) => {
       );
       let ankyChannelFeed = response.data.feed.casts;
       setTranslatingCasts(true);
-      console.log("HERE THE ANKY CHANNEL FEED IS: ,", ankyChannelFeed);
 
       const encodedCids = ankyChannelFeed.map(
         (cast) => cast.text.split("\n")[0]

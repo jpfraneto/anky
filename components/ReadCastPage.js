@@ -39,13 +39,29 @@ const ReadCastPage = () => {
   const [castReplies, setCastReplies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [hasUserCommented, setHasUserCommented] = useState(false);
-  const [manaForCongratulation, setManaForCongratulation] = useState(100);
+  const [manaForCongratulation, setManaForCongratulation] = useState(
+    Math.min(userDatabaseInformation.manaBalance, 100)
+  );
   const [totalNewenEarned, setTotalNewenEarned] = useState(200);
   const [hasUserRecasted, setHasUserRecasted] = useState(false);
   const [hasUserLiked, setHasUserLiked] = useState(false);
   const [displaySendNewen, setDisplaySendNewen] = useState(false);
   const [displayComments, setDisplayComments] = useState(false);
   const [writing, setWriting] = useState("");
+
+  useEffect(() => {
+    const handleKeyPress = (event) => {
+      if (event.key === "Escape" && displayComments) {
+        setDisplayComments(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyPress);
+    };
+  }, [displayComments]);
 
   useEffect(() => {
     if (!id) return;
@@ -80,7 +96,6 @@ const ReadCastPage = () => {
           }
 
           if (response.status == 200 && thisCast.replies.count > 0) {
-            console.log("calling for the felies");
             const repliesResponse = await axios.post(
               `${apiRoute}/farcaster/api/cast/replies/${id}`,
               {
@@ -139,7 +154,9 @@ const ReadCastPage = () => {
         return alert("You dont have enough $NEWEN balance for that.");
       alert(`this will send ${manaForCongratulation} to the user`);
       console.log("the total", totalNewenEarned, manaForCongratulation);
-      setTotalNewenEarned(totalNewenEarned + manaForCongratulation);
+      setTotalNewenEarned(
+        Number(totalNewenEarned) + Number(manaForCongratulation)
+      );
       setDisplaySendNewen(false);
     } catch (error) {
       console.log("there was an error sending the mana to the user", error);
@@ -183,7 +200,7 @@ const ReadCastPage = () => {
               </div>
             </Link>
           </div>
-          <div className="flex h-6 py-4 bg-black text-white w-full left-0 px-2  relative justify-between items-center">
+          <div className="flex h-fit py-1 bg-black text-white w-full left-0 px-2  relative justify-between items-center">
             <div className="pl-4 flex space-x-4 h-full">
               <div
                 onClick={handleDisplayComments}
@@ -213,7 +230,9 @@ const ReadCastPage = () => {
                 <span>{cast.reactions.likes.length}</span>
               </div>
               <div
-                onClick={() => setDisplaySendNewen(!displaySendNewen)}
+                onClick={() => {
+                  setDisplaySendNewen(!displaySendNewen);
+                }}
                 className={`flex space-x-1 items-center ${
                   hasUserLiked && "text-purple-300"
                 } hover:text-purple-500 cursor-pointer`}
@@ -228,13 +247,13 @@ const ReadCastPage = () => {
               href={`https://warpcast.com/${
                 cast.author.username
               }/${cast.hash.substring(0, 10)}`}
-              className="ml-auto hover:text-red-200 text-white"
+              className="bg-purple-600 px-2 py-1 rounded-xl border border-white ml-auto hover:text-red-200 text-white"
             >
               Warpcast
             </a>
           </div>
-          {displaySendNewen && (
-            <div className="flex h-fit py-1 bg-gray-800 text-white w-full left-0 px-4  relative justify-between items-center">
+          {authenticated && displaySendNewen && (
+            <div className="flex h-fit py-1 bg-purple-600 relative pb-5 text-white w-full left-0 px-4  relative justify-between items-center">
               <p>$NEWEN{!authenticated && "*"}</p>
               <input
                 className="rounded-xl mx-1 w-1/3 text-black  px-4"
@@ -245,16 +264,19 @@ const ReadCastPage = () => {
                 max={userDatabaseInformation.manaBalance}
                 value={manaForCongratulation}
               />
+              <small className="absolute text-purple-200 bottom-1">
+                your balance is {userDatabaseInformation.manaBalance}
+              </small>
               <button
                 onClick={sendManaToCastCreator}
-                className="bg-black border border-white px-2 py-1 rounded-xl hover:text-green-500 active:text-yellow-500"
+                className="bg-purple-800 border border-white px-2 py-1 rounded-xl hover:text-green-500 active:text-yellow-500"
               >
                 send to user
               </button>
             </div>
           )}
 
-          {!authenticated && (
+          {displaySendNewen && !authenticated && (
             <small className="text-red-800">
               *login to send $NEWEN to the creator of this cast
             </small>
@@ -280,13 +302,21 @@ const ReadCastPage = () => {
                 "border-black border-2 absolute top-0 left-0 w-full bg-purple-300 rounded px-2 py-1 my-2"
               } overflow-hidden`}
             >
-              {castReplies &&
-                castReplies.length > 0 &&
-                castReplies.map((reply, i) => (
-                  <>
-                    <ReplyComponent key={i} cast={reply} />
-                  </>
-                ))}
+              <div className="relative">
+                <span
+                  className="text-red-600 text-xl hover:text-red-800 -top-6 right-0 absolute cursor-pointer"
+                  onClick={() => setDisplayComments(false)}
+                >
+                  X
+                </span>
+                {castReplies &&
+                  castReplies.length > 0 &&
+                  castReplies.map((reply, i) => (
+                    <>
+                      <ReplyComponent key={i} cast={reply} />
+                    </>
+                  ))}
+              </div>
             </div>
           )}
         </div>
@@ -296,9 +326,8 @@ const ReadCastPage = () => {
 };
 
 const ReplyComponent = ({ cast }) => {
-  console.log("the cast is: ", cast);
   return (
-    <div className="px-2 relative w-full text-center w-full justify-center items-center flex flex-col rounded-xl my-4">
+    <div className="px-2  py-2 border border-black relative w-full text-center w-full justify-center items-center flex flex-col rounded-xl my-4">
       <div className=" rounded-full border-white overflow-hidden border-2 relative w-36 h-36">
         <Image src={cast.author.pfp.url} fill />
       </div>

@@ -414,3 +414,55 @@ html,body {
   background-color: #4682b4;
   color: #ffffff;
 }
+
+/* Leaderboard.module.css */
+.leaderboardContainer {
+  background-color: #0d0d0d;
+  color: white;
+  border-radius: 10px;
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.tabs {
+  display: flex;
+  justify-content: space-evenly;
+  margin-bottom: 20px;
+}
+
+.activeTab {
+  border-bottom: 2px solid #4caf50;
+}
+
+.leaderboardList {
+  list-style: none;
+  padding: 0;
+}
+
+.leaderboardEntry {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.avatar {
+  /* styles for avatar */
+}
+
+.username {
+  flex-grow: 1;
+  margin-left: 10px;
+}
+
+.score {
+  font-weight: bold;
+}
+
+/* Add media queries for responsiveness */
+@media (max-width: 600px) {
+  .leaderboardContainer {
+    /* Adjust styles for mobile */
+  }
+}

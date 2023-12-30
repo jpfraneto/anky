@@ -37,6 +37,7 @@ const DesktopWritingGame = ({
   setUserAppInformation,
   setThisIsTheFlag,
   userAppInformation,
+  setDisplayNavbar,
   setDisplayWritingGameLanding,
   displayWritingGameLanding,
   lifeBarLength,
@@ -161,7 +162,6 @@ const DesktopWritingGame = ({
 
   const finishRun = async () => {
     try {
-      console.log("INSIDE THE FINISH RUN: ", userAppInformation);
       const finishTimestamp = Date.now();
       if (countdownTarget === 0) setMissionAccomplished(true);
       setLifeBarLength(0);
@@ -225,8 +225,8 @@ const DesktopWritingGame = ({
     setText(event.target.value);
     const now = Date.now();
     if (!isActive && event.target.value.length > 0) {
-      console.log("IN HEEEEREAKHCJKAS", user);
       setDisableButton(true);
+      setDisplayNavbar(false);
       setIsActive(true);
       setFailureMessage("");
       setStartTime(now);
@@ -404,26 +404,17 @@ const DesktopWritingGame = ({
     if (!text) return alert("please write something");
 
     setIsCasting(true);
-    //setAnkyTranslatingCast(true);
     try {
       const responseFromIrys = await axios.post(`${apiRoute}/upload-writing`, {
         text,
       });
       const cid = responseFromIrys.data.cid;
       setCid(cid);
-      //setAnkyTranslatingCast(false);
-      // setIsCastBeingBroadcasted(true);
+
       const kannadaCid = encodeToAnkyverseLanguage(cid);
-      // setTranslatedCid(kannadaCid);
 
       const newCastText = `${kannadaCid}\n\nwritten as anky - you can decode this by clicking on the embed on the next cast`;
-      // let embeds = [{ url: `https://www.anky.lat/r/${cid}` }];
-      // if (embedOne && embedOne.length > 0) {
-      //   embeds.push({ url: embedOne });
-      // }
-      // if (embedTwo && embedTwo.length > 0) {
-      //   embeds.push({ url: embedTwo });
-      // }
+
       const response = await axios.post(`${apiRoute}/farcaster/api/cast`, {
         text: newCastText,
         signer_uuid: farcasterUser?.signer_uuid,
@@ -449,7 +440,6 @@ const DesktopWritingGame = ({
           setText(""); // Clear the text field
           setDisplayWritingGameLanding(false);
           router.push(`https://www.anky.lat/r/${response.data.cast.hash}`);
-          //setWasSuccessfullyCasted(true);
         }
       }
     } catch (error) {
@@ -558,6 +548,13 @@ const DesktopWritingGame = ({
   async function handleSaveRun() {
     try {
       setSavingRoundLoading(true);
+      console.log(
+        "INSIDE THE SAVE RUN",
+        castAs,
+        userWantsToCastAnon,
+        journalIdToSave,
+        authenticated
+      );
       if (castAs == "anon" || userWantsToCastAnon) await handleAnonCast();
       if (castAs == "me") await handleCast();
       if (journalIdToSave != "") {
@@ -769,7 +766,10 @@ const DesktopWritingGame = ({
                                   don&apos;t cast
                                 </p>
                                 <p
-                                  onClick={() => setCastAs("me")}
+                                  onClick={() => {
+                                    setCastAs("me");
+                                    setUserWantsToCastAnon(false);
+                                  }}
                                   className={` p-2 border-black  cursor-pointer rounded-xl ${
                                     castAs == "me"
                                       ? "bg-green-500 shadow-md shadow-black border-2"
@@ -779,7 +779,10 @@ const DesktopWritingGame = ({
                                   cast as {farcasterUser.fid}
                                 </p>
                                 <p
-                                  onClick={() => setCastAs("anon")}
+                                  onClick={() => {
+                                    setCastAs("anon");
+                                    setUserWantsToCastAnon(true);
+                                  }}
                                   className={` p-2 border-black   cursor-pointer rounded-xl ${
                                     castAs == "anon"
                                       ? "bg-purple-600 shadow-md shadow-black border-2"
@@ -879,17 +882,9 @@ const DesktopWritingGame = ({
                                       buttonText={
                                         savingRoundLoading
                                           ? `saving...`
-                                          : userWantsToCastAnon
-                                          ? `cast anon`
-                                          : `save run`
+                                          : `cast anon`
                                       }
-                                      buttonAction={
-                                        userWantsToCastAnon
-                                          ? handleSaveRun
-                                          : () => {
-                                              alert("");
-                                            }
-                                      }
+                                      buttonAction={handleSaveRun}
                                       buttonColor="bg-green-600 w-32"
                                     />
                                   )}
@@ -943,7 +938,7 @@ const DesktopWritingGame = ({
                             <div className="bg-black p-4 flex flex-col items-center rounded-xl">
                               <p className="mb-2">you didnt finish</p>
                               <p className="mb-2">
-                                you said you would write for {countdownTarget}{" "}
+                                you said you would write for {countdownTarget}
                                 seconds
                               </p>
                               <p className="mb-2">
@@ -1015,11 +1010,11 @@ const DesktopWritingGame = ({
       <Overlay show={showOverlay && !authenticated && !farcasterUser?.fid}>
         <div className="flex flex-col h-full justify-center items-center w-full ">
           <div className="flex flex-col text-white h-48">
-            <p>no has iniciado sesión</p>
+            <p>you haven&apos;t logged in</p>
             <div className="flex space-x-2 ">
               <Button
                 buttonAction={login}
-                buttonText="iniciar sesión"
+                buttonText="log in"
                 buttonColor="bg-green-600 mx-auto w-fit my-2"
               />
               <Button
@@ -1027,7 +1022,7 @@ const DesktopWritingGame = ({
                   setShowOverlay(false);
                   setHardcoreContinue(true);
                 }}
-                buttonText="continuar sin identidad"
+                buttonText="continue anon"
                 buttonColor="bg-purple-600 mx-auto w-fit my-2"
               />
             </div>
@@ -1037,14 +1032,12 @@ const DesktopWritingGame = ({
                 whatIsThis ? "text-purple-400" : "text-gray-300"
               } hover:text-purple-400 cursor-pointer`}
             >
-              qué es esto?
+              what is this?
             </p>
             {whatIsThis && (
               <div>
-                <p className="text-white mb-2">simplemente escribe</p>
-                <p className="text-white">
-                  es todo una excusa para que escribas
-                </p>
+                <p className="text-white mb-2">just write</p>
+                <p className="text-white">it is all an excuse</p>
               </div>
             )}
           </div>

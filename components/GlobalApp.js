@@ -6,6 +6,7 @@ import { getAnkyverseDay, getAnkyverseQuestion } from "../lib/ankyverse";
 import { useUser } from "../context/UserContext";
 import { FaPencilAlt } from "react-icons/fa";
 import { IoArrowBack } from "react-icons/io5";
+import { MdMenuOpen } from "react-icons/md";
 import UserDisplayPage from "./UserDisplayPage";
 import { DEFAULT_CAST, LOCAL_STORAGE_KEYS } from "../lib/constants";
 import { GiRollingEnergy } from "react-icons/gi";
@@ -24,7 +25,6 @@ import ReadCastPage from "./ReadCastPage";
 import ProfilePage from "./ProfilePage";
 import NotebookPage from "./NotebookById";
 import AnkyDementorPage from "./AnkyDementorPage";
-import UserPage from "./UserPage";
 import JournalPage from "./journals/JournalPage";
 import LibraryPage from "./library/LibraryPage";
 import EulogiasListPage from "./eulogias/EulogiasListPage";
@@ -36,10 +36,7 @@ import JournalById from "./journals/JournalById";
 import BuyNewJournal from "./journals/BuyNewJournal";
 import { FaChartLine } from "react-icons/fa";
 import LitProtocol from "./LitProtocol";
-import Mint from "./MintingComponentBtn";
 import Irys from "./Irys";
-import Button from "./Button";
-import Spinner from "./Spinner";
 import WelcomePage from "./WelcomePage";
 import UserFeed from "./UserFeed";
 import GlobalFeed from "./GlobalFeed";
@@ -49,6 +46,7 @@ import ManaPage from "./mana/ManaPage";
 import FarcasterFeedPage from "./FarcasterFeedPage";
 import UserByFidComponent from "./farcaster/UserByFidComponent";
 import axios from "axios";
+import Leaderboard from "./Leaderboard";
 
 const righteous = Righteous({ weight: "400", subsets: ["latin"] });
 const ankyverseToday = getAnkyverseDay(new Date());
@@ -79,6 +77,7 @@ const GlobalApp = ({ alchemy }) => {
   const [lifeBarLength, setLifeBarLength] = useState(100);
   const [displayManaInfo, setDisplayManaInfo] = useState(false);
   const [gameProps, setGameProps] = useState({});
+  const [displayNavbar, setDisplayNavbar] = useState(false);
   const [checkingIfYouOwnAnky, setCheckingIfYouOwnAnky] = useState(false);
   const [ankyButtonText, setAnkyButtonText] = useState("i already own one");
   const [disableButton, setDisableButton] = useState(false);
@@ -151,6 +150,7 @@ const GlobalApp = ({ alchemy }) => {
               setThisIsTheFlag={setThisIsTheFlag}
               lifeBarLength={lifeBarLength}
               setDisableButton={setDisableButton}
+              setDisplayNavbar={setDisplayNavbar}
               displayWritingGameLanding={displayWritingGameLanding}
               setDisplayWritingGameLanding={setDisplayWritingGameLanding}
               farcasterUser={farcasterUser}
@@ -168,6 +168,7 @@ const GlobalApp = ({ alchemy }) => {
             setUserAppInformation={setUserAppInformation}
             userAppInformation={userAppInformation}
             setLifeBarLength={setLifeBarLength}
+            setDisplayNavbar={setDisplayNavbar}
             setThisIsTheFlag={setThisIsTheFlag}
             lifeBarLength={lifeBarLength}
             setDisableButton={setDisableButton}
@@ -179,6 +180,8 @@ const GlobalApp = ({ alchemy }) => {
         );
       case "/welcome":
         return <WelcomePage />;
+      case "/leaderboard":
+        return <Leaderboard />;
       case "/farcaster":
         return (
           <FarcasterPage
@@ -189,7 +192,6 @@ const GlobalApp = ({ alchemy }) => {
           />
         );
       case `/u/${route.split("/").pop()}`:
-        console.log("the router.query is: ", router.query);
         return <UserDisplayPage thisUserInfo={router.query.fid} />;
 
       case "/farcaster/feed":
@@ -214,6 +216,7 @@ const GlobalApp = ({ alchemy }) => {
               setThisIsTheFlag={setThisIsTheFlag}
               lifeBarLength={lifeBarLength}
               setDisableButton={setDisableButton}
+              setDisplayNavbar={setDisplayNavbar}
               displayWritingGameLanding={displayWritingGameLanding}
               setDisplayWritingGameLanding={setDisplayWritingGameLanding}
               farcasterUser={farcasterUser}
@@ -323,6 +326,7 @@ const GlobalApp = ({ alchemy }) => {
             setThisIsTheFlag={setThisIsTheFlag}
             lifeBarLength={lifeBarLength}
             setDisableButton={setDisableButton}
+            setDisplayNavbar={setDisplayNavbar}
             displayWritingGameLanding={displayWritingGameLanding}
             setDisplayWritingGameLanding={setDisplayWritingGameLanding}
             farcasterUser={farcasterUser}
@@ -370,103 +374,112 @@ const GlobalApp = ({ alchemy }) => {
             }}
           ></div>
         </div>
-
-        <div className="h-8 w-fit px-2 flex justify-center items-center relative">
-          {authenticated ? (
-            <div className="flex h-full space-x-2 top-0 w-full items-center">
-              {displayManaInfo && (
-                <span className="absolute p-2 top-10 z-50 rounded-xl border-white text-white border-2 bg-purple-400">
-                  <p className="text-left flex space-x-2 bg-purple-600 p-2 rounded-xl">
+        {displayNavbar && (
+          <div className="h-8 w-fit px-2 flex justify-center items-center relative">
+            {authenticated ? (
+              <div className="flex h-full space-x-2 top-0 w-full items-center">
+                {displayManaInfo && (
+                  <span className="absolute p-2 top-10 z-50 rounded-xl border-white text-white border-2 bg-purple-400">
+                    <p className="text-left flex space-x-2 bg-purple-600 p-2 rounded-xl">
+                      <GiRollingEnergy
+                        size={48}
+                        color={`${displayManaInfo ? "white" : "#9CA38F"}`}
+                        className="mx-2 translate-y-1"
+                      />
+                      $NEWEN: Every second that you spend writing here, you will
+                      earn these.
+                    </p>
+                    <p className="text-left mt-2 flex space-x-2 bg-purple-600 p-2 rounded-xl">
+                      <FaChartLine
+                        size={32}
+                        color={`${displayManaInfo ? "white" : "#9CA38F"}`}
+                        className="mx-2 translate-y-1"
+                      />
+                      Streaks: How many days in a row have you written?
+                    </p>
+                  </span>
+                )}
+                <span
+                  onMouseEnter={() => setDisplayManaInfo(true)}
+                  onMouseLeave={() => setDisplayManaInfo(false)}
+                  className="rounded-xl w-fit  bg-purple-600 border-white border hover:cursor-pointer hover:text-white px-2 flex justify-center space-x-2"
+                >
+                  <Link href="/mana" passHref className="flex ">
+                    {userDatabaseInformation.manaBalance || 0}
                     <GiRollingEnergy
-                      size={48}
+                      size={16}
                       color={`${displayManaInfo ? "white" : "#9CA38F"}`}
-                      className="mx-2 translate-y-1"
+                      className="ml-2 translate-y-1"
                     />
-                    $NEWEN: Every second that you spend writing here, you will
-                    earn these.
-                  </p>
-                  <p className="text-left mt-2 flex space-x-2 bg-purple-600 p-2 rounded-xl">
+                    <span className="mx-2">|</span>{" "}
+                    {userDatabaseInformation.streak || 0}
                     <FaChartLine
-                      size={32}
+                      size={16}
                       color={`${displayManaInfo ? "white" : "#9CA38F"}`}
-                      className="mx-2 translate-y-1"
+                      className="ml-2 translate-y-1"
                     />
-                    Streaks: How many days in a row have you written?
-                  </p>
+                  </Link>
                 </span>
-              )}
-              <span
-                onMouseEnter={() => setDisplayManaInfo(true)}
-                onMouseLeave={() => setDisplayManaInfo(false)}
-                className="rounded-xl w-32  bg-purple-600 border-white border hover:cursor-pointer hover:text-white px-2 flex justify-center space-x-2"
-              >
-                <Link href="/mana" passHref className="flex ">
-                  {userDatabaseInformation.manaBalance || 0}
-                  <GiRollingEnergy
-                    size={16}
-                    color={`${displayManaInfo ? "white" : "#9CA38F"}`}
-                    className="ml-2 translate-y-1"
-                  />
-                  <span className="mx-2">|</span>{" "}
-                  {userDatabaseInformation.streak || 0}
-                  <FaChartLine
-                    size={16}
-                    color={`${displayManaInfo ? "white" : "#9CA38F"}`}
-                    className="ml-2 translate-y-1"
-                  />
-                </Link>
-              </span>
-              <span
-                className="w-fit"
-                onClick={() => setDisplayWritingGameLanding(false)}
-              >
-                <Link
-                  href="/settings"
-                  className="hover:text-purple-600 cursor-pointer"
+                <span
+                  className="w-fit"
+                  onClick={() => setDisplayWritingGameLanding(false)}
                 >
-                  settings
-                </Link>
-              </span>
-              <span
-                className="w-fit"
-                onClick={() => setDisplayWritingGameLanding(false)}
-              >
-                <Link
-                  href={`/u/${user.id.replace("did:privy:", "")}`}
-                  className="hover:text-purple-600 cursor-pointer"
+                  <Link
+                    href="/settings"
+                    className="hover:text-purple-600 cursor-pointer"
+                  >
+                    settings
+                  </Link>
+                </span>
+                <span
+                  className="w-fit"
+                  onClick={() => setDisplayWritingGameLanding(false)}
                 >
-                  profile
-                </Link>
-              </span>
-              <span
-                className="hover:text-purple-600 cursor-pointer w-fit"
-                onClick={() => setDisplayWritingGameLanding(true)}
-              >
-                write
-              </span>
-              <span onClick={() => setDisplayWritingGameLanding(false)}>
-                <Link
-                  href="/library"
-                  className="hover:text-purple-600 cursor-pointer"
+                  <Link
+                    href={`/u/${user.id.replace("did:privy:", "")}`}
+                    className="hover:text-purple-600 cursor-pointer"
+                  >
+                    profile
+                  </Link>
+                </span>
+                <span
+                  className="hover:text-purple-600 cursor-pointer w-fit"
+                  onClick={() => setDisplayWritingGameLanding(true)}
                 >
-                  library
-                </Link>
-              </span>
-              <span
+                  write
+                </span>
+                <span onClick={() => setDisplayWritingGameLanding(false)}>
+                  <Link
+                    href="/library"
+                    className="hover:text-purple-600 cursor-pointer"
+                  >
+                    library
+                  </Link>
+                </span>
+                <span
+                  className="hover:text-purple-600 cursor-pointer"
+                  onClick={logout}
+                >
+                  logout
+                </span>
+              </div>
+            ) : (
+              <button
                 className="hover:text-purple-600 cursor-pointer"
-                onClick={logout}
+                onClick={login}
               >
-                logout
-              </span>
-            </div>
-          ) : (
-            <button
-              className="hover:text-purple-600 cursor-pointer"
-              onClick={login}
-            >
-              login
-            </button>
-          )}
+                login
+              </button>
+            )}
+          </div>
+        )}
+        <div className="hidden md:flex h-8 w-fit px-2 justify-center items-center relative">
+          <button
+            onClick={() => setDisplayNavbar(!displayNavbar)}
+            className="hover:text-purple-600 cursor-pointer "
+          >
+            <MdMenuOpen size={22} />
+          </button>
         </div>
       </div>
 
@@ -480,11 +493,6 @@ const GlobalApp = ({ alchemy }) => {
           backgroundRepeat: "no-repeat",
         }}
       >
-        {displayRightNavbar && (
-          <div className="fixed right-0 w-64 bg-black h-screen z-50">
-            <p>loja</p>
-          </div>
-        )}
         {displayWritingGameLanding ? (
           <div className="h-full">
             <DesktopWritingGame
@@ -497,6 +505,7 @@ const GlobalApp = ({ alchemy }) => {
               setLifeBarLength={setLifeBarLength}
               setThisIsTheFlag={setThisIsTheFlag}
               lifeBarLength={lifeBarLength}
+              setDisplayNavbar={setDisplayNavbar}
               setDisableButton={setDisableButton}
               displayWritingGameLanding={displayWritingGameLanding}
               setDisplayWritingGameLanding={setDisplayWritingGameLanding}
@@ -506,7 +515,6 @@ const GlobalApp = ({ alchemy }) => {
             {!disableButton && (
               <div
                 onClick={() => {
-                  console.log("in here", router);
                   if (
                     router.pathname.includes("write") ||
                     router.pathname.includes("w")
