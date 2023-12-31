@@ -34,7 +34,7 @@ const ReadCastPage = () => {
       : "https://api.anky.lat";
 
   const [cast, setCast] = useState();
-  const { authenticated } = usePrivy();
+  const { authenticated, login } = usePrivy();
   const [castInfo, setCastInfo] = useState({});
   const [castReplies, setCastReplies] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -191,8 +191,8 @@ const ReadCastPage = () => {
         <meta property="og:url" content={`https://www.anky.lat/r/${id}`} />
         <meta property="og:type" content="website" />
       </Head>
-      <div className="active:none w-full h-screen md:max-w-2xl md:mx-auto flex flex-col relative">
-        <div className="w-full md:w-6/12 mx-auto h-full flex flex-col overflow-y-scroll  flex-grow bg-gray-300 text-gray-700 ">
+      <div className="active:none w-full h-screen md:max-w-2xl  md:mx-auto flex flex-col relative">
+        <div className="w-full md:w-6/12   mx-auto h-full flex flex-col overflow-y-scroll  flex-grow bg-gray-300 text-gray-700 ">
           <div className="text-xs italic py-3 flex-none h-fit flex  items-center  justify-center ">
             <Link href={`/u/${cast.author.fid}`} passHref>
               <div className="w-48 h-48 active:translate-x-2 rounded-full overflow-hidden relative shadow-2xl">
@@ -278,11 +278,15 @@ const ReadCastPage = () => {
 
           {displaySendNewen && !authenticated && (
             <small className="text-red-800">
-              *login to send $NEWEN to the creator of this cast
+              *
+              <span className="text-red-500" onClick={login}>
+                login
+              </span>{" "}
+              to send $NEWEN to the creator of this cast
             </small>
           )}
 
-          <div className="h-96 grow rounded px-2 py-2 text-2xl text-left pl-8  ">
+          <div className="h-fit grow rounded px-2 pt-2 pb-4 text-2xl text-left pl-8  ">
             {writing ? (
               writing.includes("\n") ? (
                 writing.split("\n").map((x, i) => (

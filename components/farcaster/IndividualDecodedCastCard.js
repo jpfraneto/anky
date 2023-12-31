@@ -25,7 +25,7 @@ var options = {
 };
 
 const IndividualDecodedCastCard = ({ cast, farcasterUser }) => {
-  const { authenticated } = usePrivy();
+  const { authenticated, login } = usePrivy();
   const [castReplies, setCastReplies] = useState([]);
   const [thisCast, setThisCast] = useState(cast);
   const [displaySendNewen, setDisplaySendNewen] = useState(false);
@@ -300,8 +300,15 @@ const IndividualDecodedCastCard = ({ cast, farcasterUser }) => {
                 )}
 
                 {displaySendNewen && !authenticated && (
-                  <small className="text-red-500">
-                    *login to send $NEWEN to the creator of this cast
+                  <small className="text-red-800">
+                    *
+                    <span
+                      className="text-red-500 shadow-md shadow-yellow-600"
+                      onClick={login}
+                    >
+                      login
+                    </span>{" "}
+                    to send $NEWEN to the creator of this cast
                   </small>
                 )}
               </div>
