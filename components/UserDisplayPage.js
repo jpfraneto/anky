@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import axios from "axios";
+import { getThisUserWritings } from "../lib/irys";
 import Spinner from "./Spinner";
 import { Bar } from "react-chartjs-2";
 import {
@@ -15,6 +16,17 @@ import {
 import Link from "next/link";
 import Button from "./Button";
 
+var options = {
+  weekday: "long",
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+  hour: "numeric",
+  minute: "numeric",
+  second: "numeric",
+  hour12: true,
+};
+
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -28,9 +40,23 @@ const UserDisplayPage = ({ thisUserInfo }) => {
   const [usersAnkyFeed, setUsersAnkyFeed] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingUser, setLoadingUser] = useState(true);
+  const [allUserWritings, setAllUserWritings] = useState([]);
+  const [entryForDisplay, setEntryForDisplay] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [writingsLoading, setWritingsLoading] = useState(true);
   const [thisFarcasterUser, setThisFarcasterUser] = useState({});
   const [userNotFound, setUserNotFound] = useState(false);
   const [thisAnkyUser, setThisAnkyUser] = useState({});
+  const wallet = { address: "0x82C7C20B2368aE27727390753aC037f1d3265df7" };
+  function sortWritings(a, b) {
+    const timestampA = a.timestamp;
+    const timestampB = b.timestamp;
+    return timestampB - timestampA;
+  }
+  const closeModal = useCallback(() => {
+    setIsModalOpen(false);
+    setEntryForDisplay(null);
+  }, []);
 
   const [chartData, setChartData] = useState({
     labels: [],
@@ -81,6 +107,35 @@ const UserDisplayPage = ({ thisUserInfo }) => {
     fetchUsersInformation();
   }, []);
 
+  const handleKeyDown = (event) => {
+    if (event.key === "ArrowLeft") {
+      setEntryForDisplay((prevPage) => prevPage - 1);
+    } else if (event.key === "ArrowRight") {
+      setEntryForDisplay((prevPage) => prevPage + 1);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleKeyPress = (event) => {
+      if (event.key === "Escape" && isModalOpen) {
+        closeModal();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyPress);
+    };
+  }, [isModalOpen, closeModal]);
+
   useEffect(() => {
     const fetchUsersAnkyFeed = async () => {
       if (!thisUserInfo) return;
@@ -94,20 +149,77 @@ const UserDisplayPage = ({ thisUserInfo }) => {
     };
     fetchUsersAnkyFeed();
   }, []);
-  // useEffect(() => {
-  //   const fetchUsersAnkyFeed = async () => {
-  //     if (!thisUserInfo) return;
-  //     console.log("fetching the users anky feed", thisUserInfo);
-  //     const response = await axios.post(
-  //       `${process.env.NEXT_PUBLIC_API_ROUTE}/farcaster/u/${thisUserInfo}/feed`
-  //     );
-  //     console.log("THE RESPONSE HERE IS: ", response.data);
-  //     setUsersAnkyFeed(response.data.feed);
-  //     setLoading(false);
-  //   };
-  //   // fetchUserInformationOnFarcaster();
-  //   fetchUsersAnkyFeed();
-  // }, []);
+
+  useEffect(() => {
+    async function getAllUserWritings() {
+      if (!wallet) return;
+      const writings = await getThisUserWritings(wallet.address);
+
+      const sortedWritings = writings.sort(sortWritings);
+      setAllUserWritings(sortedWritings);
+      setWritingsLoading(false);
+    }
+
+    getAllUserWritings();
+  }, []);
+
+  function renderModal() {
+    let content;
+    if (!allUserWritings.length > 0) return;
+    let thisEntry = allUserWritings[entryForDisplay];
+    if (entryForDisplay > allUserWritings.length) {
+      setEntryForDisplay(allUserWritings.length);
+    }
+    if (entryForDisplay < 0) {
+      setEntryForDisplay(0);
+    }
+    if (!thisEntry) return;
+    content = thisEntry.content || thisEntry.text;
+
+    return (
+      isModalOpen && (
+        <div className="fixed top-0 left-0 bg-black w-full h-full flex items-center justify-center z-50">
+          <div className="bg-purple-300 overflow-y-scroll text-black rounded relative p-6 w-11/12 h-3/4 md:w-2/3 md:h-2/3">
+            <p className="absolute top-1 w-fit cursor-pointer left-2 text-gray-800">
+              {entryForDisplay + 1}
+            </p>
+            <p
+              onClick={closeModal}
+              className="absolute w-fit top-1 cursor-pointer right-2 text-red-600"
+            >
+              close
+            </p>
+            <div className="overflow-y-scroll h-9/12">
+              {content ? (
+                content.includes("\n") ? (
+                  content.split("\n").map((x, i) => (
+                    <p className="my-2" key={i}>
+                      {x}
+                    </p>
+                  ))
+                ) : (
+                  <p className="my-2">{content}</p>
+                )
+              ) : null}
+            </div>
+            <span className="text-sm absolute w-96 top-1 left-1/2 -translate-x-1/2">
+              {new Date(thisEntry.timestamp).toLocaleDateString(
+                "en-US",
+                options
+              )}
+            </span>
+            <div className="w-48 mx-auto mt-2">
+              <Button
+                buttonAction={() => setIsModalOpen(false)}
+                buttonText="close"
+                buttonColor="bg-red-600"
+              />
+            </div>
+          </div>
+        </div>
+      )
+    );
+  }
   if (userNotFound) {
     return (
       <div className="mt-4 text-white">
@@ -144,7 +256,7 @@ const UserDisplayPage = ({ thisUserInfo }) => {
         <div>
           <div className="md:w-full px-4 flex justify-between h-24 z-1 rounded-xl bg-blue-200  mx-auto">
             <div className="w-1/3 flex ">
-              <div className="flex w-1/2 h-full items-center justify-center flex-col">
+              <div className="flex w-1/2 h-full  items-center justify-center flex-col">
                 <p className="text-md">writing streak</p>
                 <p className="text-2xl">{thisAnkyUser.longestStreak}</p>
               </div>
@@ -181,7 +293,7 @@ const UserDisplayPage = ({ thisUserInfo }) => {
           </div>
           <p className="text-white">2000 $NEWEN to level 9</p>
           <div className="w-full mt-2 h-full flex flex-col md:flex-row">
-            <div className="flex w-1/2 flex-col">
+            <div className="flex w-full md:w-1/2 flex-col">
               <div className="w-full grow-0 h-fit bg-black text-white flex flex-col p-2 justify-start items-start">
                 <p className="text-xl ">Stats</p>
                 <hr className="text-white h-2" />
@@ -242,45 +354,35 @@ const UserDisplayPage = ({ thisUserInfo }) => {
               </div>
             </div>
 
-            <div className="w-full md:w-2/3 mt-2 md:mt-0 overflow-y-scroll mx-2 grow bg-black text-white flex flex-col p-2 justify-start items-start">
+            <div className="w-full md:w-2/3 mt-2 md:mt-0 overflow-y-scroll  grow bg-black text-white flex flex-col p-2 justify-start items-start">
               <p className="text-xl ">Writing Feed</p>
               <hr className="text-white h-2" />
-              {usersAnkyFeed &&
-                usersAnkyFeed.length &&
-                usersAnkyFeed.map((cast, i) => {
-                  return (
-                    <div
-                      key={i}
-                      className="p-2 border border-red-300 w-full my-2 bg-purple-400 rounded-xl"
-                    >
-                      <div className="text-xs text-left">{cast.text}</div>
-                      <div className="mt-2 w-full flex justify-between items-start">
-                        <div className="flex">
-                          <div className="mx-2 hover:text-red-200">
-                            likes: {cast.reactions.likes.length}
-                          </div>
-                          <div className="mx-2 hover:text-green-200">
-                            recasts: {cast.reactions.recasts.length}
-                          </div>
-                          <div className="mx-2">
-                            comments: {cast.replies.count}
-                          </div>
-                        </div>
-                        <div>
-                          <a
-                            target="_blank"
-                            href={`https://warpcast.com/${
-                              cast.author.username
-                            }/${cast.hash.substring(0, 10)}`}
-                            className="ml-auto hover:text-purple-200"
+              <div className="w-full flex overflow-y-scroll justify-center flex-wrap  h-fit p-2 my-2">
+                {writingsLoading ? (
+                  <>
+                    <Spinner />
+                    <p>loading your writings</p>
+                  </>
+                ) : (
+                  <>
+                    {allUserWritings &&
+                      allUserWritings.map((writing, i) => {
+                        return (
+                          <div
+                            key={i}
+                            onClick={() => {
+                              setEntryForDisplay(i);
+                              setIsModalOpen(true);
+                            }}
+                            className="px-2 text-black border-black border py-1 m-1 w-10 h-10 flex justify-center items-center hover:shadow-xl hover:shadow-black hover:bg-blue-600 text-xl cursor-pointer bg-blue-400 rounded-xl"
                           >
-                            open in warpcast
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
+                            {i + 1}
+                          </div>
+                        );
+                      })}
+                  </>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -303,6 +405,7 @@ const UserDisplayPage = ({ thisUserInfo }) => {
           </a>
         </div>
       )}
+      {renderModal()}
     </div>
   );
 };

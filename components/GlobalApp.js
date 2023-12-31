@@ -357,7 +357,9 @@ const GlobalApp = ({ alchemy }) => {
   return (
     <div className="relative text-center w-screen text-white h-screen flex flex-col">
       <div className="text-gray-400 w-full h-8 justify-between md:flex md:px-2 items-center">
-        <Link href="/">
+        <Link
+          href={authenticated ? `/u/${user.id.replace("did:privy:", "")}` : "/"}
+        >
           <span
             onClick={() => setDisplayWritingGameLanding(false)}
             className="hover:text-purple-600 pr-2"
