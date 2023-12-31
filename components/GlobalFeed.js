@@ -74,7 +74,7 @@ const GlobalFeed = ({ thisWallet }) => {
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full h-screen overflow-y-scroll">
       <div className="w-full px-4 flex justify-around flex-wrap md:w-2/3  mx-auto">
         {globalFeed.map((x, i) => {
           return (

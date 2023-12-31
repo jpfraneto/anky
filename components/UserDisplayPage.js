@@ -51,6 +51,7 @@ const UserDisplayPage = ({ thisUserInfo }) => {
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_API_ROUTE}/user/farcaster/${thisUserInfo}`
         );
+        console.log("the response here sadasdas: ", response);
         setThisFarcasterUser(response.data.farcasterUser);
 
         const manaByDate = response.data.manaData;
@@ -144,8 +145,8 @@ const UserDisplayPage = ({ thisUserInfo }) => {
           <div className="md:w-full px-4 flex justify-between h-24 z-1 rounded-xl bg-blue-200  mx-auto">
             <div className="w-1/3 flex ">
               <div className="flex w-1/2 h-full items-center justify-center flex-col">
-                <p className="text-md">daily streak</p>
-                <p className="text-2xl">21</p>
+                <p className="text-md">writing streak</p>
+                <p className="text-2xl">{thisAnkyUser.longestStreak}</p>
               </div>
               <div className="flex w-1/2 h-full items-center justify-center flex-col">
                 <p className="text-md">balance $NEWEN</p>
@@ -179,7 +180,7 @@ const UserDisplayPage = ({ thisUserInfo }) => {
             </div>
           </div>
           <p className="text-white">2000 $NEWEN to level 9</p>
-          <div className="w-full mt-2 flex flex-col md:flex-row">
+          <div className="w-full mt-2 h-full flex flex-col md:flex-row">
             <div className="flex w-1/2 flex-col">
               <div className="w-full grow-0 h-fit bg-black text-white flex flex-col p-2 justify-start items-start">
                 <p className="text-xl ">Stats</p>
@@ -190,7 +191,7 @@ const UserDisplayPage = ({ thisUserInfo }) => {
                 </div>
                 <div className="flex justify-between px-2 w-full">
                   <p>longest streak: </p>
-                  <p>88</p>
+                  <p>{thisAnkyUser.longestStreak}</p>
                 </div>
                 <div className="flex justify-between px-2 w-full">
                   <p>longest writing session: </p>
@@ -241,7 +242,7 @@ const UserDisplayPage = ({ thisUserInfo }) => {
               </div>
             </div>
 
-            <div className="w-full md:w-2/3 mt-2 md:mt-0 overflow-y-scroll mx-2 h-96 bg-black text-white flex flex-col p-2 justify-start items-start">
+            <div className="w-full md:w-2/3 mt-2 md:mt-0 overflow-y-scroll mx-2 grow bg-black text-white flex flex-col p-2 justify-start items-start">
               <p className="text-xl ">Writing Feed</p>
               <hr className="text-white h-2" />
               {usersAnkyFeed &&

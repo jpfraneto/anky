@@ -436,6 +436,17 @@ const GlobalApp = ({ alchemy }) => {
                   onClick={() => setDisplayWritingGameLanding(false)}
                 >
                   <Link
+                    href="/leaderboard"
+                    className="hover:text-purple-600 cursor-pointer"
+                  >
+                    leaderboard
+                  </Link>
+                </span>
+                <span
+                  className="w-fit"
+                  onClick={() => setDisplayWritingGameLanding(false)}
+                >
+                  <Link
                     href={`/u/${user.id.replace("did:privy:", "")}`}
                     className="hover:text-purple-600 cursor-pointer"
                   >

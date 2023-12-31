@@ -12,6 +12,7 @@ const ConnectFarcasterModal = () => {
   const [wtf, setWtf] = useState(false);
   const [loading, setLoading] = useState(false);
   const { farcasterUser, setFarcasterUser } = useUser();
+  console.log("the farcaster user is: ", farcasterUser);
 
   const apiRoute =
     self.location.hostname === "localhost"
@@ -122,7 +123,8 @@ const ConnectFarcasterModal = () => {
       )}
       {farcasterUser?.status == "approved" && (
         <div className="px-0 py-2">
-          <p>your farcaster user is connected</p>
+          <p>your farcaster user is connected, it is {farcasterUser.fid}</p>
+
           {farcasterUser.pfp && (
             <>
               <div className="w-48 h-48 rounded-full overflow-hidden relative">

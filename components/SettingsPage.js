@@ -75,18 +75,22 @@ const SettingsPage = () => {
         return (
           <div className="w-full h-full flex flex-col items-start overflow-y-scroll justify-start">
             <p className="text-2xl mb-4">Notification Preferences</p>
-            <div className="flex space-x-2">
+            <p>
+              it would be great to enable some sort of notification here that
+              allowed people to remember to come
+            </p>
+            {/* <div className="flex space-x-2">
               <p>do you want email notifications?</p>
               <input type="checkbox" />
-            </div>
+            </div> */}
 
-            <div className="mt-2 ml-2">
+            {/* <div className="mt-2 ml-2">
               <Button
                 buttonText="save changes"
                 buttonAction={() => alert("save changes!")}
                 buttonColor="bg-green-600"
               />
-            </div>
+            </div> */}
           </div>
         );
       case "farcaster":
@@ -136,8 +140,8 @@ const SettingsPage = () => {
           <div className="w-fit px-4 mx-auto">
             <Link passHref href="/library">
               <Button
-                buttonColor="bg-red-200 text-black
-              bg-transparent text-white
+                buttonColor="bg-green-600 
+               text-white
           my-2 border-white border"
                 buttonText="go to library"
               />
