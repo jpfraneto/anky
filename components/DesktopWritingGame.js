@@ -532,12 +532,12 @@ const DesktopWritingGame = ({
         };
       });
 
-      setJournal((x) => {
-        return {
-          ...x,
-          entries: [...chosenJournal.entries, newJournalEntry],
-        };
-      });
+      // setJournal((x) => {
+      //   return {
+      //     ...x,
+      //     entries: [...chosenJournal.entries, newJournalEntry],
+      //   };
+      // });
 
       setLifeBarLength(0);
     } catch (e) {
