@@ -222,8 +222,12 @@ const UserDisplayPage = ({ thisUserInfo }) => {
   }
   if (userNotFound) {
     return (
-      <div className="mt-4 text-white">
-        <p>This user doesn&apos;t exist.</p>
+      <div className="mt-4 text-white px-4">
+        <p>This user doesn&apos;t exist in the db yet.</p>
+        <p>
+          I need to make the connection between the farcaster fid and the user
+          inside the database.{" "}
+        </p>
         <div className="w-48 mt-2 mx-auto">
           <Link href="/feed" passHref>
             <Button buttonColor="bg-purple-600" buttonText="back to feed" />

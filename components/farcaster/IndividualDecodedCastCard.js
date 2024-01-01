@@ -26,7 +26,11 @@ var options = {
 
 const IndividualDecodedCastCard = ({ cast, farcasterUser }) => {
   const { authenticated, login } = usePrivy();
+  const { userDatabaseInformation } = useUser();
   const [castReplies, setCastReplies] = useState([]);
+  const [manaForCongratulation, setManaForCongratulation] = useState(
+    Math.min(userDatabaseInformation?.manaBalance, 100)
+  );
   const [thisCast, setThisCast] = useState(cast);
   const [displaySendNewen, setDisplaySendNewen] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -108,6 +112,21 @@ const IndividualDecodedCastCard = ({ cast, farcasterUser }) => {
       }
     }
   };
+
+  async function sendManaToCastCreator() {
+    try {
+      if (manaForCongratulation > userDatabaseInformation.manaBalance)
+        return alert("You dont have enough $NEWEN balance for that.");
+      alert(`this will send ${manaForCongratulation} to the user`);
+      console.log("the total", totalNewenEarned, manaForCongratulation);
+      setTotalNewenEarned(
+        Number(totalNewenEarned) + Number(manaForCongratulation)
+      );
+      setDisplaySendNewen(false);
+    } catch (error) {
+      console.log("there was an error sending the mana to the user", error);
+    }
+  }
 
   async function handleLike(e) {
     try {
@@ -223,7 +242,7 @@ const IndividualDecodedCastCard = ({ cast, farcasterUser }) => {
           )}
           <div className="absolute w-96 bottom-0">
             <div className="flex flex-col h-fit py-1 bg-black text-white w-full left-0 px-2  relative">
-              <div className="w-full h-fit flex  justify-between items-center">
+              <div className="w-full h-8 flex justify-between items-center">
                 <div className="pl-4 flex space-x-4 h-full">
                   <div
                     onClick={handleDisplayComments}
@@ -274,9 +293,9 @@ const IndividualDecodedCastCard = ({ cast, farcasterUser }) => {
                   Warpcast
                 </a>
               </div>
-              <div>
+              <>
                 {authenticated && displaySendNewen && (
-                  <div className="flex h-fit py-1 bg-purple-600 relative pb-5 text-white w-full left-0 px-4  relative justify-between items-center">
+                  <div className="flex h-16 bg-purple-600 relative pb-5 text-white w-full px-4 relative justify-between items-center">
                     <p>$NEWEN{!authenticated && "*"}</p>
                     <input
                       className="rounded-xl mx-1 w-1/3 text-black  px-4"
@@ -284,7 +303,7 @@ const IndividualDecodedCastCard = ({ cast, farcasterUser }) => {
                       disabled={!authenticated}
                       min={0}
                       onChange={(e) => setManaForCongratulation(e.target.value)}
-                      max={userDatabaseInformation.manaBalance}
+                      max={userDatabaseInformation?.manaBalance || 1000}
                       value={manaForCongratulation}
                     />
                     <small className="absolute text-purple-200 bottom-1">
@@ -311,7 +330,7 @@ const IndividualDecodedCastCard = ({ cast, farcasterUser }) => {
                     to send $NEWEN to the creator of this cast
                   </small>
                 )}
-              </div>
+              </>
             </div>
           </div>
         </div>
