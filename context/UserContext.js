@@ -166,6 +166,9 @@ export const UserProvider = ({ children }) => {
         const thisUserPrivyId = user.id.replace("did:privy:", "");
         const thisFarcasterAccount = farcasterUser || null;
         if (!thisFarcasterAccount?.fid) thisFarcasterAccount.fid = 0;
+        console.log(
+          "right before sending the post request to the database to get the users information"
+        );
         const response = await axios.post(
           `${process.env.NEXT_PUBLIC_API_ROUTE}/user/${thisUserPrivyId}`,
           { thisFarcasterAccount },
@@ -182,7 +185,6 @@ export const UserProvider = ({ children }) => {
           streak: response.data.user.streak || 0,
           manaBalance: response.data.user.manaBalance || 0,
         });
-        console.log("the response is: ", response.data);
       } catch (error) {
         console.log("there was an errror here0, ", error);
       }

@@ -90,14 +90,6 @@ function MyApp({ Component, pageProps }) {
   const handleLogin = async (user) => {
     try {
       console.log("the user is logged in");
-
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_ROUTE}/user/login`,
-        {
-          privyId: user.id.split("did:privy:")[1],
-        }
-      );
-      console.log("the response after the login is: ", response);
       router.push("/feed");
     } catch (error) {
       console.log("the error is: ", error);
