@@ -344,7 +344,6 @@ const GlobalApp = ({ alchemy }) => {
             className={`flex-col text-white h-screen w-screen bg-black flex justify-center items-center fade-${state}`}
           >
             <h1 className="text-5xl text-center ">anky</h1>
-            <p className="text-sm mb-3">(don&apos;t try to understand)</p>
             <div className="lds-ripple">
               <div></div>
               <div></div>
