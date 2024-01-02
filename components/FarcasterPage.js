@@ -216,7 +216,8 @@ const FarcasterPage = ({
         farcasterUser?.signer_approval_url && (
           <div className="signer-approval-container flex flex-col  bg-purple-600 p-24 items-center justify-center pt-12">
             <p className="hidden md:flex mb-2">
-              scan this qr code to authenticate with warpcast
+              scan this qr code to authenticate with warpcast and link your
+              account to anky
             </p>
             <div className="hidden w-full md:flex justify-center my-4">
               <QRCode value={farcasterUser.signer_approval_url} />

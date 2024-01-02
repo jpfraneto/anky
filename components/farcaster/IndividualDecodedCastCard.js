@@ -25,8 +25,10 @@ var options = {
 };
 
 const IndividualDecodedCastCard = ({ cast, farcasterUser }) => {
-  const { authenticated, login } = usePrivy();
-  const { userDatabaseInformation } = useUser();
+  console.log("the cast information is: ", cast);
+
+  const { authenticated, login, getAccessToken } = usePrivy();
+  const { userDatabaseInformation, setUserDatabaseInformation } = useUser();
   const [castReplies, setCastReplies] = useState([]);
   const [totalNewenEarned, setTotalNewenEarned] = useState(222);
   const [manaForCongratulation, setManaForCongratulation] = useState(
@@ -100,6 +102,7 @@ const IndividualDecodedCastCard = ({ cast, farcasterUser }) => {
         if (response.status !== 200) {
           throw new Error("API call failed");
         }
+
         // Handle successful response if necessary
       } catch (error) {
         // Revert optimistic updates if the API call fails
@@ -119,9 +122,40 @@ const IndividualDecodedCastCard = ({ cast, farcasterUser }) => {
       if (manaForCongratulation > userDatabaseInformation.manaBalance)
         return alert("You dont have enough $NEWEN balance for that.");
       alert(`this will send ${manaForCongratulation} to the user`);
+      if (!farcasterUser && !farcasterUser.fid && authenticated) {
+        return alert("You need to log in with farcaster to do that");
+      }
+      const authToken = await getAccessToken();
+
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_ROUTE}/mana/mana-transaction`,
+        {
+          sender: farcasterUser.fid,
+          receiver: cast.author.fid,
+          manaSent: manaForCongratulation,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+      console.log("the response from the server is: ", response);
       setTotalNewenEarned(
         Number(totalNewenEarned) + Number(manaForCongratulation)
       );
+      setUserDatabaseInformation((x) => {
+        console.log(
+          "updating the userdatabaseinformation substracting the spent mana.",
+          x.manaBalance,
+          frontendWrittenTime
+        );
+        return {
+          ...x,
+          manaBalance: response.data.data.manaBalance - manaForCongratulation,
+        };
+      });
       setDisplaySendNewen(false);
     } catch (error) {
       console.log("there was an error sending the mana to the user", error);
@@ -219,7 +253,7 @@ const IndividualDecodedCastCard = ({ cast, farcasterUser }) => {
                     <div
                       onClick={handleRecast}
                       className={`flex space-x-1 items-center ${
-                        hasUserRecasted && "text-green-300"
+                        hasUserRecasted ? "text-green-300" : "text-green-200"
                       } hover:text-green-300 cursor-pointer`}
                     >
                       <BsArrowRepeat size={19} />
@@ -228,7 +262,7 @@ const IndividualDecodedCastCard = ({ cast, farcasterUser }) => {
                     <div
                       onClick={handleLike}
                       className={`flex space-x-1 items-center ${
-                        hasUserLiked && "text-red-300"
+                        hasUserLiked ? "text-red-300" : "text-red-200"
                       } hover:text-red-500 cursor-pointer`}
                     >
                       <FaRegHeart />
@@ -239,7 +273,7 @@ const IndividualDecodedCastCard = ({ cast, farcasterUser }) => {
                         setDisplaySendNewen(!displaySendNewen);
                       }}
                       className={`flex space-x-1 items-center ${
-                        displaySendNewen && "text-purple-300"
+                        displaySendNewen ? "text-purple-300" : "text-purple-200"
                       } hover:text-purple-500 cursor-pointer`}
                     >
                       <GiRollingEnergy />
@@ -258,29 +292,34 @@ const IndividualDecodedCastCard = ({ cast, farcasterUser }) => {
                 </div>
                 <>
                   {authenticated && displaySendNewen && (
-                    <div className="flex h-12 mt-1 bg-purple-600 relative text-white w-full px-4 relative justify-between items-center">
+                    <div className="flex h-14 mt-1 bg-purple-600 relative text-white w-full px-4 relative justify-between items-center">
                       {userDatabaseInformation.manaBalance ? (
                         <>
-                          {" "}
-                          <p>$NEWEN{!authenticated && "*"}</p>
-                          <input
-                            className="rounded-xl mx-1 w-1/3 text-black  px-4"
-                            type="number"
-                            disabled={!authenticated}
-                            min={0}
-                            onChange={(e) =>
-                              setManaForCongratulation(e.target.value)
-                            }
-                            max={userDatabaseInformation?.manaBalance || 1000}
-                            value={manaForCongratulation}
-                          />
-                          <small className="absolute text-purple-200 bottom-1">
-                            your balance is{" "}
-                            {userDatabaseInformation.manaBalance}
-                          </small>
+                          <div className="flex flex-row w-full items-center">
+                            <div className="flex flex-col items-start justify-start">
+                              <p>$NEWEN{!authenticated && "*"}</p>
+
+                              <small className=" text-purple-200 bottom-0">
+                                your balance is{" "}
+                                {userDatabaseInformation.manaBalance}
+                              </small>
+                            </div>
+                            <input
+                              className="rounded-xl mx-auto w-24 h-fit text-black  px-4"
+                              type="number"
+                              disabled={!authenticated}
+                              min={0}
+                              onChange={(e) =>
+                                setManaForCongratulation(e.target.value)
+                              }
+                              max={userDatabaseInformation?.manaBalance || 1000}
+                              value={manaForCongratulation}
+                            />
+                          </div>
+
                           <button
                             onClick={sendManaToCastCreator}
-                            className="bg-purple-800 border border-white px-2 py-1 rounded-xl hover:text-green-500 active:text-yellow-500"
+                            className="bg-purple-800 border border-white w-48 px-2 py-1 rounded-xl hover:text-green-500 active:text-yellow-500"
                           >
                             send to user
                           </button>

@@ -4,6 +4,7 @@ import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { Righteous, Dancing_Script } from "next/font/google";
 import { getAnkyverseDay, getAnkyverseQuestion } from "../lib/ankyverse";
 import { useUser } from "../context/UserContext";
+import Button from "./Button";
 import { FaPencilAlt } from "react-icons/fa";
 import { IoArrowBack } from "react-icons/io5";
 import { MdMenuOpen } from "react-icons/md";
@@ -335,6 +336,7 @@ const GlobalApp = ({ alchemy }) => {
         );
     }
   }
+  console.log("this", authenticated, farcasterUser.status != "approved");
 
   if (mainAppLoading)
     return (
@@ -375,6 +377,7 @@ const GlobalApp = ({ alchemy }) => {
             }}
           ></div>
         </div>
+
         {displayNavbar && (
           <div className="h-8 w-fit px-2 flex justify-center items-center relative">
             {authenticated ? (
@@ -494,6 +497,17 @@ const GlobalApp = ({ alchemy }) => {
           </button>
         </div>
       </div>
+      {authenticated && farcasterUser.status != "approved" && (
+        <div className="text-white bg-red-500 py-1 flex justify-center items-center ">
+          action needed: link farcaster account{" "}
+          <Link
+            href="/settings?link=farcaster"
+            className="bg-purple-600 ml-4 px-2 py-1 rounded-xl border border-black active:bg-yellow-500"
+          >
+            go to settings
+          </Link>
+        </div>
+      )}
 
       <div
         className={`${righteous.className} flex-grow text-black relative  items-center justify-center`}

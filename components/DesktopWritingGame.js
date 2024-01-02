@@ -177,6 +177,7 @@ const DesktopWritingGame = ({
       const frontendWrittenTime = Math.floor(
         (finishTimestamp - startTime) / 1000
       );
+      console.log("inside the finish run thing", frontendWrittenTime);
 
       if (frontendWrittenTime > 30) {
         pingServerToEndWritingSession(finishTimestamp, frontendWrittenTime);
@@ -279,6 +280,7 @@ const DesktopWritingGame = ({
 
   async function pingServerToEndWritingSession(now, frontendWrittenTime) {
     try {
+      console.log("pinging the server to finish the writing session");
       let response;
       if (authenticated) {
         const authToken = await getAccessToken();

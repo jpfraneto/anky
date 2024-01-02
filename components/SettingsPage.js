@@ -5,16 +5,17 @@ import { usePrivy } from "@privy-io/react-auth";
 import Image from "next/image";
 import Link from "next/link";
 import Button from "./Button";
+import { useRouter } from "next/router";
 
 const SettingsPage = () => {
+  const router = useRouter();
   const { farcasterUser } = useUser();
-  const { authenticated, user } = usePrivy();
-  const [chosenTab, setChosenTab] = useState("general");
+  const { authenticated, user, login } = usePrivy();
+  const [chosenTab, setChosenTab] = useState(router.query.link || "general");
   const openGeneralSettings = () => {
     alert("open the general settings");
   };
 
-  console.log("the farcaster user is: ", farcasterUser);
   const renderSettings = () => {
     switch (chosenTab) {
       case "general":
@@ -102,11 +103,22 @@ const SettingsPage = () => {
         );
     }
   };
+  if (!authenticated)
+    return (
+      <div className="mt-4 text-white">
+        <p>you need to login first</p>
+        <Button
+          buttonAction={login}
+          buttonText="login"
+          buttonColor="bg-purple-600 w-48 mt-2"
+        />
+      </div>
+    );
   return (
     <div className="pt-4 md:w-full h-full flex flex-col mx-auto text-white px-4">
       <h2 className="text-4xl ">Settings</h2>
       <small className="text-xs mb-2">
-        (this is the bare bones of this part of the app. not working yet)
+        (this is the bare bones of this part of the app)
       </small>
       <div className="flex flex-col md:flex-row h-full">
         <div className="w-full md:w-1/5 flex flex-row flex-wrap md:flex-col justify-start items-start ">

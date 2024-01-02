@@ -6,11 +6,13 @@ import Image from "next/image";
 import QRCode from "qrcode.react";
 import { useUser } from "../../context/UserContext";
 import Link from "next/link";
+import { usePrivy } from "@privy-io/react-auth";
 
 const ConnectFarcasterModal = () => {
   const [copiedText, setCopiedText] = useState("or click here to copy the url");
   const [wtf, setWtf] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { getAccessToken, user, authenticated } = usePrivy();
   const { farcasterUser, setFarcasterUser } = useUser();
   console.log("the farcaster user is: ", farcasterUser);
 
@@ -22,8 +24,8 @@ const ConnectFarcasterModal = () => {
   useEffect(() => {
     const storedData = localStorage.getItem(LOCAL_STORAGE_KEYS.FARCASTER_USER);
     if (storedData) {
-      const user = JSON.parse(storedData);
-      setFarcasterUser(user);
+      const userData = JSON.parse(storedData);
+      setFarcasterUser(userData);
     }
   }, []);
 
@@ -32,20 +34,23 @@ const ConnectFarcasterModal = () => {
 
     if (farcasterUser && farcasterUser.status === "pending_approval") {
       const startPolling = () => {
+        if (!authenticated) return;
         intervalId = setInterval(async () => {
           try {
             const response = await axios.get(
-              `${apiRoute}/farcaster/api/signer?signer_uuid=${farcasterUser?.signer_uuid}`
+              `${apiRoute}/farcaster/api/signer?signer_uuid=${
+                farcasterUser?.signer_uuid
+              }?privyId=${user.id.split("did:privy:")[1]}`
             );
-            const user = response.data;
+            const userData = response.data;
 
-            if (user?.status === "approved") {
+            if (userData?.status === "approved") {
               localStorage.setItem(
                 LOCAL_STORAGE_KEYS.FARCASTER_USER,
-                JSON.stringify(user)
+                JSON.stringify(userData)
               );
 
-              setFarcasterUser(user);
+              setFarcasterUser(userData);
               clearInterval(intervalId);
             }
           } catch (error) {
@@ -87,16 +92,27 @@ const ConnectFarcasterModal = () => {
   };
 
   async function handleSignIn() {
-    // setGameProps({});
-    // return setDisplayWritingGameLanding(true);
     setLoading(true);
-    await createAndStoreSigner();
+    const response = await createAndStoreSigner();
+    console.log("the response from the create and store signer is: ", response);
+
     setLoading(false);
   }
 
   async function createAndStoreSigner() {
     try {
-      const response = await axios.post(`${apiRoute}/farcaster/api/signer`);
+      if (!authenticated) return;
+      const authToken = await getAccessToken();
+      const response = await axios.post(
+        `${apiRoute}/farcaster/api/signer`,
+        { privyId: user.id.split("did:privy:")[1] },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
       if (response.status === 200) {
         localStorage.setItem(
           LOCAL_STORAGE_KEYS.FARCASTER_USER,
@@ -140,13 +156,14 @@ const ConnectFarcasterModal = () => {
       {farcasterUser?.status == "pending_approval" &&
         farcasterUser?.signer_approval_url && (
           <div className="signer-approval-container flex flex-col  bg-black  p-0 items-left justify-center ">
-            <p className="hidden md:flex mb-2">
-              scan this qr code to authenticate with warpcast
+            <p className="hidden md:flex mb-2 justify-center mt-2">
+              scan this qr code to authenticate with warpcast and link your
+              account to anky
             </p>
-            <div className="hidden w-full md:flex justify-start my-4">
-              <QRCode value={farcasterUser.signer_approval_url} />
+            <div className="hidden w-full md:flex justify-center my-4">
+              <QRCode size={222} value={farcasterUser.signer_approval_url} />
             </div>
-            <p className="hidden md:flex">
+            <p className="hidden md:flex justify-center">
               <span
                 className="hover:text-red-600 cursor-pointer active:text-yellow-500"
                 onClick={copyText}

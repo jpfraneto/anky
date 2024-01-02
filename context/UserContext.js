@@ -164,8 +164,11 @@ export const UserProvider = ({ children }) => {
         if (!authenticated) return;
         const authToken = await getAccessToken();
         const thisUserPrivyId = user.id.replace("did:privy:", "");
-        const response = await axios.get(
+        const thisFarcasterAccount = farcasterUser || null;
+        if (!thisFarcasterAccount?.fid) thisFarcasterAccount.fid = 0;
+        const response = await axios.post(
           `${process.env.NEXT_PUBLIC_API_ROUTE}/user/${thisUserPrivyId}`,
+          { thisFarcasterAccount },
           {
             headers: {
               "Content-Type": "application/json",
@@ -173,6 +176,7 @@ export const UserProvider = ({ children }) => {
             },
           }
         );
+        console.log("IN HEEERE", response);
 
         setUserDatabaseInformation({
           streak: response.data.user.streak || 0,
