@@ -34,7 +34,9 @@ const ManaPage = () => {
         <div className="flex justify-center mb-4">
           <div className="mx-2 bg-green-400 border-white border-2 text-black p-3 rounded-xl">
             <p>$NEWEN balance:</p>
-            <p className="text-4xl">{userDatabaseInformation.manaBalance}</p>
+            <p className="text-4xl">
+              {userDatabaseInformation.manaBalance || 0}
+            </p>
           </div>
           <div className="mx-2 bg-purple-400 border-white border-2 text-black p-3 rounded-xl">
             <p>$ANKY balance:</p>
@@ -42,7 +44,7 @@ const ManaPage = () => {
           </div>
           <div className="mx-2 bg-yellow-400 border-white border-2 text-black p-3 rounded-xl">
             <p>writing streak:</p>
-            <p className="text-4xl">{userDatabaseInformation.streak}</p>
+            <p className="text-4xl">{userDatabaseInformation.streak || 0}</p>
           </div>
         </div>
       ) : (

@@ -321,7 +321,7 @@ const UserDisplayPage = ({ thisUserInfo }) => {
                 </div>
                 <div className="flex justify-between px-2 w-full">
                   <p>longest writing session: </p>
-                  <p>{longestRun.amount} s</p>
+                  <p>{longestRun?.amount || 0} s</p>
                 </div>
               </div>
               <div className="w-full bg-purple-100 text-black">

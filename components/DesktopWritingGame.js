@@ -188,38 +188,50 @@ const DesktopWritingGame = ({
   };
 
   const copyToClipboard = async () => {
-    await navigator.clipboard.writeText(text);
-    setCopyText("copied");
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopyText("copied");
+    } catch (error) {
+      console.log("there was an error copying this");
+    }
   };
 
   const startNewRun = () => {
-    copyToClipboard();
-    audioRef.current.pause();
-    setCopyText("Copy my writing");
-    setTime(0);
-    setDisableButton(false);
-    setLifeBarLength(100);
-    setText("");
-    setSavingRound(false);
-    setSavedToDb(false);
-    setIsDone(false);
-    setFinished(false);
-    setSavedText(false);
+    try {
+      audioRef.current.pause();
+      setTime(0);
+      setDisableButton(false);
+      setLifeBarLength(100);
+      setText("");
+      setSavingRound(false);
+      setSavedToDb(false);
+      setIsDone(false);
+      setFinished(false);
+      setSavedText(false);
+      copyToClipboard();
+      setCopyText("Copy my writing");
+    } catch (error) {
+      console.log("there was an error in the start new run function");
+    }
   };
 
   const startNewCountdownRun = () => {
-    copyToClipboard();
-    audioRef.current.pause();
-    setCopyText("Copy my writing");
-    setTime(countdownTarget);
-    setDisableButton(false);
-    setLifeBarLength(100);
-    setText("");
-    // setSavingRound(false);
-    // setSavedToDb(false);
-    setIsDone(false);
-    setFinished(false);
-    // setSavedText(false);
+    try {
+      audioRef.current.pause();
+      setCopyText("Copy my writing");
+      setTime(countdownTarget);
+      setDisableButton(false);
+      setLifeBarLength(100);
+      setText("");
+      // setSavingRound(false);
+      // setSavedToDb(false);
+      setIsDone(false);
+      setFinished(false);
+      // setSavedText(false);
+      copyToClipboard();
+    } catch (error) {
+      console.log("there was an error");
+    }
   };
 
   const handleTextChange = (event) => {
@@ -231,7 +243,9 @@ const DesktopWritingGame = ({
       setIsActive(true);
       setFailureMessage("");
       setStartTime(now);
-      pingServerToStartWritingSession(now);
+      if (authenticated) {
+        pingServerToStartWritingSession(now);
+      }
     }
     setLastKeystroke(now);
   };
@@ -333,8 +347,12 @@ const DesktopWritingGame = ({
   }
 
   const pasteText = async () => {
-    await navigator.clipboard.writeText(text);
-    setCopyText("copied.");
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopyText("copied.");
+    } catch (error) {
+      console.log("there was an error copying the text.");
+    }
   };
 
   const sendTextToIrys = async () => {
@@ -878,7 +896,7 @@ const DesktopWritingGame = ({
                               </div>
                             ) : (
                               <div className="p-4 bg-black  md:w-full rounded-xl mx-auto drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] z-50">
-                                <div className="flex flex-col items-center md:flex-row md:space-y-0 justify-center w-full space-y-2 space-x-2 mt-2">
+                                <div className="flex flex-col items-center md:flex-row md:space-y-0 justify-center w-full space-y-2 mt-2">
                                   {userWantsToCastAnon && (
                                     <Button
                                       buttonText={
@@ -893,13 +911,14 @@ const DesktopWritingGame = ({
                                   <Button
                                     buttonText={`copy written text and go back`}
                                     buttonAction={() => {
-                                      pasteText();
-                                      startNewRun();
-                                      setDisplayWritingGameLanding(false);
-                                      setThisIsTheFlag(true);
-                                      setTimeout(() => {
-                                        router.push("/");
-                                      }, 10);
+                                      setFinished(false);
+                                      // pasteText();
+                                      // startNewRun();
+                                      // setDisplayWritingGameLanding(false);
+                                      // setThisIsTheFlag(true);
+                                      // setTimeout(() => {
+                                      //   router.push("/");
+                                      // }, 10);
                                     }}
                                     buttonColor="bg-red-600"
                                   />
@@ -1013,7 +1032,8 @@ const DesktopWritingGame = ({
         <div className="flex flex-col h-full justify-center items-center w-full ">
           <div className="flex flex-col text-white h-48">
             <p>you haven&apos;t logged in</p>
-            <div className="flex space-x-2 ">
+            <p>you won&apos;t be able to store your writings forever</p>
+            <div className="flex justify-center">
               <Button
                 buttonAction={login}
                 buttonText="log in"
@@ -1032,7 +1052,7 @@ const DesktopWritingGame = ({
               onClick={() => setWhatIsThis(!whatIsThis)}
               className={`small  ${
                 whatIsThis ? "text-purple-400" : "text-gray-300"
-              } hover:text-purple-400 cursor-pointer`}
+              } hover:text-purple-400 cursor-pointer mb-2`}
             >
               what is this?
             </p>

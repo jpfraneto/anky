@@ -499,10 +499,10 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
       </div>
       {authenticated && farcasterUser.status != "approved" && (
         <div className="text-white bg-red-500 py-1 flex justify-center items-center ">
-          action needed: link farcaster account{" "}
+          friendly recommendation: link farcaster account{" "}
           <Link
             href="/settings?link=farcaster"
-            className="bg-purple-600 ml-4 px-2 py-1 rounded-xl border border-black active:bg-yellow-500"
+            className="bg-purple-600 ml-4 px-2 py-1 rounded-xl border border-black active:bg-yellow-500 hover:bg-purple-700"
           >
             go to settings
           </Link>

@@ -166,7 +166,7 @@ export const UserProvider = ({ children }) => {
         const authToken = await getAccessToken();
         const thisUserPrivyId = user.id.replace("did:privy:", "");
         const thisFarcasterAccount = farcasterUser || null;
-        if (!thisFarcasterAccount?.fid) thisFarcasterAccount.fid = 0;
+        if (!thisFarcasterAccount?.fid) thisFarcasterAccount.fid = null;
         console.log(
           "right before sending the post request to the database to get the users information",
           thisUserPrivyId,
@@ -194,7 +194,7 @@ export const UserProvider = ({ children }) => {
       }
     };
     loadUserDatabaseInformation();
-  }, [ready, authenticated]);
+  }, [user, authenticated]);
 
   const loadUserLibrary = async (fromOutside = false) => {
     try {

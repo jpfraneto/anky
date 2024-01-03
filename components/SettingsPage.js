@@ -15,7 +15,6 @@ const SettingsPage = () => {
   const openGeneralSettings = () => {
     alert("open the general settings");
   };
-  console.log("THE USER IS.", user);
 
   const renderSettings = () => {
     switch (chosenTab) {
