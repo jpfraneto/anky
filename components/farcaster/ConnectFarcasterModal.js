@@ -40,7 +40,7 @@ const ConnectFarcasterModal = () => {
             const response = await axios.get(
               `${apiRoute}/farcaster/api/signer?signer_uuid=${
                 farcasterUser?.signer_uuid
-              }?privyId=${user.id.split("did:privy:")[1]}`
+              }&privyId=${user.id.split("did:privy:")[1]}`
             );
             const userData = response.data;
 

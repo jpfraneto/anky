@@ -98,6 +98,7 @@ function MyApp({ Component, pageProps }) {
         }
       );
       console.log("the response after the logging in", response);
+      setLoginResponse(response.data);
       router.push("/feed");
     } catch (error) {
       console.log("the error is: ", error);

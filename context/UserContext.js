@@ -172,6 +172,7 @@ export const UserProvider = ({ children }) => {
           thisUserPrivyId,
           authToken
         );
+        if (!authToken) return;
         const response = await axios.post(
           `${process.env.NEXT_PUBLIC_API_ROUTE}/user/${thisUserPrivyId}`,
           { thisFarcasterAccount },
