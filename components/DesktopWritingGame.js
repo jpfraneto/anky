@@ -624,10 +624,10 @@ const DesktopWritingGame = ({
   if (errorProblem)
     return (
       <div
-        className={`${righteous.className} text-thewhite relative  flex flex-col items-center justify-center w-full bg-cover bg-center`}
+        className={`${righteous.className} text-white relative flex flex-col items-center justify-center w-full bg-cover bg-center`}
         style={{
           boxSizing: "border-box",
-          height: "calc(100vh  - 90px)",
+          height: "calc(100vh)",
           backgroundImage: "url('/images/the-monumental-game.jpeg')",
           backgroundPosition: "center center",
           backgroundSize: "cover",

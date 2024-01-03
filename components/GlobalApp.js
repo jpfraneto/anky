@@ -358,7 +358,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
     );
 
   return (
-    <div className="relative text-center w-screen text-white h-screen flex flex-col">
+    <div className="standalone:pt-12 relative text-center w-screen text-white h-screen flex flex-col">
       <div className="text-gray-400 w-full h-8 justify-between md:flex md:px-2 items-center">
         <Link
           href={authenticated ? `/u/${user.id.replace("did:privy:", "")}` : "/"}
@@ -500,7 +500,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
         </div>
       </div>
       {authenticated && farcasterUser.status != "approved" && (
-        <div className="text-white bg-red-500 py-1 flex justify-center items-center ">
+        <div className="text-sm px-4 md:text-xl text-white bg-red-500 py-1 flex justify-center items-center ">
           friendly recommendation: link farcaster account{" "}
           <Link
             href="/settings?link=farcaster"
@@ -575,7 +575,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
             >
               <FaPencilAlt size={28} color="black" />
             </div>
-            <nav className="hidden border-t-2 border-black standalone:flex w-full h-20  fixed bottom-0 pt-1 pb-1 bg-purple-200 space-x-4 justify-between items-center pb-4 px-12 z-100">
+            <nav className="hidden border-t-2 border-black standalone:flex w-full h-20  fixed bottom-0 pt-1 pb-1 bg-purple-200 space-x-4 justify-between items-center pb-4 px-12 z-50">
               <Link href="/feed" passHref>
                 <span>
                   <IoIosHome size={40} />
@@ -607,7 +607,6 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
 
               <span
                 onClick={() => {
-                  alert("wena");
                   console.log("in here");
                   if (
                     router.pathname.includes("write") ||
