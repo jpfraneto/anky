@@ -73,7 +73,6 @@ const UserDisplayPage = ({ thisUserInfo }) => {
   useEffect(() => {
     const fetchUsersInformation = async () => {
       try {
-        console.log("the this user info is: ", thisUserInfo);
         if (!thisUserInfo) return;
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_API_ROUTE}/user/farcaster/${thisUserInfo}`

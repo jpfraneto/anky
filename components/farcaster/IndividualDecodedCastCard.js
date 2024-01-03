@@ -540,7 +540,6 @@ const IndividualDecodedCastCard = ({ cast, farcasterUser }) => {
 export default IndividualDecodedCastCard;
 
 const ReplyComponent = ({ cast }) => {
-  console.log("the cast is: ", cast);
   return (
     <div className="px-2 relative w-full text-center w-fit justify-center items-center flex flex-col rounded-xl bg-purple-400 my-4">
       <div className="w-fit h-fit rounded-full border-white overflow-hidden border-2 absolute w-12 h-12 -top-4 -left-4">

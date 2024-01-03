@@ -76,7 +76,6 @@ const ReadCastPage = () => {
           let thisCast = response.data.cast;
 
           setCast(thisCast);
-          console.log("the cast is:", thisCast);
           const hasUserLikedBool = thisCast.reactions.likes.filter(
             (x) => x.fid == farcasterUser.fid
           );
