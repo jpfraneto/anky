@@ -157,7 +157,7 @@ const ConnectFarcasterModal = () => {
       {farcasterUser?.status == "pending_approval" &&
         farcasterUser?.signer_approval_url && (
           <div className="signer-approval-container flex flex-col  bg-white text-black p-4 rounded-xl mt-2 items-left justify-center ">
-            <p className="hidden md:flex mb-2 justify-center mt-2">
+            <p className=" md:flex mb-2 justify-center mt-2">
               scan this qr code to authenticate with warpcast and link your
               account to anky
             </p>
@@ -172,10 +172,21 @@ const ConnectFarcasterModal = () => {
                 {copiedText}
               </span>
             </p>
+            <p className="md:hidden flex justify-center">
+              <p className=" md:flex mb-2 justify-center mt-2">
+                you can use the following button to connect to farcaster
+              </p>
+              <span
+                className="hover:text-red-600 cursor-pointer active:text-yellow-500"
+                onClick={copyText}
+              >
+                {copiedText}
+              </span>
+            </p>
             <div>
               <Button
                 buttonAction={handleSignIn}
-                buttonColor="w-96 mx-auto bg-green-600 mt-4"
+                buttonColor="w-64 mx-auto bg-green-600 mt-4"
                 buttonText={loading ? "loading..." : "get new QR code"}
               />
             </div>
