@@ -56,7 +56,7 @@ const ConnectFarcasterModal = () => {
           } catch (error) {
             console.error("Error during polling", error);
           }
-        }, 2000);
+        }, 3333);
       };
 
       const stopPolling = () => {

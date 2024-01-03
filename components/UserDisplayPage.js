@@ -43,6 +43,7 @@ const UserDisplayPage = ({ thisUserInfo }) => {
   const [allUserWritings, setAllUserWritings] = useState([]);
   const [entryForDisplay, setEntryForDisplay] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [longestRun, setLongestRun] = useState(null);
   const [writingsLoading, setWritingsLoading] = useState(true);
   const [thisFarcasterUser, setThisFarcasterUser] = useState({});
   const [userNotFound, setUserNotFound] = useState(false);
@@ -97,6 +98,7 @@ const UserDisplayPage = ({ thisUserInfo }) => {
           ],
         });
         setThisAnkyUser(response.data.ankyUser);
+        setLongestRun(response.data.longestRun);
         setLoadingUser(false);
       } catch (error) {
         console.log("this user doesnt exist");
@@ -153,6 +155,8 @@ const UserDisplayPage = ({ thisUserInfo }) => {
   useEffect(() => {
     async function getAllUserWritings() {
       if (!wallet) return;
+      // HERE I NEED TO FETCH ALL THE WRITINGS OF THIS USER INSIDE THE ANKY CHANNEL. THE CASTS.
+      return;
       const writings = await getThisUserWritings(wallet.address);
 
       const sortedWritings = writings.sort(sortWritings);
@@ -247,6 +251,9 @@ const UserDisplayPage = ({ thisUserInfo }) => {
   return (
     <div className="w-full px-4 h-full ">
       <div className="md:w-5/6 mt-12 h-48  rounded-xl bg-black border-2 border-white relative mx-auto">
+        <p className="text-white pt-2">
+          this user has not connected her farcaster account yet
+        </p>
         <div className="absolute bottom left-1/2 -bottom-1/3 -translate-y-2/5 rounded-xl overflow-hidden border-2 border-white -translate-x-1/2">
           <div className="w-36 h-36 z-5 bg-black relative">
             <Image
@@ -262,7 +269,9 @@ const UserDisplayPage = ({ thisUserInfo }) => {
             <div className="w-1/3 flex ">
               <div className="flex w-1/2 h-full  items-center justify-center flex-col">
                 <p className="text-md">writing streak</p>
-                <p className="text-2xl">{thisAnkyUser.longestStreak}</p>
+                <p className="text-2xl">
+                  {Math.max(thisAnkyUser.longestStreak, thisAnkyUser.streak)}
+                </p>
               </div>
               <div className="flex w-1/2 h-full items-center justify-center flex-col">
                 <p className="text-md">balance $NEWEN</p>
@@ -275,11 +284,11 @@ const UserDisplayPage = ({ thisUserInfo }) => {
             <div className="w-1/3 flex ">
               <div className="flex w-1/2 h-full items-center justify-center flex-col">
                 <p className="text-md">rank</p>
-                <p className="text-2xl">amateur</p>
+                <p className="text-2xl">???</p>
               </div>
               <div className="flex w-1/2 h-full items-center justify-center flex-col">
                 <p className="text-md">level</p>
-                <p className="text-2xl">8</p>
+                <p className="text-2xl">???</p>
               </div>
             </div>
           </div>
@@ -307,11 +316,13 @@ const UserDisplayPage = ({ thisUserInfo }) => {
                 </div>
                 <div className="flex justify-between px-2 w-full">
                   <p>longest streak: </p>
-                  <p>{thisAnkyUser.longestStreak}</p>
+                  <p>
+                    {Math.max(thisAnkyUser.longestStreak, thisAnkyUser.streak)}
+                  </p>
                 </div>
                 <div className="flex justify-between px-2 w-full">
                   <p>longest writing session: </p>
-                  <p>2839 s</p>
+                  <p>{longestRun.amount} s</p>
                 </div>
               </div>
               <div className="w-full bg-purple-100 text-black">
@@ -362,7 +373,12 @@ const UserDisplayPage = ({ thisUserInfo }) => {
               <p className="text-xl ">Writing Feed</p>
               <hr className="text-white h-2" />
               <div className="w-full flex overflow-y-scroll justify-center flex-wrap  h-fit p-2 my-2">
-                {writingsLoading ? (
+                <p>
+                  waiting for neynar&apos;s functionality to display the feed of
+                  a user inside a specific channel (in this case, /anky on
+                  farcaster).
+                </p>
+                {/* {writingsLoading ? (
                   <>
                     <Spinner />
                     <p>loading your writings</p>
@@ -385,7 +401,7 @@ const UserDisplayPage = ({ thisUserInfo }) => {
                         );
                       })}
                   </>
-                )}
+                )} */}
               </div>
             </div>
           </div>

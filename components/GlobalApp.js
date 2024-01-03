@@ -53,7 +53,7 @@ const righteous = Righteous({ weight: "400", subsets: ["latin"] });
 const ankyverseToday = getAnkyverseDay(new Date());
 const ankyverseQuestion = getAnkyverseQuestion(ankyverseToday.wink);
 
-const GlobalApp = ({ alchemy }) => {
+const GlobalApp = ({ alchemy, loginResponse }) => {
   const {
     login,
     authenticated,

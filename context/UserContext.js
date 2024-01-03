@@ -161,13 +161,16 @@ export const UserProvider = ({ children }) => {
   useEffect(() => {
     const loadUserDatabaseInformation = async () => {
       try {
+        console.log("loading the user database information", authenticated);
         if (!authenticated) return;
         const authToken = await getAccessToken();
         const thisUserPrivyId = user.id.replace("did:privy:", "");
         const thisFarcasterAccount = farcasterUser || null;
         if (!thisFarcasterAccount?.fid) thisFarcasterAccount.fid = 0;
         console.log(
-          "right before sending the post request to the database to get the users information"
+          "right before sending the post request to the database to get the users information",
+          thisUserPrivyId,
+          authToken
         );
         const response = await axios.post(
           `${process.env.NEXT_PUBLIC_API_ROUTE}/user/${thisUserPrivyId}`,

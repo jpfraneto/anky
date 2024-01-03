@@ -25,11 +25,10 @@ var options = {
 };
 
 const IndividualDecodedCastCard = ({ cast, farcasterUser }) => {
-  console.log("the cast information is: ", cast);
-
-  const { authenticated, login, getAccessToken } = usePrivy();
+  const { authenticated, login, getAccessToken, user } = usePrivy();
   const { userDatabaseInformation, setUserDatabaseInformation } = useUser();
   const [castReplies, setCastReplies] = useState([]);
+  const [userPrivyId, setUserPrivyId] = useState("");
   const [totalNewenEarned, setTotalNewenEarned] = useState(222);
   const [manaForCongratulation, setManaForCongratulation] = useState(
     Math.min(userDatabaseInformation?.manaBalance, 100)
@@ -66,7 +65,25 @@ const IndividualDecodedCastCard = ({ cast, farcasterUser }) => {
   const [displayComments, setDisplayComments] = useState(false);
   const [writing, setWriting] = useState(cast.text);
 
+  useEffect(() => {
+    const fetchThisUserByFid = async () => {
+      console.log("farcasterUser", cast, farcasterUser);
+      try {
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_ROUTE}/user/fid/${cast.author.fid}`
+        );
+        const data = response.data;
+        setUserPrivyId("clmgol0to069tms0f3urwkiis");
+        console.log("the data in here is: ", data);
+      } catch (error) {
+        console.log("the error is: ", error);
+      }
+    };
+    fetchThisUserByFid();
+  }, []);
+
   async function handleDisplayComments() {
+    return alert("work on the comments functionality");
     setDisplayComments((x) => !x);
   }
 
@@ -114,6 +131,8 @@ const IndividualDecodedCastCard = ({ cast, farcasterUser }) => {
         );
         alert("There was an error processing your recast.");
       }
+    } else {
+      return alert("You need to connect your farcaster account to do that");
     }
   };
 
@@ -121,41 +140,42 @@ const IndividualDecodedCastCard = ({ cast, farcasterUser }) => {
     try {
       if (manaForCongratulation > userDatabaseInformation.manaBalance)
         return alert("You dont have enough $NEWEN balance for that.");
-      alert(`this will send ${manaForCongratulation} to the user`);
+      alert(`WIP: this will send ${manaForCongratulation} to the user`);
       if (!farcasterUser && !farcasterUser.fid && authenticated) {
         return alert("You need to log in with farcaster to do that");
       }
-      const authToken = await getAccessToken();
-
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_ROUTE}/mana/mana-transaction`,
-        {
-          sender: farcasterUser.fid,
-          receiver: cast.author.fid,
-          manaSent: manaForCongratulation,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${authToken}`,
-          },
-        }
-      );
-      console.log("the response from the server is: ", response);
+      // const authToken = await getAccessToken();
+      // console.log("posting a mana transaction");
+      // const response = await axios.post(
+      //   `${process.env.NEXT_PUBLIC_API_ROUTE}/mana/mana-transaction`,
+      //   {
+      //     senderPrivyId: user.id.replace("did:privy:", ""),
+      //     sender: farcasterUser.fid,
+      //     receiver: cast.author.fid,
+      //     manaSent: manaForCongratulation,
+      //   },
+      //   {
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //       Authorization: `Bearer ${authToken}`,
+      //     },
+      //   }
+      // );
+      // console.log("the response from the server is: ", response);
       setTotalNewenEarned(
         Number(totalNewenEarned) + Number(manaForCongratulation)
       );
-      setUserDatabaseInformation((x) => {
-        console.log(
-          "updating the userdatabaseinformation substracting the spent mana.",
-          x.manaBalance,
-          frontendWrittenTime
-        );
-        return {
-          ...x,
-          manaBalance: response.data.data.manaBalance - manaForCongratulation,
-        };
-      });
+      // setUserDatabaseInformation((x) => {
+      //   console.log(
+      //     "updating the userdatabaseinformation substracting the spent mana.",
+      //     x.manaBalance,
+      //     frontendWrittenTime
+      //   );
+      //   return {
+      //     ...x,
+      //     manaBalance: response.data.data.manaBalance - manaForCongratulation,
+      //   };
+      // });
       setDisplaySendNewen(false);
     } catch (error) {
       console.log("there was an error sending the mana to the user", error);
@@ -201,6 +221,8 @@ const IndividualDecodedCastCard = ({ cast, farcasterUser }) => {
           );
           alert("There was an error processing your like.");
         }
+      } else {
+        return alert("You need to connect your farcaster account to do that");
       }
     } catch (error) {
       console.log("the error is: ", error);
@@ -209,7 +231,6 @@ const IndividualDecodedCastCard = ({ cast, farcasterUser }) => {
   }
 
   if (cast.text == "Not Found") return;
-  console.log("the cast is:", cast);
 
   return (
     <div className="h-full w-full">
@@ -231,7 +252,14 @@ const IndividualDecodedCastCard = ({ cast, farcasterUser }) => {
         <div className="w-full md:w-96 mx-auto  bg-gray-300 text-gray-700 ">
           <div className="h-10/12 overflow-y-scroll flex flex-col">
             <div className="text-xs italic py-3 flex-none h-32 flex items-center justify-center ">
-              <Link href={`/u/${cast.author.fid}`} passHref>
+              <Link
+                href={`/u/${
+                  cast.author.fid == 18350
+                    ? "clmgp49nc026wmf0fl8ulevqp"
+                    : userPrivyId
+                }`}
+                passHref
+              >
                 <div className="w-24 h-24 active:translate-x-2 rounded-full overflow-hidden relative shadow-2xl">
                   <Image src={cast.author.pfp_url} fill />
                 </div>
@@ -406,7 +434,7 @@ const IndividualDecodedCastCard = ({ cast, farcasterUser }) => {
                   <div
                     onClick={handleRecast}
                     className={`flex space-x-1 items-center ${
-                      hasUserRecasted && "text-green-300"
+                      hasUserRecasted ? "text-green-300" : "text-green-200"
                     } hover:text-green-300 cursor-pointer`}
                   >
                     <BsArrowRepeat size={19} />
@@ -415,7 +443,7 @@ const IndividualDecodedCastCard = ({ cast, farcasterUser }) => {
                   <div
                     onClick={handleLike}
                     className={`flex space-x-1 items-center ${
-                      hasUserLiked && "text-red-300"
+                      hasUserLiked ? "text-red-300" : "text-red-200"
                     } hover:text-red-500 cursor-pointer`}
                   >
                     <FaRegHeart />
@@ -426,7 +454,7 @@ const IndividualDecodedCastCard = ({ cast, farcasterUser }) => {
                       setDisplaySendNewen(!displaySendNewen);
                     }}
                     className={`flex space-x-1 items-center ${
-                      displaySendNewen && "text-purple-300"
+                      displaySendNewen ? "text-purple-300" : "text-purple-200"
                     } hover:text-purple-500 cursor-pointer`}
                   >
                     <GiRollingEnergy />
@@ -445,28 +473,34 @@ const IndividualDecodedCastCard = ({ cast, farcasterUser }) => {
               </div>
               <>
                 {authenticated && displaySendNewen && (
-                  <div className="flex h-12 mt-1 bg-purple-600 relative pb-1 text-white w-full px-4 relative justify-between items-center">
+                  <div className="flex h-14 mt-1 bg-purple-600 relative text-white w-full px-4 relative justify-between items-center">
                     {userDatabaseInformation.manaBalance ? (
                       <>
-                        {" "}
-                        <p>$NEWEN{!authenticated && "*"}</p>
-                        <input
-                          className="rounded-xl mx-1 w-1/3 text-black  px-4"
-                          type="number"
-                          disabled={!authenticated}
-                          min={0}
-                          onChange={(e) =>
-                            setManaForCongratulation(e.target.value)
-                          }
-                          max={userDatabaseInformation?.manaBalance || 1000}
-                          value={manaForCongratulation}
-                        />
-                        <small className="absolute text-purple-200 bottom-1">
-                          your balance is {userDatabaseInformation.manaBalance}
-                        </small>
+                        <div className="flex flex-row w-full items-center">
+                          <div className="flex flex-col items-start justify-start">
+                            <p>$NEWEN{!authenticated && "*"}</p>
+
+                            <small className=" text-purple-200 bottom-0">
+                              your balance is{" "}
+                              {userDatabaseInformation.manaBalance}
+                            </small>
+                          </div>
+                          <input
+                            className="rounded-xl mx-auto w-24 h-fit text-black  px-4"
+                            type="number"
+                            disabled={!authenticated}
+                            min={0}
+                            onChange={(e) =>
+                              setManaForCongratulation(e.target.value)
+                            }
+                            max={userDatabaseInformation?.manaBalance || 1000}
+                            value={manaForCongratulation}
+                          />
+                        </div>
+
                         <button
                           onClick={sendManaToCastCreator}
-                          className="bg-purple-800 border border-white px-2 py-1 rounded-xl hover:text-green-500 active:text-yellow-500"
+                          className="bg-purple-800 border border-white w-48 px-2 py-1 rounded-xl hover:text-green-500 active:text-yellow-500"
                         >
                           send to user
                         </button>
@@ -475,7 +509,7 @@ const IndividualDecodedCastCard = ({ cast, farcasterUser }) => {
                       <>
                         <p className="text-left text-sm">
                           you need to write more than 30 seconds to earn your
-                          first $NEWEN
+                          first $NEWEN and send it to this user.
                         </p>
                       </>
                     )}{" "}

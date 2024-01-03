@@ -33,6 +33,7 @@ const GlobalApp = dynamic(() => import("../components/GlobalApp"));
 
 function MyApp({ Component, pageProps }) {
   const [isDesktop, setIsDesktop] = useState(false);
+  const [loginResponse, setLoginResponse] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -89,7 +90,12 @@ function MyApp({ Component, pageProps }) {
 
   const handleLogin = async (user) => {
     try {
-      console.log("the user is logged in");
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_ROUTE}/user/login`,
+        {
+          privyId: user.id.split("did:privy:")[1],
+        }
+      );
       router.push("/feed");
     } catch (error) {
       console.log("the error is: ", error);
@@ -205,7 +211,7 @@ function MyApp({ Component, pageProps }) {
       >
         <PrivyWagmiConnector wagmiChainsConfig={configureChainsConfig}>
           <UserProvider>
-            <GlobalApp alchemy={alchemy} />
+            <GlobalApp alchemy={alchemy} loginResponse={loginResponse} />
           </UserProvider>
         </PrivyWagmiConnector>
       </PrivyProvider>
