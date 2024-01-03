@@ -187,7 +187,7 @@ const ConnectFarcasterModal = () => {
               <Button
                 buttonAction={handleSignIn}
                 buttonColor="w-64 mx-auto bg-green-600 mt-4"
-                buttonText={loading ? "loading..." : "get new QR code"}
+                buttonText={loading ? "loading..." : "get new link"}
               />
             </div>
           </div>
