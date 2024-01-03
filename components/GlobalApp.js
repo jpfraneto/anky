@@ -4,11 +4,13 @@ import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { Righteous, Dancing_Script } from "next/font/google";
 import { getAnkyverseDay, getAnkyverseQuestion } from "../lib/ankyverse";
 import { useUser } from "../context/UserContext";
+import Image from "next/image";
 import Button from "./Button";
-import { FaPencilAlt } from "react-icons/fa";
+import { FaPencilAlt, FaUserAstronaut } from "react-icons/fa";
 import { IoArrowBack } from "react-icons/io5";
 import { MdMenuOpen } from "react-icons/md";
 import UserDisplayPage from "./UserDisplayPage";
+import { IoIosHome, IoMdSettings } from "react-icons/io";
 import { DEFAULT_CAST, LOCAL_STORAGE_KEYS } from "../lib/constants";
 import { GiRollingEnergy } from "react-icons/gi";
 import { ethers } from "ethers";
@@ -556,7 +558,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
             )}
           </div>
         ) : (
-          <div className="h-full">
+          <div className="h-full pb-20 z-50">
             {getComponentForRoute(router.pathname, router)}
             <div
               onClick={() => {
@@ -569,10 +571,56 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
                 }
                 setDisplayWritingGameLanding(true);
               }}
-              className="fixed hover:bg-purple-700 hover:cursor-pointer h-16 w-16 bottom-6 right-3 border-black border-2 active:bg-purple-500 rounded-full text-green-400 bg-purple-600 z-10 flex items-center justify-center"
+              className="standalone:hidden fixed hover:bg-purple-700 hover:cursor-pointer h-16 w-16 bottom-6 right-3 border-black border-2 active:bg-purple-500 rounded-full text-green-400 bg-purple-600 z-10 flex items-center justify-center"
             >
               <FaPencilAlt size={28} color="black" />
             </div>
+            <nav className="hidden border-t-2 border-black standalone:flex w-full h-20  fixed bottom-0 pt-1 pb-1 bg-purple-200 space-x-4 justify-between items-center pb-4 px-12 z-100">
+              <Link href="/feed" passHref>
+                <span>
+                  <IoIosHome size={40} />
+                </span>
+              </Link>
+              <Link
+                className="active:text-yellow-500"
+                href="/settings"
+                passHref
+              >
+                <span>
+                  <IoMdSettings size={40} />
+                </span>
+              </Link>
+              {authenticated ? (
+                <Link
+                  href={`/u/${user?.id.replace("did:privy:", "")}`}
+                  passHref
+                >
+                  <span>
+                    <FaUserAstronaut size={40} />
+                  </span>
+                </Link>
+              ) : (
+                <span onClick={login}>
+                  <FaUserAstronaut size={40} />
+                </span>
+              )}
+
+              <span
+                onClick={() => {
+                  alert("wena");
+                  console.log("in here");
+                  if (
+                    router.pathname.includes("write") ||
+                    router.pathname.includes("w")
+                  ) {
+                    router.push("/");
+                  }
+                  setDisplayWritingGameLanding(true);
+                }}
+              >
+                <FaPencilAlt size={28} color="black" />
+              </span>
+            </nav>
           </div>
         )}
       </div>

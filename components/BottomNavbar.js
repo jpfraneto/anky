@@ -31,31 +31,8 @@ const BottomNavbar = () => {
   //   });
   // };
 
-  const subscribeToPushManager = () => {
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.ready.then((registration) => {
-        registration.pushManager
-          .subscribe({
-            userVisibleOnly: true,
-            applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
-          })
-          .then((pushSubscription) => {
-            localStorage.setItem(
-              "pushSubscription",
-              JSON.stringify(pushSubscription)
-            );
-          })
-          .catch((error) => {
-            console.error("Could not subscribe to push", error);
-          });
-      });
-    }
-  };
-
-  if (!meditationReady || !writingReady || !enteredTheAnkyverse) return;
-
   return (
-    <nav className="w-full md:w-96 flex-none pt-3 pb-5 bg-transparent flex space-x-4 justify-between px-8">
+    <nav className="hidden standalone:flex w-full md:w-96  pt-3 pb-5 bg-transparent flex space-x-4 justify-between px-8">
       <span onClick={() => alert("this will open the notebooks options")}>
         <Image
           width={58}
