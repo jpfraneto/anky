@@ -92,6 +92,7 @@ const ConnectFarcasterModal = () => {
   };
 
   async function handleSignIn() {
+    setCopiedText("or click here to copy the url");
     setLoading(true);
     const response = await createAndStoreSigner();
     console.log("the response from the create and store signer is: ", response);
@@ -171,16 +172,12 @@ const ConnectFarcasterModal = () => {
                 {copiedText}
               </span>
             </p>
-
-            <div className="mt-12">
-              <a
-                className="bg-gradient-to-r md:hidden from-purple-500 via-yellow-600 to-violet-500 text-black p-2 rounded-xl mt-48"
-                href={farcasterUser.signer_approval_url}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Login with warpcast
-              </a>
+            <div>
+              <Button
+                buttonAction={handleSignIn}
+                buttonColor="w-96 mx-auto bg-green-600 mt-4"
+                buttonText={loading ? "loading..." : "get new QR code"}
+              />
             </div>
           </div>
         )}
