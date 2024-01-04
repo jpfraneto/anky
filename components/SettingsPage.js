@@ -115,7 +115,7 @@ const SettingsPage = () => {
   if (!authenticated)
     return (
       <div className="mt-4 text-white">
-        <p>you need to login first</p>
+        <p>please login so that you can access the settings</p>
         <Button
           buttonAction={login}
           buttonText="login"

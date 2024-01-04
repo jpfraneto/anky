@@ -179,7 +179,7 @@ const DesktopWritingGame = ({
       );
       console.log("inside the finish run thing", frontendWrittenTime);
 
-      if (frontendWrittenTime > 30) {
+      if (frontendWrittenTime > 30 && authenticated) {
         pingServerToEndWritingSession(finishTimestamp, frontendWrittenTime);
       }
     } catch (error) {
@@ -1032,7 +1032,7 @@ const DesktopWritingGame = ({
       <Overlay show={showOverlay && !authenticated && !farcasterUser?.fid}>
         <div className="flex flex-col h-full justify-center items-center w-full ">
           <div className="flex flex-col text-white h-48">
-            <p>you haven&apos;t logged in</p>
+            <p>you are not logged in</p>
             <p>you won&apos;t be able to store your writings forever</p>
             <div className="flex justify-center">
               <Button

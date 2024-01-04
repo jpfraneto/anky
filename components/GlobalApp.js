@@ -358,7 +358,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
     );
 
   return (
-    <div className="standalone:pt-12 relative text-center w-screen text-white h-screen flex flex-col">
+    <div className=" relative text-center w-screen text-white h-screen flex flex-col">
       <div className=" text-gray-400 w-full h-4 md:h-8 justify-between md:flex md:px-2 items-center">
         <Link
           href={authenticated ? `/u/${user.id.replace("did:privy:", "")}` : "/"}
@@ -583,15 +583,22 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
                   <IoIosHome size={40} />
                 </span>
               </Link>
-              <Link
-                className="active:text-yellow-500"
-                href="/settings"
-                passHref
-              >
-                <span>
+
+              {authenticated ? (
+                <Link
+                  className="active:text-yellow-500"
+                  href="/settings"
+                  passHref
+                >
+                  <span>
+                    <IoMdSettings size={40} />
+                  </span>
+                </Link>
+              ) : (
+                <span onClick={login}>
                   <IoMdSettings size={40} />
                 </span>
-              </Link>
+              )}
               {authenticated ? (
                 <Link
                   href={`/u/${user?.id.replace("did:privy:", "")}`}
