@@ -358,19 +358,19 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
     );
 
   return (
-    <div className="standalone:pt-12 relative text-center w-screen text-white h-screen flex flex-col">
-      <div className="text-gray-400 w-full h-8 justify-between md:flex md:px-2 items-center">
+    <div className="relative text-center w-screen text-white h-screen flex flex-col">
+      <div className=" text-gray-400 w-full h-8 justify-between md:flex md:px-2 items-center">
         <Link
           href={authenticated ? `/u/${user.id.replace("did:privy:", "")}` : "/"}
         >
           <span
             onClick={() => setDisplayWritingGameLanding(false)}
-            className="hover:text-purple-600 pr-2"
+            className="standalone:hidden hover:text-purple-600 pr-2"
           >
             anky
           </span>
         </Link>
-        <div className="h-2 w-full">
+        <div className="h-2 md:h-full w-full">
           <div
             className="h-full opacity-50"
             style={{
@@ -379,7 +379,6 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
             }}
           ></div>
         </div>
-
         {displayNavbar && (
           <div className="h-8 w-fit px-2 flex justify-center items-center relative">
             {authenticated ? (

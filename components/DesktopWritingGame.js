@@ -760,7 +760,8 @@ const DesktopWritingGame = ({
                       {time < 30 ? (
                         <p className="text-red-400 text-sm">
                           *you need to write more than 30 seconds{" "}
-                          {!authenticated && "(and log in)"} to earn $NEWEN
+                          {!authenticated && "(and log in)"} to earn $NEWEN for
+                          writing
                         </p>
                       ) : (
                         <p className="text-red-400 text-sm">
@@ -912,13 +913,13 @@ const DesktopWritingGame = ({
                                     buttonText={`copy written text and go back`}
                                     buttonAction={() => {
                                       setFinished(false);
-                                      // pasteText();
-                                      // startNewRun();
-                                      // setDisplayWritingGameLanding(false);
-                                      // setThisIsTheFlag(true);
-                                      // setTimeout(() => {
-                                      //   router.push("/");
-                                      // }, 10);
+                                      pasteText();
+                                      startNewRun();
+                                      setDisplayWritingGameLanding(false);
+                                      setThisIsTheFlag(true);
+                                      setTimeout(() => {
+                                        router.push("/");
+                                      }, 10);
                                     }}
                                     buttonColor="bg-red-600"
                                   />

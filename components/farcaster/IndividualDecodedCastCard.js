@@ -323,12 +323,13 @@ const IndividualDecodedCastCard = ({ cast, farcasterUser }) => {
                     <div className="flex h-14 mt-1 bg-purple-600 relative text-white w-full px-4 relative justify-between items-center">
                       {userDatabaseInformation.manaBalance ? (
                         <>
-                          <div className="flex flex-row w-full items-center">
-                            <div className="flex flex-col items-start justify-start">
-                              <p>$NEWEN{!authenticated && "*"}</p>
+                          <div className="flex flex-row w-3/5 items-center">
+                            <div className="flex flex-col items-center justify-around">
+                              <p className="-mb-2">
+                                $NEWEN{!authenticated && "*"}
+                              </p>
 
-                              <small className=" text-purple-200 bottom-0">
-                                your balance is{" "}
+                              <small className="text-purple-200 bottom-0">
                                 {userDatabaseInformation.manaBalance}
                               </small>
                             </div>
