@@ -63,7 +63,7 @@ const UserDisplayPage = ({ thisUserInfo }) => {
     labels: [],
     datasets: [
       {
-        label: "Mana Earned",
+        label: "newen earned",
         data: [],
         backgroundColor: "rgba(53, 162, 235, 0.5)",
       },
@@ -88,7 +88,7 @@ const UserDisplayPage = ({ thisUserInfo }) => {
           labels,
           datasets: [
             {
-              label: "Mana Earned",
+              label: "newen earned",
               data,
               backgroundColor: backgroundColors,
             },
@@ -252,7 +252,7 @@ const UserDisplayPage = ({ thisUserInfo }) => {
                 </p>
               </div>
               <div className="flex w-1/2 h-full items-center justify-center flex-col">
-                <p className="text-md">balance $NEWEN</p>
+                <p className="text-md">newen balance</p>
                 <p className="text-2xl">{thisAnkyUser.manaBalance}</p>
               </div>
             </div>
@@ -283,14 +283,14 @@ const UserDisplayPage = ({ thisUserInfo }) => {
               ></div>
             </div>
           </div>
-          <p className="text-white">2000 $NEWEN to level 9</p>
+          <p className="text-white">2000 newen to level 9</p>
           <div className="w-full mt-2 h-full flex flex-col md:flex-row">
             <div className="flex w-full md:w-1/2 flex-col">
               <div className="w-full grow-0 h-fit bg-black text-white flex flex-col p-2 justify-start items-start">
                 <p className="text-xl ">Stats</p>
                 <hr className="text-white h-2" />
                 <div className="flex justify-between px-2 w-full">
-                  <p>total $MANA earned: </p>
+                  <p>total newen earned: </p>
                   <p>{thisAnkyUser.totalManaEarned}</p>
                 </div>
                 <div className="flex justify-between px-2 w-full">
@@ -320,7 +320,7 @@ const UserDisplayPage = ({ thisUserInfo }) => {
                       y: {
                         title: {
                           display: true,
-                          text: "Mana Earned",
+                          text: "newen Earned",
                         },
                       },
                     },
@@ -333,7 +333,7 @@ const UserDisplayPage = ({ thisUserInfo }) => {
                               label += ": ";
                             }
                             if (context.parsed.y !== null) {
-                              label += `${context.parsed.y} mana`;
+                              label += `${context.parsed.y} newen`;
                             }
                             return label;
                           },
