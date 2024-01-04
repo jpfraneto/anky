@@ -568,13 +568,6 @@ const DesktopWritingGame = ({
   async function handleSaveRun() {
     try {
       setSavingRoundLoading(true);
-      console.log(
-        "INSIDE THE SAVE RUN",
-        castAs,
-        userWantsToCastAnon,
-        journalIdToSave,
-        authenticated
-      );
       if (castAs == "anon" || userWantsToCastAnon) await handleAnonCast();
       if (castAs == "me") await handleCast();
       if (journalIdToSave != "") {
@@ -584,6 +577,7 @@ const DesktopWritingGame = ({
       }
       setEverythingWasUploaded(true);
       setSavingRoundLoading(true);
+      setDisplayWritingGameLanding(false);
     } catch (error) {
       console.log("there was an error in here, saving the run", error);
       setThereWasAnError(true);

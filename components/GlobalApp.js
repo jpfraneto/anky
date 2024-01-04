@@ -19,6 +19,7 @@ import { useRouter } from "next/router";
 import { fetchUserDementors } from "../lib/notebooks";
 import { Transition } from "react-transition-group";
 import airdropABI from "../lib/airdropABI.json";
+import { BsInfoLg } from "react-icons/bs";
 import NewNotebookPage from "./NewNotebookPage";
 import WhatIsThisPage from "./WhatIsThisPage";
 import LandingPage from "./LandingPage";
@@ -50,6 +51,7 @@ import FarcasterFeedPage from "./FarcasterFeedPage";
 import UserByFidComponent from "./farcaster/UserByFidComponent";
 import axios from "axios";
 import Leaderboard from "./Leaderboard";
+import AboutModal from "./AboutModal";
 
 const righteous = Righteous({ weight: "400", subsets: ["latin"] });
 const ankyverseToday = getAnkyverseDay(new Date());
@@ -84,6 +86,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
   const [checkingIfYouOwnAnky, setCheckingIfYouOwnAnky] = useState(false);
   const [ankyButtonText, setAnkyButtonText] = useState("i already own one");
   const [disableButton, setDisableButton] = useState(false);
+  const [displayAboutModal, setDisplayAboutModal] = useState(false);
   const [thisIsTheFlag, setThisIsTheFlag] = useState(false);
   const [displayRightNavbar, setDisplayRightNavbar] = useState(false);
   const [thisIsThePrompt, setThisIsThePrompt] = useState("");
@@ -611,6 +614,10 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
                 </span>
               )}
 
+              <span onClick={() => setDisplayAboutModal(!displayAboutModal)}>
+                <BsInfoLg size={40} />
+              </span>
+
               <span
                 onClick={() => {
                   console.log("in here");
@@ -629,6 +636,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
           </div>
         )}
       </div>
+      {displayAboutModal && <AboutModal />}
     </div>
   );
 };

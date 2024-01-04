@@ -130,7 +130,7 @@ function LandingPage({
         </h2>
         <p className="mb-4">anky is built on top of a pioneer interface:</p>
         <p className="mb-4">
-          if you stop writing for more than three seconds, you lose.
+          if you stop writing for more than three seconds, the session is over.
         </p>
       </div>
 
