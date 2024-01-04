@@ -370,7 +370,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
             anky
           </span>
         </Link>
-        <div className="h-full w-full">
+        <div className="h-2 w-full">
           <div
             className="h-full opacity-50"
             style={{
@@ -500,7 +500,10 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
         </div>
       </div>
       {authenticated && farcasterUser.status != "approved" && (
-        <div className="text-sm px-4 md:text-xl text-white bg-red-500 py-1 flex justify-center items-center ">
+        <div
+          onClick={() => setDisplayWritingGameLanding(false)}
+          className="text-xs px-4 md:text-xl text-white bg-red-500 py-1 flex justify-center items-center "
+        >
           friendly recommendation: link farcaster account{" "}
           <Link
             href="/settings?link=farcaster"

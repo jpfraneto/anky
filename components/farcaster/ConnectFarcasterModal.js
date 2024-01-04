@@ -129,11 +129,11 @@ const ConnectFarcasterModal = () => {
   return (
     <div>
       {!farcasterUser?.status && (
-        <div className="w-96 mx-auto">
+        <div className="w-full mt-4 mx-auto">
           <p>You can link your farcaster account to your profile here:</p>
           <Button
             buttonAction={handleSignIn}
-            buttonColor="w-96 mx-auto bg-green-600 mt-4"
+            buttonColor="w-64 mx-auto bg-green-600 mt-4"
             buttonText={loading ? "loading..." : "connect with farcaster"}
           />
         </div>
@@ -157,7 +157,7 @@ const ConnectFarcasterModal = () => {
       {farcasterUser?.status == "pending_approval" &&
         farcasterUser?.signer_approval_url && (
           <div className="signer-approval-container flex flex-col  bg-white text-black p-4 rounded-xl mt-2 items-left justify-center ">
-            <p className=" md:flex mb-2 justify-center mt-2">
+            <p className="hidden md:flex mb-2 justify-center mt-2">
               scan this qr code to authenticate with warpcast and link your
               account to anky
             </p>
@@ -172,12 +172,21 @@ const ConnectFarcasterModal = () => {
                 {copiedText}
               </span>
             </p>
-            <p className="md:hidden flex justify-center">
-              <p className=" md:flex mb-2 justify-center mt-2">
-                you can use the following button to connect to farcaster
+            <p className="md:hidden flex flex-col items-center justify-center">
+              <p className=" mb-2 justify-center mt-2">
+                you can use this button to connect your account with farcaster
+                using warpcast:
               </p>
+              <a
+                className="border border-black bg-gradient-to-r md:hidden from-purple-500 via-yellow-600 to-violet-500 text-black p-2 rounded-xl"
+                href={farcasterUser.signer_approval_url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Login with warpcast
+              </a>
               <span
-                className="hover:text-red-600 cursor-pointer active:text-yellow-500"
+                className="hover:text-red-600 mt-1 text-xs md:text-lg cursor-pointer active:text-yellow-500"
                 onClick={copyText}
               >
                 {copiedText}
@@ -186,8 +195,8 @@ const ConnectFarcasterModal = () => {
             <div>
               <Button
                 buttonAction={handleSignIn}
-                buttonColor="w-64 mx-auto bg-green-600 mt-4"
-                buttonText={loading ? "loading..." : "get new link"}
+                buttonColor="w-64 mx-auto bg-transparent mt-24"
+                buttonText={loading ? "loading..." : "reset link"}
               />
             </div>
           </div>
