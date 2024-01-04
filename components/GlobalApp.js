@@ -358,14 +358,14 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
     );
 
   return (
-    <div className=" relative text-center w-screen text-white h-screen flex flex-col">
-      <div className=" text-gray-400 w-full h-4 md:h-8 justify-between md:flex md:px-2 items-center">
+    <div className="relative text-center w-screen text-white h-screen flex flex-col">
+      <div className="text-gray-400 w-full h-4 md:h-8 justify-between md:flex md:px-2 items-center">
         <Link
           href={authenticated ? `/u/${user.id.replace("did:privy:", "")}` : "/"}
         >
           <span
             onClick={() => setDisplayWritingGameLanding(false)}
-            className="standalone:hidden hover:text-purple-600 pr-2"
+            className="hidden md:flex hover:text-purple-600 pr-2"
           >
             anky
           </span>

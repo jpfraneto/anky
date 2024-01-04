@@ -67,7 +67,6 @@ const IndividualDecodedCastCard = ({ cast, farcasterUser }) => {
 
   useEffect(() => {
     const fetchThisUserByFid = async () => {
-      console.log("farcasterUser", cast, farcasterUser);
       try {
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_API_ROUTE}/user/fid/${cast.author.fid}`
