@@ -77,8 +77,6 @@ const UserDisplayPage = ({ thisUserInfo }) => {
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_API_ROUTE}/user/farcaster/${thisUserInfo}`
         );
-        console.log("the response here sadasdas: ", response);
-        setThisFarcasterUser(response.data.farcasterUser);
 
         const manaByDate = response.data.manaData;
         const labels = Object.keys(manaByDate);
@@ -136,20 +134,6 @@ const UserDisplayPage = ({ thisUserInfo }) => {
       window.removeEventListener("keydown", handleKeyPress);
     };
   }, [isModalOpen, closeModal]);
-
-  useEffect(() => {
-    const fetchUsersAnkyFeed = async () => {
-      if (!thisUserInfo) return;
-      console.log("fetching the users anky feed", thisUserInfo);
-      const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_ROUTE}/farcaster/u/${thisUserInfo}/feed`
-      );
-      console.log("THE RESPONSE HERE IS: ", response.data);
-      setUsersAnkyFeed(response.data.feed);
-      setLoading(false);
-    };
-    fetchUsersAnkyFeed();
-  }, []);
 
   useEffect(() => {
     async function getAllUserWritings() {
@@ -249,22 +233,17 @@ const UserDisplayPage = ({ thisUserInfo }) => {
 
   return (
     <div className="w-full px-4 h-full ">
-      <div className="md:w-5/6 mt-12 h-48  rounded-xl bg-black border-2 border-white relative mx-auto">
-        <p className="text-white pt-2">
-          this user has not connected her farcaster account yet
-        </p>
-        <div className="absolute bottom left-1/2 -bottom-1/3 -translate-y-2/5 rounded-xl overflow-hidden border-2 border-white -translate-x-1/2">
-          <div className="w-36 h-36 z-5 bg-black relative">
-            <Image
-              src={`${thisFarcasterUser?.pfp_url || "/ankys/anky.png"}`}
-              fill
-            />
-          </div>
+      <div className="  rounded-xl overflow-hidden border-2 border-white w-fit mx-auto mt-4">
+        <div className="w-28 h-28 md:h-48 md:w-48 z-5 bg-black relative">
+          <Image
+            src={`${thisAnkyUser?.farcasterAccount?.pfp || "/ankys/anky.png"}`}
+            fill
+          />
         </div>
       </div>
       {thisAnkyUser ? (
         <div>
-          <div className="md:w-full px-4 flex justify-between h-24 z-1 rounded-xl bg-blue-200  mx-auto">
+          <div className="md:w-full px-4 mt-4 flex justify-between py-4 h-fit z-1 rounded-xl bg-blue-200  mx-auto">
             <div className="w-1/3 flex ">
               <div className="flex w-1/2 h-full  items-center justify-center flex-col">
                 <p className="text-md">writing streak</p>
@@ -277,8 +256,9 @@ const UserDisplayPage = ({ thisUserInfo }) => {
                 <p className="text-2xl">{thisAnkyUser.manaBalance}</p>
               </div>
             </div>
-            <div className="text-black flex items-end pb-2">
-              <p>@{thisFarcasterUser?.username || "anon"}</p>
+            <div className="text-black flex flex-col items-center justify-center ">
+              <p>{thisAnkyUser?.farcasterAccount?.displayName}</p>
+              <p>@{thisAnkyUser?.farcasterAccount?.username || "anon"}</p>
             </div>
             <div className="w-1/3 flex ">
               <div className="flex w-1/2 h-full items-center justify-center flex-col">

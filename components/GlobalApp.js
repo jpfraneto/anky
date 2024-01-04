@@ -97,12 +97,10 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
 
   useEffect(() => {
     const storedData = localStorage.getItem(LOCAL_STORAGE_KEYS.FARCASTER_USER);
-    console.log("inside here, ", storedData);
     if (storedData) {
       const user = JSON.parse(storedData);
       if (!farcasterUser.fid) setFarcasterUser(user);
       if (user.fid && !farcasterUser.pfp) {
-        console.log("gonna call the get this user information function now");
         getThisUserInformation(user.fid);
       }
     }
@@ -338,7 +336,6 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
         );
     }
   }
-  console.log("this", authenticated, farcasterUser.status != "approved");
 
   if (mainAppLoading)
     return (

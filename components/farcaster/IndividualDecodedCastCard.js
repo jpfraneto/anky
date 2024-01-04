@@ -265,7 +265,7 @@ const IndividualDecodedCastCard = ({ cast, farcasterUser }) => {
               </Link>
             </div>
             <div className="w-96 h-2/12">
-              <div className="flex flex-col h-full py-1 bg-black text-white w-full left-0  relative">
+              <div className="flex flex-col h-full pb-1 pt-2 bg-black text-white w-full left-0  relative">
                 <div className="px-2 w-full h-8 flex justify-between items-center">
                   <div className="pl-4 flex space-x-4 h-full">
                     <div
@@ -319,10 +319,10 @@ const IndividualDecodedCastCard = ({ cast, farcasterUser }) => {
                 </div>
                 <>
                   {authenticated && displaySendNewen && (
-                    <div className="flex h-14 mt-1 bg-purple-600 relative text-white w-full px-4 relative justify-between items-center">
+                    <div className="flex h-14  bg-purple-600 mt-2 border-white border-t-2 relative text-white w-full px-4 relative justify-between items-center">
                       {userDatabaseInformation.manaBalance ? (
                         <>
-                          <div className="flex flex-row w-3/5 items-center">
+                          <div className="flex flex-row w-3/5 items-center ">
                             <div className="flex flex-col items-center justify-around">
                               <p className="-mb-2">
                                 $NEWEN{!authenticated && "*"}
@@ -333,7 +333,7 @@ const IndividualDecodedCastCard = ({ cast, farcasterUser }) => {
                               </small>
                             </div>
                             <input
-                              className="rounded-xl mx-auto w-24 h-fit text-black  px-4"
+                              className="rounded-xl mx-auto w-24 h-fit text-center text-black  px-4"
                               type="number"
                               disabled={!authenticated}
                               min={0}
@@ -347,7 +347,7 @@ const IndividualDecodedCastCard = ({ cast, farcasterUser }) => {
 
                           <button
                             onClick={sendManaToCastCreator}
-                            className="bg-purple-800 border border-white w-48 px-2 py-1 rounded-xl hover:text-green-500 active:text-yellow-500"
+                            className="bg-purple-800 border border-white w-fit px-4 py-1 rounded-xl hover:text-green-500 active:text-yellow-500"
                           >
                             send to user
                           </button>

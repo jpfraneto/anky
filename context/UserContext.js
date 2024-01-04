@@ -161,7 +161,6 @@ export const UserProvider = ({ children }) => {
   useEffect(() => {
     const loadUserDatabaseInformation = async () => {
       try {
-        console.log("loading the user database information", authenticated);
         if (!authenticated) return;
         const authToken = await getAccessToken();
         const thisUserPrivyId = user.id.replace("did:privy:", "");

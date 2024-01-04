@@ -46,9 +46,7 @@ function MyApp({ Component, pageProps }) {
     //   alert('the user doesnt have the pwa installed');
     // }
     if (typeof window !== "undefined") {
-      initializeDB().then((db) => {
-        console.log("the db was initialized");
-      });
+      initializeDB().then((db) => {});
     }
     if (window.innerWidth > 768) {
       setIsDesktop(true);

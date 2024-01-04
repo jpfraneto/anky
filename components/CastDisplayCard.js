@@ -43,7 +43,6 @@ const CastDisplayCard = ({ thisCast }) => {
   useEffect(() => {
     async function formatThisCast() {
       try {
-        console.log("INNNNSIDE HERE");
         const hasUserLikedBool = cast.reactions.likes.filter(
           (x) => x.fid == farcasterUser.fid
         );
