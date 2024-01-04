@@ -358,8 +358,8 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
     );
 
   return (
-    <div className="relative text-center w-screen text-white h-screen flex flex-col">
-      <div className=" text-gray-400 w-full h-8 justify-between md:flex md:px-2 items-center">
+    <div className="standalone:pt-12 relative text-center w-screen text-white h-screen flex flex-col">
+      <div className=" text-gray-400 w-full h-4 md:h-8 justify-between md:flex md:px-2 items-center">
         <Link
           href={authenticated ? `/u/${user.id.replace("did:privy:", "")}` : "/"}
         >
@@ -370,9 +370,9 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
             anky
           </span>
         </Link>
-        <div className="h-2 md:h-full w-full">
+        <div className="h-full w-full">
           <div
-            className="h-full opacity-50"
+            className="h-full opacity-80"
             style={{
               width: `${lifeBarLength}%`,
               backgroundColor: lifeBarLength > 30 ? "green" : "red",
@@ -380,7 +380,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
           ></div>
         </div>
         {displayNavbar && (
-          <div className="h-8 w-fit px-2 flex justify-center items-center relative">
+          <div className="hidden md:flex h-8 w-fit px-2 flex justify-center items-center relative">
             {authenticated ? (
               <div className="flex h-full space-x-2 top-0 w-full items-center">
                 {displayManaInfo && (
