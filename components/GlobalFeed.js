@@ -66,15 +66,17 @@ const GlobalFeed = ({ thisWallet }) => {
 
   if (loadingFeed) {
     return (
-      <div className="mt-12">
-        <p className="text-white">loading...</p>
-        <Spinner />
+      <div className="w-full h-screen pb-16 pt-12">
+        <div className="w-full flex flex-col items-center justify-around flex-wrap  mx-auto">
+          <p className="text-white">loading the feed...</p>
+          <Spinner />
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="w-full h-screen overflow-y-scroll">
+    <div className="w-full h-screen pb-16 overflow-y-scroll">
       <div className="w-full flex justify-around flex-wrap md:w-full  mx-auto">
         {globalFeed.map((x, i) => {
           return (

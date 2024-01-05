@@ -17,6 +17,7 @@ import { encodeToAnkyverseLanguage } from "../lib/ankyverse";
 import { usePrivy } from "@privy-io/react-auth";
 import Spinner from "./Spinner";
 import { useUser } from "../context/UserContext";
+import IndividualDecodedCastCard from "./farcaster/IndividualDecodedCastCard";
 
 function sleep(ms) {
   return new Promise((resolve) => {
@@ -63,12 +64,14 @@ const DesktopWritingGame = ({
   const [userWantsToCastAnon, setUserWantsToCastAnon] = useState(true);
   const [savingRound, setSavingRound] = useState(false);
   const [castAs, setCastAs] = useState("");
+  const [castForPreview, setCastForPreview] = useState(null);
   const [thereWasAnError, setThereWasAnError] = useState(false);
   const [moreThanMinRun, setMoreThanMinRound] = useState(null);
   const [chosenUpscaledImage, setChosenUpscaledImage] = useState("");
   const [savingTextAnon, setSavingTextAnon] = useState(false);
   const [savedText, setSavedText] = useState(false);
   const [cid, setCid] = useState("");
+  const [previewCast, setPreviewCast] = useState(false);
   const [everythingWasUploaded, setEverythingWasUploaded] = useState(false);
   const [showOverlay, setShowOverlay] = useState(!authenticated);
   const [generatedImages, setGeneratedImages] = useState("");
@@ -615,6 +618,34 @@ const DesktopWritingGame = ({
     }
   };
 
+  const previewCastAction = async () => {
+    try {
+      const anonCastPreview = {
+        author: {
+          active_status: "inactive",
+          custody_address: "0x3ae59405ea68e9ce61442cadf74c335abfbc6b60",
+          display_name: "Anky",
+          fid: 18350,
+          pfp_url: "https://i.imgur.com/PPYWuJU.jpg",
+          username: "anky",
+        },
+        hash: "0x398492dsjcasc",
+        text: text,
+        reactions: {
+          likes: [2, 3, 5, 1, 51, 6],
+          recasts: [2, 2, 4, 5, 2, 2, 4, 5, 6, 1, 2, 2],
+        },
+        replies: { count: 8 },
+        root_parent_url: "https://warpcast.com/~/channel/anky",
+        timestamp: new Date(),
+      };
+      setCastForPreview(anonCastPreview);
+      setPreviewCast(true);
+    } catch (error) {
+      console.log("there was an error previewing your cast.");
+    }
+  };
+
   if (errorProblem)
     return (
       <div
@@ -750,12 +781,15 @@ const DesktopWritingGame = ({
                 >
                   {finished && (
                     <div className="border-white border-2 mx-16 md:mx-auto w-5/6 md:w-2/3 rounded-xl bg-black p-4 text-white">
-                      <p className="text-3xl">Save this run</p>
+                      <p className="text-lg md:text-3xl">
+                        congratulations, your writing session is over
+                      </p>
                       {time < 30 ? (
-                        <p className="text-red-400 text-sm">
-                          *you need to write more than 30 seconds{" "}
-                          {!authenticated && "(and log in)"} to earn $NEWEN for
-                          writing
+                        <p className="text-red-400 text-xs">
+                          *in here, there is a currency that represents time.
+                          you can earn it if you{" "}
+                          {!authenticated && "log in and "} write for more than
+                          30 seconds.
                         </p>
                       ) : (
                         <p className="text-red-400 text-sm">
@@ -890,19 +924,29 @@ const DesktopWritingGame = ({
                                 </div>
                               </div>
                             ) : (
-                              <div className="p-4 bg-black  md:w-full rounded-xl mx-auto drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] z-50">
-                                <div className="flex flex-col items-center md:flex-row md:space-y-0 justify-center w-full space-y-2 mt-2">
-                                  {userWantsToCastAnon && (
-                                    <Button
-                                      buttonText={
-                                        savingRoundLoading
-                                          ? `saving...`
-                                          : `cast anon`
-                                      }
-                                      buttonAction={handleSaveRun}
-                                      buttonColor="bg-green-600 w-32"
-                                    />
-                                  )}
+                              <div className="p-2 bg-black  md:w-full rounded-xl mx-auto drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] z-50">
+                                <div className="flex flex-col items-center  justify-center w-full ">
+                                  <div className="flex justify-center w-96 mx-auto">
+                                    {userWantsToCastAnon && (
+                                      <div className="flex justify-between w-full mb-2">
+                                        <Button
+                                          buttonText={"preview"}
+                                          buttonAction={previewCastAction}
+                                          buttonColor="bg-purple-600 w-32"
+                                        />
+                                        <Button
+                                          buttonText={
+                                            savingRoundLoading
+                                              ? `casting...`
+                                              : `cast anon`
+                                          }
+                                          buttonAction={handleSaveRun}
+                                          buttonColor="bg-green-600 w-32"
+                                        />
+                                      </div>
+                                    )}
+                                  </div>
+
                                   <Button
                                     buttonText={`copy written text and go back`}
                                     buttonAction={() => {
@@ -912,7 +956,7 @@ const DesktopWritingGame = ({
                                       setDisplayWritingGameLanding(false);
                                       setThisIsTheFlag(true);
                                       setTimeout(() => {
-                                        router.push("/");
+                                        router.push("/feed");
                                       }, 10);
                                     }}
                                     buttonColor="bg-red-600"
@@ -1023,6 +1067,29 @@ const DesktopWritingGame = ({
             )}
           </div>
         ))}
+      <Overlay show={previewCast}>
+        <div className="bg-black bg-opacity-60 flex flex-col h-full justify-around items-around w-full ">
+          <div>
+            <IndividualDecodedCastCard
+              cast={castForPreview}
+              previewCast={true}
+              farcasterUser={{}}
+            />
+            <div className="flex mt-8 justify-between px-4 mx-auto w-96">
+              <Button
+                buttonText={savingRoundLoading ? `saving...` : `cast anon`}
+                buttonAction={handleSaveRun}
+                buttonColor="bg-green-600 w-32"
+              />
+              <Button
+                buttonText={"cancel"}
+                buttonAction={() => setPreviewCast(false)}
+                buttonColor="bg-purple-600 w-32"
+              />
+            </div>
+          </div>
+        </div>
+      </Overlay>
       <Overlay show={showOverlay && !authenticated && !farcasterUser?.fid}>
         <div className="flex flex-col h-full justify-center items-center w-full ">
           <div className="flex flex-col text-white h-48">
