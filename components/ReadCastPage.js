@@ -3,13 +3,10 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import { decodeFromAnkyverseLanguage } from "../lib/ankyverse";
 import { getOneWriting } from "../lib/irys";
-import { GiRollingEnergy } from "react-icons/gi";
 import Link from "next/link";
-import { FaRegCommentAlt, FaRegHeart, FaPencilAlt } from "react-icons/fa";
-import { BsArrowRepeat } from "react-icons/bs";
+import Button from "./Button";
+import IndividualDecodedCastCard from "./farcaster/IndividualDecodedCastCard";
 import Image from "next/image";
-import Head from "next/head";
-import OgDisplay from "./OgDisplay";
 import { useUser } from "../context/UserContext";
 import { usePrivy } from "@privy-io/react-auth";
 import Spinner from "./Spinner";
@@ -37,6 +34,7 @@ const ReadCastPage = () => {
   const [cast, setCast] = useState();
   const { authenticated, login } = usePrivy();
   const [castInfo, setCastInfo] = useState({});
+  const [decodedCast, setDecodedCast] = useState(null);
   const [castReplies, setCastReplies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [hasUserCommented, setHasUserCommented] = useState(false);
@@ -75,8 +73,6 @@ const ReadCastPage = () => {
         if (response.status == 200 && response.data.cast) {
           console.log("IN HERE", response.data);
           let thisCast = response.data.cast;
-
-          setCast(thisCast);
           const hasUserLikedBool = thisCast.reactions.likes.filter(
             (x) => x.fid == farcasterUser.fid
           );
@@ -85,15 +81,12 @@ const ReadCastPage = () => {
           );
           setHasUserLiked(hasUserLikedBool);
           setHasUserRecasted(hasUserRecastedBool);
-          const lastChars = thisCast.text.slice(-4);
-          if (true || lastChars == "anky") {
-            const encodedCid = thisCast.text.split("\n")[0];
-            const decodedCid = decodeFromAnkyverseLanguage(encodedCid);
-            const writingText = await getOneWriting(decodedCid);
-            setWriting(writingText.text);
-          } else {
-            setWriting(thisCast.text);
-          }
+
+          const encodedCid = thisCast.text.split("\n")[0];
+          const decodedCid = decodeFromAnkyverseLanguage(encodedCid);
+          const writingText = await getOneWriting(decodedCid);
+          thisCast.text = writingText.text;
+          setDecodedCast(thisCast);
 
           if (response.status == 200 && thisCast.replies.count > 0) {
             const repliesResponse = await axios.post(
@@ -169,7 +162,7 @@ const ReadCastPage = () => {
         <Spinner />
       </div>
     );
-  if (!cast)
+  if (!decodedCast)
     return (
       <div className="text-white pt-4">
         <p>this is an invalid link</p>
@@ -177,154 +170,18 @@ const ReadCastPage = () => {
         <Link href="/farcaster">write</Link>
       </div>
     );
-  console.log("the cast replioes are :", castReplies);
 
   return (
-    <div className="h-full w-full ">
-      <Head>
-        <title>Ankycaster</title>
-        <meta property="og:title" content="Tell us who you are" />
-        <meta
-          property="og:description"
-          content="Read and explore what is in here"
-        />
-        <meta property="og:image" content="" />
-        <meta property="og:url" content={`https://www.anky.lat/r/${id}`} />
-        <meta property="og:type" content="website" />
-      </Head>
-      <div className="active:none w-full h-full md:max-w-2xl  md:mx-auto flex flex-col relative">
-        <div className="w-full md:w-6/12   mx-auto h-full flex flex-col overflow-y-scroll  flex-grow bg-gray-300 text-gray-700 ">
-          <div className="text-xs italic py-3 flex-none h-fit flex  items-center  justify-center ">
-            <Link href={`/u/${cast.author.fid}`} passHref>
-              <div className="w-48 h-48 active:translate-x-2 rounded-full overflow-hidden relative shadow-2xl">
-                <Image src={cast.author.pfp_url} fill />
-              </div>
-            </Link>
-          </div>
-          <div className="flex h-fit py-1 bg-black text-white w-full left-0 px-2  relative justify-between items-center">
-            <div className="pl-4 flex space-x-4 h-full">
-              <div
-                onClick={handleDisplayComments}
-                className={`flex space-x-1 items-center ${
-                  hasUserCommented && "text-gray-500"
-                } hover:text-gray-500 cursor-pointer`}
-              >
-                <FaRegCommentAlt size={14} />
-                <span>{cast.replies.count}</span>
-              </div>
-              <div
-                onClick={handleRecast}
-                className={`flex space-x-1 items-center ${
-                  hasUserRecasted && "text-green-300"
-                } hover:text-green-300 cursor-pointer`}
-              >
-                <BsArrowRepeat size={19} />
-                <span>{cast.reactions.recasts.length}</span>
-              </div>
-              <div
-                onClick={handleLike}
-                className={`flex space-x-1 items-center ${
-                  hasUserLiked && "text-red-300"
-                } hover:text-red-500 cursor-pointer`}
-              >
-                <FaRegHeart />
-                <span>{cast.reactions.likes.length}</span>
-              </div>
-              <div
-                onClick={() => {
-                  setDisplaySendNewen(!displaySendNewen);
-                }}
-                className={`flex space-x-1 items-center ${
-                  hasUserLiked && "text-purple-300"
-                } hover:text-purple-500 cursor-pointer`}
-              >
-                <GiRollingEnergy />
-                <span>{totalNewenEarned}</span>
-              </div>
-            </div>
-
-            <a
-              target="_blank"
-              href={`https://warpcast.com/${
-                cast.author.username
-              }/${cast.hash.substring(0, 10)}`}
-              className="bg-purple-600 px-2 py-1 rounded-xl border border-white ml-auto hover:text-red-200 text-white"
-            >
-              Warpcast
-            </a>
-          </div>
-          {authenticated && displaySendNewen && (
-            <div className="flex h-fit py-1 bg-purple-600 relative pb-5 text-white w-full left-0 px-4  relative justify-between items-center">
-              <p>$NEWEN{!authenticated && "*"}</p>
-              <input
-                className="rounded-xl mx-1 w-1/3 text-black  px-4"
-                type="number"
-                disabled={!authenticated}
-                min={0}
-                onChange={(e) => setManaForCongratulation(e.target.value)}
-                max={userDatabaseInformation.manaBalance}
-                value={manaForCongratulation}
-              />
-              <small className="absolute text-purple-200 bottom-1">
-                your balance is {userDatabaseInformation.manaBalance}
-              </small>
-              <button
-                onClick={sendManaToCastCreator}
-                className="bg-purple-800 border border-white px-2 py-1 rounded-xl hover:text-green-500 active:text-yellow-500"
-              >
-                send to user
-              </button>
-            </div>
-          )}
-
-          {displaySendNewen && !authenticated && (
-            <small className="text-red-800">
-              *
-              <span className="text-red-500" onClick={login}>
-                login
-              </span>{" "}
-              to send $NEWEN to the creator of this cast
-            </small>
-          )}
-
-          <div className="h-fit grow rounded px-2 pt-2 pb-4 text-2xl text-left pl-8  ">
-            {writing ? (
-              writing.includes("\n") ? (
-                writing.split("\n").map((x, i) => (
-                  <p className="mb-4" key={i}>
-                    {x}
-                  </p>
-                ))
-              ) : (
-                <p className="my-2">{writing}</p>
-              )
-            ) : null}
-          </div>
-          {displayComments && (
-            <div
-              className={`${
-                displayComments &&
-                "border-black border-2 absolute top-0 left-0 w-full bg-purple-300 rounded px-2 py-1 my-2"
-              } overflow-hidden`}
-            >
-              <div className="relative">
-                <span
-                  className="text-red-600 text-xl hover:text-red-800 -top-6 right-0 absolute cursor-pointer"
-                  onClick={() => setDisplayComments(false)}
-                >
-                  X
-                </span>
-                {castReplies &&
-                  castReplies.length > 0 &&
-                  castReplies.map((reply, i) => (
-                    <>
-                      <ReplyComponent key={i} cast={reply} />
-                    </>
-                  ))}
-              </div>
-            </div>
-          )}
-        </div>
+    <div className="flex flex-col pt-8">
+      <IndividualDecodedCastCard
+        cast={decodedCast}
+        key={null}
+        farcasterUser={farcasterUser}
+      />
+      <div className="w-48 mx-auto mt-4">
+        <Link href="/feed" passHref>
+          <Button buttonText="feed" buttonColor="bg-purple-600 text-white" />
+        </Link>
       </div>
     </div>
   );
