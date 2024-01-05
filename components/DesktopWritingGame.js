@@ -1075,7 +1075,7 @@ const DesktopWritingGame = ({
               previewCast={true}
               farcasterUser={{}}
             />
-            <div className="flex mt-8 justify-between px-4 mx-auto w-96">
+            <div className="flex mt-0 justify-between px-4 mx-auto w-96">
               <Button
                 buttonText={savingRoundLoading ? `saving...` : `cast anon`}
                 buttonAction={handleSaveRun}

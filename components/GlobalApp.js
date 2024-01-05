@@ -358,9 +358,8 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
         )}
       </Transition>
     );
-
   return (
-    <div className="fixed text-center w-screen text-white h-screen pb-12 flex flex-col">
+    <div className="fixed text-center w-screen text-white h-screen  flex flex-col">
       <div className="flex-none text-gray-400 w-full h-4 md:h-8 justify-between md:flex md:px-2 items-center">
         <Link
           href={authenticated ? `/u/${user.id.replace("did:privy:", "")}` : "/"}
@@ -508,7 +507,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
           friendly recommendation #1: link farcaster account{" "}
           <Link
             href="/settings?link=farcaster"
-            className="bg-purple-600 ml-4 px-2 py-0 rounded-xl border text-white border-black active:bg-yellow-500 hover:bg-purple-700"
+            className="bg-purple-600 ml-4 px-2 w-fit py-0 rounded-xl border text-white border-black active:bg-yellow-500 hover:bg-purple-700"
           >
             go to settings
           </Link>
@@ -528,7 +527,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
       </div>
 
       <div
-        className={`${righteous.className} grow text-black relative items-center justify-center`}
+        className={`${righteous.className} grow text-black relative  items-center justify-center`}
         style={{
           backgroundImage:
             "linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/images/mintbg.jpg')",
@@ -537,62 +536,46 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
           backgroundRepeat: "no-repeat",
         }}
       >
-        <div className="h-full pb-20 z-10">
-          {getComponentForRoute(router.pathname, router)}
-          <div
-            onClick={() => {
-              console.log("in here");
-              if (
-                router.pathname.includes("write") ||
-                router.pathname.includes("w")
-              ) {
-                router.push("/");
-              }
-              setDisplayWritingGameLanding(true);
-            }}
-            className="standalone:hidden fixed hover:bg-purple-700 hover:cursor-pointer h-16 w-16 bottom-6 right-3 border-black border-2 active:bg-purple-500 rounded-full text-green-400 bg-purple-600 z-10 flex items-center justify-center"
-          >
-            <FaPencilAlt size={28} color="black" />
-          </div>
-          <nav className="hidden border-t-2 border-black standalone:flex w-full h-20  fixed bottom-0 pt-1 pb-1 bg-purple-200 space-x-4 justify-between items-center pb-4 px-12 z-50">
-            <Link href="/feed" passHref>
-              <span>
-                <IoIosHome size={40} />
-              </span>
-            </Link>
-
-            {authenticated ? (
-              <Link
-                className="active:text-yellow-500"
-                href="/settings"
-                passHref
+        {displayWritingGameLanding ? (
+          <div className="h-full">
+            <DesktopWritingGame
+              ankyverseDate={`sojourn ${ankyverseToday.currentSojourn} - wink ${
+                ankyverseToday.wink
+              } - ${ankyverseToday.currentKingdom.toLowerCase()}`}
+              userPrompt={thisIsThePrompt || ankyverseQuestion}
+              setUserAppInformation={setUserAppInformation}
+              userAppInformation={userAppInformation}
+              setLifeBarLength={setLifeBarLength}
+              setThisIsTheFlag={setThisIsTheFlag}
+              lifeBarLength={lifeBarLength}
+              setDisplayNavbar={setDisplayNavbar}
+              setDisableButton={setDisableButton}
+              displayWritingGameLanding={displayWritingGameLanding}
+              setDisplayWritingGameLanding={setDisplayWritingGameLanding}
+              farcasterUser={farcasterUser}
+              countdownTarget={countdownTarget}
+            />
+            {!disableButton && (
+              <div
+                onClick={() => {
+                  if (
+                    router.pathname.includes("write") ||
+                    router.pathname.includes("w")
+                  ) {
+                    router.push("/");
+                  }
+                  setDisplayWritingGameLanding(false);
+                }}
+                className="fixed hover:bg-red-700 hover:cursor-pointer h-16 w-16 bottom-6 right-3 border-black border-2 active:bg-red-500 rounded-full text-green-400 bg-red-600 z-10 flex items-center justify-center"
               >
-                <span>
-                  <IoMdSettings size={40} />
-                </span>
-              </Link>
-            ) : (
-              <span onClick={login}>
-                <IoMdSettings size={40} />
-              </span>
+                <IoArrowBack size={28} color="black" />
+              </div>
             )}
-            {authenticated ? (
-              <Link href={`/u/${user?.id.replace("did:privy:", "")}`} passHref>
-                <span>
-                  <FaUserAstronaut size={40} />
-                </span>
-              </Link>
-            ) : (
-              <span onClick={login}>
-                <FaUserAstronaut size={40} />
-              </span>
-            )}
-
-            <span onClick={() => setDisplayAboutModal(!displayAboutModal)}>
-              <BsInfoLg size={40} />
-            </span>
-
-            <span
+          </div>
+        ) : (
+          <div className="h-full pb-20 z-50">
+            {getComponentForRoute(router.pathname, router)}
+            <div
               onClick={() => {
                 console.log("in here");
                 if (
@@ -603,58 +586,70 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
                 }
                 setDisplayWritingGameLanding(true);
               }}
+              className="standalone:hidden fixed hover:bg-purple-700 hover:cursor-pointer h-16 w-16 bottom-6 right-3 border-black border-2 active:bg-purple-500 rounded-full text-green-400 bg-purple-600 z-10 flex items-center justify-center"
             >
               <FaPencilAlt size={28} color="black" />
-            </span>
-          </nav>
-        </div>
-      </div>
-      {displayWritingGameLanding && (
-        <div
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/images/mintbg.jpg')",
-            backgroundPosition: "center center",
-            backgroundSize: "cover",
-            backgroundRepeat: "no-repeat",
-          }}
-          className="fixed top-4 md:top-8 bg-black w-screen h-screen"
-        >
-          <DesktopWritingGame
-            ankyverseDate={`sojourn ${ankyverseToday.currentSojourn} - wink ${
-              ankyverseToday.wink
-            } - ${ankyverseToday.currentKingdom.toLowerCase()}`}
-            userPrompt={thisIsThePrompt || ankyverseQuestion}
-            setUserAppInformation={setUserAppInformation}
-            userAppInformation={userAppInformation}
-            setLifeBarLength={setLifeBarLength}
-            setThisIsTheFlag={setThisIsTheFlag}
-            lifeBarLength={lifeBarLength}
-            setDisplayNavbar={setDisplayNavbar}
-            setDisableButton={setDisableButton}
-            displayWritingGameLanding={displayWritingGameLanding}
-            setDisplayWritingGameLanding={setDisplayWritingGameLanding}
-            farcasterUser={farcasterUser}
-            countdownTarget={countdownTarget}
-          />
-          {!disableButton && (
-            <div
-              onClick={() => {
-                if (
-                  router.pathname.includes("write") ||
-                  router.pathname.includes("w")
-                ) {
-                  router.push("/");
-                }
-                setDisplayWritingGameLanding(false);
-              }}
-              className="fixed hover:bg-red-700 hover:cursor-pointer h-16 w-16 bottom-6 right-3 border-black border-2 active:bg-red-500 rounded-full text-green-400 bg-red-600 z-10 flex items-center justify-center"
-            >
-              <IoArrowBack size={28} color="black" />
             </div>
-          )}
-        </div>
-      )}
+            <nav className="hidden border-t-2 border-black standalone:flex w-full h-20  fixed bottom-0 pt-1 pb-1 bg-purple-200 space-x-4 justify-between items-center pb-4 px-12 z-50">
+              <Link href="/feed" passHref>
+                <span>
+                  <IoIosHome size={40} />
+                </span>
+              </Link>
+
+              {authenticated ? (
+                <Link
+                  className="active:text-yellow-500"
+                  href="/settings"
+                  passHref
+                >
+                  <span>
+                    <IoMdSettings size={40} />
+                  </span>
+                </Link>
+              ) : (
+                <span onClick={login}>
+                  <IoMdSettings size={40} />
+                </span>
+              )}
+              {authenticated ? (
+                <Link
+                  href={`/u/${user?.id.replace("did:privy:", "")}`}
+                  passHref
+                >
+                  <span>
+                    <FaUserAstronaut size={40} />
+                  </span>
+                </Link>
+              ) : (
+                <span onClick={login}>
+                  <FaUserAstronaut size={40} />
+                </span>
+              )}
+
+              <span onClick={() => setDisplayAboutModal(!displayAboutModal)}>
+                <BsInfoLg size={40} />
+              </span>
+
+              <span
+                onClick={() => {
+                  console.log("in here");
+                  if (
+                    router.pathname.includes("write") ||
+                    router.pathname.includes("w")
+                  ) {
+                    router.push("/");
+                  }
+                  setDisplayWritingGameLanding(true);
+                }}
+              >
+                <FaPencilAlt size={28} color="black" />
+              </span>
+            </nav>
+          </div>
+        )}
+      </div>
+
       {displayAboutModal && <AboutModal />}
       {displayInstallPWA && (
         <InstallPwaModal setDisplayInstallPWA={setDisplayInstallPWA} />
