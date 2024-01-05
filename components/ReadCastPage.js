@@ -12,6 +12,7 @@ import Head from "next/head";
 import OgDisplay from "./OgDisplay";
 import { useUser } from "../context/UserContext";
 import { usePrivy } from "@privy-io/react-auth";
+import Spinner from "./Spinner";
 
 var options = {
   weekday: "long",
@@ -165,6 +166,7 @@ const ReadCastPage = () => {
     return (
       <div className="text-white">
         <p>the cast is being translated...</p>
+        <Spinner />
       </div>
     );
   if (!cast)

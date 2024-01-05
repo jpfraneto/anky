@@ -359,7 +359,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
       </Transition>
     );
   return (
-    <div className="fixed text-center w-screen text-white h-screen  flex flex-col">
+    <div className="fixed overflow-y-scroll text-center w-screen text-white h-screen  flex flex-col">
       <div className="flex-none text-gray-400 w-full h-4 md:h-8 justify-between md:flex md:px-2 items-center">
         <Link
           href={authenticated ? `/u/${user.id.replace("did:privy:", "")}` : "/"}
