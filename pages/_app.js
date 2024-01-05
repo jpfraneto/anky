@@ -104,7 +104,10 @@ function MyApp({ Component, pageProps }) {
   };
 
   return (
-    <main style={{ WebkitTapHighlightColor: "transparent" }}>
+    <main
+      className={`${righteous.className}`}
+      style={{ WebkitTapHighlightColor: "transparent" }}
+    >
       <Head>
         <title>Anky</title>
         <meta

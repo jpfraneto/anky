@@ -217,7 +217,6 @@ const LibraryPage = ({}) => {
         <Spinner />
       </div>
     );
-  console.log("the wallet is: ", wallet);
   if (!wallet || !authenticated)
     return (
       <div className="py-2 w-96 mx-auto text-white">
@@ -315,7 +314,7 @@ const LibraryPage = ({}) => {
     );
 
   return (
-    <div>
+    <div className="h-full ">
       <div className="flex w-96 mx-auto relative items-center justify-center">
         <h2 className="text-white text-2xl mt-2 ">library</h2>
 
@@ -331,13 +330,12 @@ const LibraryPage = ({}) => {
         )}
       </div>
 
-      <div className="text-white py-4 flex flex-col md:flex-row w-screen px-4">
-        <div className="w-full md:w-2/5 aspect-square p-2 text-white flex flex-col items-center">
+      <div className="text-white py-4 h-full flex flex-col md:flex-row w-screen px-4">
+        <div className="w-full h-full md:w-2/5 aspect-square p-2 text-white flex flex-col items-center">
           <div className="relative w-4/5 md:w-3/5 aspect-square rounded-2xl border-2 border-white overflow-hidden">
             <Image fill src={usersAnkyImage || `/ankys/elmasmejor.png`} />
           </div>
-          <p className="mt-2">welcome back ,</p>
-          <p className="mt-2">are you ready to keep writing?</p>
+          <p className="mt-2">welcome back </p>
 
           <Link href="/me">
             <Button
@@ -351,8 +349,8 @@ const LibraryPage = ({}) => {
             <Spinner />
           </div>
         ) : (
-          <div className="flex w-full flex-col">
-            <div className="w-full flex overflow-y-scroll flex-wrap  h-fit p-2 my-2">
+          <div className="flex w-full flex-col h-full">
+            <div className="w-full flex flex-wrap h-48 overflow-y-scroll p-2 my-2">
               {writingsLoading ? (
                 <>
                   <Spinner />
@@ -378,7 +376,7 @@ const LibraryPage = ({}) => {
                 </>
               )}
             </div>
-            <div className="w-full flex-wrap flex bg-red-100 rounded-xl overflow-hidden">
+            <div className="w-full flex-wrap h-64 flex bg-red-100 rounded-xl overflow-y-scroll">
               {journals && journals.length > 0 ? (
                 journals.map((x, i) => {
                   return <JournalCard journal={x} key={i} />;

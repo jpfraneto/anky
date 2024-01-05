@@ -12,7 +12,8 @@ const InstallPwaModal = ({ setDisplayInstallPWA }) => {
               <li>1. open this website on safari</li>
               <li>2. tap the options button on the navbar below</li>
               <li>
-                3. scroll down until you see "add to home screen". tap that.
+                3. scroll down until you see &quot;add to home screen&quot;. tap
+                that.
               </li>
               <li>4. add</li>
               <li>5. write</li>
@@ -27,7 +28,9 @@ const InstallPwaModal = ({ setDisplayInstallPWA }) => {
             <ol>
               <li>1. open this website on chrome</li>
               <li>2. tap the three dot icon at the top right</li>
-              <li>3. find the "add to home screen" option. tap that.</li>
+              <li>
+                3. find the &quot;add to home screen&quot; option. tap that.
+              </li>
               <li>4. add</li>
               <li>5. write</li>
               <li>6. write every day through this app, at least 8 minutes. </li>

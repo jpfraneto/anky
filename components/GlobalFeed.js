@@ -1,15 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { getOneWriting } from "../lib/irys";
 import { usePrivy } from "@privy-io/react-auth";
-import Button from "./Button";
-import Link from "next/link";
-import Image from "next/image";
 import axios from "axios";
 import { decodeFromAnkyverseLanguage } from "../lib/ankyverse";
 import IndividualDecodedCastCard from "./farcaster/IndividualDecodedCastCard";
 import Spinner from "./Spinner";
 import { useUser } from "../context/UserContext";
-import NormalCastCard from "./farcaster/NormalCastCard";
 
 var options = {
   weekday: "long",
@@ -89,59 +85,6 @@ const GlobalFeed = ({ thisWallet }) => {
         })}
       </div>
     </div>
-  );
-
-  if (!clickable) {
-    return (
-      <div
-        className={`p-2 m-2 rounded-xl border-white border-2  bg-purple-500 text-white`}
-      >
-        <p className="text-sm em">
-          {new Date(writing.timestamp).toLocaleDateString("en-US", options)}
-        </p>
-        <hr className="w-9/11 mx-auto bg-black text-black my-2" />
-        {writing.text && writing.text ? (
-          writing.text.includes("\n") ? (
-            writing.text.split("\n").map((x, i) => (
-              <p className="my-2" key={i}>
-                {x}
-              </p>
-            ))
-          ) : (
-            <p className="my-2">{writing.text}</p>
-          )
-        ) : null}
-      </div>
-    );
-  }
-
-  return (
-    <Link href={`${getContainerLink(writing)}`} passHref>
-      <div
-        className={`p-2 m-2 rounded-xl border-white border-2 ${getColor(
-          writing.writingContainerType
-        )} text-white`}
-      >
-        <p className="text-sm em">
-          {new Date(writing.timestamp).toLocaleDateString("en-US", options)}
-        </p>
-        <p>
-          {writing.writingContainerType} - {writing.containerId}
-        </p>
-        <hr className="w-9/11 mx-auto bg-black text-black my-2" />
-        {writing.text && writing.text ? (
-          writing.text.includes("\n") ? (
-            writing.text.split("\n").map((x, i) => (
-              <p className="my-2" key={i}>
-                {x}
-              </p>
-            ))
-          ) : (
-            <p className="my-2">{writing.text}</p>
-          )
-        ) : null}
-      </div>
-    </Link>
   );
 };
 

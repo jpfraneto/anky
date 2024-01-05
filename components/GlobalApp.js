@@ -503,12 +503,12 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
       {authenticated && farcasterUser.status != "approved" && (
         <div
           onClick={() => setDisplayWritingGameLanding(false)}
-          className="flex-none h-8 text-xs px-4 md:text-xl text-black bg-purple-200 text-black py-1 flex  justify-center items-center "
+          className="flex-none h-8 text-xs px-4 md:text-lg text-black bg-purple-200 text-black py-1 flex  justify-center items-center "
         >
           friendly recommendation #1: link farcaster account{" "}
           <Link
             href="/settings?link=farcaster"
-            className="bg-purple-600 ml-4 px-2 py-1 rounded-xl border text-white border-black active:bg-yellow-500 hover:bg-purple-700"
+            className="bg-purple-600 ml-4 px-2 py-0 rounded-xl border text-white border-black active:bg-yellow-500 hover:bg-purple-700"
           >
             go to settings
           </Link>
