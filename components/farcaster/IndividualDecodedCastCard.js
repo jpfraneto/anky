@@ -32,6 +32,7 @@ const IndividualDecodedCastCard = ({
   const { authenticated, login, getAccessToken, user } = usePrivy();
   const { userDatabaseInformation, setUserDatabaseInformation } = useUser();
   const [castReplies, setCastReplies] = useState([]);
+  const [textForCopy, setTextForCopy] = useState("copy text");
   const [userPrivyId, setUserPrivyId] = useState("");
   const [totalNewenEarned, setTotalNewenEarned] = useState(222);
   const [manaForCongratulation, setManaForCongratulation] = useState(
@@ -140,6 +141,16 @@ const IndividualDecodedCastCard = ({
     }
   };
 
+  async function copyTheText() {
+    try {
+      await navigator.clipboard.writeText(writing);
+      setTextForCopy("copied");
+      setTimeout(() => {
+        setTextForCopy("copy");
+      }, 1111);
+    } catch (error) {}
+  }
+
   async function sendManaToCastCreator() {
     try {
       if (manaForCongratulation > userDatabaseInformation.manaBalance)
@@ -238,7 +249,13 @@ const IndividualDecodedCastCard = ({
 
   return (
     <div className="active:none w-96 mx-auto relative h-96  md:mx-auto flex flex-col my-2 rounded-xl overflow-y-scroll">
-      <div className="w-full md:w-96 mx-auto  bg-gray-300 text-gray-700 ">
+      <div className="w-full md:w-96 mx-auto  bg-gray-300 text-gray-700 relative">
+        <span
+          onClick={copyTheText}
+          className={` absolute top-1 left-3 active:text-orange-600 hover:text-purple-600 hover:cursor-pointer`}
+        >
+          {textForCopy}
+        </span>
         <div className="h-10/12 overflow-y-scroll flex flex-col">
           <div className="text-xs italic py-3 flex-none h-32 flex items-center justify-center ">
             {previewCast ? (
@@ -400,7 +417,6 @@ const IndividualDecodedCastCard = ({
             ) : null}
           </div>
         </div>
-
         {displayComments && (
           <div
             className={`${

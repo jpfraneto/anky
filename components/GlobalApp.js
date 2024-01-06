@@ -427,6 +427,17 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
                   </Link>
                 </span>
                 <span
+                  onMouseEnter={() => setDisplayManaInfo(true)}
+                  onMouseLeave={() => setDisplayManaInfo(false)}
+                  className="rounded-xl w-fit py-1  bg-green-400 border-white border hover:cursor-pointer hover:text-white px-1 flex justify-center space-x-2"
+                >
+                  <GiRollingEnergy
+                    size={16}
+                    color={`${displayManaInfo ? "white" : "#9CA38F"}`}
+                    className="ml-2 translate-y-1"
+                  />
+                </span>
+                <span
                   className="w-fit"
                   onClick={() => setDisplayWritingGameLanding(false)}
                 >
