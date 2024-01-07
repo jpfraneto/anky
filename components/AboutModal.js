@@ -1,10 +1,22 @@
+import { usePrivy } from "@privy-io/react-auth";
+import Button from "./Button";
 import React, { useState, useEffect } from "react";
 
-const AboutModal = () => {
+const AboutModal = ({ setDisplayAboutModal }) => {
+  const { login } = usePrivy();
   return (
     <div>
-      <div className="fixed bg-black w-screen h-screen opacity-50 top-0 left-0"></div>
+      <div
+        onClick={() => setDisplayAboutModal(false)}
+        className="fixed bg-black w-screen h-screen opacity-80 top-0 left-0"
+      ></div>
       <div className="fixed text-left pt-4 top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 bg-black h-3/5 rounded-xl w-96 z-40 mt-4 text-white overflow-y-scroll px-4 py-4">
+        <span
+          className="fixed right-4 top-1 text-red-600"
+          onClick={() => setDisplayAboutModal(false)}
+        >
+          close
+        </span>
         <h2 className="text-2xl">About Anky</h2>
         <p className="mb-2">
           first of all, welcome. it is great to have you here. here are some
@@ -82,6 +94,13 @@ const AboutModal = () => {
             the writing is stored forever associated with it.
           </li>
         </ol>
+        <div className="mt-2 w-24">
+          <Button
+            buttonAction={login}
+            buttonColor="bg-green-600"
+            buttonText="login"
+          />
+        </div>
       </div>
     </div>
   );

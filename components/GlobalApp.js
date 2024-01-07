@@ -4,6 +4,7 @@ import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { Righteous, Dancing_Script } from "next/font/google";
 import { getAnkyverseDay, getAnkyverseQuestion } from "../lib/ankyverse";
 import { useUser } from "../context/UserContext";
+import Offcanvas from "react-bootstrap/Offcanvas";
 import Image from "next/image";
 import Button from "./Button";
 import { FaPencilAlt, FaUserAstronaut } from "react-icons/fa";
@@ -93,12 +94,16 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
   const [displayRightNavbar, setDisplayRightNavbar] = useState(false);
   const [thisIsThePrompt, setThisIsThePrompt] = useState("");
   const [countdownTarget, setCountdownTarget] = useState(0);
+  const [show, setShow] = useState(false);
   const [displayWritingGameLanding, setDisplayWritingGameLanding] =
     useState(false);
   const [userWallet, setUserWallet] = useState(null);
   const [userIsMintingAnky, setUserIsMintingAnky] = useState(false);
   const wallets = useWallets();
   const wallet = wallets.wallets[0];
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
   useEffect(() => {
     const storedData = localStorage.getItem(LOCAL_STORAGE_KEYS.FARCASTER_USER);
@@ -359,8 +364,25 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
       </Transition>
     );
   return (
-    <div className="fixed overflow-y-scroll text-center w-screen text-white h-screen  flex flex-col">
-      <div className="flex-none text-gray-400 w-full h-4 md:h-8 justify-between md:flex md:px-2 items-center">
+    <div className="fixed overflow-y-scroll text-center w-screen text-white h-screen flex flex-col">
+      <div className="flex-none text-gray-400 w-full h-10 md:h-8 justify-between md:flex md:px-2 items-center">
+        <div className="h-6 w-full bg-black px-2  cursor-pointer justify-between flex md:hidden">
+          <div
+            className="active:text-yellow-600 hover:text-purple-600"
+            onClick={handleShow}
+          >
+            <MdMenuOpen size={22} />
+          </div>
+          <Link href="/feed" className="hover:text-purple-600">
+            anky
+          </Link>
+          <div
+            className="active:text-purple-600 mt-1 hover:text-purple-600"
+            onClick={() => setDisplayWritingGameLanding(true)}
+          >
+            <FaPencilAlt size={14} />
+          </div>
+        </div>
         <Link
           href={authenticated ? `/u/${user.id.replace("did:privy:", "")}` : "/"}
         >
@@ -371,7 +393,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
             anky
           </span>
         </Link>
-        <div className="h-full w-full">
+        <div className="h-4 w-full">
           <div
             className="h-full opacity-80"
             style={{
@@ -379,135 +401,6 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
               backgroundColor: lifeBarLength > 30 ? "green" : "red",
             }}
           ></div>
-        </div>
-        {displayNavbar && (
-          <div className="hidden md:flex h-8 w-fit px-2 flex justify-center items-center relative">
-            {authenticated ? (
-              <div className="flex h-full space-x-2 top-0 w-full items-center">
-                {displayManaInfo && (
-                  <span className="absolute p-2 top-10 z-50 rounded-xl border-white text-white border-2 bg-purple-400">
-                    <p className="text-left flex space-x-2 bg-purple-600 p-2 rounded-xl">
-                      <GiRollingEnergy
-                        size={48}
-                        color={`${displayManaInfo ? "white" : "#9CA38F"}`}
-                        className="mx-2 translate-y-1"
-                      />
-                      $NEWEN: Every second that you spend writing here, you will
-                      earn these.
-                    </p>
-                    <p className="text-left mt-2 flex space-x-2 bg-purple-600 p-2 rounded-xl">
-                      <FaChartLine
-                        size={32}
-                        color={`${displayManaInfo ? "white" : "#9CA38F"}`}
-                        className="mx-2 translate-y-1"
-                      />
-                      Streaks: How many days in a row have you written?
-                    </p>
-                  </span>
-                )}
-                <span
-                  onMouseEnter={() => setDisplayManaInfo(true)}
-                  onMouseLeave={() => setDisplayManaInfo(false)}
-                  className="rounded-xl w-fit  bg-purple-600 border-white border hover:cursor-pointer hover:text-white px-2 flex justify-center space-x-2"
-                >
-                  <Link href="/mana" passHref className="flex ">
-                    {userDatabaseInformation.manaBalance || 0}
-                    <GiRollingEnergy
-                      size={16}
-                      color={`${displayManaInfo ? "white" : "#9CA38F"}`}
-                      className="ml-2 translate-y-1"
-                    />
-                    <span className="mx-2">|</span>{" "}
-                    {userDatabaseInformation.streak || 0}
-                    <FaChartLine
-                      size={16}
-                      color={`${displayManaInfo ? "white" : "#9CA38F"}`}
-                      className="ml-2 translate-y-1"
-                    />
-                  </Link>
-                </span>
-                <span
-                  onMouseEnter={() => setDisplayManaInfo(true)}
-                  onMouseLeave={() => setDisplayManaInfo(false)}
-                  className="rounded-xl w-fit py-1  bg-green-400 border-white border hover:cursor-pointer hover:text-white px-1 flex justify-center space-x-2"
-                >
-                  <GiRollingEnergy
-                    size={16}
-                    color={`${displayManaInfo ? "white" : "#9CA38F"}`}
-                    className="ml-2 translate-y-1"
-                  />
-                </span>
-                <span
-                  className="w-fit"
-                  onClick={() => setDisplayWritingGameLanding(false)}
-                >
-                  <Link
-                    href="/settings"
-                    className="hover:text-purple-600 cursor-pointer"
-                  >
-                    settings
-                  </Link>
-                </span>
-                <span
-                  className="w-fit"
-                  onClick={() => setDisplayWritingGameLanding(false)}
-                >
-                  <Link
-                    href="/leaderboard"
-                    className="hover:text-purple-600 cursor-pointer"
-                  >
-                    leaderboard
-                  </Link>
-                </span>
-                <span
-                  className="w-fit"
-                  onClick={() => setDisplayWritingGameLanding(false)}
-                >
-                  <Link
-                    href={`/u/${user.id.replace("did:privy:", "")}`}
-                    className="hover:text-purple-600 cursor-pointer"
-                  >
-                    profile
-                  </Link>
-                </span>
-                <span
-                  className="hover:text-purple-600 cursor-pointer w-fit"
-                  onClick={() => setDisplayWritingGameLanding(true)}
-                >
-                  write
-                </span>
-                <span onClick={() => setDisplayWritingGameLanding(false)}>
-                  <Link
-                    href="/library"
-                    className="hover:text-purple-600 cursor-pointer"
-                  >
-                    library
-                  </Link>
-                </span>
-                <span
-                  className="hover:text-purple-600 cursor-pointer"
-                  onClick={logout}
-                >
-                  logout
-                </span>
-              </div>
-            ) : (
-              <button
-                className="hover:text-purple-600 cursor-pointer"
-                onClick={login}
-              >
-                login
-              </button>
-            )}
-          </div>
-        )}
-        <div className="hidden md:flex h-8 w-fit px-2 justify-center items-center relative">
-          <button
-            onClick={() => setDisplayNavbar(!displayNavbar)}
-            className="hover:text-purple-600 cursor-pointer "
-          >
-            <MdMenuOpen size={22} />
-          </button>
         </div>
       </div>
       {authenticated && farcasterUser.status != "approved" && (
@@ -524,7 +417,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
           </Link>
         </div>
       )}
-      <div
+      {/* <div
         onClick={() => setDisplayWritingGameLanding(false)}
         className="standalone:hidden md:hidden flex-none h-8 text-xs px-4 md:text-xl text-black bg-red-200 text-black py-1 flex justify-center items-center "
       >
@@ -535,7 +428,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
         >
           tutorial
         </span>
-      </div>
+      </div> */}
 
       <div
         className={`${righteous.className} grow text-black relative  items-center justify-center`}
@@ -661,10 +554,167 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
         )}
       </div>
 
-      {displayAboutModal && <AboutModal />}
+      {displayAboutModal && (
+        <AboutModal setDisplayAboutModal={setDisplayAboutModal} />
+      )}
       {displayInstallPWA && (
         <InstallPwaModal setDisplayInstallPWA={setDisplayInstallPWA} />
       )}
+      <Offcanvas
+        className={`${righteous.className} bg-black text-gray-600`}
+        placement="start"
+        backdrop="static"
+        scroll="true"
+        show={show}
+        onHide={handleClose}
+      >
+        <Offcanvas.Header closeButton>
+          <Offcanvas.Title className="pl-3">welcome to anky</Offcanvas.Title>
+        </Offcanvas.Header>
+        <Offcanvas.Body>
+          <div className="md:flex flex-col  h-full   w-fit px-2 relative">
+            <div className="h-5/6 w-full ">
+              {authenticated ? (
+                <div className="flex flex-col h-full space-x-2 top-0 w-full items-start">
+                  {displayManaInfo && (
+                    <span className="absolute p-2 top-10 z-50 rounded-xl border-white text-white border-2 bg-purple-400">
+                      <p className="text-left flex space-x-2 bg-purple-600 p-2 rounded-xl">
+                        <GiRollingEnergy
+                          size={48}
+                          color={`${displayManaInfo ? "white" : "#9CA38F"}`}
+                          className="mx-2 translate-y-1"
+                        />
+                        $NEWEN: Every second that you spend writing here, you
+                        will earn these.
+                      </p>
+                      <p className="text-left mt-2 flex space-x-2 bg-purple-600 p-2 rounded-xl">
+                        <FaChartLine
+                          size={32}
+                          color={`${displayManaInfo ? "white" : "#9CA38F"}`}
+                          className="mx-2 translate-y-1"
+                        />
+                        Streaks: How many days in a row have you written?
+                      </p>
+                    </span>
+                  )}
+                  <div className="flex space-x-2">
+                    <span
+                      // onMouseEnter={() => setDisplayManaInfo(true)}
+                      // onMouseLeave={() => setDisplayManaInfo(false)}
+                      className="rounded-xl hover:text-gray-600 w-fit mb-2 ml-2 bg-purple-600 border-white border hover:cursor-pointer  px-2 flex justify-center space-x-2"
+                    >
+                      <Link
+                        href="/mana"
+                        passHref
+                        className="flex text-white hover:text-gray-500"
+                      >
+                        {userDatabaseInformation.manaBalance || 0}
+                        <GiRollingEnergy
+                          size={16}
+                          color="white"
+                          className="ml-2 translate-y-1"
+                        />
+                        <span className="mx-2">|</span>{" "}
+                        {userDatabaseInformation.streak || 0}
+                        <FaChartLine
+                          size={16}
+                          color="white"
+                          className="ml-2 translate-y-1"
+                        />
+                      </Link>
+                    </span>
+                    <span
+                      onClick={() => alert("refresh the users state")}
+                      className="rounded-xl text-white hover:text-black w-fit mb-2 ml-2 bg-green-600 border-white border hover:cursor-pointer  px-2 flex justify-center space-x-2"
+                    >
+                      refresh
+                    </span>
+                  </div>
+
+                  <div onClick={handleClose} className="flex flex-col">
+                    {" "}
+                    <span
+                      className="w-fit"
+                      onClick={() => setDisplayWritingGameLanding(false)}
+                    >
+                      <Link
+                        href="/settings"
+                        className="hover:text-purple-600 cursor-pointer"
+                      >
+                        settings
+                      </Link>
+                    </span>
+                    <span
+                      className="w-fit"
+                      onClick={() => setDisplayWritingGameLanding(false)}
+                    >
+                      <Link
+                        href="/leaderboard"
+                        className="hover:text-purple-600 cursor-pointer"
+                      >
+                        leaderboard
+                      </Link>
+                    </span>
+                    <span
+                      className="w-fit"
+                      onClick={() => setDisplayWritingGameLanding(false)}
+                    >
+                      <Link
+                        href={`/u/${user.id.replace("did:privy:", "")}`}
+                        className="hover:text-purple-600 cursor-pointer"
+                      >
+                        profile
+                      </Link>
+                    </span>
+                    <span onClick={() => setDisplayWritingGameLanding(false)}>
+                      <Link
+                        href="/library"
+                        className="hover:text-purple-600 cursor-pointer"
+                      >
+                        library
+                      </Link>
+                    </span>
+                    <div className="absolute bottom-4 flex flex-col mr-auto">
+                      <small className="text-sm"> {user.wallet.address}</small>
+                      <small className="text-sm mb-2">
+                        Farcaster: @{farcasterUser.username}
+                      </small>
+                      <Button
+                        buttonAction={logout}
+                        buttonColor="bg-red-600 text-white mr-auto"
+                        buttonText="log out"
+                      />
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="w-24 h-full">
+                  <Button
+                    buttonAction={login}
+                    buttonText="login"
+                    buttonColor="bg-purple-600 text-white"
+                  />
+                </div>
+              )}
+            </div>
+
+            <div className="h-1/6 ">
+              <hr className="text-gray-600" />
+              <div className="flex flex-col ml-3">
+                <span
+                  onClick={() => {
+                    handleClose();
+                    setDisplayAboutModal(!displayAboutModal);
+                  }}
+                >
+                  about
+                </span>
+                <span>Hecho en Chile - 2024 - Anky Eres Tu SpA</span>
+              </div>
+            </div>
+          </div>
+        </Offcanvas.Body>
+      </Offcanvas>
     </div>
   );
 };

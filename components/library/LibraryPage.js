@@ -330,7 +330,7 @@ const LibraryPage = ({}) => {
         )}
       </div>
 
-      <div className="text-white py-4 h-full flex flex-col md:flex-row w-screen px-4">
+      <div className="text-white py-2 h-full flex flex-col md:flex-row w-screen px-4">
         <div className="w-full h-full md:w-2/5 aspect-square p-2 text-white flex flex-col items-center">
           <div className="relative w-4/5 md:w-3/5 aspect-square rounded-2xl border-2 border-white overflow-hidden">
             <Image fill src={usersAnkyImage || `/ankys/elmasmejor.png`} />

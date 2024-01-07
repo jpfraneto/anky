@@ -801,9 +801,9 @@ const DesktopWritingGame = ({
                       {farcasterUser.status == "approved" && (
                         <div className="bg-purple-500 text-black p-2 my-2 rounded-xl flex space-x-2 items-center justify-center">
                           {farcasterUser.status == "approved" && (
-                            <div className="flex space-x-2 items-center">
-                              <p>send to farcaster?</p>
-                              <div className="flex space-x-2">
+                            <div className="flex md:flex-row flex-col space-x-2 items-center">
+                              <p className="mb-2">send to farcaster?</p>
+                              <div className="flex  space-x-2">
                                 <p
                                   onClick={() => setCastAs("")}
                                   className={` p-2 border-black   cursor-pointer rounded-xl ${

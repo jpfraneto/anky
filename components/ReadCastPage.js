@@ -172,11 +172,12 @@ const ReadCastPage = () => {
     );
 
   return (
-    <div className="flex flex-col pt-8">
+    <div className="h-full flex flex-col pt-8">
       <IndividualDecodedCastCard
         cast={decodedCast}
         key={null}
         farcasterUser={farcasterUser}
+        fullscreenMode={true}
       />
       <div className="w-48 mx-auto mt-4">
         <Link href="/feed" passHref>

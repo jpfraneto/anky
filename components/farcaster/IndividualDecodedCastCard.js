@@ -28,6 +28,7 @@ const IndividualDecodedCastCard = ({
   cast,
   farcasterUser,
   previewCast = false,
+  fullscreenMode = false,
 }) => {
   const { authenticated, login, getAccessToken, user } = usePrivy();
   const { userDatabaseInformation, setUserDatabaseInformation } = useUser();
@@ -74,6 +75,7 @@ const IndividualDecodedCastCard = ({
   useEffect(() => {
     const fetchThisUserByFid = async () => {
       try {
+        if (userPrivyId) return;
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_API_ROUTE}/user/fid/${cast.author.fid}`
         );
@@ -95,6 +97,7 @@ const IndividualDecodedCastCard = ({
   // Function to handle recast toggle
   const handleRecast = async (e) => {
     e.preventDefault();
+    console.log("inside the handle recast", farcasterUser);
     if (farcasterUser.status === "approved") {
       const isRecasted = hasUserRecasted; // store the initial state
       const newRecast = {
@@ -248,15 +251,19 @@ const IndividualDecodedCastCard = ({
   if (cast.text == "Not Found") return;
 
   return (
-    <div className="active:none w-96 mx-auto relative h-96  md:mx-auto flex flex-col my-2 rounded-xl overflow-y-scroll">
-      <div className="w-full md:w-96 mx-auto  bg-gray-300 text-gray-700 relative">
+    <div
+      className={`active:none w-96 mx-auto relative ${
+        fullscreenMode ? "h-full" : "h-96"
+      }  md:mx-auto flex flex-col my-2 rounded-xl overflow-y-scroll`}
+    >
+      <div className="w-full md:w-96 mx-auto h-full bg-gray-300 text-gray-700 relative">
         <span
           onClick={copyTheText}
           className={` absolute top-1 left-3 active:text-orange-600 hover:text-purple-600 hover:cursor-pointer`}
         >
           {textForCopy}
         </span>
-        <div className="h-10/12 overflow-y-scroll flex flex-col">
+        <div className="h-full flex flex-col">
           <div className="text-xs italic py-3 flex-none h-32 flex items-center justify-center ">
             {previewCast ? (
               <div className="w-24 h-24 rounded-full overflow-hidden relative shadow-2xl">
@@ -277,7 +284,7 @@ const IndividualDecodedCastCard = ({
               </Link>
             )}
           </div>
-          <div className="w-96 h-2/12">
+          <div className="w-96 h-fit">
             <div className="flex flex-col h-full py-1.5 bg-black text-white w-full left-0  relative">
               <div className="px-2 w-full h-8 flex justify-between items-center">
                 <div className="pl-4 flex space-x-4 h-full">
@@ -293,27 +300,27 @@ const IndividualDecodedCastCard = ({
                   <div
                     onClick={handleRecast}
                     className={`flex space-x-1 items-center ${
-                      hasUserRecasted ? "text-green-300" : "text-green-200"
+                      hasUserRecasted ? "text-green-300" : ""
                     } hover:text-green-300 cursor-pointer`}
                   >
                     <BsArrowRepeat size={19} />
-                    <span>{cast.reactions.recasts.length}</span>
+                    <span>{uniqueRecasts.length}</span>
                   </div>
                   <div
                     onClick={handleLike}
                     className={`flex space-x-1 items-center ${
-                      hasUserLiked ? "text-red-300" : "text-red-200"
+                      hasUserLiked ? "text-red-300" : ""
                     } hover:text-red-500 cursor-pointer`}
                   >
                     <FaRegHeart />
-                    <span>{cast.reactions.likes.length}</span>
+                    <span>{uniqueLikes.length}</span>
                   </div>
                   <div
                     onClick={() => {
                       setDisplaySendNewen(!displaySendNewen);
                     }}
                     className={`flex space-x-1 items-center ${
-                      displaySendNewen ? "text-purple-300" : "text-purple-200"
+                      displaySendNewen ? "text-purple-300" : ""
                     } hover:text-purple-500 cursor-pointer`}
                   >
                     <GiRollingEnergy />
@@ -335,7 +342,7 @@ const IndividualDecodedCastCard = ({
                     href={`https://warpcast.com/${
                       cast.author.username
                     }/${cast.hash.substring(0, 10)}`}
-                    className="bg-purple-600 px-2 py-1 rounded-xl border border-white ml-auto hover:text-red-200 text-white"
+                    className="bg-purple-600 px-2 py-1 rounded-xl border border-white ml-auto hover:bg-purple-700 hover:text-red-200 text-white"
                   >
                     Warpcast
                   </a>
@@ -371,7 +378,7 @@ const IndividualDecodedCastCard = ({
 
                         <button
                           onClick={sendManaToCastCreator}
-                          className="bg-purple-800 border border-white w-fit px-4 py-1 rounded-xl hover:text-green-500 active:text-yellow-500"
+                          className="bg-purple-800 border border-white w-48 px-2 py-1 rounded-xl hover:text-green-500 active:text-yellow-500"
                         >
                           send to user
                         </button>
@@ -403,7 +410,7 @@ const IndividualDecodedCastCard = ({
             </div>
           </div>
 
-          <div className="grow rounded px-2 py-2 text-2xl text-left pl-8">
+          <div className="grow overflow-y-scroll  px-2 py-2 text-2xl text-left pl-8">
             {writing ? (
               writing.includes("\n") ? (
                 writing.split("\n").map((x, i) => (

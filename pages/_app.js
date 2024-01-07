@@ -1,7 +1,4 @@
-import "@fontsource/roboto/300.css";
-import "@fontsource/roboto/400.css";
-import "@fontsource/roboto/500.css";
-import "@fontsource/roboto/700.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/globals.css";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
@@ -14,6 +11,7 @@ import { configureChains, createConfig } from "wagmi";
 import { publicProvider } from "wagmi/providers/public";
 import Head from "next/head";
 import { UserProvider } from "../context/UserContext";
+import { FarcasterProvider } from "../context/FarcasterContext";
 import { useRouter } from "next/router";
 import { initializeDB } from "../lib/idbHelper";
 
@@ -212,7 +210,9 @@ function MyApp({ Component, pageProps }) {
       >
         <PrivyWagmiConnector wagmiChainsConfig={configureChainsConfig}>
           <UserProvider>
-            <GlobalApp alchemy={alchemy} loginResponse={loginResponse} />
+            <FarcasterProvider>
+              <GlobalApp alchemy={alchemy} loginResponse={loginResponse} />
+            </FarcasterProvider>
           </UserProvider>
         </PrivyWagmiConnector>
       </PrivyProvider>
