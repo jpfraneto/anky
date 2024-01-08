@@ -89,6 +89,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
   const [ankyButtonText, setAnkyButtonText] = useState("i already own one");
   const [disableButton, setDisableButton] = useState(false);
   const [displayInstallPWA, setDisplayInstallPWA] = useState(false);
+  const [copyWalletAddressText, setCopyWalletAddressText] = useState("");
   const [displayAboutModal, setDisplayAboutModal] = useState(false);
   const [thisIsTheFlag, setThisIsTheFlag] = useState(false);
   const [displayRightNavbar, setDisplayRightNavbar] = useState(false);
@@ -135,6 +136,24 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
       }
     }
   }, []);
+
+  useEffect(() => {
+    if (user && user.wallet) {
+      setCopyWalletAddressText(user.wallet.address);
+    }
+  }, [authenticated]);
+
+  async function copyWalletAddress() {
+    try {
+      setCopyWalletAddressText("copied the wallet address");
+      await navigator.clipboard.writeText(user.wallet.address);
+      setTimeout(() => {
+        setCopyWalletAddressText(user.wallet.address);
+      }, 1111);
+    } catch (error) {
+      console.log("there was an error copying the wallet address");
+    }
+  }
 
   function getComponentForRoute(route, router) {
     if (!ready || loading) return;
@@ -365,34 +384,28 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
     );
   return (
     <div className="fixed overflow-y-scroll text-center w-screen text-white h-screen flex flex-col">
-      <div className="flex-none text-gray-400 w-full h-10 md:h-8 justify-between md:flex md:px-2 items-center">
-        <div className="h-6 w-full bg-black px-2  cursor-pointer justify-between flex md:hidden">
+      <div className="flex-none  text-gray-400 w-full h-16  justify-between md:flex items-center flex-col">
+        <div className="h-12 items-center flex-row w-full bg-black px-2  cursor-pointer justify-between flex ">
           <div
-            className="active:text-yellow-600 hover:text-purple-600"
+            className="active:text-yellow-600 h-full md:mt-2  hover:text-purple-600"
             onClick={handleShow}
           >
-            <MdMenuOpen size={22} />
+            <MdMenuOpen size={40} />
           </div>
-          <Link href="/feed" className="hover:text-purple-600">
+          <Link
+            href="/feed"
+            onClick={() => setDisplayWritingGameLanding(false)}
+            className="hover:text-purple-600 text-3xl"
+          >
             anky
           </Link>
           <div
-            className="active:text-purple-600 mt-1 hover:text-purple-600"
+            className="active:text-purple-600 md:mb-1 mt-1 hover:text-purple-600"
             onClick={() => setDisplayWritingGameLanding(true)}
           >
-            <FaPencilAlt size={14} />
+            <FaPencilAlt size={30} />
           </div>
         </div>
-        <Link
-          href={authenticated ? `/u/${user.id.replace("did:privy:", "")}` : "/"}
-        >
-          <span
-            onClick={() => setDisplayWritingGameLanding(false)}
-            className="hidden md:flex hover:text-purple-600 pr-2"
-          >
-            anky
-          </span>
-        </Link>
         <div className="h-4 w-full">
           <div
             className="h-full opacity-80"
@@ -417,18 +430,6 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
           </Link>
         </div>
       )}
-      {/* <div
-        onClick={() => setDisplayWritingGameLanding(false)}
-        className="standalone:hidden md:hidden flex-none h-8 text-xs px-4 md:text-xl text-black bg-red-200 text-black py-1 flex justify-center items-center "
-      >
-        friendly recommendation #2: install the PWA{" "}
-        <span
-          className="bg-purple-600 ml-4 px-2 py-1 rounded-xl border border-black active:bg-yellow-500 text-white hover:bg-purple-700"
-          onClick={() => setDisplayInstallPWA(true)}
-        >
-          tutorial
-        </span>
-      </div> */}
 
       <div
         className={`${righteous.className} grow text-black relative  items-center justify-center`}
@@ -459,22 +460,6 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
               farcasterUser={farcasterUser}
               countdownTarget={countdownTarget}
             />
-            {!disableButton && (
-              <div
-                onClick={() => {
-                  if (
-                    router.pathname.includes("write") ||
-                    router.pathname.includes("w")
-                  ) {
-                    router.push("/");
-                  }
-                  setDisplayWritingGameLanding(false);
-                }}
-                className="fixed hover:bg-red-700 hover:cursor-pointer h-16 w-16 bottom-6 right-3 border-black border-2 active:bg-red-500 rounded-full text-green-400 bg-red-600 z-10 flex items-center justify-center"
-              >
-                <IoArrowBack size={28} color="black" />
-              </div>
-            )}
           </div>
         ) : (
           <div className="h-full pb-20 z-50">
@@ -534,21 +519,6 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
               <span onClick={() => setDisplayAboutModal(!displayAboutModal)}>
                 <BsInfoLg size={40} />
               </span>
-
-              <span
-                onClick={() => {
-                  console.log("in here");
-                  if (
-                    router.pathname.includes("write") ||
-                    router.pathname.includes("w")
-                  ) {
-                    router.push("/");
-                  }
-                  setDisplayWritingGameLanding(true);
-                }}
-              >
-                <FaPencilAlt size={28} color="black" />
-              </span>
             </nav>
           </div>
         )}
@@ -569,10 +539,15 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
         onHide={handleClose}
       >
         <Offcanvas.Header closeButton>
-          <Offcanvas.Title className="pl-3">welcome to anky</Offcanvas.Title>
+          <div className="flex flex-col pl-3">
+            <Offcanvas.Title>welcome to anky</Offcanvas.Title>
+            <small className="text-purple-800">
+              when you don&apos;t have time to think, your truth comes forth
+            </small>
+          </div>
         </Offcanvas.Header>
         <Offcanvas.Body>
-          <div className="md:flex flex-col  h-full   w-fit px-2 relative">
+          <div className="md:flex flex-col  h-full  w-fit px-2 relative">
             <div className="h-5/6 w-full ">
               {authenticated ? (
                 <div className="flex flex-col h-full space-x-2 top-0 w-full items-start">
@@ -598,11 +573,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
                     </span>
                   )}
                   <div className="flex space-x-2">
-                    <span
-                      // onMouseEnter={() => setDisplayManaInfo(true)}
-                      // onMouseLeave={() => setDisplayManaInfo(false)}
-                      className="rounded-xl hover:text-gray-600 w-fit mb-2 ml-2 bg-purple-600 border-white border hover:cursor-pointer  px-2 flex justify-center space-x-2"
-                    >
+                    <span className="rounded-xl hover:text-gray-600 w-fit mb-2 ml-2 bg-purple-600 border-white border hover:cursor-pointer  px-2 flex justify-center space-x-2">
                       <Link
                         href="/mana"
                         passHref
@@ -625,14 +596,13 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
                     </span>
                     <span
                       onClick={() => alert("refresh the users state")}
-                      className="rounded-xl text-white hover:text-black w-fit mb-2 ml-2 bg-green-600 border-white border hover:cursor-pointer  px-2 flex justify-center space-x-2"
+                      className="rounded-xl text-white w-fit mb-2 ml-2 bg-green-600 border-white border hover:cursor-pointer  px-2 flex justify-center space-x-2"
                     >
                       refresh
                     </span>
                   </div>
 
                   <div onClick={handleClose} className="flex flex-col">
-                    {" "}
                     <span
                       className="w-fit"
                       onClick={() => setDisplayWritingGameLanding(false)}
@@ -674,17 +644,6 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
                         library
                       </Link>
                     </span>
-                    <div className="absolute bottom-4 flex flex-col mr-auto">
-                      <small className="text-sm"> {user.wallet.address}</small>
-                      <small className="text-sm mb-2">
-                        Farcaster: @{farcasterUser.username}
-                      </small>
-                      <Button
-                        buttonAction={logout}
-                        buttonColor="bg-red-600 text-white mr-auto"
-                        buttonText="log out"
-                      />
-                    </div>
                   </div>
                 </div>
               ) : (
@@ -692,16 +651,39 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
                   <Button
                     buttonAction={login}
                     buttonText="login"
-                    buttonColor="bg-purple-600 text-white"
+                    buttonColor="bg-purple-600 text-center text-white"
                   />
                 </div>
               )}
             </div>
+            {authenticated && (
+              <div className="flex flex-col mr-auto">
+                <small
+                  onClick={copyWalletAddress}
+                  className="text-sm hover:text-purple-200 active:text-purple-600 cursor-pointer"
+                >
+                  {copyWalletAddressText}
+                </small>
+                {farcasterUser.username && (
+                  <small className="text-sm mb-2">
+                    Farcaster: @{farcasterUser.username}
+                  </small>
+                )}
+
+                <span
+                  onClick={logout}
+                  className="cursor-pointer mr-auto text-red-300 hover:text-red-600"
+                >
+                  log out
+                </span>
+              </div>
+            )}
 
             <div className="h-1/6 ">
               <hr className="text-gray-600" />
-              <div className="flex flex-col ml-3">
+              <div className="flex flex-col">
                 <span
+                  className="hover:text-purple-600 hover:cursor-pointer"
                   onClick={() => {
                     handleClose();
                     setDisplayAboutModal(!displayAboutModal);
@@ -709,7 +691,8 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
                 >
                   about
                 </span>
-                <span>Hecho en Chile - 2024 - Anky Eres Tu SpA</span>
+                <hr className="text-gray-600 h-2 border-3 border-gray-600" />
+                <span>Hecho en Chile - Anky Eres Tu SpA</span>
               </div>
             </div>
           </div>

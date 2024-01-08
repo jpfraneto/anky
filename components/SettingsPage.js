@@ -130,35 +130,42 @@ const SettingsPage = () => {
         (this is the bare bones of this part of the app)
       </small>
       <div className="flex flex-col md:flex-row h-full">
-        <div className="w-full md:w-1/5 flex flex-row flex-wrap md:flex-col justify-start items-start ">
-          <Button
-            buttonAction={() => setChosenTab("general")}
-            buttonText="general"
-            buttonColor={`${
-              chosenTab == "general"
-                ? "bg-red-200 text-black"
-                : "bg-transparent  text-white"
-            } my-2 border-white border`}
-          />
-          <Button
-            buttonAction={() => setChosenTab("farcaster")}
-            buttonText="farcaster"
-            buttonColor={`${
-              chosenTab == "farcaster"
-                ? "bg-red-200 text-black"
-                : "bg-transparent  text-white"
-            } my-2 border-white border`}
-          />
-          <Button
-            buttonAction={() => setChosenTab("notifications")}
-            buttonText="notifications"
-            buttonColor={`${
-              chosenTab == "notifications"
-                ? "bg-red-200 text-black"
-                : "bg-transparent  text-white"
-            } my-2 border-white border`}
-          />
-          <div className="w-fit px-4 mx-auto">
+        <div className="w-full md:w-1/5 flex flex-row flex-wrap md:flex-col ">
+          <div className="w-fit mx-auto">
+            <Button
+              buttonAction={() => setChosenTab("general")}
+              buttonText="general"
+              buttonColor={`${
+                chosenTab == "general"
+                  ? "bg-red-200 text-black"
+                  : "bg-transparent  text-white"
+              } my-2 border-white border`}
+            />
+          </div>
+          <div className="w-fit mx-auto">
+            <Button
+              buttonAction={() => setChosenTab("farcaster")}
+              buttonText="farcaster"
+              buttonColor={`${
+                chosenTab == "farcaster"
+                  ? "bg-red-200 text-black"
+                  : "bg-transparent  text-white"
+              } my-2 border-white border`}
+            />
+          </div>
+          <div className="w-fit mx-auto">
+            <Button
+              buttonAction={() => setChosenTab("notifications")}
+              buttonText="notifications"
+              buttonColor={`${
+                chosenTab == "notifications"
+                  ? "bg-red-200 text-black"
+                  : "bg-transparent  text-white"
+              } my-2 border-white border`}
+            />
+          </div>
+
+          <div className="w-fit mx-auto">
             <Link passHref href="/library">
               <Button
                 buttonColor="bg-green-600 

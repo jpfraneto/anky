@@ -182,7 +182,7 @@ export const UserProvider = ({ children }) => {
             },
           }
         );
-        console.log("IN HEEERE", response);
+        console.log("IN HEassEERE", response, thisFarcasterAccount);
 
         setUserDatabaseInformation({
           streak: response.data.user.streak || 0,

@@ -597,7 +597,7 @@ const DesktopWritingGame = ({
       const cid = responseFromIrys.data.cid;
 
       const kannadaCid = encodeToAnkyverseLanguage(cid);
-      const newCastText = `${kannadaCid}\n\nwritten as anky - you can decode this by clicking on the embed on the next cast`;
+      const newCastText = `${kannadaCid}\n\nwritten through anky`;
 
       const response = await axios.post(`${apiRoute}/farcaster/api/cast/anon`, {
         text: newCastText,

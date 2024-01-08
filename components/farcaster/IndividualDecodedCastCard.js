@@ -301,7 +301,7 @@ const IndividualDecodedCastCard = ({
                     onClick={handleRecast}
                     className={`flex space-x-1 items-center ${
                       hasUserRecasted ? "text-green-300" : ""
-                    } hover:text-green-300 cursor-pointer`}
+                    } hover:text-green-500 cursor-pointer`}
                   >
                     <BsArrowRepeat size={19} />
                     <span>{uniqueRecasts.length}</span>
@@ -332,7 +332,7 @@ const IndividualDecodedCastCard = ({
                     onClick={() =>
                       alert("this will show you this cast on warpcast")
                     }
-                    className="bg-purple-600 px-2 py-1 rounded-xl border border-white ml-auto hover:text-red-200 text-white"
+                    className="bg-purple-600 px-2 py-1 rounded-xl border border-white ml-auto hover:text-red-200 hover:cursor-pointer hover:opacity-80 text-white"
                   >
                     Warpcast
                   </span>
@@ -342,7 +342,7 @@ const IndividualDecodedCastCard = ({
                     href={`https://warpcast.com/${
                       cast.author.username
                     }/${cast.hash.substring(0, 10)}`}
-                    className="bg-purple-600 px-2 py-1 rounded-xl border border-white ml-auto hover:bg-purple-700 hover:text-red-200 text-white"
+                    className="bg-purple-600 px-2 py-1 rounded-xl border border-white ml-auto hover:bg-purple-700 hover:text-red-200 text-white hover:cursor-pointer"
                   >
                     Warpcast
                   </a>
