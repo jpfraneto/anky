@@ -54,6 +54,7 @@ import UserByFidComponent from "./farcaster/UserByFidComponent";
 import axios from "axios";
 import Leaderboard from "./Leaderboard";
 import AboutModal from "./AboutModal";
+import TimerSettingsModal from "./TimerSettingsModal";
 
 const righteous = Righteous({ weight: "400", subsets: ["latin"] });
 const ankyverseToday = getAnkyverseDay(new Date());
@@ -91,6 +92,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
   const [displayInstallPWA, setDisplayInstallPWA] = useState(false);
   const [copyWalletAddressText, setCopyWalletAddressText] = useState("");
   const [displayAboutModal, setDisplayAboutModal] = useState(false);
+  const [displaySettingsModal, setDisplaySettingsModal] = useState(false);
   const [thisIsTheFlag, setThisIsTheFlag] = useState(false);
   const [displayRightNavbar, setDisplayRightNavbar] = useState(false);
   const [thisIsThePrompt, setThisIsThePrompt] = useState("");
@@ -416,26 +418,30 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
           ></div>
         </div>
       </div>
-      {authenticated && farcasterUser.status != "approved" && (
-        <div
-          onClick={() => setDisplayWritingGameLanding(false)}
-          className="flex-none h-8 text-xs px-4 md:text-lg text-black bg-purple-200 text-black py-1 flex  justify-center items-center "
-        >
-          friendly recommendation #1: link farcaster account{" "}
-          <Link
-            href="/settings?link=farcaster"
-            className="bg-purple-600 ml-4 px-2 w-fit py-0 rounded-xl border text-white border-black active:bg-yellow-500 hover:bg-purple-700"
+      {authenticated &&
+        farcasterUser.fid != "approved" &&
+        farcasterUser.signerStatus != "approved" && (
+          <div
+            onClick={() => setDisplayWritingGameLanding(false)}
+            className="flex-none h-8 text-xs px-4 md:text-lg text-black bg-purple-200 text-black py-1 flex  justify-center items-center "
           >
-            go to settings
-          </Link>
-        </div>
-      )}
+            link farcaster account
+            <Link
+              href="/settings?link=farcaster"
+              className="bg-purple-600 ml-4 px-2 w-fit py-0 rounded-xl border text-white border-black active:bg-yellow-500 hover:bg-purple-700"
+            >
+              go to settings
+            </Link>
+            <button onClick={() => console.log(farcasterUser)}>
+              aloja{authenticated && <span>a</span>}
+            </button>
+          </div>
+        )}
 
       <div
         className={`${righteous.className} grow text-black relative  items-center justify-center`}
         style={{
-          backgroundImage:
-            "linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/images/mintbg.jpg')",
+          backgroundColor: "black",
           backgroundPosition: "center center",
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",
@@ -452,6 +458,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
               userAppInformation={userAppInformation}
               setLifeBarLength={setLifeBarLength}
               setThisIsTheFlag={setThisIsTheFlag}
+              setDisplaySettingsModal={setDisplaySettingsModal}
               lifeBarLength={lifeBarLength}
               setDisplayNavbar={setDisplayNavbar}
               setDisableButton={setDisableButton}
@@ -524,8 +531,18 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
         )}
       </div>
 
+      {displaySettingsModal && (
+        <TimerSettingsModal
+          displaySettingsModal={displaySettingsModal}
+          setDisplaySettingsModal={setDisplaySettingsModal}
+        />
+      )}
+
       {displayAboutModal && (
-        <AboutModal setDisplayAboutModal={setDisplayAboutModal} />
+        <AboutModal
+          setDisplayAboutModal={setDisplayAboutModal}
+          setDisplayWritingGameLanding={setDisplayWritingGameLanding}
+        />
       )}
       {displayInstallPWA && (
         <InstallPwaModal setDisplayInstallPWA={setDisplayInstallPWA} />
@@ -533,12 +550,11 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
       <Offcanvas
         className={`${righteous.className} bg-black text-gray-600`}
         placement="start"
-        backdrop="static"
-        scroll="true"
+        backdrop="true"
         show={show}
         onHide={handleClose}
       >
-        <Offcanvas.Header closeButton>
+        <Offcanvas.Header>
           <div className="flex flex-col pl-3">
             <Offcanvas.Title>welcome to anky</Offcanvas.Title>
             <small className="text-purple-800">

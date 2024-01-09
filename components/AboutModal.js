@@ -2,7 +2,7 @@ import { usePrivy } from "@privy-io/react-auth";
 import Button from "./Button";
 import React, { useState, useEffect } from "react";
 
-const AboutModal = ({ setDisplayAboutModal }) => {
+const AboutModal = ({ setDisplayAboutModal, setDisplayWritingGameLanding }) => {
   const { login } = usePrivy();
   return (
     <div>
@@ -12,7 +12,7 @@ const AboutModal = ({ setDisplayAboutModal }) => {
       ></div>
       <div className="fixed text-left pt-4 top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 bg-black h-4/5 rounded-xl w-5/6 md:w-1/3 z-40 mt-4 text-white overflow-y-scroll px-4 py-4">
         <span
-          className="fixed right-4 top-2 text-red-600"
+          className="fixed right-4 top-2 text-red-600 cursor-pointer"
           onClick={() => setDisplayAboutModal(false)}
         >
           close
@@ -138,9 +138,12 @@ const AboutModal = ({ setDisplayAboutModal }) => {
         <div className="mt-2 w-24 flex ">
           <div className="">
             <Button
-              buttonAction={login}
+              buttonAction={() => {
+                setDisplayAboutModal(false);
+                setDisplayWritingGameLanding(true);
+              }}
               buttonColor="bg-green-600 text-center"
-              buttonText="login"
+              buttonText="write"
             />
           </div>
           <div className="ml-2">

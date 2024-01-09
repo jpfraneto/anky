@@ -12,6 +12,7 @@ import { publicProvider } from "wagmi/providers/public";
 import Head from "next/head";
 import { UserProvider } from "../context/UserContext";
 import { FarcasterProvider } from "../context/FarcasterContext";
+import { SettingsProvider } from "../context/SettingsContext";
 import { useRouter } from "next/router";
 import { initializeDB } from "../lib/idbHelper";
 
@@ -211,7 +212,9 @@ function MyApp({ Component, pageProps }) {
         <PrivyWagmiConnector wagmiChainsConfig={configureChainsConfig}>
           <UserProvider>
             <FarcasterProvider>
-              <GlobalApp alchemy={alchemy} loginResponse={loginResponse} />
+              <SettingsProvider>
+                <GlobalApp alchemy={alchemy} loginResponse={loginResponse} />
+              </SettingsProvider>
             </FarcasterProvider>
           </UserProvider>
         </PrivyWagmiConnector>

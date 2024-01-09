@@ -182,12 +182,16 @@ export const UserProvider = ({ children }) => {
             },
           }
         );
+
         console.log("IN HEassEERE", response, thisFarcasterAccount);
 
         setUserDatabaseInformation({
           streak: response.data.user.streak || 0,
           manaBalance: response.data.user.manaBalance || 0,
         });
+        if (response.data.farcasterAccount) {
+          setFarcasterUser(response.data.farcasterAccount);
+        }
       } catch (error) {
         console.log("there was an errror here0, ", error);
       }
