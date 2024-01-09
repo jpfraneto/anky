@@ -74,6 +74,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
   const {
     setUserAppInformation,
     userAppInformation,
+    setUserDatabaseInformation,
     userOwnsAnky,
     setUserOwnsAnky,
     mainAppLoading,
@@ -86,6 +87,8 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
   const [displayManaInfo, setDisplayManaInfo] = useState(false);
   const [gameProps, setGameProps] = useState({});
   const [displayNavbar, setDisplayNavbar] = useState(false);
+  const [refreshUsersStateLoading, setRefreshUsersStateLoading] =
+    useState(false);
   const [checkingIfYouOwnAnky, setCheckingIfYouOwnAnky] = useState(false);
   const [ankyButtonText, setAnkyButtonText] = useState("i already own one");
   const [disableButton, setDisableButton] = useState(false);
@@ -154,6 +157,47 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
       }, 1111);
     } catch (error) {
       console.log("there was an error copying the wallet address");
+    }
+  }
+
+  async function refreshUsersState() {
+    try {
+      console.log("refreshing the users state");
+      if (!authenticated) return;
+      setRefreshUsersStateLoading(true);
+      console.log("the user is: ", user, authenticated);
+      const authToken = await getAccessToken();
+      console.log("the auth token is:", authToken);
+      const thisUserPrivyId = user.id.replace("did:privy:", "");
+      const thisFarcasterAccount = farcasterUser || null;
+      if (!thisFarcasterAccount?.fid) thisFarcasterAccount.fid = null;
+      console.log(
+        "right before sending the post request to the database to get the users information",
+        thisUserPrivyId,
+        authToken
+      );
+      if (!authToken) return;
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_ROUTE}/user/${thisUserPrivyId}`,
+        { thisFarcasterAccount },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+
+      setUserDatabaseInformation({
+        streak: response.data.user.streak || 0,
+        manaBalance: response.data.user.manaBalance || 0,
+      });
+      if (response.data.farcasterAccount) {
+        setFarcasterUser(response.data.farcasterAccount);
+      }
+      setRefreshUsersStateLoading(false);
+    } catch (error) {
+      console.log("there was an error refreshing the users state", error);
     }
   }
 
@@ -432,9 +476,6 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
             >
               go to settings
             </Link>
-            <button onClick={() => console.log(farcasterUser)}>
-              aloja{authenticated && <span>a</span>}
-            </button>
           </div>
         )}
 
@@ -551,14 +592,21 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
         className={`${righteous.className} bg-black text-gray-600`}
         placement="start"
         backdrop="true"
+        scroll="false"
         show={show}
         onHide={handleClose}
       >
         <Offcanvas.Header>
-          <div className="flex flex-col pl-3">
+          <div className="flex flex-col pl-3 relative">
             <Offcanvas.Title>welcome to anky</Offcanvas.Title>
             <small className="text-purple-800">
               when you don&apos;t have time to think, your truth comes forth
+            </small>
+            <small
+              onClick={handleClose}
+              className="text-red-600 hover:text-red-400 cursor-pointer absolute right-0 top-0"
+            >
+              X
             </small>
           </div>
         </Offcanvas.Header>
@@ -589,12 +637,8 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
                     </span>
                   )}
                   <div className="flex space-x-2">
-                    <span className="rounded-xl hover:text-gray-600 w-fit mb-2 ml-2 bg-purple-600 border-white border hover:cursor-pointer  px-2 flex justify-center space-x-2">
-                      <Link
-                        href="/mana"
-                        passHref
-                        className="flex text-white hover:text-gray-500"
-                      >
+                    <span className="rounded-xl hover:text-gray-600 w-fit mb-2 ml-2 bg-purple-600 border-white border  px-2 flex justify-center space-x-2">
+                      <div className="flex text-white hover:text-gray-500">
                         {userDatabaseInformation.manaBalance || 0}
                         <GiRollingEnergy
                           size={16}
@@ -608,13 +652,13 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
                           color="white"
                           className="ml-2 translate-y-1"
                         />
-                      </Link>
+                      </div>
                     </span>
                     <span
-                      onClick={() => alert("refresh the users state")}
+                      onClick={refreshUsersState}
                       className="rounded-xl text-white w-fit mb-2 ml-2 bg-green-600 border-white border hover:cursor-pointer  px-2 flex justify-center space-x-2"
                     >
-                      refresh
+                      {refreshUsersStateLoading ? "refreshing..." : "refresh"}
                     </span>
                   </div>
 

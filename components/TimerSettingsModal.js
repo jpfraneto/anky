@@ -41,15 +41,15 @@ const TimerSettingsModal = ({
           close
         </span>
         <h2 className="text-2xl">customize your writing experience</h2>
-        <ol className="flex flex-col space-y-2">
+        <ol className="flex flex-col w-full space-y-2">
           <li className="flex flex-col">
             <span className="text-purple-600 mb-2">
               timer: {maxTimeBetweenKeystrokes} seconds
             </span>
             <input
-              className="w-96"
+              className="w-full"
               type="range"
-              min={3}
+              min={1}
               max={8}
               value={maxTimeBetweenKeystrokes}
               onChange={(e) => setMaxTimeBetweenKeystrokes(e.target.value)}
