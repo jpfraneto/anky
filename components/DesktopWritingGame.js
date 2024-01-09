@@ -66,6 +66,8 @@ const DesktopWritingGame = ({
   const [savingRound, setSavingRound] = useState(false);
   const [castAs, setCastAs] = useState("");
   const [castForPreview, setCastForPreview] = useState(null);
+  const [userWantsToStoreWritingForever, setUserWantsToStoreWritingForever] =
+    useState(true);
   const [thereWasAnError, setThereWasAnError] = useState(false);
   const [moreThanMinRun, setMoreThanMinRound] = useState(null);
   const [savingTextAnon, setSavingTextAnon] = useState(false);
@@ -922,6 +924,7 @@ const DesktopWritingGame = ({
                           <p className="text-black">
                             do you want to cast your writing anon?
                           </p>
+
                           <input
                             className="mx-4"
                             type="checkbox"
@@ -941,6 +944,27 @@ const DesktopWritingGame = ({
                           )}
                         </div>
                       ))}
+
+                    {authenticated && (
+                      <div className="bg-purple-600 px-3 py-1 mt-2 mb-0 w-full rounded-xl mx-auto flex justify-center items-center ">
+                        <p className="text-black">
+                          do you want to save your writing forever on the
+                          eternal library of the ankyverse?
+                        </p>
+
+                        <input
+                          className="mx-4"
+                          type="checkbox"
+                          onChange={(e) => {
+                            setUserWantsToStoreWritingForever(
+                              !userWantsToStoreWritingForever
+                            );
+                          }}
+                          checked={userWantsToStoreWritingForever}
+                        />
+                      </div>
+                    )}
+
                     {missionAccomplished ||
                     (countdownTarget > 0 && time === 0) ? (
                       <>

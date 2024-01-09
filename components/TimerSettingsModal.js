@@ -44,7 +44,8 @@ const TimerSettingsModal = ({
         <ol className="flex flex-col w-full space-y-2">
           <li className="flex flex-col">
             <span className="text-purple-600 mb-2">
-              timer: {maxTimeBetweenKeystrokes} seconds
+              timer: {maxTimeBetweenKeystrokes} seconds (amount of seconds
+              between keystrokes before your writing session ends)
             </span>
             <input
               className="w-full"
