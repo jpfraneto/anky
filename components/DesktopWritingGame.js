@@ -719,9 +719,9 @@ const DesktopWritingGame = ({
       let castResponse, irysResponseCid;
       if (authenticated) {
         if (journalIdToSave) {
-          irysResponseCid = saveTextToJournal();
+          irysResponseCid = await saveTextToJournal();
         } else {
-          irysResponseCid = sendTextToIrys();
+          irysResponseCid = await sendTextToIrys();
         }
         console.log("the irysResponseCid is: ", irysResponseCid);
       }
