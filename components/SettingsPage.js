@@ -10,7 +10,7 @@ import { useRouter } from "next/router";
 const SettingsPage = () => {
   const router = useRouter();
   const { farcasterUser } = useUser();
-  const { authenticated, user, login } = usePrivy();
+  const { authenticated, user, login, logout } = usePrivy();
   const [chosenTab, setChosenTab] = useState(router.query.link || "general");
   const openGeneralSettings = () => {
     alert("open the general settings");
@@ -131,7 +131,7 @@ const SettingsPage = () => {
       </small>
       <div className="flex flex-col md:flex-row h-full">
         <div className="w-full md:w-1/5 flex flex-row flex-wrap md:flex-col ">
-          <div className="w-fit mx-auto">
+          {/* <div className="w-fit mx-auto">
             <Button
               buttonAction={() => setChosenTab("general")}
               buttonText="general"
@@ -141,7 +141,7 @@ const SettingsPage = () => {
                   : "bg-transparent  text-white"
               } my-2 border-white border`}
             />
-          </div>
+          </div> */}
           <div className="w-fit mx-auto">
             <Button
               buttonAction={() => setChosenTab("farcaster")}
@@ -166,14 +166,16 @@ const SettingsPage = () => {
           </div>
 
           <div className="w-fit mx-auto">
-            <Link passHref href="/library">
-              <Button
-                buttonColor="bg-green-600 
+            <Button
+              buttonColor="bg-red-600 
                text-white
           my-2 border-white border"
-                buttonText="go to library"
-              />
-            </Link>
+              buttonText="logout"
+              buttonAction={() => {
+                logout();
+                router.push("/feed");
+              }}
+            />
           </div>
         </div>
         <div className="flex-grow w-full p-4 mb-8 bg-black rounded-xl border border-white">

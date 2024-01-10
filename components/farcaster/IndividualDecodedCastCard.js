@@ -50,7 +50,6 @@ const IndividualDecodedCastCard = ({
   const hasUserLikedThis = cast.reactions.likes.some(
     (like) => like.fid === farcasterUser.fid
   );
-  console.log("the cast is", cast, farcasterUser);
 
   const filterUniqueReactions = (reactions) => {
     const uniqueFids = new Set();
@@ -81,7 +80,6 @@ const IndividualDecodedCastCard = ({
         );
         const data = response.data;
         setUserPrivyId("clmgol0to069tms0f3urwkiis");
-        console.log("the data in here is: ", data);
       } catch (error) {
         console.log("the error is: ", error);
       }
@@ -329,10 +327,8 @@ const IndividualDecodedCastCard = ({
                 </div>
                 {previewCast ? (
                   <span
-                    onClick={() =>
-                      alert("this will show you this cast on warpcast")
-                    }
-                    className="bg-purple-600 px-2 py-1 rounded-xl border border-white ml-auto hover:text-red-200 hover:cursor-pointer hover:opacity-80 text-white"
+                    disabled
+                    className="bg-purple-600 px-2 py-1 rounded-xl border border-white ml-auto hover:text-red-200 hover:opacity-80 text-white cursor-not-allowed"
                   >
                     Warpcast
                   </span>

@@ -101,41 +101,44 @@ function LandingPage({
         </div>
       </div>
 
-      <div className="py-8 px-2 w-full md:px-64 bg-gray-200">
-        <p className="mb-4">You are reading.</p>
-        <p className="mb-4">You want to know what this thing is about.</p>
-        <p className="mb-4">But this is not a place for reading.</p>
-        <p className="mb-4">
-          It is the most important tool that you have found to get to know
-          yourself through writing.
-        </p>
-        <p className="mb-4">Are you ready?</p>
-        <p className="mb-4">Just write.</p>
-        <p className="mb-4">
-          Everything that takes you away from that is resistance.
-        </p>
-        <div className="flex justify-center w-48 mx-auto my-4">
-          <Button
-            buttonText="im ready"
-            buttonAction={() => setDisplayWritingGameLanding(true)}
-            buttonColor="bg-gradient-to-r from-red-500 via-yellow-600 to-violet-500 text-black"
-          />
-        </div>
-      </div>
+      {!authenticated && (
+        <>
+          <div className="py-8 px-2 w-full md:px-64 bg-gray-200">
+            <p className="mb-4">You are reading.</p>
+            <p className="mb-4">You want to know what this thing is about.</p>
+            <p className="mb-4">But this is not a place for reading.</p>
+            <p className="mb-4">
+              It is the most important tool that you have found to get to know
+              yourself through writing.
+            </p>
+            <p className="mb-4">Are you ready?</p>
+            <p className="mb-4">Just write.</p>
+            <p className="mb-4">
+              Everything that takes you away from that is resistance.
+            </p>
+            <div className="flex justify-center w-48 mx-auto my-4">
+              <Button
+                buttonText="im ready"
+                buttonAction={() => setDisplayWritingGameLanding(true)}
+                buttonColor="bg-gradient-to-r from-red-500 via-yellow-600 to-violet-500 text-black"
+              />
+            </div>
+          </div>
 
-      {/* Journey with Anky Section */}
-      <div className="py-8 px-2 w-full md:px-64 bg-white">
-        <h2 className="text-3xl font-semibold mb-6">
-          when there is no time to think, your truth comes forth
-        </h2>
-        <p className="mb-4">anky is built on top of a pioneer interface:</p>
-        <p className="mb-4">
-          if you stop writing for more than three seconds, the session is over.
-        </p>
-      </div>
+          {/* Journey with Anky Section */}
+          <div className="py-8 px-2 w-full md:px-64 bg-white">
+            <h2 className="text-3xl font-semibold mb-6">
+              when there is no time to think, your truth comes forth
+            </h2>
+            <p className="mb-4">anky is built on top of a pioneer interface:</p>
+            <p className="mb-4">
+              if you stop writing for more than three seconds, the session is
+              over.
+            </p>
+          </div>
 
-      {/* Discover your Anky Section */}
-      {/* <div className="p-8 bg-gray-200 flex flex-row">
+          {/* Discover your Anky Section */}
+          {/* <div className="p-8 bg-gray-200 flex flex-row">
         <div className="px-2  w-full md:w-3/5 mx-auto">
           <h2 className="text-3xl font-semibold mb-6">
             four types of writing containers
@@ -178,37 +181,41 @@ function LandingPage({
         </div>
       </div> */}
 
-      {/* Join the Ankyverse Section */}
-      <div className="py-8 px-2 md:px-64 bg-gray-200">
-        <p className="mb-4">
-          what is happening here is designed to be a powerful meditation
-          practice.
-        </p>
-        <p className="mb-4">if you want to experience how you think.</p>
-        <p className="mb-4">if you want to see yourself with more clarity.</p>
-        <p className="mb-4">if you want to know who you are.</p>
-      </div>
+          {/* Join the Ankyverse Section */}
+          <div className="py-8 px-2 md:px-64 bg-gray-200">
+            <p className="mb-4">
+              what is happening here is designed to be a powerful meditation
+              practice.
+            </p>
+            <p className="mb-4">if you want to experience how you think.</p>
+            <p className="mb-4">
+              if you want to see yourself with more clarity.
+            </p>
+            <p className="mb-4">if you want to know who you are.</p>
+          </div>
 
-      <div className="p-8 bg-white flex flex-col">
-        <div className="px-2 md:w-3/5 mx-auto">
-          <p className="mb-2">its all open source</p>
-          <p className="mb-2">we build together.</p>
-          <a
-            href="https://www.github.com/ankylat"
-            target="_blank"
-            className="mb-2"
-          >
-            https://www.github.com/ankylat
-          </a>
-        </div>
-        <div className="flex justify-center w-48 mx-auto my-4">
-          <Button
-            buttonText="im ready to write"
-            buttonAction={() => setDisplayWritingGameLanding(true)}
-            buttonColor="bg-gradient-to-r from-red-500 via-yellow-600 to-violet-500 text-black"
-          />
-        </div>
-      </div>
+          <div className="p-8 bg-white flex flex-col">
+            <div className="px-2 md:w-3/5 mx-auto">
+              <p className="mb-2">its all open source</p>
+              <p className="mb-2">we build together.</p>
+              <a
+                href="https://www.github.com/ankylat"
+                target="_blank"
+                className="mb-2"
+              >
+                https://www.github.com/ankylat
+              </a>
+            </div>
+            <div className="flex justify-center w-48 mx-auto my-4">
+              <Button
+                buttonText="im ready to write"
+                buttonAction={() => setDisplayWritingGameLanding(true)}
+                buttonColor="bg-gradient-to-r from-red-500 via-yellow-600 to-violet-500 text-black"
+              />
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }

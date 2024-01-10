@@ -6,6 +6,7 @@ import { getAnkyverseDay, getAnkyverseQuestion } from "../lib/ankyverse";
 import { useUser } from "../context/UserContext";
 import Offcanvas from "react-bootstrap/Offcanvas";
 import Image from "next/image";
+import { IndividualWritingDisplayModal } from "./IndividualWritingDisplayModal";
 import Button from "./Button";
 import { FaPencilAlt, FaUserAstronaut } from "react-icons/fa";
 import { IoArrowBack } from "react-icons/io5";
@@ -81,6 +82,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
     farcasterUser,
     setFarcasterUser,
     userDatabaseInformation,
+    allUserWritings,
   } = useUser();
   const router = useRouter();
   const [lifeBarLength, setLifeBarLength] = useState(100);
@@ -91,6 +93,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
     useState(false);
   const [checkingIfYouOwnAnky, setCheckingIfYouOwnAnky] = useState(false);
   const [ankyButtonText, setAnkyButtonText] = useState("i already own one");
+  const [writingForDisplay, setWritingForDisplay] = useState(null);
   const [disableButton, setDisableButton] = useState(false);
   const [displayInstallPWA, setDisplayInstallPWA] = useState(false);
   const [copyWalletAddressText, setCopyWalletAddressText] = useState("");
@@ -176,7 +179,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
         thisUserPrivyId,
         authToken
       );
-      if (!authToken) return;
+      if (!authToken) return setRefreshUsersStateLoading(false);
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_ROUTE}/user/${thisUserPrivyId}`,
         { thisFarcasterAccount },
@@ -198,6 +201,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
       setRefreshUsersStateLoading(false);
     } catch (error) {
       console.log("there was an error refreshing the users state", error);
+      setRefreshUsersStateLoading(false);
     }
   }
 
@@ -429,8 +433,8 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
       </Transition>
     );
   return (
-    <div className="fixed overflow-y-scroll text-center w-screen text-white h-screen flex flex-col">
-      <div className="flex-none  text-gray-400 w-full h-16  justify-between md:flex items-center flex-col">
+    <div className="fixed overflow-y-scroll text-center w-screen text-white flex flex-col h-screen">
+      <div className="flex-none text-gray-400 w-full h-16  justify-between md:flex items-center flex-col">
         <div className="h-12 items-center flex-row w-full bg-black px-2  cursor-pointer justify-between flex ">
           <div
             className="active:text-yellow-600 h-full md:mt-2  hover:text-purple-600"
@@ -463,7 +467,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
         </div>
       </div>
       {authenticated &&
-        farcasterUser.fid != "approved" &&
+        farcasterUser.status != "approved" &&
         farcasterUser.signerStatus != "approved" && (
           <div
             onClick={() => setDisplayWritingGameLanding(false)}
@@ -482,6 +486,8 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
       <div
         className={`${righteous.className} grow text-black relative  items-center justify-center`}
         style={{
+          backgroundImage:
+            "linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/images/mintbg.jpg')",
           backgroundColor: "black",
           backgroundPosition: "center center",
           backgroundSize: "cover",
@@ -512,21 +518,6 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
         ) : (
           <div className="h-full pb-20 z-50">
             {getComponentForRoute(router.pathname, router)}
-            <div
-              onClick={() => {
-                console.log("in here");
-                if (
-                  router.pathname.includes("write") ||
-                  router.pathname.includes("w")
-                ) {
-                  router.push("/");
-                }
-                setDisplayWritingGameLanding(true);
-              }}
-              className="standalone:hidden fixed hover:bg-purple-700 hover:cursor-pointer h-16 w-16 bottom-6 right-3 border-black border-2 active:bg-purple-500 rounded-full text-green-400 bg-purple-600 z-10 flex items-center justify-center"
-            >
-              <FaPencilAlt size={28} color="black" />
-            </div>
             <nav className="hidden border-t-2 border-black standalone:flex w-full h-20  fixed bottom-0 pt-1 pb-1 bg-purple-200 space-x-4 justify-between items-center pb-4 px-12 z-50">
               <Link href="/feed" passHref>
                 <span>
@@ -572,6 +563,13 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
         )}
       </div>
 
+      {writingForDisplay && (
+        <IndividualWritingDisplayModal
+          writingForDisplay={writingForDisplay}
+          setWritingForDisplay={setWritingForDisplay}
+        />
+      )}
+
       {displaySettingsModal && (
         <TimerSettingsModal
           displaySettingsModal={displaySettingsModal}
@@ -597,7 +595,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
         onHide={handleClose}
       >
         <Offcanvas.Header>
-          <div className="flex flex-col pl-3 relative">
+          <div className="flex flex-col pl-3 mb-0 relative">
             <Offcanvas.Title>welcome to anky</Offcanvas.Title>
             <small className="text-purple-800">
               when you don&apos;t have time to think, your truth comes forth
@@ -611,8 +609,8 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
           </div>
         </Offcanvas.Header>
         <Offcanvas.Body>
-          <div className="md:flex flex-col  h-full  w-fit px-2 relative">
-            <div className="h-5/6 w-full ">
+          <div className="md:flex flex-col  h-full w-fit px-2 relative">
+            <div className="grow w-full ">
               {authenticated ? (
                 <div className="flex flex-col h-full space-x-2 top-0 w-full items-start">
                   {displayManaInfo && (
@@ -663,17 +661,12 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
                   </div>
 
                   <div onClick={handleClose} className="flex flex-col">
-                    <span
-                      className="w-fit"
-                      onClick={() => setDisplayWritingGameLanding(false)}
+                    {/* <Link
+                      href="/settings"
+                      className="hover:text-purple-600 cursor-pointer"
                     >
-                      <Link
-                        href="/settings"
-                        className="hover:text-purple-600 cursor-pointer"
-                      >
-                        settings
-                      </Link>
-                    </span>
+                      settings
+                    </Link> 
                     <span
                       className="w-fit"
                       onClick={() => setDisplayWritingGameLanding(false)}
@@ -696,14 +689,45 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
                         profile
                       </Link>
                     </span>
-                    <span onClick={() => setDisplayWritingGameLanding(false)}>
+                    <span
+                      className="hover:text-purple-600
+                      cursor-pointer"
+                      onClick={() => {
+                        var name = prompt(
+                          "please enter a link to the cast on any farcaster client"
+                        );
+                        if (name != null) {
+                          const distilledCastHash = name.find("0x....");
+                          router.push(`/c/${distilledCastHash}`);
+                        }
+                      }}
+                    >
+                      respond to cast
+                    </span> */}
+                    {/* <span onClick={() => setDisplayWritingGameLanding(false)}>
                       <Link
                         href="/library"
                         className="hover:text-purple-600 cursor-pointer"
                       >
                         library
                       </Link>
-                    </span>
+                    </span> */}
+                  </div>
+                  <hr className="h-2 border-white border-2 bg-red-200" />
+                  <div className="h-64 mt-2 overflow-y-scroll">
+                    {allUserWritings.map((writing, i) => {
+                      return (
+                        <p
+                          onClick={() => {
+                            handleClose();
+                            setWritingForDisplay(writing);
+                          }}
+                          className="my-2 hover:cursor-pointer hover:text-purple-600"
+                        >
+                          {writing.text.slice(0, 30)}...
+                        </p>
+                      );
+                    })}
                   </div>
                 </div>
               ) : (
@@ -729,32 +753,40 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
                     Farcaster: @{farcasterUser.username}
                   </small>
                 )}
-
-                <span
-                  onClick={logout}
-                  className="cursor-pointer mr-auto text-red-300 hover:text-red-600"
-                >
-                  log out
-                </span>
               </div>
             )}
 
-            <div className="h-1/6 ">
-              <hr className="text-gray-600" />
-              <div className="flex flex-col">
-                <span
-                  className="hover:text-purple-600 hover:cursor-pointer"
-                  onClick={() => {
-                    handleClose();
-                    setDisplayAboutModal(!displayAboutModal);
-                  }}
-                >
-                  about
-                </span>
-                <hr className="text-gray-600 h-2 border-3 border-gray-600" />
-                <span>Hecho en Chile - Anky Eres Tu SpA</span>
+            {authenticated && (
+              <div className="h-12 mt-2 w-full flex">
+                <div className=" h-12 w-12  rounded-xl overflow-hidden relative">
+                  <Image src="/images/anky.png" fill />
+                </div>
+                <div className="flex py-1 px-3 items-center grow justify-between">
+                  <span
+                    className="hover:text-purple-600 hover:cursor-pointer"
+                    onClick={() => {
+                      handleClose();
+                      setDisplayAboutModal(!displayAboutModal);
+                    }}
+                  >
+                    {farcasterUser.displayName}
+                  </span>
+                  <Link
+                    href="/settings"
+                    className="hover:text-purple-600 cursor-pointer"
+                  >
+                    <span
+                      onClick={() => {
+                        setDisplayWritingGameLanding(false);
+                        handleClose();
+                      }}
+                    >
+                      · · ·
+                    </span>
+                  </Link>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </Offcanvas.Body>
       </Offcanvas>

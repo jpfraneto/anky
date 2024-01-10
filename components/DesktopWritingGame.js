@@ -53,7 +53,7 @@ const DesktopWritingGame = ({
   const router = useRouter();
   const { login, authenticated, user, getAccessToken } = usePrivy();
   const { userSettings } = useSettings();
-  const { setUserDatabaseInformation } = useUser();
+  const { setUserDatabaseInformation, setAllUserWritings } = useUser();
   const audioRef = useRef();
   const [text, setText] = useState("");
   const [time, setTime] = useState(countdownTarget || 0);
@@ -61,6 +61,8 @@ const DesktopWritingGame = ({
   const [isActive, setIsActive] = useState(false);
   const [randomUUID, setRandomUUID] = useState("");
   const [savingRoundLoading, setSavingRoundLoading] = useState(false);
+  const [userWantsFeedbackFromAnky, setUserWantsFeedbackFromAnky] =
+    useState(false);
   const [isCasting, setIsCasting] = useState(false);
   const [userWantsToCastAnon, setUserWantsToCastAnon] = useState(true);
   const [savingRound, setSavingRound] = useState(false);
@@ -73,7 +75,10 @@ const DesktopWritingGame = ({
   const [savingTextAnon, setSavingTextAnon] = useState(false);
   const [savedText, setSavedText] = useState(false);
   const [cid, setCid] = useState("");
+  const [sessionIsOver, setSessionIsOver] = useState(false);
   const [previewCast, setPreviewCast] = useState(false);
+  const [userWantsToEncryptWriting, setUserWantsToEncryptWriting] =
+    useState(false);
   const [everythingWasUploaded, setEverythingWasUploaded] = useState(false);
   const [showOverlay, setShowOverlay] = useState(!authenticated);
   const [savedToDb, setSavedToDb] = useState(false);
@@ -155,6 +160,7 @@ const DesktopWritingGame = ({
     try {
       const finishTimestamp = Date.now();
       if (countdownTarget === 0) setMissionAccomplished(true);
+      setSessionIsOver(true);
       setLifeBarLength(0);
       setFinished(true);
       setEndTime(finishTimestamp);
@@ -395,9 +401,7 @@ const DesktopWritingGame = ({
     try {
       const receipt = await webIrys.upload(text, { tags });
       setLifeBarLength(0);
-      alert(
-        "your session ended. im working on the transition that comes now. any feedback is more than welcome."
-      );
+      return receipt;
       // router.push(`/me`);
       // setTimeout(() => {
       //   setDisplayWritingGameLanding(false);
@@ -405,23 +409,17 @@ const DesktopWritingGame = ({
     } catch (error) {
       console.log("there was an error");
       console.log("the error is:", error);
-      setDisplayWritingGameLanding(false);
+      // setDisplayWritingGameLanding(false);
     }
   };
 
-  const handleCast = async () => {
+  const handleCast = async (cid) => {
     if (!!farcasterUser.status === "approved")
       return alert("you are not completely logged in yet");
     if (!text) return alert("please write something");
 
     setIsCasting(true);
     try {
-      const responseFromIrys = await axios.post(`${apiRoute}/upload-writing`, {
-        text,
-      });
-      const cid = responseFromIrys.data.cid;
-      setCid(cid);
-
       const kannadaCid = encodeToAnkyverseLanguage(cid);
 
       const newCastText = `${kannadaCid}\n\nwritten as anky - you can decode this by clicking on the embed on the next cast`;
@@ -451,9 +449,8 @@ const DesktopWritingGame = ({
         );
         console.log("the second cast was sent");
         if (secondResponse.status === 200) {
-          setText(""); // Clear the text field
-          setDisplayWritingGameLanding(false);
-          router.push(`https://www.anky.lat/r/${response.data.cast.hash}`);
+          setText("");
+          return response.data.cast.hash;
         }
       }
     } catch (error) {
@@ -463,11 +460,9 @@ const DesktopWritingGame = ({
   };
 
   async function saveTextToJournal() {
-    console.log("the journal id to save is: ", journalIdToSave);
     const chosenJournal = userAppInformation.userJournals.filter(
       (x) => x.journalId == journalIdToSave
     )[0];
-    console.log("the chosen journal is: ", chosenJournal);
     const getWebIrys = async () => {
       // Ethers5 provider
       // await window.ethereum.enable();
@@ -545,40 +540,56 @@ const DesktopWritingGame = ({
           userJournals: updatedUserJournals,
         };
       });
-
-      setLifeBarLength(0);
+      return receipt.id;
     } catch (e) {
       console.log("Error uploading data ", e);
     }
   }
 
-  async function handleSaveRun() {
-    try {
-      setSavingRoundLoading(true);
-      if (castAs == "anon" || userWantsToCastAnon) await handleAnonCast();
-      if (castAs == "me") await handleCast();
-      if (journalIdToSave != "") {
-        await saveTextToJournal();
-      } else {
-        if (authenticated) await sendTextToIrys();
-      }
-      setEverythingWasUploaded(true);
-      setSavingRoundLoading(true);
-      setDisplayWritingGameLanding(false);
-    } catch (error) {
-      console.log("there was an error in here, saving the run", error);
-      setThereWasAnError(true);
-    }
-  }
+  // async function handleSaveRun() {
+  //   try {
+  //     setSavingRoundLoading(true);
+  //     let castResponse, irysResponse;
+  //     if (castAs == "anon" || userWantsToCastAnon)
+  //       castResponse = await handleAnonCast();
+  //     if (castAs == "me") castResponse = await handleCast();
+  //     if (journalIdToSave != "") {
+  //       await saveTextToJournal();
+  //     } else {
+  //       if (authenticated && userWantsToStoreWritingForever) {
+  //         irysResponse = await sendTextToIrys();
+  //         let newWriting = {
+  //           text: text,
+  //           timestamp: new Date().getTime(),
+  //           cid: irysResponse.id,
+  //         };
+  //         setAllUserWritings((x) => [newWriting, ...x]);
+  //       }
+  //     }
+  //     setEverythingWasUploaded(true);
+  //     setSavingRoundLoading(true);
+  //     console.log("the cast response is: ", castResponse);
+  //     console.log("the irys response is: ");
+  //     // setDisplayWritingGameLanding(false);
+  //   } catch (error) {
+  //     console.log("there was an error in here, saving the run", error);
+  //     setThereWasAnError(true);
+  //   }
+  // }
 
-  const handleAnonCast = async () => {
+  const handleAnonCast = async (irysResponseCid = null) => {
     try {
       setIsCasting(true);
+      let responseFromIrys, cid;
       if (!authenticated) setSavingRoundLoading(true);
-      const responseFromIrys = await axios.post(`${apiRoute}/upload-writing`, {
-        text,
-      });
-      const cid = responseFromIrys.data.cid;
+      if (!irysResponseCid) {
+        responseFromIrys = await axios.post(`${apiRoute}/upload-writing`, {
+          text,
+        });
+        cid = responseFromIrys.data.cid;
+      } else {
+        cid = irysResponseCid;
+      }
 
       const kannadaCid = encodeToAnkyverseLanguage(cid);
       const newCastText = `${kannadaCid}\n\nwritten through anky. you can decode this clicking on the embed on the next cast.`;
@@ -590,12 +601,13 @@ const DesktopWritingGame = ({
       });
       console.log("the response is: ", response);
       setCastHash(response.data.cast.hash);
+      return response.data.cast.hash;
 
-      if (response.status === 200) {
-        setText(""); // Clear the text field
-        router.push(`https://www.anky.lat/r/${response.data.cast.hash}`);
-        setDisplayWritingGameLanding(false);
-      }
+      // if (response.status === 200) {
+      //   setText(""); // Clear the text field
+      //   router.push(`https://www.anky.lat/r/${response.data.cast.hash}`);
+      //   setDisplayWritingGameLanding(false);
+      // }
     } catch (error) {
       alert("there was an error casting your cast anon");
       console.log(error);
@@ -700,6 +712,239 @@ const DesktopWritingGame = ({
   //     );
   //   }
   // }
+
+  async function handleFinishSession() {
+    try {
+      alert("finish the session!");
+      let castResponse, irysResponseCid;
+      if (authenticated) {
+        if (journalIdToSave) {
+          irysResponseCid = saveTextToJournal();
+        } else {
+          irysResponseCid = sendTextToIrys();
+        }
+        console.log("the irysResponseCid is: ", irysResponseCid);
+      }
+      if (!authenticated) {
+        console.log(
+          "this means that the user is not logged in, and we need to offer the option to just send to farcaster"
+        );
+        if (userWantsToCastAnon) {
+          castResponse = await handleAnonCast();
+        }
+      } else if (
+        authenticated &&
+        (farcasterUser.status != "approved" ||
+          farcasterUser.signerStatus != "approved")
+      ) {
+        if (userWantsToCastAnon)
+          castResponse = await handleAnonCast(irysResponseCid);
+        console.log(
+          "this means that the user is logged in, and we need to offer the option to save it eternally and cast anon"
+        );
+      } else if (
+        authenticated &&
+        (farcasterUser.status == "approved" ||
+          farcasterUser.signerStatus == "approved")
+      ) {
+        console.log(
+          "this means that the user is logged in with privy and farcaster, what happens here?"
+        );
+        if (castAs == "me") {
+          castResponse = await handleCast(irysResponseCid);
+        } else if (castAs == "anon") {
+          castResponse = await handleAnonCast();
+        }
+      }
+      alert("everything uploaded properly");
+      setDisplayWritingGameLanding(false);
+      router.push("/feed");
+    } catch (error) {
+      console.log("There was an error in the handle finish session function");
+    }
+  }
+
+  function renderSessionIsOver() {
+    return (
+      <div
+        className={`${
+          text && "fade-in"
+        } flex flex-col justify-center items-center absolute w-screen top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-opacity-20 mb-4`}
+      >
+        <div className="border-white border-2 mx-16 md:mx-auto w-5/6 md:w-2/3 xl:w-3/5 rounded-xl bg-black p-2 text-white">
+          <p className="text-lg md:text-3xl">your writing session is over</p>
+          {time < 30 ? (
+            <p className="text-red-400 text-xs">
+              *in here, there is a currency that represents time. you can earn
+              it if you {!authenticated && "log in and "} write for more than 30
+              seconds.
+            </p>
+          ) : (
+            <p className="text-red-400 text-sm">
+              {!authenticated
+                ? "you need to be logged in to earn $NEWEN"
+                : responseFromPinging}
+            </p>
+          )}
+
+          {authenticated &&
+          (farcasterUser.status == "approved" ||
+            farcasterUser.signerStatus == "approved") ? (
+            <div className="bg-purple-500 text-black p-2 my-2 rounded-xl flex space-x-2 items-center justify-center">
+              <div className="flex md:flex-row flex-col space-x-2 items-center justify-center">
+                <p className="">share on farcaster?</p>
+                <div className="flex  space-x-2">
+                  <p
+                    onClick={() => setCastAs("")}
+                    className={` p-2 border-black   cursor-pointer rounded-xl ${
+                      castAs == ""
+                        ? "bg-red-500 shadow-md shadow-black border-2"
+                        : "bg-red-200 hover:bg-red-300 "
+                    }`}
+                  >
+                    don&apos;t cast
+                  </p>
+                  <p
+                    onClick={() => {
+                      setCastAs("me");
+                      setUserWantsToCastAnon(false);
+                    }}
+                    className={` p-2 border-black  cursor-pointer rounded-xl ${
+                      castAs == "me"
+                        ? "bg-green-500 shadow-md shadow-black border-2"
+                        : "bg-green-300 hover:bg-green-300"
+                    }`}
+                  >
+                    cast as {farcasterUser.fid}
+                  </p>
+                  <p
+                    onClick={() => {
+                      setCastAs("anon");
+                      setUserWantsToCastAnon(true);
+                    }}
+                    className={` p-2 border-black   cursor-pointer rounded-xl ${
+                      castAs == "anon"
+                        ? "bg-purple-600 shadow-md shadow-black border-2"
+                        : "bg-purple-300 hover:bg-purple-300"
+                    }`}
+                  >
+                    cast anon
+                  </p>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="bg-purple-500 text-black p-2 my-2 rounded-xl flex space-x-2 items-center justify-center">
+              <div className="h-8 w-5/6 pl-8 flex items-center">
+                <p className="text-black">
+                  do you want to cast your writing as @anky?
+                </p>
+                <input
+                  className="mx-4"
+                  type="checkbox"
+                  onChange={(e) => {
+                    setUserWantsToCastAnon(!userWantsToCastAnon);
+                  }}
+                  checked={userWantsToCastAnon}
+                />
+              </div>
+
+              <div>
+                {userWantsToCastAnon && (
+                  <div className="flex justify-between w-32">
+                    <Button
+                      buttonText={"preview"}
+                      buttonAction={previewCastAction}
+                      buttonColor="bg-purple-800 w-32"
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {authenticated && (
+            <div className=" bg-purple-600 p-2 mt-2 mb-0 w-full rounded-xl mx-auto flex flex-col justify-start items-center ">
+              <div className="flex">
+                <p className="text-black h-8 flex items-center">
+                  do you want to save your writing on the eternal library of the
+                  ankyverse?
+                </p>
+                <input
+                  className="mx-4"
+                  type="checkbox"
+                  onChange={(e) => {
+                    setUserWantsToStoreWritingForever(
+                      !userWantsToStoreWritingForever
+                    );
+                  }}
+                  checked={userWantsToStoreWritingForever}
+                />
+              </div>
+
+              {userWantsToStoreWritingForever && (
+                <div className="flex bg-purple-500 p-2 mt-2 rounded-xl">
+                  {authenticated && userAppInformation.userJournals && (
+                    <div className="bg-purple-500 text-black px-2 my-2 rounded-xl w-full flex space-x-2 items-center justify-center">
+                      <p>save to journal? </p>
+                      {userAppInformation.userJournals &&
+                        userAppInformation.userJournals.length > 0 && (
+                          <div>
+                            <select
+                              onChange={(e) => {
+                                console.log("in here", e.target.value);
+                                setJournalIdToSave(e.target.value);
+                              }}
+                              className="p-2 text-black rounded-xl my-2"
+                            >
+                              <option value="">
+                                don&apos;t save to journal
+                              </option>
+                              {userAppInformation.userJournals.map((x, i) => {
+                                return (
+                                  <option key={i} value={x.journalId}>
+                                    {x.title}
+                                  </option>
+                                );
+                              })}
+                            </select>
+                          </div>
+                        )}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+          {/* {authenticated && (
+            <div className=" bg-purple-600 p-2 mt-2 mb-0 w-full rounded-xl mx-auto flex flex-col justify-start items-center ">
+              <div className="flex">
+                <p className="text-black h-8 flex items-center">
+                  do you want to get feedback from anky?
+                </p>
+                <input
+                  className="mx-4"
+                  type="checkbox"
+                  onChange={(e) => {
+                    setUserWantsFeedbackFromAnky(!userWantsFeedbackFromAnky);
+                  }}
+                  checked={userWantsFeedbackFromAnky}
+                />
+              </div>
+            </div>
+          )} */}
+
+          <div className="flex justify-center mt-4">
+            <Button
+              buttonText="finish session"
+              buttonAction={handleFinishSession}
+              buttonColor="bg-green-600"
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (errorProblem)
     return (
@@ -817,293 +1062,7 @@ const DesktopWritingGame = ({
               ))}
           </div>
 
-          <>
-            {text && (
-              <div
-                className={`${
-                  text && "fade-in"
-                } flex flex-col justify-center items-center absolute w-screen top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-opacity-20 mb-4`}
-              >
-                {finished && (
-                  <div className="border-white border-2 mx-16 md:mx-auto w-5/6 md:w-2/3 rounded-xl bg-black p-4 text-white">
-                    <p className="text-lg md:text-3xl">
-                      congratulations, your writing session is over
-                    </p>
-                    {time < 30 ? (
-                      <p className="text-red-400 text-xs">
-                        *in here, there is a currency that represents time. you
-                        can earn it if you {!authenticated && "log in and "}{" "}
-                        write for more than 30 seconds.
-                      </p>
-                    ) : (
-                      <p className="text-red-400 text-sm">
-                        {!authenticated
-                          ? "you need to be logged in to earn $NEWEN"
-                          : responseFromPinging}
-                      </p>
-                    )}
-                    {farcasterUser.status == "approved" && (
-                      <div className="bg-purple-500 text-black p-2 my-2 rounded-xl flex space-x-2 items-center justify-center">
-                        {farcasterUser.status == "approved" && (
-                          <div className="flex md:flex-row flex-col space-x-2 items-center">
-                            <p className="mb-2">send to farcaster?</p>
-                            <div className="flex  space-x-2">
-                              <p
-                                onClick={() => setCastAs("")}
-                                className={` p-2 border-black   cursor-pointer rounded-xl ${
-                                  castAs == ""
-                                    ? "bg-red-500 shadow-md shadow-black border-2"
-                                    : "bg-red-200 hover:bg-red-300 "
-                                }`}
-                              >
-                                don&apos;t cast
-                              </p>
-                              <p
-                                onClick={() => {
-                                  setCastAs("me");
-                                  setUserWantsToCastAnon(false);
-                                }}
-                                className={` p-2 border-black  cursor-pointer rounded-xl ${
-                                  castAs == "me"
-                                    ? "bg-green-500 shadow-md shadow-black border-2"
-                                    : "bg-green-300 hover:bg-green-300"
-                                }`}
-                              >
-                                cast as {farcasterUser.fid}
-                              </p>
-                              <p
-                                onClick={() => {
-                                  setCastAs("anon");
-                                  setUserWantsToCastAnon(true);
-                                }}
-                                className={` p-2 border-black   cursor-pointer rounded-xl ${
-                                  castAs == "anon"
-                                    ? "bg-purple-600 shadow-md shadow-black border-2"
-                                    : "bg-purple-300 hover:bg-purple-300"
-                                }`}
-                              >
-                                cast anon
-                              </p>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                    {authenticated && userAppInformation.userJournals && (
-                      <div className="bg-purple-500 text-black px-2 my-2 rounded-xl flex space-x-2 items-center justify-center">
-                        <p>save to journal? </p>
-                        {userAppInformation.userJournals &&
-                          userAppInformation.userJournals.length > 0 && (
-                            <div>
-                              <select
-                                onChange={(e) => {
-                                  console.log("in here", e.target.value);
-                                  setJournalIdToSave(e.target.value);
-                                }}
-                                className="p-2 text-black rounded-xl my-2"
-                              >
-                                <option value="">
-                                  don&apos;t save to journal
-                                </option>
-                                {userAppInformation.userJournals.map((x, i) => {
-                                  return (
-                                    <option key={i} value={x.journalId}>
-                                      {x.title}
-                                    </option>
-                                  );
-                                })}
-                              </select>
-                            </div>
-                          )}
-                      </div>
-                    )}
-
-                    {!farcasterUser ||
-                      (farcasterUser.status != "approved" && (
-                        <div className="bg-purple-600 px-3 py-1 mt-2 mb-0 w-full rounded-xl mx-auto flex justify-center items-center ">
-                          <p className="text-black">
-                            do you want to cast your writing anon?
-                          </p>
-
-                          <input
-                            className="mx-4"
-                            type="checkbox"
-                            onChange={(e) => {
-                              setUserWantsToCastAnon(!userWantsToCastAnon);
-                            }}
-                            checked={userWantsToCastAnon}
-                          />
-                          {userWantsToCastAnon && (
-                            <div className="flex justify-between w-32 ">
-                              <Button
-                                buttonText={"preview"}
-                                buttonAction={previewCastAction}
-                                buttonColor="bg-purple-800 w-32"
-                              />
-                            </div>
-                          )}
-                        </div>
-                      ))}
-
-                    {authenticated && (
-                      <div className="bg-purple-600 px-3 py-1 mt-2 mb-0 w-full rounded-xl mx-auto flex justify-center items-center ">
-                        <p className="text-black">
-                          do you want to save your writing forever on the
-                          eternal library of the ankyverse?
-                        </p>
-
-                        <input
-                          className="mx-4"
-                          type="checkbox"
-                          onChange={(e) => {
-                            setUserWantsToStoreWritingForever(
-                              !userWantsToStoreWritingForever
-                            );
-                          }}
-                          checked={userWantsToStoreWritingForever}
-                        />
-                      </div>
-                    )}
-
-                    {missionAccomplished ||
-                    (countdownTarget > 0 && time === 0) ? (
-                      <>
-                        <>
-                          {farcasterUser.status == "approved" ? (
-                            <div className="p-4 bg-black w-full mx-auto md:w-fit rounded-xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] z-50">
-                              <div className="flex flex-col md:flex-row md:space-y-0 justify-center w-full space-y-2 space-x-2 mt-0">
-                                <Button
-                                  buttonText={
-                                    savingRoundLoading
-                                      ? `saving...`
-                                      : `save run`
-                                  }
-                                  buttonAction={handleSaveRun}
-                                  buttonColor="bg-green-600"
-                                />
-                                <Button
-                                  buttonText={`copy written text and go back`}
-                                  buttonAction={() => {
-                                    pasteText();
-                                    startNewRun();
-                                    setDisplayWritingGameLanding(false);
-                                    setThisIsTheFlag(true);
-                                    setTimeout(() => {
-                                      router.push("/");
-                                    }, 10);
-                                  }}
-                                  buttonColor="bg-red-600"
-                                />
-                              </div>
-                            </div>
-                          ) : (
-                            <div className="p-2 bg-black  md:w-full rounded-xl mx-auto drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] z-50">
-                              <div className="flex flex-col items-center  justify-center w-full ">
-                                <div className="flex ">
-                                  <div className="mx-2">
-                                    <Button
-                                      buttonText={`finish run`}
-                                      buttonAction={() => {
-                                        setFinished(false);
-                                        handleSaveRun();
-                                        pasteText();
-                                        startNewRun();
-                                        setDisplayWritingGameLanding(false);
-                                        setThisIsTheFlag(true);
-                                        setTimeout(() => {
-                                          router.push("/feed");
-                                        }, 10);
-                                      }}
-                                      buttonColor="bg-green-600"
-                                    />
-                                  </div>
-                                  <div className="mx-2">
-                                    <Button
-                                      buttonText={`copy written text and go back`}
-                                      buttonAction={() => {
-                                        setFinished(false);
-                                        pasteText();
-                                        startNewRun();
-                                        setDisplayWritingGameLanding(false);
-                                        setThisIsTheFlag(true);
-                                        setTimeout(() => {
-                                          router.push("/feed");
-                                        }, 10);
-                                      }}
-                                      buttonColor="bg-red-600"
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          )}
-                        </>
-                      </>
-                    ) : (
-                      <>
-                        {countdownTarget == 0 ||
-                        (countdownTarget > 0 && time === 0) ? (
-                          <div className="p-4 bg-black w-2/3 md:w-fit rounded-xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] z-50">
-                            <div className="flex space-x-2 flex-col md:flex-row ">
-                              <Button
-                                buttonAction={handleSaveRun}
-                                buttonColor="bg-green-600 text-black"
-                                buttonText={
-                                  savingTextAnon ? "saving..." : "save text"
-                                }
-                              />
-
-                              <Button
-                                buttonText={`copy written text and go back`}
-                                buttonAction={() => {
-                                  pasteText();
-                                  setText("");
-                                  setIsActive(false);
-                                  setTime(0);
-                                  router.push("/");
-                                  setDisplayWritingGameLanding(false);
-                                }}
-                                buttonColor="bg-red-600"
-                              />
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="bg-black p-4 flex flex-col items-center rounded-xl">
-                            <p className="mb-2">you didnt finish</p>
-                            <p className="mb-2">
-                              you said you would write for {countdownTarget}
-                              seconds
-                            </p>
-                            <p className="mb-2">
-                              (what you wrote is on your clipboard)
-                            </p>
-                            <div className="w-fit flex space-x-2">
-                              <Button
-                                buttonAction={startNewCountdownRun}
-                                buttonColor="bg-cyan-200 text-black"
-                                buttonText="start again"
-                              />
-                              <Button
-                                buttonAction={() => {
-                                  pasteText();
-                                  setText("");
-                                  setTime(0);
-                                  router.push("/what-is-this");
-                                  setDisplayWritingGameLanding(false);
-                                }}
-                                buttonColor="bg-red-600 text-black"
-                                buttonText="copy text and escape"
-                              />
-                            </div>
-                          </div>
-                        )}
-                      </>
-                    )}
-                  </div>
-                )}
-              </div>
-            )}
-          </>
+          {sessionIsOver && renderSessionIsOver()}
         </div>
       </div>
 

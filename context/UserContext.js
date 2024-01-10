@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
-import { ethers } from "ethers";
+import { Wallet, ethers } from "ethers";
 import axios from "axios";
 import {
   fetchUserEulogias,
@@ -9,6 +9,7 @@ import {
   fetchUserJournals,
   fetchUserDementors,
 } from "../lib/notebooks";
+import { getThisUserWritings } from "../lib/irys";
 import AccountSetupModal from "../components/AccountSetupModal";
 import { setUserData, getUserData } from "../lib/idbHelper";
 import airdropABI from "../lib/airdropABI.json";
@@ -30,7 +31,7 @@ export const UserProvider = ({ children }) => {
   const [loadingLibrary, setLoadingLibrary] = useState(false);
   const [userIsReadyNow, setUserIsReadyNow] = useState(false);
   const [farcasterUser, setFarcasterUser] = useState({});
-
+  const [allUserWritings, setAllUserWritings] = useState([]);
   const [usersAnkyImage, setUsersAnkyImage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [usersAnkyUri, setUsersAnkyUri] = useState("");
@@ -86,6 +87,26 @@ export const UserProvider = ({ children }) => {
     }
     loadStoredUserData();
   }, [ready]);
+
+  function sortWritings(a, b) {
+    const timestampA = a.timestamp;
+    const timestampB = b.timestamp;
+    return timestampB - timestampA;
+  }
+
+  useEffect(() => {
+    async function getAllUserWritings() {
+      if (!wallet) return;
+      if (!authenticated) return;
+      console.log("IN HEREEEE, THE WALLET IS.", wallet);
+      const writings = await getThisUserWritings(wallet.address);
+      const sortedWritings = writings.sort(sortWritings);
+      console.log("all the sorted writings are:", sortedWritings);
+      setAllUserWritings(sortedWritings);
+    }
+
+    getAllUserWritings();
+  }, [wallet]);
 
   // Check initialization and setup status
   useEffect(() => {
@@ -480,6 +501,8 @@ export const UserProvider = ({ children }) => {
         usersAnkyImage,
         farcasterUser,
         setFarcasterUser,
+        allUserWritings,
+        setAllUserWritings,
       }}
     >
       {showProgressModal && (

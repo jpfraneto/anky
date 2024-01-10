@@ -43,8 +43,8 @@ const GlobalFeed = ({ thisWallet }) => {
     );
 
   return (
-    <div className="w-full h-screen pb-16 overflow-y-scroll">
-      <div className="w-full flex justify-around flex-wrap md:w-96  mx-auto">
+    <div className="w-full grow ">
+      <div className="w-full  flex justify-around flex-wrap md:w-96  mx-auto">
         {globalFeed.map((x, i) => {
           return (
             <IndividualDecodedCastCard
