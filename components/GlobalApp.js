@@ -718,6 +718,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
                     {allUserWritings.map((writing, i) => {
                       return (
                         <p
+                          key={i}
                           onClick={() => {
                             handleClose();
                             setWritingForDisplay(writing);
