@@ -106,6 +106,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
   const [displaySettingsModal, setDisplaySettingsModal] = useState(false);
   const [thisIsTheFlag, setThisIsTheFlag] = useState(false);
   const [displayRightNavbar, setDisplayRightNavbar] = useState(false);
+  const [userWritingsHere, setUserWritingsHere] = useState([]);
   const [thisIsThePrompt, setThisIsThePrompt] = useState("");
   const [countdownTarget, setCountdownTarget] = useState(0);
   const [show, setShow] = useState(false);
@@ -208,6 +209,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
         const sortedWritings = writings.sort(sortWritings);
         console.log("all the sorted writings are:", sortedWritings);
         setAllUserWritings(sortedWritings);
+        setUserWritingsHere(sortedWritings);
       }
 
       getAllUserWritings();
@@ -663,19 +665,21 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
                   </div>
 
                   <hr className="h-2 border-white border-2 bg-red-200" />
-                  <div className="p-2 border border-white rounded-xl h-96 text-nowrap overflow-y-scroll text-white shadow-xl shadow-yellow-600 text-xl w-72 mb-12 mt-0">
-                    {allUserWritings.map((writing, i) => {
+                  <div className="p-2 border border-white rounded-xl h-96  flex-col overflow-y-scroll text-white shadow-xl shadow-yellow-600 text-xl w-72 mb-12 mt-0">
+                    {userWritingsHere.map((writing, i) => {
                       return (
-                        <Link
-                          key={i}
-                          href={`/i/${writing.cid}`}
-                          onClick={() => {
-                            handleClose();
-                          }}
-                          className="my-2 hover:cursor-pointer hover:text-purple-600 odd:text-purple-400"
-                        >
-                          {writing.text}
-                        </Link>
+                        <div className="w-full text-nowrap odd:text-purple-400">
+                          <Link
+                            key={i}
+                            href={`/i/${writing.cid}`}
+                            onClick={() => {
+                              handleClose();
+                            }}
+                            className="my-2 hover:cursor-pointer hover:text-purple-600 "
+                          >
+                            {writing.text}
+                          </Link>
+                        </div>
                       );
                     })}
                   </div>
