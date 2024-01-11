@@ -668,9 +668,11 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
                   <div className="p-2 border border-white rounded-xl h-96  flex-col overflow-y-scroll text-white shadow-xl shadow-yellow-600 text-xl w-72 mb-12 mt-0">
                     {userWritingsHere.map((writing, i) => {
                       return (
-                        <div className="w-full text-nowrap odd:text-purple-400">
+                        <div
+                          key={i}
+                          className="w-full text-nowrap odd:text-purple-400"
+                        >
                           <Link
-                            key={i}
                             href={`/i/${writing.cid}`}
                             onClick={() => {
                               handleClose();
