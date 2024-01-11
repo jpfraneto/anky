@@ -52,12 +52,12 @@ function LandingPage({
             "linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/images/librarian.png')",
         }}
       >
-        <div className="relative z-10 flex flex-col items-center justify-center h-full">
-          <h1 className="text-5xl text-gray-400 font-bold mt-64 mb-2">
+        <div className="relative z-10 pt-96 flex flex-col items-center justify-center h-full">
+          {/* <h1 className="text-5xl text-gray-400 font-bold mt-64 mb-2">
             {authenticated
               ? "welcome back, my friend"
               : "welcome. are you ready to write?"}
-          </h1>
+          </h1> */}
 
           {loading ? (
             <Spinner />
