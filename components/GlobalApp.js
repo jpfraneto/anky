@@ -662,6 +662,15 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
                     >
                       {refreshUsersStateLoading ? "refreshing..." : "refresh"}
                     </span>
+                    <span
+                      onClick={() => {
+                        setDisplayWritingGameLanding(true);
+                        handleClose();
+                      }}
+                      className="rounded-xl text-xl text-white mb-2  bg-orange-600 border-white border px-3 flex justify-center items-center space-x-2 my-3 cursor-pointer hover:bg-orange-700"
+                    >
+                      write
+                    </span>
                   </div>
 
                   <hr className="h-2 border-white border-2 bg-red-200" />
