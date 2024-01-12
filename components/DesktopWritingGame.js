@@ -723,6 +723,7 @@ const DesktopWritingGame = ({
         } else {
           irysResponseCid = await sendTextToIrys();
         }
+
         console.log("the irysResponseCid is: ", irysResponseCid);
       }
       if (!authenticated) {
@@ -732,7 +733,8 @@ const DesktopWritingGame = ({
         if (userWantsToCastAnon) {
           castResponse = await handleAnonCast();
         }
-      } else if (
+      }
+      if (
         authenticated &&
         (farcasterUser.status != "approved" ||
           farcasterUser.signerStatus != "approved")
@@ -742,7 +744,8 @@ const DesktopWritingGame = ({
         console.log(
           "this means that the user is logged in, and we need to offer the option to save it eternally and cast anon"
         );
-      } else if (
+      }
+      if (
         authenticated &&
         (farcasterUser.status == "approved" ||
           farcasterUser.signerStatus == "approved")
@@ -756,7 +759,9 @@ const DesktopWritingGame = ({
           castResponse = await handleAnonCast();
         }
       }
-      alert("everything uploaded properly");
+      alert(
+        "everything uploaded properly, this is where the cast has to be appended to the feed array"
+      );
       setDisplayWritingGameLanding(false);
       router.push("/feed");
     } catch (error) {
