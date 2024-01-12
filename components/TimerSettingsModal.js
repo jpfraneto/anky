@@ -44,8 +44,10 @@ const TimerSettingsModal = ({
         <ol className="flex flex-col w-full space-y-2">
           <li className="flex flex-col">
             <span className="text-purple-600 mb-2">
-              timer: {maxTimeBetweenKeystrokes} seconds (amount of seconds
-              between keystrokes before your writing session ends)
+              <span className="text-xl text-yellow-600">
+                {maxTimeBetweenKeystrokes}
+              </span>{" "}
+              seconds between keystrokes before your writing session ends
             </span>
             <input
               className="w-full"
@@ -56,8 +58,11 @@ const TimerSettingsModal = ({
               onChange={(e) => setMaxTimeBetweenKeystrokes(e.target.value)}
             />
             <span className="text-purple-600 mb-2">
-              you will earn {Math.floor(300 / maxTimeBetweenKeystrokes)}% of the
-              amount of newen for each second written.
+              you will earn{" "}
+              <span className="text-xl text-yellow-600">
+                {Math.floor(300 / maxTimeBetweenKeystrokes)}%
+              </span>{" "}
+              of the amount of newen for each second written.
             </span>
           </li>
         </ol>

@@ -301,6 +301,12 @@ const DesktopWritingGame = ({
             timestamp: now,
             user: user.id.replace("did:privy:", ""),
             frontendWrittenTime,
+            dataForCalculatingMultiplier: {
+              amountOfKeystrokes: "",
+              keystrokesPerMinute: "",
+              backkeystrokes: "",
+              newenMultiplierFromSpeed: 1,
+            },
           },
           {
             headers: {
@@ -422,36 +428,44 @@ const DesktopWritingGame = ({
     try {
       const kannadaCid = encodeToAnkyverseLanguage(cid);
 
-      const newCastText = `${kannadaCid}\n\nwritten as anky - you can decode this by clicking on the embed on the next cast`;
+      const newCastText = `${text.slice(
+        0,
+        88
+      )}...\n\n (pssst... you can read the rest of this on anky) \n\nhttps://www.anky.lat/i/${cid}`;
+      // THIS WAS USED ON THE ERA ON WHICH THE CAST WAS SENT IN TWO CASTS.
+      // const newCastText = `${kannadaCid}\n\nwritten as anky - you can decode this by clicking on the embed on the next cast`;
 
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_ROUTE}/farcaster/api/cast`,
         {
           text: newCastText,
           signer_uuid: farcasterUser?.signer_uuid,
-          parent: "https://warpcast.com/~/channel/anky",
+          parent: {
+            parent: parentCastsLink || "https://warpcast.com/~/channel/anky",
+          },
         }
       );
+
       if (response.status === 200) {
         setCastHash(response.data.cast.hash);
-
-        const secondCastText = `welcome to a limitless era of farcaster:`;
-        const secondResponse = await axios.post(
-          `${apiRoute}/farcaster/api/cast`,
-          {
-            parent: response.data.cast.hash,
-            text: secondCastText,
-            signer_uuid: farcasterUser?.signer_uuid,
-            embeds: [
-              { url: `https://www.anky.lat/r/${response.data.cast.hash}` },
-            ],
-          }
-        );
-        console.log("the second cast was sent");
-        if (secondResponse.status === 200) {
-          setText("");
-          return response.data.cast.hash;
-        }
+        return response.data.cast.hash;
+        // const secondCastText = `welcome to a limitless era of farcaster:`;
+        // const secondResponse = await axios.post(
+        //   `${apiRoute}/farcaster/api/cast`,
+        //   {
+        //     parent: response.data.cast.hash,
+        //     text: secondCastText,
+        //     signer_uuid: farcasterUser?.signer_uuid,
+        //     embeds: [
+        //       { url: `https://www.anky.lat/r/${response.data.cast.hash}` },
+        //     ],
+        //   }
+        // );
+        // console.log("the second cast was sent");
+        // if (secondResponse.status === 200) {
+        //   setText("");
+        //   return response.data.cast.hash;
+        // }
       }
     } catch (error) {
       setIsCasting(false);
@@ -713,9 +727,8 @@ const DesktopWritingGame = ({
   //   }
   // }
 
-  async function handleFinishSession() {
+  async function handleSaveSession() {
     try {
-      alert("finish the session!");
       let castResponse, irysResponseCid;
       if (authenticated) {
         if (journalIdToSave) {
@@ -724,7 +737,10 @@ const DesktopWritingGame = ({
           irysResponseCid = await sendTextToIrys();
         }
 
-        console.log("the irysResponseCid is: ", irysResponseCid);
+        console.log(
+          "the irysResponseCid is. this is the unique identifier of this cast ",
+          irysResponseCid
+        );
       }
       if (!authenticated) {
         console.log(
@@ -754,6 +770,9 @@ const DesktopWritingGame = ({
           "this means that the user is logged in with privy and farcaster, what happens here?"
         );
         if (castAs == "me") {
+          console.log(
+            "the person wants to cast as that which the person refers to as... me"
+          );
           castResponse = await handleCast(irysResponseCid);
         } else if (castAs == "anon") {
           castResponse = await handleAnonCast();
@@ -941,8 +960,8 @@ const DesktopWritingGame = ({
 
           <div className="flex justify-center mt-4">
             <Button
-              buttonText="finish session"
-              buttonAction={handleFinishSession}
+              buttonText="save session"
+              buttonAction={handleSaveSession}
               buttonColor="bg-green-600"
             />
           </div>

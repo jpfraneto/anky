@@ -31,8 +31,22 @@ const ReadIrysPage = ({ setShow }) => {
   const [thisWriting, setThisWriting] = useState(null);
   const { farcasterUser, userDatabaseInformation, allUserWritings } = useUser();
 
+  const scrollToTop = () => {
+    console.log("in here");
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth", // Optional: adds a smooth scrolling effect
+    });
+    setShow(true); // Assuming you still want to call setShow here
+  };
+
   useEffect(() => {
     async function searchThisText() {
+      if (!authenticated || !allUserWritings) {
+        const writingFromIrys = await getOneWriting(router.query.cid);
+        setThisWriting({ text: writingFromIrys.text, timestamp: new Date() });
+        console.log("the writing From irys is: ", writingFromIrys);
+      }
       if (!allUserWritings & !router) return;
       console.log("all th user writings are: ", allUserWritings);
       if (allUserWritings.length === 0) return;
@@ -46,7 +60,10 @@ const ReadIrysPage = ({ setShow }) => {
       console.log("sadsads", allUserWritings[thisIrysIndex]);
       const writerPlaceholder = allUserWritings[thisIrysIndex];
       console.log("the writer placeholder is: ", writerPlaceholder);
-      setThisWriting(writerPlaceholder);
+      if (writerPlaceholder) {
+        setThisWriting(writerPlaceholder);
+      } else {
+      }
     }
     searchThisText();
   }, [allUserWritings, router]);
@@ -138,7 +155,7 @@ const ReadIrysPage = ({ setShow }) => {
         <div className="w-32 text-center">
           <Button
             buttonText="more..."
-            buttonAction={setShow}
+            buttonAction={scrollToTop}
             buttonColor="bg-green-600"
           />
         </div>

@@ -19,6 +19,7 @@ import { GiRollingEnergy } from "react-icons/gi";
 import { ethers } from "ethers";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useSettings } from "../context/SettingsContext";
 import { fetchUserDementors } from "../lib/notebooks";
 import { Transition } from "react-transition-group";
 import airdropABI from "../lib/airdropABI.json";
@@ -89,6 +90,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
     allUserWritings,
     setAllUserWritings,
   } = useUser();
+  const { userSettings, setUserSettings } = useSettings();
   const router = useRouter();
   const [lifeBarLength, setLifeBarLength] = useState(100);
   const [displayManaInfo, setDisplayManaInfo] = useState(false);
@@ -512,17 +514,19 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
 
       <div
         className={`${righteous.className} grow text-black relative  items-center justify-center`}
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/images/mintbg.jpg')",
-          backgroundColor: "black",
-          backgroundPosition: "center center",
-          backgroundSize: "cover",
-          backgroundRepeat: "no-repeat",
-        }}
       >
         {displayWritingGameLanding ? (
-          <div className="h-full">
+          <div
+            className="h-full"
+            style={{
+              backgroundImage:
+                "linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/images/mintbg.jpg')",
+              backgroundColor: "black",
+              backgroundPosition: "center center",
+              backgroundSize: "cover",
+              backgroundRepeat: "no-repeat",
+            }}
+          >
             <DesktopWritingGame
               ankyverseDate={`sojourn ${ankyverseToday.currentSojourn} - wink ${
                 ankyverseToday.wink
@@ -658,7 +662,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
                     </span>
                     <span
                       onClick={refreshUsersState}
-                      className="rounded-xl text-xl text-white mb-2  bg-green-600 border-white border px-3 flex justify-center items-center space-x-2 my-3 cursor-pointer hover:bg-green-700"
+                      className="rounded-xl text-xl text-white mb-2 w-24 word-wrap overflow-x-hidden text-xs bg-green-600 border-white border px-3 flex justify-center items-center space-x-2 my-3 cursor-pointer hover:bg-green-700"
                     >
                       {refreshUsersStateLoading ? "refreshing..." : "refresh"}
                     </span>
@@ -667,9 +671,9 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
                         setDisplayWritingGameLanding(true);
                         handleClose();
                       }}
-                      className="rounded-xl text-xl text-white mb-2  bg-orange-600 border-white border px-3 flex justify-center items-center space-x-2 my-3 cursor-pointer hover:bg-orange-700"
+                      className="rounded-xl text-xl text-white mb-2  bg-orange-600 border-white border px-2 flex justify-center items-center space-x-2 my-3 cursor-pointer hover:bg-orange-700"
                     >
-                      write
+                      <FaPencilAlt size={16} />
                     </span>
                   </div>
 
@@ -679,13 +683,14 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
                       return (
                         <div
                           key={i}
+                          onClick={() => {
+                            setDisplayWritingGameLanding(false);
+                            handleClose();
+                          }}
                           className="w-full text-nowrap odd:text-purple-400"
                         >
                           <Link
                             href={`/i/${writing.cid}`}
-                            onClick={() => {
-                              handleClose();
-                            }}
                             className="my-2 hover:cursor-pointer hover:text-purple-600 "
                           >
                             {writing.text}
