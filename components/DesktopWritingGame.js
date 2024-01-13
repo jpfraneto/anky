@@ -40,6 +40,7 @@ const DesktopWritingGame = ({
   setUserAppInformation,
   setThisIsTheFlag,
   userAppInformation,
+  parentCastForReplying,
   setDisplayNavbar,
   setDisplayWritingGameLanding,
   displayWritingGameLanding,
@@ -47,7 +48,6 @@ const DesktopWritingGame = ({
   lifeBarLength,
   farcasterUser,
   countdownTarget,
-  parentCast = "",
 }) => {
   const mappedUserJournals =
     [] || userAppInformation?.userJournals?.map((x) => x.title);
@@ -421,28 +421,29 @@ const DesktopWritingGame = ({
   };
 
   const handleCast = async (cid) => {
-    if (!!farcasterUser.status === "approved")
+    console.log("the faracstrer user is: ", farcasterUser);
+    console.log("the cid is: ", cid);
+    if (farcasterUser.signerStatus != "approved" || !farcasterUser?.signerUuid)
       return alert("you are not completely logged in yet");
     if (!text) return alert("please write something");
 
     setIsCasting(true);
     try {
-      const kannadaCid = encodeToAnkyverseLanguage(cid);
-
-      const newCastText = `${text.slice(
-        0,
-        88
-      )}...\n\n (pssst... you can read the rest of this on anky) \n\nhttps://www.anky.lat/i/${cid}`;
+      // const kannadaCid = encodeToAnkyverseLanguage(cid);
+      const forEmbedding = [{ url: `https://www.anky.lat/i/${cid.id}` }];
+      const newCastText = text.length > 320 ? `${text.slice(0, 317)}...` : text;
       // THIS WAS USED ON THE ERA ON WHICH THE CAST WAS SENT IN TWO CASTS.
       // const newCastText = `${kannadaCid}\n\nwritten as anky - you can decode this by clicking on the embed on the next cast`;
-
+      console.log("sending the cast of the user to the api route");
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_ROUTE}/farcaster/api/cast`,
         {
           text: newCastText,
-          signer_uuid: farcasterUser?.signer_uuid,
+          signer_uuid: farcasterUser.signerUuid,
+          embeds: forEmbedding,
           parent: {
-            parent: parentCastsLink || "https://warpcast.com/~/channel/anky",
+            parent:
+              parentCastForReplying || "https://warpcast.com/~/channel/anky",
           },
         }
       );
@@ -609,17 +610,16 @@ const DesktopWritingGame = ({
 
       // const kannadaCid = encodeToAnkyverseLanguage(cid);
       // const newCastText = `${kannadaCid}\n\nwritten through anky. you can decode this clicking on the embed on the next cast.`;
+
       const forEmbedding = [{ url: `https://www.anky.lat/i/${cid}` }];
       console.log("the for embedding is: ", forEmbedding);
-      const newCastText = `${text.slice(
-        0,
-        244
-      )}...\n\n (pssst... you can read the rest of this cast on anky)`;
+      const newCastText = text.length > 320 ? `${text.slice(0, 317)}...` : text;
+
       console.log("the new cast text is: ", newCastText);
 
       const response = await axios.post(`${apiRoute}/farcaster/api/cast/anon`, {
         text: newCastText,
-        parent: parentCast || "",
+        parent: parentCastForReplying || "",
         embeds: forEmbedding,
       });
 
@@ -769,22 +769,15 @@ const DesktopWritingGame = ({
           castResponse = await handleAnonCast();
         }
       }
-      if (
-        authenticated &&
-        (farcasterUser.status != "approved" ||
-          farcasterUser.signerStatus != "approved")
-      ) {
+      if (authenticated && farcasterUser.signerStatus != "approved") {
+        console.log("OPTION AAAA");
         if (userWantsToCastAnon)
           castResponse = await handleAnonCast(irysResponseCid);
         console.log(
           "this means that the user is logged in, and we need to offer the option to save it eternally and cast anon"
         );
       }
-      if (
-        authenticated &&
-        (farcasterUser.status == "approved" ||
-          farcasterUser.signerStatus == "approved")
-      ) {
+      if (authenticated && farcasterUser.signerStatus == "approved") {
         console.log(
           "this means that the user is logged in with privy and farcaster, what happens here?"
         );
@@ -1035,7 +1028,9 @@ const DesktopWritingGame = ({
             <div
               className={`text-left h-fit w-10/12 text-purple-600 md:mt-0 text-xl md:text-3xl overflow-y-scroll  drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]`}
             >
-              {userPrompt}
+              {parentCastForReplying
+                ? `answering cast: ${parentCastForReplying}`
+                : userPrompt}
             </div>
             <div className="w-2/12 text-4xl md:text-6xl text-yellow-600 h-full flex relative items-center justify-center ">
               {time}

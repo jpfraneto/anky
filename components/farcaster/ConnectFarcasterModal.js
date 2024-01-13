@@ -49,6 +49,8 @@ const ConnectFarcasterModal = () => {
                 LOCAL_STORAGE_KEYS.FARCASTER_USER,
                 JSON.stringify(userData)
               );
+              userData.signerStatus == "approved";
+              userData.signerUuid = farcasterUser?.signer_uuid;
 
               setFarcasterUser(userData);
               clearInterval(intervalId);

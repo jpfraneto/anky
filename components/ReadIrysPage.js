@@ -195,14 +195,11 @@ const ReadIrysPage = ({ setShow }) => {
             <p className="my-2">{thisWriting.text}</p>
           )
         ) : null}
-        <div className="w-32 text-center">
-          <Link passHref href="/feed">
-            <Button
-              buttonText="feed"
-              buttonAction={scrollToTop}
-              buttonColor="bg-green-600"
-            />
-          </Link>
+        <div className="w-full text-center">
+          <p className="text-purple-600">
+            here, there will be a button that will take you right back to
+            warpcast
+          </p>
         </div>
       </div>
     </div>

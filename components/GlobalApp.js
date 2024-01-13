@@ -9,7 +9,12 @@ import Image from "next/image";
 import { getThisUserWritings } from "../lib/irys";
 import { IndividualWritingDisplayModal } from "./IndividualWritingDisplayModal";
 import Button from "./Button";
-import { FaPencilAlt, FaUserAstronaut } from "react-icons/fa";
+import {
+  FaPencilAlt,
+  FaRegComment,
+  FaRegCommentDots,
+  FaUserAstronaut,
+} from "react-icons/fa";
 import { IoArrowBack } from "react-icons/io5";
 import { MdMenuOpen } from "react-icons/md";
 import UserDisplayPage from "./UserDisplayPage";
@@ -101,6 +106,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
   const [checkingIfYouOwnAnky, setCheckingIfYouOwnAnky] = useState(false);
   const [ankyButtonText, setAnkyButtonText] = useState("i already own one");
   const [writingForDisplay, setWritingForDisplay] = useState(null);
+  const [parentCastForReplying, setParentCastForReplying] = useState("");
   const [disableButton, setDisableButton] = useState(false);
   const [displayInstallPWA, setDisplayInstallPWA] = useState(false);
   const [copyWalletAddressText, setCopyWalletAddressText] = useState("");
@@ -534,6 +540,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
               userPrompt={thisIsThePrompt || ankyverseQuestion}
               setUserAppInformation={setUserAppInformation}
               userAppInformation={userAppInformation}
+              parentCastForReplying={parentCastForReplying}
               setLifeBarLength={setLifeBarLength}
               setThisIsTheFlag={setThisIsTheFlag}
               setDisplaySettingsModal={setDisplaySettingsModal}
@@ -632,6 +639,22 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
               className="text-red-600 hover:text-red-400 cursor-pointer absolute right-0 top-0"
             >
               X
+            </small>
+
+            <small
+              onClick={() => {
+                const thisCastLink = prompt(
+                  "please enter the warpcast url for the cast you want to reply to"
+                );
+                if (thisCastLink.includes("0x")) {
+                  setParentCastForReplying(thisCastLink);
+                  setDisplayWritingGameLanding(true);
+                  handleClose();
+                }
+              }}
+              className="text-red-600 hover:text-red-400 cursor-pointer absolute right-0 top-8 "
+            >
+              <FaRegCommentDots size={18} />
             </small>
             <div className={` ${!authenticated ? "mb-2" : "mb-0"}`}>
               <p className="text-white text-2xl">welcome to anky</p>
