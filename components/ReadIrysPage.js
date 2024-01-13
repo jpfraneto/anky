@@ -29,15 +29,16 @@ const ReadIrysPage = ({ setShow }) => {
   const router = useRouter();
   const { authenticated, login } = usePrivy();
   const [thisWriting, setThisWriting] = useState(null);
+  const [loadingPage, setLoadingPage] = useState(true);
+  const [copyText, setCopyText] = useState("copy text");
+  const [copyLinkText, setCopyLinkText] = useState("copy link");
   const { farcasterUser, userDatabaseInformation, allUserWritings } = useUser();
 
   const scrollToTop = () => {
-    console.log("in here");
     window.scrollTo({
       top: 0,
       behavior: "smooth", // Optional: adds a smooth scrolling effect
     });
-    setShow(true); // Assuming you still want to call setShow here
   };
 
   useEffect(() => {
@@ -45,6 +46,7 @@ const ReadIrysPage = ({ setShow }) => {
       if (!authenticated || !allUserWritings) {
         const writingFromIrys = await getOneWriting(router.query.cid);
         setThisWriting({ text: writingFromIrys.text, timestamp: new Date() });
+        setLoadingPage(false);
         console.log("the writing From irys is: ", writingFromIrys);
       }
       if (!allUserWritings & !router) return;
@@ -62,7 +64,7 @@ const ReadIrysPage = ({ setShow }) => {
       console.log("the writer placeholder is: ", writerPlaceholder);
       if (writerPlaceholder) {
         setThisWriting(writerPlaceholder);
-      } else {
+        setLoadingPage(false);
       }
     }
     searchThisText();
@@ -115,6 +117,34 @@ const ReadIrysPage = ({ setShow }) => {
     }
   }
 
+  const copyToClipboard = async () => {
+    if (!thisWriting) return;
+    await navigator.clipboard.writeText(thisWriting.text);
+    setCopyText("copied");
+    setTimeout(() => {
+      setCopyText("copy text");
+    }, 1111);
+  };
+
+  const copyLinkToClipboard = async () => {
+    if (!thisWriting) return;
+    await navigator.clipboard.writeText(
+      `https://www.anky.lat/i/${router.query.cid}`
+    );
+    setCopyLinkText("copied");
+    setTimeout(() => {
+      setCopyLinkText("copy link");
+    }, 1111);
+  };
+
+  if (loadingPage)
+    return (
+      <div className="mt-4 text-white">
+        <Spinner />
+        <p>loading...</p>
+      </div>
+    );
+
   if (!thisWriting)
     return (
       <div className="mt-8 text-white">
@@ -141,6 +171,19 @@ const ReadIrysPage = ({ setShow }) => {
         <span className="text-sm  w-96 top-1 left-1/2 -translate-x-1/2">
           {new Date(thisWriting.timestamp).toLocaleDateString("en-US", options)}
         </span>
+        <div className="my-2 flex ">
+          <Button
+            buttonAction={copyToClipboard}
+            buttonText={copyText}
+            buttonColor="bg-green-600 mx-2 w-32 text-center"
+          />
+          <Button
+            buttonAction={copyLinkToClipboard}
+            buttonText={copyLinkText}
+            buttonColor="bg-purple-600 w-32 text-center"
+          />
+        </div>
+
         {thisWriting ? (
           thisWriting.text.includes("\n") ? (
             thisWriting.text.split("\n").map((x, i) => (
@@ -153,11 +196,13 @@ const ReadIrysPage = ({ setShow }) => {
           )
         ) : null}
         <div className="w-32 text-center">
-          <Button
-            buttonText="more..."
-            buttonAction={scrollToTop}
-            buttonColor="bg-green-600"
-          />
+          <Link passHref href="/feed">
+            <Button
+              buttonText="feed"
+              buttonAction={scrollToTop}
+              buttonColor="bg-green-600"
+            />
+          </Link>
         </div>
       </div>
     </div>

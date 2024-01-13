@@ -47,6 +47,7 @@ const DesktopWritingGame = ({
   lifeBarLength,
   farcasterUser,
   countdownTarget,
+  parentCast = "",
 }) => {
   const mappedUserJournals =
     [] || userAppInformation?.userJournals?.map((x) => x.title);
@@ -595,6 +596,7 @@ const DesktopWritingGame = ({
     try {
       setIsCasting(true);
       let responseFromIrys, cid;
+      console.log("inside the handle anon cast route");
       if (!authenticated) setSavingRoundLoading(true);
       if (!irysResponseCid) {
         responseFromIrys = await axios.post(`${apiRoute}/upload-writing`, {
@@ -605,14 +607,22 @@ const DesktopWritingGame = ({
         cid = irysResponseCid;
       }
 
-      const kannadaCid = encodeToAnkyverseLanguage(cid);
-      const newCastText = `${kannadaCid}\n\nwritten through anky. you can decode this clicking on the embed on the next cast.`;
+      // const kannadaCid = encodeToAnkyverseLanguage(cid);
+      // const newCastText = `${kannadaCid}\n\nwritten through anky. you can decode this clicking on the embed on the next cast.`;
+      const forEmbedding = [{ url: `https://www.anky.lat/i/${cid}` }];
+      console.log("the for embedding is: ", forEmbedding);
+      const newCastText = `${text.slice(
+        0,
+        244
+      )}...\n\n (pssst... you can read the rest of this cast on anky)`;
+      console.log("the new cast text is: ", newCastText);
 
       const response = await axios.post(`${apiRoute}/farcaster/api/cast/anon`, {
         text: newCastText,
-        parent: "",
-        embeds: [],
+        parent: parentCast || "",
+        embeds: forEmbedding,
       });
+
       console.log("the response is: ", response);
       setCastHash(response.data.cast.hash);
       return response.data.cast.hash;
@@ -730,6 +740,15 @@ const DesktopWritingGame = ({
   async function handleSaveSession() {
     try {
       let castResponse, irysResponseCid;
+      console.log(
+        "in hereasdascsa",
+        authenticated,
+        journalIdToSave,
+        userWantsToCastAnon,
+        farcasterUser,
+        irysResponseCid
+      );
+      console.log("cast as me", castAs);
       if (authenticated) {
         if (journalIdToSave) {
           irysResponseCid = await saveTextToJournal();
