@@ -430,7 +430,7 @@ const DesktopWritingGame = ({
     setIsCasting(true);
     try {
       // const kannadaCid = encodeToAnkyverseLanguage(cid);
-      const forEmbedding = [{ url: `https://www.anky.lat/i/${cid.id}` }];
+      const forEmbedding = [{ url: `https://www.anky.lat/i/${cid || cid.id}` }];
       const newCastText = text.length > 320 ? `${text.slice(0, 317)}...` : text;
       // THIS WAS USED ON THE ERA ON WHICH THE CAST WAS SENT IN TWO CASTS.
       // const newCastText = `${kannadaCid}\n\nwritten as anky - you can decode this by clicking on the embed on the next cast`;
