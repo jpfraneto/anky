@@ -93,6 +93,7 @@ const DesktopWritingGame = ({
   const [errorProblem, setErrorProblem] = useState(false);
   const [castHash, setCastHash] = useState("");
   const [isDone, setIsDone] = useState(false);
+  const [savingSessionState, setSavingSessionState] = useState(false);
   const [failureMessage, setFailureMessage] = useState("");
   const [journalIdToSave, setJournalIdToSave] = useState("");
   const [missionAccomplished, setMissionAccomplished] = useState(false);
@@ -437,7 +438,10 @@ const DesktopWritingGame = ({
     try {
       // const kannadaCid = encodeToAnkyverseLanguage(cid);
       const forEmbedding = [{ url: `https://www.anky.lat/i/${cid || cid.id}` }];
-      const newCastText = text.length > 320 ? `${text.slice(0, 317)}...` : text;
+      const newCastText =
+        text.length > 320
+          ? `${text.slice(0, 300)}\n\n(read full cast on anky)`
+          : text;
       // THIS WAS USED ON THE ERA ON WHICH THE CAST WAS SENT IN TWO CASTS.
       // const newCastText = `${kannadaCid}\n\nwritten as anky - you can decode this by clicking on the embed on the next cast`;
       console.log("sending the cast of the user to the api route");
@@ -590,7 +594,10 @@ const DesktopWritingGame = ({
 
       const forEmbedding = [{ url: `https://www.anky.lat/i/${cid}` }];
       console.log("the for embedding is: ", forEmbedding);
-      const newCastText = text.length > 320 ? `${text.slice(0, 317)}...` : text;
+      const newCastText =
+        text.length > 320
+          ? `${text.slice(0, 300)}\n\n(read full cast on anky)`
+          : text;
 
       console.log("the new cast text asdasdkjaslkda: ", theAsyncCastToReply);
 
@@ -663,6 +670,7 @@ const DesktopWritingGame = ({
         farcasterUser,
         irysResponseCid
       );
+      setSavingSessionState(true);
       console.log("cast as me", castAs);
       if (authenticated) {
         if (journalIdToSave) {
@@ -867,23 +875,6 @@ const DesktopWritingGame = ({
               )}
             </div>
           )}
-          {/* {authenticated && (
-            <div className=" bg-purple-600 p-2 mt-2 mb-0 w-full rounded-xl mx-auto flex flex-col justify-start items-center ">
-              <div className="flex">
-                <p className="text-black h-8 flex items-center">
-                  do you want to get feedback from anky?
-                </p>
-                <input
-                  className="mx-4"
-                  type="checkbox"
-                  onChange={(e) => {
-                    setUserWantsFeedbackFromAnky(!userWantsFeedbackFromAnky);
-                  }}
-                  checked={userWantsFeedbackFromAnky}
-                />
-              </div>
-            </div>
-          )} */}
 
           <div className="flex justify-center mt-4">
             <Button
