@@ -440,7 +440,7 @@ const DesktopWritingGame = ({
       const forEmbedding = [{ url: `https://www.anky.lat/i/${cid || cid.id}` }];
       const newCastText =
         text.length > 320
-          ? `${text.slice(0, 300)}\n\n(read full cast on anky)`
+          ? `${text.slice(0, 280)}...\n\n(read full cast on anky)`
           : text;
       // THIS WAS USED ON THE ERA ON WHICH THE CAST WAS SENT IN TWO CASTS.
       // const newCastText = `${kannadaCid}\n\nwritten as anky - you can decode this by clicking on the embed on the next cast`;
@@ -596,7 +596,7 @@ const DesktopWritingGame = ({
       console.log("the for embedding is: ", forEmbedding);
       const newCastText =
         text.length > 320
-          ? `${text.slice(0, 300)}\n\n(read full cast on anky)`
+          ? `${text.slice(0, 280)}...\n\n(read full cast on anky)`
           : text;
 
       console.log("the new cast text asdasdkjaslkda: ", theAsyncCastToReply);
@@ -878,7 +878,7 @@ const DesktopWritingGame = ({
 
           <div className="flex justify-center mt-4">
             <Button
-              buttonText="submit"
+              buttonText={savingSessionState ? "broadcasting..." : "submit"}
               buttonAction={handleSaveSession}
               buttonColor="bg-green-600"
             />
