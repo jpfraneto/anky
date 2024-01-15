@@ -101,7 +101,10 @@ export const UserProvider = ({ children }) => {
       console.log("IN HEREEEE, THE WALLET IS.", wallet);
       const writings = await getThisUserWritings(wallet.address);
       const sortedWritings = writings.sort(sortWritings);
-      console.log("all the sorted writings are:", sortedWritings);
+      console.log(
+        "all the sorted writings are inside the user contextr:",
+        sortedWritings
+      );
       setAllUserWritings(sortedWritings);
     }
 

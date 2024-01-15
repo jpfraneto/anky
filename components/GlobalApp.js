@@ -16,6 +16,7 @@ import {
   FaUserAstronaut,
 } from "react-icons/fa";
 import { IoArrowBack } from "react-icons/io5";
+import { IoMdClose } from "react-icons/io";
 import { MdMenuOpen } from "react-icons/md";
 import UserDisplayPage from "./UserDisplayPage";
 import { IoIosHome, IoMdSettings } from "react-icons/io";
@@ -168,7 +169,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
 
   async function copyWalletAddress() {
     try {
-      setCopyWalletAddressText("copied the wallet address");
+      setCopyWalletAddressText("copied your wallet address");
       await navigator.clipboard.writeText(user.wallet.address);
       setTimeout(() => {
         setCopyWalletAddressText(user.wallet.address);
@@ -232,7 +233,10 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
         console.log("IN HEREEEE, THE WALLET IS.", wallet);
         const writings = await getThisUserWritings(wallet.address);
         const sortedWritings = writings.sort(sortWritings);
-        console.log("all the sorted writings are:", sortedWritings);
+        console.log(
+          "all the sorted writings are: inside the global app",
+          sortedWritings
+        );
         setAllUserWritings(sortedWritings);
         setUserWritingsHere(sortedWritings);
       }
@@ -488,7 +492,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
     );
   return (
     <div className="fixed overflow-y-scroll text-center w-screen text-white flex flex-col h-screen">
-      <div className="flex-none text-gray-400 w-full h-16  justify-between md:flex items-center flex-col">
+      <div className="flex-none text-gray-400 w-full h-16 justify-between md:flex items-center flex-col">
         <div className="h-12 items-center flex-row w-full bg-black px-2  cursor-pointer justify-between flex ">
           <div
             className="active:text-yellow-600 translate-y-2 md:translate-y-0 h-full md:mt-2  hover:text-purple-600"
@@ -574,7 +578,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
             />
           </div>
         ) : (
-          <div className="h-full pb-20 z-50">
+          <div className="h-full  z-50">
             {getComponentForRoute(router.pathname, router)}
             <nav className="hidden border-t-2 border-black standalone:flex w-full h-20  fixed bottom-0 pt-1 pb-1 bg-purple-200 space-x-4 justify-between items-center pb-4 px-12 z-50">
               <Link href="/feed" passHref>
@@ -656,9 +660,9 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
           <div className="md:flex flex-col h-full w-fit relative">
             <small
               onClick={handleClose}
-              className="text-red-600 hover:text-red-400 cursor-pointer absolute right-0 top-0"
+              className="text-red-600 hover:text-red-400 cursor-pointer absolute right-0 top-0 text-lg"
             >
-              X
+              <IoMdClose />
             </small>
 
             <small
@@ -666,21 +670,21 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
                 const thisCastLink = prompt(
                   "please enter the warpcast url for the cast you want to reply to"
                 );
-                if (thisCastLink.includes("0x")) {
+                if (thisCastLink && thisCastLink.includes("0x")) {
                   fetchCastForReplyInformation(thisCastLink);
                   setParentCastForReplying(thisCastLink);
                   setDisplayWritingGameLanding(true);
                   handleClose();
                 }
               }}
-              className="text-red-600 hover:text-red-400 cursor-pointer absolute right-0 top-8 "
+              className="text-red-600 hover:text-red-400 cursor-pointer absolute right-8 top-0"
             >
               <FaRegCommentDots size={18} />
             </small>
             <div className={` ${!authenticated ? "mb-2" : "mb-0"}`}>
               <p className="text-white text-2xl">welcome to anky</p>
               <small className="text-purple-300 text-xl">
-                when you don&apos;t have time to think, your truth comes forth
+                a meditation practice like no other
               </small>
             </div>
             <div className=" h-fit w-full ">
@@ -723,7 +727,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
 
                   <hr className="h-2 border-white border-2 bg-red-200" />
                   <div className="p-2 border border-white rounded-xl h-96  flex-col overflow-y-scroll text-white shadow-xl shadow-yellow-600 text-xl w-72 mb-12 mt-0">
-                    {userWritingsHere.map((writing, i) => {
+                    {allUserWritings.map((writing, i) => {
                       return (
                         <div
                           key={i}
@@ -754,7 +758,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
                 </div>
               )}
             </div>
-            <div className=" grow fixed text-white bottom-3">
+            <div className="w-full fixed text-white bottom-3">
               {authenticated && (
                 <div className="flex flex-col mr-auto">
                   <small
@@ -772,7 +776,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
               )}
 
               {authenticated && (
-                <div className="h-12 mt-2 w-full flex">
+                <div className="h-12 mt-2 w-96   flex">
                   <div className=" h-12 w-12  rounded-xl overflow-hidden relative">
                     <Image src="/images/anky.png" fill />
                   </div>

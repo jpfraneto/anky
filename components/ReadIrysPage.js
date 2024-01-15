@@ -30,8 +30,9 @@ const ReadIrysPage = ({ setShow }) => {
   const { authenticated, login } = usePrivy();
   const [thisWriting, setThisWriting] = useState(null);
   const [loadingPage, setLoadingPage] = useState(true);
+  const [castWrapper, setCastWrapper] = useState({});
   const [copyText, setCopyText] = useState("copy text");
-  const [copyLinkText, setCopyLinkText] = useState("copy link");
+  const [copyLinkText, setCopyLinkText] = useState("copy anky link");
   const { farcasterUser, userDatabaseInformation, allUserWritings } = useUser();
 
   const scrollToTop = () => {
@@ -67,7 +68,17 @@ const ReadIrysPage = ({ setShow }) => {
         setLoadingPage(false);
       }
     }
+    async function fetchCastWrapper() {
+      try {
+        const responseFromServer = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_ROUTE}/farcaster/cast-by-cid/${router.query.cid}`
+        );
+        setCastWrapper(responseFromServer.data.castWrapper);
+        console.log("the response from the server is: ", responseFromServer);
+      } catch (error) {}
+    }
     searchThisText();
+    fetchCastWrapper();
   }, [allUserWritings, router]);
 
   async function handleDisplayComments() {
@@ -133,7 +144,7 @@ const ReadIrysPage = ({ setShow }) => {
     );
     setCopyLinkText("copied");
     setTimeout(() => {
-      setCopyLinkText("copy link");
+      setCopyLinkText("copy anky link");
     }, 1111);
   };
 
@@ -168,7 +179,10 @@ const ReadIrysPage = ({ setShow }) => {
       className={`${inter.className} h-full flex flex-col items-start justify-start text-left pt-8`}
     >
       <div className="overflow-y-scroll h-full md:w-96 mx-auto text-white ">
-        <span className="text-sm  w-96 top-1 left-1/2 -translate-x-1/2">
+        <span
+          onClick={() => console.log("the cast wrapper is: ", castWrapper)}
+          className="text-sm  w-96 top-1 left-1/2 -translate-x-1/2"
+        >
           {new Date(thisWriting.timestamp).toLocaleDateString("en-US", options)}
         </span>
         <div className="my-2 flex ">
@@ -180,7 +194,7 @@ const ReadIrysPage = ({ setShow }) => {
           <Button
             buttonAction={copyLinkToClipboard}
             buttonText={copyLinkText}
-            buttonColor="bg-purple-600 w-32 text-center"
+            buttonColor="bg-purple-600 w-48 text-center"
           />
         </div>
 
@@ -195,11 +209,21 @@ const ReadIrysPage = ({ setShow }) => {
             <p className="my-2">{thisWriting.text}</p>
           )
         ) : null}
-        <div className="w-full text-center">
-          <p className="text-purple-600">
-            here, there will be a button that will take you right back to
-            warpcast
-          </p>
+        <div className="w-full mt-4 text-center">
+          <div className="text-white ">
+            {castWrapper && (
+              <a
+                className="rounded-xl hover:translate-x-2 hover:text-black bg-purple-600 border-2 border-white px-2 py-2 active:text-yellow-600"
+                rel="noopener noreferrer"
+                href={`https://warpcast.com/${
+                  castWrapper?.castAuthor
+                }/${castWrapper?.castHash?.slice(0, 10)}`}
+                target="_blank"
+              >
+                back to warpcast
+              </a>
+            )}
+          </div>
         </div>
       </div>
     </div>

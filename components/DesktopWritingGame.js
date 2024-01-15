@@ -61,6 +61,7 @@ const DesktopWritingGame = ({
   const { setUserDatabaseInformation, setAllUserWritings } = useUser();
   const audioRef = useRef();
   const [text, setText] = useState("");
+  const [amountOfManaAdded, setAmountOfManaAdded] = useState(0);
   const [time, setTime] = useState(countdownTarget || 0);
   const [whatIsThis, setWhatIsThis] = useState(false);
   const [isActive, setIsActive] = useState(false);
@@ -335,6 +336,7 @@ const DesktopWritingGame = ({
           }
         );
       }
+      setAmountOfManaAdded(frontendWrittenTime);
       setResponseFromPinging(response.data.message);
       setUserDatabaseInformation((x) => {
         console.log(
@@ -449,6 +451,8 @@ const DesktopWritingGame = ({
             parent:
               parentCastForReplying || "https://warpcast.com/~/channel/anky",
           },
+          cid: cid,
+          manaEarned: amountOfManaAdded,
         }
       );
 
@@ -566,37 +570,6 @@ const DesktopWritingGame = ({
     }
   }
 
-  // async function handleSaveRun() {
-  //   try {
-  //     setSavingRoundLoading(true);
-  //     let castResponse, irysResponse;
-  //     if (castAs == "anon" || userWantsToCastAnon)
-  //       castResponse = await handleAnonCast();
-  //     if (castAs == "me") castResponse = await handleCast();
-  //     if (journalIdToSave != "") {
-  //       await saveTextToJournal();
-  //     } else {
-  //       if (authenticated && userWantsToStoreWritingForever) {
-  //         irysResponse = await sendTextToIrys();
-  //         let newWriting = {
-  //           text: text,
-  //           timestamp: new Date().getTime(),
-  //           cid: irysResponse.id,
-  //         };
-  //         setAllUserWritings((x) => [newWriting, ...x]);
-  //       }
-  //     }
-  //     setEverythingWasUploaded(true);
-  //     setSavingRoundLoading(true);
-  //     console.log("the cast response is: ", castResponse);
-  //     console.log("the irys response is: ");
-  //     // setDisplayWritingGameLanding(false);
-  //   } catch (error) {
-  //     console.log("there was an error in here, saving the run", error);
-  //     setThereWasAnError(true);
-  //   }
-  // }
-
   const handleAnonCast = async (irysResponseCid = null) => {
     try {
       setIsCasting(true);
@@ -629,6 +602,8 @@ const DesktopWritingGame = ({
       }
 
       const response = await axios.post(`${apiRoute}/farcaster/api/cast/anon`, {
+        cid: cid,
+        manaEarned: amountOfManaAdded,
         text: newCastText,
         parent: forReplyingVariable,
         embeds: forEmbedding,
@@ -1039,24 +1014,13 @@ const DesktopWritingGame = ({
               className={`text-left h-fit w-10/12 text-purple-600 md:mt-0 text-xl md:text-3xl overflow-y-scroll  drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]`}
             >
               {theAsyncCastToReply ? (
-                <div className="flex">
-                  <div className="h-24 mx-auto flex justify-center items-center rounded-full overflow-hidden aspect-square relative">
-                    <Image src={theAsyncCastToReply.author.pfp_url} fill />
-                  </div>
-                  <div className="w-full p-2">
-                    <div className="h-5/6 w-full overflow-y-scroll">
-                      {theAsyncCastToReply.text.includes("\n") ? (
-                        theAsyncCastToReply.text.split("\n").map((x, i) => (
-                          <p className="mb-4" key={i}>
-                            {x}
-                          </p>
-                        ))
-                      ) : (
-                        <p className="my-2">{theAsyncCastToReply.text}</p>
-                      )}
+                <div className="flex h-32">
+                  <div className="h-30 p-2">
+                    <div className="h-5/6 mx-auto flex justify-center items-center rounded-full overflow-hidden aspect-square relative">
+                      <Image src={theAsyncCastToReply.author.pfp_url} fill />
                     </div>
                     <div>
-                      <div className="flex space-x-4 h-full">
+                      <div className="flex space-x-4 h-full text-lg">
                         <div
                           className={`flex space-x-1 items-center  hover:text-gray-500 cursor-pointer`}
                         >
@@ -1080,6 +1044,20 @@ const DesktopWritingGame = ({
                           </span>
                         </div>
                       </div>
+                    </div>
+                  </div>
+
+                  <div className="px-2 w-full flex flex-col justify-between h-full  text-lg">
+                    <div className="w-full overflow-y-scroll">
+                      {theAsyncCastToReply.text.includes("\n") ? (
+                        theAsyncCastToReply.text.split("\n").map((x, i) => (
+                          <p className="" key={i}>
+                            {x}
+                          </p>
+                        ))
+                      ) : (
+                        <p className="my-2">{theAsyncCastToReply.text}</p>
+                      )}
                     </div>
                   </div>
                 </div>
