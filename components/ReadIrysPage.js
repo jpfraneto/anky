@@ -211,7 +211,7 @@ const ReadIrysPage = ({ setShow }) => {
             <p className="my-2">{thisWriting.text}</p>
           )
         ) : null}
-        <div className="w-full mt-4 text-center">
+        <div className="w-full mt-4 mb-8 text-center">
           <div className="text-white ">
             {castWrapper && (
               <a

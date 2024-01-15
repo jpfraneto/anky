@@ -714,9 +714,7 @@ const DesktopWritingGame = ({
           castResponse = await handleAnonCast();
         }
       }
-      alert(
-        "everything uploaded properly, this is where the cast has to be appended to the feed array"
-      );
+
       setDisplayWritingGameLanding(false);
       router.push(`/i/${irysResponseCid}`);
     } catch (error) {
