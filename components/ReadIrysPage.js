@@ -153,6 +153,11 @@ const ReadIrysPage = ({ setShow }) => {
       <div className="mt-4 text-white">
         <Spinner />
         <p>loading...</p>
+        <Button
+          buttonAction={() => router.reload()}
+          buttonColor="bg-green-600"
+          buttonText="reload"
+        />
       </div>
     );
 

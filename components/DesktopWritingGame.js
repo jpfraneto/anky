@@ -652,77 +652,6 @@ const DesktopWritingGame = ({
     }
   };
 
-  // async function renderFinishScreen() {
-  //   try {
-  //     if (!authenticated) {
-  //       // This is the case on which the user is not logged in at all
-  //       return (
-  //         <div>
-  //           <p>you finished writing</p>
-  //           <p>
-  //             you can share what you wrote anonymously with the world, or just
-  //             copy it and go away
-  //           </p>
-  //           <div>
-  //             <div>
-  //               <Button />
-  //             </div>
-  //             <div>
-  //               <Button />
-  //             </div>
-  //           </div>
-  //         </div>
-  //       );
-  //     } else if (
-  //       authenticated &&
-  //       (!farcasterUser.status == "approved" ||
-  //         !farcasterUser.signerStatus == "approved")
-  //     ) {
-  //       // This is the case on which the user is logged in, but without the farcaster connection.
-  //       return (
-  //         <div>
-  //           <p>you finished writing</p>
-  //           <p>do you want to save what you wrote forever on the ankyverse?</p>
-  //           <p>do you want to cast it anonymously?</p>
-  //           <div>
-  //             <div>
-  //               <Button />
-  //             </div>
-  //             <div>
-  //               <Button />
-  //             </div>
-  //           </div>
-  //         </div>
-  //       );
-  //     } else if (
-  //       authenticated &&
-  //       (farcasterUser.status == "approved" ||
-  //         farcasterUser.signerStatus == "approved")
-  //     ) {
-  //       // This is the case on which the user is logged in with privy and has the farcaster connection active
-  //       return (
-  //         <div>
-  //           <p>you finished writing</p>
-  //           <p>do you want to save what you wrote forever on the ankyverse?</p>
-  //           <p>do you want to cast it anonymously, or under your name?</p>
-  //           <div>
-  //             <div>
-  //               <Button />
-  //             </div>
-  //             <div>
-  //               <Button />
-  //             </div>
-  //           </div>
-  //         </div>
-  //       );
-  //     }
-  //   } catch (error) {
-  //     console.log(
-  //       "there was an error on the render function for the ending screen"
-  //     );
-  //   }
-  // }
-
   async function handleSaveSession() {
     try {
       let castResponse, irysResponseCid, irysResponseReceipt;
@@ -825,7 +754,7 @@ const DesktopWritingGame = ({
                         : "bg-red-200 hover:bg-red-300 "
                     }`}
                   >
-                    don&apos;t cast
+                    don&apos;t {theAsyncCastToReply ? "reply" : "cast"}
                   </p>
                   <p
                     onClick={() => {
@@ -838,7 +767,8 @@ const DesktopWritingGame = ({
                         : "bg-green-300 hover:bg-green-300"
                     }`}
                   >
-                    cast as {farcasterUser.fid}
+                    {theAsyncCastToReply ? "reply" : "cast"} as{" "}
+                    {farcasterUser.fid}
                   </p>
                   <p
                     onClick={() => {
@@ -851,7 +781,7 @@ const DesktopWritingGame = ({
                         : "bg-purple-300 hover:bg-purple-300"
                     }`}
                   >
-                    cast anon
+                    {theAsyncCastToReply ? "reply" : "cast"} anon
                   </p>
                 </div>
               </div>
@@ -887,12 +817,12 @@ const DesktopWritingGame = ({
           {authenticated && (
             <div className=" bg-purple-600 p-2 mt-2 mb-0 w-full rounded-xl mx-auto flex flex-col justify-start items-center ">
               <div className="flex">
-                <p className="text-black h-8 flex items-center">
+                <p className="text-black h-fit flex items-center">
                   do you want to save your writing on the eternal library of the
                   ankyverse?
                 </p>
                 <input
-                  className="mx-4"
+                  className="mx-4 my-auto"
                   type="checkbox"
                   onChange={(e) => {
                     setUserWantsToStoreWritingForever(
@@ -957,7 +887,7 @@ const DesktopWritingGame = ({
 
           <div className="flex justify-center mt-4">
             <Button
-              buttonText="cast anon"
+              buttonText="submit"
               buttonAction={handleSaveSession}
               buttonColor="bg-green-600"
             />
