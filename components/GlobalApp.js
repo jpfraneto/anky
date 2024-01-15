@@ -108,6 +108,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
   const [writingForDisplay, setWritingForDisplay] = useState(null);
   const [parentCastForReplying, setParentCastForReplying] = useState("");
   const [disableButton, setDisableButton] = useState(false);
+  const [theAsyncCastToReply, setTheAsyncCastToReply] = useState(null);
   const [displayInstallPWA, setDisplayInstallPWA] = useState(false);
   const [copyWalletAddressText, setCopyWalletAddressText] = useState("");
   const [displayAboutModal, setDisplayAboutModal] = useState(false);
@@ -174,6 +175,22 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
       }, 1111);
     } catch (error) {
       console.log("there was an error copying the wallet address");
+    }
+  }
+
+  async function fetchCastForReplyInformation(warpcastUrl) {
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_ROUTE}/farcaster/api/get-cast`,
+        { url: warpcastUrl }
+      );
+      console.log("the response from the server is: ", response);
+      setTheAsyncCastToReply(response.data.cast);
+    } catch (error) {
+      console.log(
+        "there was an error on the fetchCastForReplyInformation",
+        error
+      );
     }
   }
 
@@ -384,6 +401,8 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
 
       case "/community-notebook":
         return <GlobalFeed thisWallet={wallet} />;
+      case `/rc/${route.split(" / ").pop()}`:
+        return <GlobalFeed thisWallet={wallet} />;
       case "/feed":
         return <GlobalFeed thisWallet={wallet} />;
       case "/me":
@@ -541,6 +560,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
               setUserAppInformation={setUserAppInformation}
               userAppInformation={userAppInformation}
               parentCastForReplying={parentCastForReplying}
+              theAsyncCastToReply={theAsyncCastToReply}
               setLifeBarLength={setLifeBarLength}
               setThisIsTheFlag={setThisIsTheFlag}
               setDisplaySettingsModal={setDisplaySettingsModal}
@@ -647,6 +667,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
                   "please enter the warpcast url for the cast you want to reply to"
                 );
                 if (thisCastLink.includes("0x")) {
+                  fetchCastForReplyInformation(thisCastLink);
                   setParentCastForReplying(thisCastLink);
                   setDisplayWritingGameLanding(true);
                   handleClose();

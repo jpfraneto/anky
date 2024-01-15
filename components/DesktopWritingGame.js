@@ -11,6 +11,8 @@ import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 import LoggedInUser from "./LoggedInUser";
 import { useRouter } from "next/router";
+import { BsArrowRepeat } from "react-icons/bs";
+import { FaRegCommentAlt, FaRegHeart } from "react-icons/fa";
 import { IoSettings } from "react-icons/io5";
 import buildersABI from "../lib/buildersABI.json";
 import { encodeToAnkyverseLanguage } from "../lib/ankyverse";
@@ -31,6 +33,7 @@ const righteous = Righteous({ weight: "400", subsets: ["latin"] });
 const dancingScript = Dancing_Script({ weight: "400", subsets: ["latin"] });
 
 const DesktopWritingGame = ({
+  theAsyncCastToReply = null,
   userPrompt,
   setLifeBarLength,
   setLoadButtons,
@@ -49,6 +52,7 @@ const DesktopWritingGame = ({
   farcasterUser,
   countdownTarget,
 }) => {
+  console.log("in here, the async cast to reply is: ", theAsyncCastToReply);
   const mappedUserJournals =
     [] || userAppInformation?.userJournals?.map((x) => x.title);
   const router = useRouter();
@@ -556,7 +560,7 @@ const DesktopWritingGame = ({
           userJournals: updatedUserJournals,
         };
       });
-      return receipt.id;
+      return receipt;
     } catch (e) {
       console.log("Error uploading data ", e);
     }
@@ -615,11 +619,18 @@ const DesktopWritingGame = ({
       console.log("the for embedding is: ", forEmbedding);
       const newCastText = text.length > 320 ? `${text.slice(0, 317)}...` : text;
 
-      console.log("the new cast text is: ", newCastText);
+      console.log("the new cast text asdasdkjaslkda: ", theAsyncCastToReply);
+
+      let forReplyingVariable = "https://warpcast.com/~/channel/anky";
+      if (theAsyncCastToReply) {
+        forReplyingVariable = theAsyncCastToReply.hash;
+      } else if (parentCastForReplying) {
+        forReplyingVariable = parentCastForReplying;
+      }
 
       const response = await axios.post(`${apiRoute}/farcaster/api/cast/anon`, {
         text: newCastText,
-        parent: parentCastForReplying || "",
+        parent: forReplyingVariable,
         embeds: forEmbedding,
       });
 
@@ -739,7 +750,7 @@ const DesktopWritingGame = ({
 
   async function handleSaveSession() {
     try {
-      let castResponse, irysResponseCid;
+      let castResponse, irysResponseCid, irysResponseReceipt;
       console.log(
         "in hereasdascsa",
         authenticated,
@@ -751,10 +762,11 @@ const DesktopWritingGame = ({
       console.log("cast as me", castAs);
       if (authenticated) {
         if (journalIdToSave) {
-          irysResponseCid = await saveTextToJournal();
+          irysResponseReceipt = await saveTextToJournal();
         } else {
-          irysResponseCid = await sendTextToIrys();
+          irysResponseReceipt = await sendTextToIrys();
         }
+        irysResponseCid = irysResponseReceipt.id;
 
         console.log(
           "the irysResponseCid is. this is the unique identifier of this cast ",
@@ -872,9 +884,7 @@ const DesktopWritingGame = ({
           ) : (
             <div className="bg-purple-500 text-black p-2 my-2 rounded-xl flex space-x-2 items-center justify-center">
               <div className="h-8 w-5/6 pl-8 flex items-center">
-                <p className="text-black">
-                  do you want to cast your writing as @anky?
-                </p>
+                <p className="text-black">do you want to reply anonymously?</p>
                 <input
                   className="mx-4"
                   type="checkbox"
@@ -885,7 +895,7 @@ const DesktopWritingGame = ({
                 />
               </div>
 
-              <div>
+              {/* <div>
                 {userWantsToCastAnon && (
                   <div className="flex justify-between w-32">
                     <Button
@@ -895,7 +905,7 @@ const DesktopWritingGame = ({
                     />
                   </div>
                 )}
-              </div>
+              </div> */}
             </div>
           )}
 
@@ -972,7 +982,7 @@ const DesktopWritingGame = ({
 
           <div className="flex justify-center mt-4">
             <Button
-              buttonText="save session"
+              buttonText="cast anon"
               buttonAction={handleSaveSession}
               buttonColor="bg-green-600"
             />
@@ -1028,9 +1038,54 @@ const DesktopWritingGame = ({
             <div
               className={`text-left h-fit w-10/12 text-purple-600 md:mt-0 text-xl md:text-3xl overflow-y-scroll  drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]`}
             >
-              {parentCastForReplying
-                ? `answering cast: ${parentCastForReplying}`
-                : userPrompt}
+              {theAsyncCastToReply ? (
+                <div className="flex">
+                  <div className="h-24 mx-auto flex justify-center items-center rounded-full overflow-hidden aspect-square relative">
+                    <Image src={theAsyncCastToReply.author.pfp_url} fill />
+                  </div>
+                  <div className="w-full p-2">
+                    <div className="h-5/6 w-full overflow-y-scroll">
+                      {theAsyncCastToReply.text.includes("\n") ? (
+                        theAsyncCastToReply.text.split("\n").map((x, i) => (
+                          <p className="mb-4" key={i}>
+                            {x}
+                          </p>
+                        ))
+                      ) : (
+                        <p className="my-2">{theAsyncCastToReply.text}</p>
+                      )}
+                    </div>
+                    <div>
+                      <div className="flex space-x-4 h-full">
+                        <div
+                          className={`flex space-x-1 items-center  hover:text-gray-500 cursor-pointer`}
+                        >
+                          <FaRegCommentAlt />
+                          <span>{theAsyncCastToReply.replies.count}</span>
+                        </div>
+                        <div
+                          className={`flex space-x-1 items-center  hover:text-green-300 cursor-pointer`}
+                        >
+                          <BsArrowRepeat size={19} />
+                          <span>
+                            {theAsyncCastToReply.reactions.recasts.length}
+                          </span>
+                        </div>
+                        <div
+                          className={`flex space-x-1 items-center hover:text-red-500 cursor-pointer`}
+                        >
+                          <FaRegHeart />
+                          <span>
+                            {theAsyncCastToReply.reactions.likes.length}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                userPrompt
+              )}
             </div>
             <div className="w-2/12 text-4xl md:text-6xl text-yellow-600 h-full flex relative items-center justify-center ">
               {time}
@@ -1060,8 +1115,10 @@ const DesktopWritingGame = ({
                 text
                   ? "md:aspect-video md:flex w-full h-full text-left"
                   : "mt-8 w-4/5 md:w-3/5 h-64"
-              } p-4 text-white opacity-80 placeholder-white text-xl border placeholder:text-gray-300 border-white rounded-md bg-opacity-10 bg-black`}
-              placeholder="write here.."
+              } p-2 text-white opacity-80 placeholder-white text-xl border placeholder:text-gray-300 border-white rounded-md bg-opacity-10 bg-black`}
+              placeholder={
+                theAsyncCastToReply ? "reply here..." : "write here..."
+              }
               value={text}
               onChange={handleTextChange}
             ></textarea>
@@ -1099,7 +1156,6 @@ const DesktopWritingGame = ({
                 </div>
               ))}
           </div>
-
           {sessionIsOver && renderSessionIsOver()}
         </div>
       </div>
@@ -1122,7 +1178,7 @@ const DesktopWritingGame = ({
           </div>
         </div>
       </Overlay>
-      <Overlay show={showOverlay && !authenticated && !farcasterUser?.fid}>
+      {/* <Overlay show={showOverlay && !authenticated && !farcasterUser?.fid}>
         <div className="flex flex-col h-full justify-center items-center w-full ">
           <div className="flex flex-col text-white h-48">
             <p>you are not logged in</p>
@@ -1158,7 +1214,7 @@ const DesktopWritingGame = ({
             )}
           </div>
         </div>
-      </Overlay>
+      </Overlay> */}
     </div>
   );
 };
