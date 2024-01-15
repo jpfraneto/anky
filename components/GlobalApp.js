@@ -492,8 +492,8 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
     );
   return (
     <div className="fixed overflow-y-scroll text-center w-screen text-white flex flex-col h-screen">
-      <div className="flex-none text-gray-400 w-full h-16 justify-between md:flex items-center flex-col">
-        <div className="h-12 items-center flex-row w-full bg-black px-2  cursor-pointer justify-between flex ">
+      <div className="standalone:mt-8 flex-none text-gray-400 w-full h-16 justify-between md:flex items-center flex-col">
+        <div className=" h-12 items-center flex-row w-full bg-black px-2  cursor-pointer justify-between flex ">
           <div
             className="active:text-yellow-600 translate-y-2 md:translate-y-0 h-full md:mt-2  hover:text-purple-600"
             onClick={handleShow}
@@ -578,9 +578,9 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
             />
           </div>
         ) : (
-          <div className="h-full  z-50">
+          <div className="h-full">
             {getComponentForRoute(router.pathname, router)}
-            <nav className="hidden border-t-2 border-black standalone:flex w-full h-20  fixed bottom-0 pt-1 pb-1 bg-purple-200 space-x-4 justify-between items-center pb-4 px-12 z-50">
+            <nav className="hidden border-t-2 border-black standalone:flex w-full h-16  fixed bottom-0  bg-purple-200 space-x-4 justify-between items-center px-6 z-50">
               <Link href="/feed" passHref>
                 <span>
                   <IoIosHome size={40} />
@@ -659,13 +659,6 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
         <Offcanvas.Body>
           <div className="md:flex flex-col h-full w-fit relative">
             <small
-              onClick={handleClose}
-              className="text-red-600 hover:text-red-400 cursor-pointer absolute right-0 top-0 text-lg"
-            >
-              <IoMdClose />
-            </small>
-
-            <small
               onClick={() => {
                 const thisCastLink = prompt(
                   "please enter the warpcast url for the cast you want to reply to"
@@ -679,10 +672,19 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
               }}
               className="text-red-600 hover:text-red-400 cursor-pointer absolute right-8 top-0"
             >
-              <FaRegCommentDots size={18} />
+              <FaRegCommentDots size={24} />
             </small>
+            <small
+              onClick={handleClose}
+              className="text-red-600 hover:text-red-400 cursor-pointer absolute right-0 top-0 text-lg"
+            >
+              <IoMdClose size={24} />
+            </small>
+
             <div className={` ${!authenticated ? "mb-2" : "mb-0"}`}>
-              <p className="text-white text-2xl">welcome to anky</p>
+              <p className="text-white text-2xl standalone:mt-12">
+                welcome to anky
+              </p>
               <small className="text-purple-300 text-xl">
                 a meditation practice like no other
               </small>
