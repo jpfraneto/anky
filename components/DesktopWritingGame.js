@@ -715,6 +715,11 @@ const DesktopWritingGame = ({
         }
       }
 
+      setAllUserWritings((x) => [
+        { cid: irysResponseCid, text: text, timestamp: new Date().getTime() },
+        ...x,
+      ]);
+
       setDisplayWritingGameLanding(false);
       router.push(`/i/${irysResponseCid}`);
     } catch (error) {
