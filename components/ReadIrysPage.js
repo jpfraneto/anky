@@ -44,28 +44,23 @@ const ReadIrysPage = ({ setShow }) => {
 
   useEffect(() => {
     async function searchThisText() {
-      if (!authenticated || !allUserWritings) {
-        const writingFromIrys = await getOneWriting(router.query.cid);
-        setThisWriting({ text: writingFromIrys.text, timestamp: new Date() });
-        setLoadingPage(false);
-        console.log("the writing From irys is: ", writingFromIrys);
-      }
-      if (!allUserWritings & !router) return;
-      console.log("all th user writings are: ", allUserWritings);
-      if (allUserWritings.length === 0) return;
-      console.log("in hereereer", allUserWritings);
       const thisIrysIndex = allUserWritings.findIndex((x) => {
         console.log("the x is: ", x);
         console.log("the router", router.query);
         return x.cid == router.query.cid;
       });
-      console.log("this irys index is: ", thisIrysIndex);
-      console.log("sadsads", allUserWritings[thisIrysIndex]);
-      const writerPlaceholder = allUserWritings[thisIrysIndex];
-      console.log("the writer placeholder is: ", writerPlaceholder);
-      if (writerPlaceholder) {
-        setThisWriting(writerPlaceholder);
+      if (thisIrysIndex == -1 || !authenticated || !allUserWritings) {
+        const writingFromIrys = await getOneWriting(router.query.cid);
+        setThisWriting({ text: writingFromIrys.text, timestamp: new Date() });
         setLoadingPage(false);
+        console.log("the writing From irys is: ", writingFromIrys);
+      } else {
+        const writerPlaceholder = allUserWritings[thisIrysIndex];
+        console.log("the writer placeholder is: ", writerPlaceholder);
+        if (writerPlaceholder) {
+          setThisWriting(writerPlaceholder);
+          setLoadingPage(false);
+        }
       }
     }
     async function fetchCastWrapper() {
@@ -153,11 +148,13 @@ const ReadIrysPage = ({ setShow }) => {
       <div className="mt-4 text-white">
         <Spinner />
         <p>loading...</p>
-        <Button
-          buttonAction={() => router.reload()}
-          buttonColor="bg-green-600"
-          buttonText="reload"
-        />
+        <div className="mx-auto w-24">
+          <Button
+            buttonAction={() => router.reload()}
+            buttonColor="bg-green-600"
+            buttonText="reload"
+          />
+        </div>
       </div>
     );
 

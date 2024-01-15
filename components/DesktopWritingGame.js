@@ -710,7 +710,7 @@ const DesktopWritingGame = ({
         "everything uploaded properly, this is where the cast has to be appended to the feed array"
       );
       setDisplayWritingGameLanding(false);
-      router.push("/feed");
+      router.push(`/i/${irysResponseCid}`);
     } catch (error) {
       console.log("There was an error in the handle finish session function");
     }
