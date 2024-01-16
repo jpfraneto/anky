@@ -153,17 +153,16 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
         }
         async function fetchCastWrapper() {
           try {
+            console.log("fetching the cast wrapper");
             const responseFromServer = await axios.get(
               `${process.env.NEXT_PUBLIC_API_ROUTE}/farcaster/cast-by-cid/${router.query.cid}`
             );
             setCastWrapper(responseFromServer.data.castWrapper);
-            console.log(
-              "the response from the server is: ",
-              responseFromServer
-            );
-            setParentCastForReplying(
-              responseFromServer.data.castWrapper.castHash
-            );
+            const warpcastUrl = `https://warpcast.com/${
+              responseFromServer.data.cast.author.username
+            }/${responseFromServer.data.castWrapper.castHash.slice(0, 10)}`;
+            setParentCastForReplying(warpcastUrl);
+            fetchCastForReplyInformation(warpcastUrl);
           } catch (error) {}
         }
         searchThisText();
@@ -238,7 +237,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
         await webIrys.ready();
         return webIrys;
       };
-      if (wallet) {
+      if (wallet && authenticated) {
         console.log("weeeee have a wallet");
         const webIrys = await getWebIrys();
         const tags = [
@@ -248,13 +247,18 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
         ];
         const receipt = await webIrys.upload(prompt, { tags });
         console.log("weeee have a receipt");
-        return receipt;
+        return receipt.id;
       } else {
-        responseFromIrys = await axios.post(`${apiRoute}/upload-writing`, {
-          text,
-        });
-        cid = responseFromIrys.data.cid;
-        console.log("weeee have a cid");
+        console.log("there is no wallet");
+        let responseFromIrys = await axios.post(
+          `${process.env.NEXT_PUBLIC_API_ROUTE}/upload-writing`,
+          {
+            text: prompt,
+          }
+        );
+        console.log("IN HERE, THE REPSONSE FROM IRYS IS: ", responseFromIrys);
+        let cid = responseFromIrys.data.cid;
+        console.log("weeee have a cid", cid);
         return cid;
       }
     } catch (error) {
@@ -782,12 +786,14 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
                 if (newUserPrompt) {
                   console.log("in herasdassde", newUserPrompt);
                   // upload the prompt to irys to get a cid
-                  const irysResponse = await uploadPromptToIrys(newUserPrompt);
-                  console.log("AFTER THE IRYS RESPONSE");
+                  const irysResponseCid = await uploadPromptToIrys(
+                    newUserPrompt
+                  );
+                  console.log("AFTER THE IRYS RESPONSE", irysResponseCid);
                   // use that cid to publish the question on farcaster with an embed that links to /reply/:cid
                   const newCastText = `${newUserPrompt}\n\n@anky`;
                   const forEmbedding = [
-                    { url: `https://www.anky.lat/reply/${irysResponse.id}` },
+                    { url: `https://www.anky.lat/reply/${irysResponseCid}` },
                   ];
                   let response;
                   if (farcasterUser.signerUuid) {
@@ -800,14 +806,14 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
                         parent: {
                           parent: "https://warpcast.com/~/channel/anky",
                         },
-                        cid: irysResponse.id,
+                        cid: irysResponseCid,
                       }
                     );
                   } else {
                     response = await axios.post(
                       `${process.env.NEXT_PUBLIC_API_ROUTE}/farcaster/api/cast/anon`,
                       {
-                        cid: irysResponse.id,
+                        cid: irysResponseCid,
                         text: newCastText,
                         parent: "https://warpcast.com/~/channel/anky",
                         embeds: forEmbedding,
