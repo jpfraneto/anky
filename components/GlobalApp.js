@@ -17,6 +17,7 @@ import {
   FaUserAstronaut,
 } from "react-icons/fa";
 import { getOneWriting } from "../lib/irys";
+import { FaRegCircleQuestion } from "react-icons/fa6";
 import { IoArrowBack } from "react-icons/io5";
 import { IoMdClose } from "react-icons/io";
 import { MdMenuOpen } from "react-icons/md";
@@ -245,8 +246,9 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
           { name: "application-id", value: "Anky Dementors" },
           { name: "container-type", value: "prompts-notebook" },
         ];
+        console.log("right before uploading");
         const receipt = await webIrys.upload(prompt, { tags });
-        console.log("weeee have a receipt");
+        console.log("weeee have a receipt", receipt);
         return receipt.id;
       } else {
         console.log("there is no wallet");
@@ -782,6 +784,8 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
             <small
               onClick={async () => {
                 const newUserPrompt = prompt("ask a question to farcaster");
+                if (newUserPrompt.length > 280)
+                  return alert("your question needs to be shorter");
                 if (newUserPrompt) {
                   console.log("in herasdassde", newUserPrompt);
                   // upload the prompt to irys to get a cid
@@ -829,7 +833,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
               }}
               className="text-purple-600 hover:text-red-400 cursor-pointer absolute right-16 top-0"
             >
-              <FaRegCommentDots size={24} />
+              <FaRegCircleQuestion size={24} />
             </small>
             <small
               onClick={() => {
