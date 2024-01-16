@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import DesktopWritingGame from "./DesktopWritingGame";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { Righteous, Inter } from "next/font/google";
+import { WebIrys } from "@irys/sdk";
 import { getAnkyverseDay, getAnkyverseQuestion } from "../lib/ankyverse";
 import { useUser } from "../context/UserContext";
 import Offcanvas from "react-bootstrap/Offcanvas";
@@ -15,6 +16,7 @@ import {
   FaRegCommentDots,
   FaUserAstronaut,
 } from "react-icons/fa";
+import { getOneWriting } from "../lib/irys";
 import { IoArrowBack } from "react-icons/io5";
 import { IoMdClose } from "react-icons/io";
 import { MdMenuOpen } from "react-icons/md";
@@ -101,7 +103,11 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
   const [lifeBarLength, setLifeBarLength] = useState(100);
   const [displayManaInfo, setDisplayManaInfo] = useState(false);
   const [gameProps, setGameProps] = useState({});
+  const [castWrapper, setCastWrapper] = useState(null);
   const [displayNavbar, setDisplayNavbar] = useState(false);
+  const [promptFromAnkyBeingTagged, setPromptFromAnkyBeingTagged] = useState(
+    {}
+  );
   const [refreshUsersStateLoading, setRefreshUsersStateLoading] =
     useState(false);
   const [checkingIfYouOwnAnky, setCheckingIfYouOwnAnky] = useState(false);
@@ -129,6 +135,45 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  useEffect(() => {
+    const fetchCastInformation = async () => {
+      try {
+        if (!router && !router.query) return;
+        console.log("inside the fetchCastInformation");
+        console.log(router.query.cid);
+
+        async function searchThisText() {
+          const writingFromIrys = await getOneWriting(router.query.cid);
+          console.log("0the writing from irys is: ", writingFromIrys);
+          setPromptFromAnkyBeingTagged({
+            text: writingFromIrys.text,
+            timestamp: new Date(),
+          });
+        }
+        async function fetchCastWrapper() {
+          try {
+            const responseFromServer = await axios.get(
+              `${process.env.NEXT_PUBLIC_API_ROUTE}/farcaster/cast-by-cid/${router.query.cid}`
+            );
+            setCastWrapper(responseFromServer.data.castWrapper);
+            console.log(
+              "the response from the server is: ",
+              responseFromServer
+            );
+            setParentCastForReplying(
+              responseFromServer.data.castWrapper.castHash
+            );
+          } catch (error) {}
+        }
+        searchThisText();
+        fetchCastWrapper();
+      } catch (error) {
+        console.log("there was an error");
+      }
+    };
+    fetchCastInformation();
+  }, [router.query]);
 
   useEffect(() => {
     const storedData = localStorage.getItem(LOCAL_STORAGE_KEYS.FARCASTER_USER);
@@ -166,6 +211,56 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
       setCopyWalletAddressText(user.wallet.address);
     }
   }, [authenticated]);
+
+  async function uploadPromptToIrys(prompt) {
+    try {
+      const getWebIrys = async () => {
+        // Ethers5 provider
+        // await window.ethereum.enable();
+        if (!wallet && !authenticated) return;
+        console.log("INSIIIIDE HERE, THE WALLET IS: ", wallet);
+        // const provider = new providers.Web3Provider(window.ethereum);
+        const provider = await wallet.getEthersProvider();
+
+        const url = "https://node2.irys.xyz";
+        const token = "ethereum";
+        const rpcURL = "https://rpc-mumbai.maticvigil.com"; // Optional parameter
+
+        // Create a wallet object
+        const irysWallet = {
+          rpcUrl: rpcURL,
+          name: "ethersv5",
+          provider: provider,
+        };
+        console.log("ininni¡,", irysWallet);
+        // Use the wallet object
+        const webIrys = new WebIrys({ url, token, wallet: irysWallet });
+        await webIrys.ready();
+        return webIrys;
+      };
+      if (wallet) {
+        console.log("weeeee have a wallet");
+        const webIrys = await getWebIrys();
+        const tags = [
+          { name: "Content-Type", value: "text/plain" },
+          { name: "application-id", value: "Anky Dementors" },
+          { name: "container-type", value: "prompts-notebook" },
+        ];
+        const receipt = await webIrys.upload(prompt, { tags });
+        console.log("weeee have a receipt");
+        return receipt;
+      } else {
+        responseFromIrys = await axios.post(`${apiRoute}/upload-writing`, {
+          text,
+        });
+        cid = responseFromIrys.data.cid;
+        console.log("weeee have a cid");
+        return cid;
+      }
+    } catch (error) {
+      console.log("there was an error uploading the thing to irys", error);
+    }
+  }
 
   async function copyWalletAddress() {
     try {
@@ -405,8 +500,31 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
 
       case "/community-notebook":
         return <GlobalFeed thisWallet={wallet} />;
-      case `/rc/${route.split(" / ").pop()}`:
-        return <GlobalFeed thisWallet={wallet} />;
+      case `/reply/${route.split("/").pop()}`:
+        console.log("in the reply route", router.query.cid);
+        return (
+          <DesktopWritingGame
+            ankyverseDate={`sojourn ${ankyverseToday.currentSojourn} - wink ${
+              ankyverseToday.wink
+            } - ${ankyverseToday.currentKingdom.toLowerCase()}`}
+            castWrapper={castWrapper}
+            userPrompt={thisIsThePrompt || ankyverseQuestion}
+            setUserAppInformation={setUserAppInformation}
+            userAppInformation={userAppInformation}
+            parentCastForReplying={parentCastForReplying}
+            theAsyncCastToReply={theAsyncCastToReply}
+            setLifeBarLength={setLifeBarLength}
+            setThisIsTheFlag={setThisIsTheFlag}
+            setDisplaySettingsModal={setDisplaySettingsModal}
+            lifeBarLength={lifeBarLength}
+            setDisplayNavbar={setDisplayNavbar}
+            setDisableButton={setDisableButton}
+            displayWritingGameLanding={displayWritingGameLanding}
+            setDisplayWritingGameLanding={setDisplayWritingGameLanding}
+            farcasterUser={farcasterUser}
+            countdownTarget={countdownTarget}
+          />
+        );
       case "/feed":
         return <GlobalFeed thisWallet={wallet} />;
       case "/me":
@@ -658,6 +776,56 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
       >
         <Offcanvas.Body>
           <div className="md:flex flex-col h-full w-fit relative">
+            <small
+              onClick={async () => {
+                const newUserPrompt = prompt("ask a question to farcaster");
+                if (newUserPrompt) {
+                  console.log("in herasdassde", newUserPrompt);
+                  // upload the prompt to irys to get a cid
+                  const irysResponse = await uploadPromptToIrys(newUserPrompt);
+                  console.log("AFTER THE IRYS RESPONSE");
+                  // use that cid to publish the question on farcaster with an embed that links to /reply/:cid
+                  const newCastText = `${newUserPrompt}\n\n@anky`;
+                  const forEmbedding = [
+                    { url: `https://www.anky.lat/reply/${irysResponse.id}` },
+                  ];
+                  let response;
+                  if (farcasterUser.signerUuid) {
+                    response = await axios.post(
+                      `${process.env.NEXT_PUBLIC_API_ROUTE}/farcaster/api/cast`,
+                      {
+                        text: newCastText,
+                        signer_uuid: farcasterUser.signerUuid,
+                        embeds: forEmbedding,
+                        parent: {
+                          parent: "https://warpcast.com/~/channel/anky",
+                        },
+                        cid: irysResponse.id,
+                      }
+                    );
+                  } else {
+                    response = await axios.post(
+                      `${process.env.NEXT_PUBLIC_API_ROUTE}/farcaster/api/cast/anon`,
+                      {
+                        cid: irysResponse.id,
+                        text: newCastText,
+                        parent: "https://warpcast.com/~/channel/anky",
+                        embeds: forEmbedding,
+                      }
+                    );
+                  }
+                  console.log(
+                    "the response from asking the question is: ",
+                    response
+                  );
+
+                  // add the castwrapper to the db to fetch it later (using the newly created cast hash)
+                }
+              }}
+              className="text-purple-600 hover:text-red-400 cursor-pointer absolute right-16 top-0"
+            >
+              <FaRegCommentDots size={24} />
+            </small>
             <small
               onClick={() => {
                 const thisCastLink = prompt(

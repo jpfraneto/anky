@@ -40,6 +40,7 @@ const DesktopWritingGame = ({
   ankyverseDate,
   gamePrompts = {},
   setDisableButton,
+  castWrapper = null,
   setUserAppInformation,
   setThisIsTheFlag,
   userAppInformation,
@@ -799,7 +800,7 @@ const DesktopWritingGame = ({
             </div>
           ) : (
             <div className="bg-purple-500 text-black p-2 my-2 rounded-xl flex space-x-2 items-center justify-center">
-              <div className="h-8 w-5/6 pl-8 flex items-center">
+              <div className="h-fit w-5/6 pl-8 flex items-center">
                 <p className="text-black">do you want to reply anonymously?</p>
                 <input
                   className="mx-4"

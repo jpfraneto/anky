@@ -63,6 +63,7 @@ const ReadIrysPage = ({ setShow }) => {
         }
       }
     }
+
     async function fetchCastWrapper() {
       try {
         const responseFromServer = await axios.get(
