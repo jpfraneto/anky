@@ -45,8 +45,6 @@ const ReadIrysPage = ({ setShow }) => {
   useEffect(() => {
     async function searchThisText() {
       const thisIrysIndex = allUserWritings.findIndex((x) => {
-        console.log("the x is: ", x);
-        console.log("the router", router.query);
         return x.cid == router.query.cid;
       });
       if (thisIrysIndex == -1 || !authenticated || !allUserWritings) {

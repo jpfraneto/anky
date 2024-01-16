@@ -619,7 +619,10 @@ const DesktopWritingGame = ({
 
       console.log("the response is: ", response);
       setCastHash(response.data.cast.hash);
-      return response.data.cast.hash;
+      return {
+        castHash: response.data.cast.hash,
+        responseFromIrys: responseFromIrys || irysResponseCid,
+      };
 
       // if (response.status === 200) {
       //   setText(""); // Clear the text field
@@ -691,16 +694,25 @@ const DesktopWritingGame = ({
           "this means that the user is not logged in, and we need to offer the option to just send to farcaster"
         );
         if (userWantsToCastAnon) {
-          castResponse = await handleAnonCast();
+          let castResponseFromAnonCast = await handleAnonCast();
+          console.log(
+            "the cast response from anon cast is: ",
+            castResponseFromAnonCast
+          );
+          irysResponseCid = castResponseFromAnonCast.responseFromIrys.data.cid;
         }
       }
       if (authenticated && farcasterUser.signerStatus != "approved") {
         console.log("OPTION AAAA");
-        if (userWantsToCastAnon)
-          castResponse = await handleAnonCast(irysResponseCid);
+        if (userWantsToCastAnon) await handleAnonCast(irysResponseCid);
+
         console.log(
           "this means that the user is logged in, and we need to offer the option to save it eternally and cast anon"
         );
+        setAllUserWritings((x) => [
+          { cid: irysResponseCid, text: text, timestamp: new Date().getTime() },
+          ...x,
+        ]);
       }
       if (authenticated && farcasterUser.signerStatus == "approved") {
         console.log(
@@ -714,17 +726,20 @@ const DesktopWritingGame = ({
         } else if (castAs == "anon") {
           castResponse = await handleAnonCast();
         }
+        setAllUserWritings((x) => [
+          { cid: irysResponseCid, text: text, timestamp: new Date().getTime() },
+          ...x,
+        ]);
       }
 
-      setAllUserWritings((x) => [
-        { cid: irysResponseCid, text: text, timestamp: new Date().getTime() },
-        ...x,
-      ]);
-
       setDisplayWritingGameLanding(false);
+      console.log("right before, the irys repsonse cid is: ", irysResponseCid);
       router.push(`/i/${irysResponseCid}`);
     } catch (error) {
-      console.log("There was an error in the handle finish session function");
+      console.log(
+        "There was an error in the handle finish session function",
+        error
+      );
     }
   }
 

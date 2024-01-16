@@ -505,7 +505,6 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
       case "/community-notebook":
         return <GlobalFeed thisWallet={wallet} />;
       case `/reply/${route.split("/").pop()}`:
-        console.log("in the reply route", router.query.cid);
         return (
           <DesktopWritingGame
             ankyverseDate={`sojourn ${ankyverseToday.currentSojourn} - wink ${
