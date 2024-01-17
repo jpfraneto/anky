@@ -53,7 +53,6 @@ const DesktopWritingGame = ({
   farcasterUser,
   countdownTarget,
 }) => {
-  console.log("in here, the async cast to reply is: ", theAsyncCastToReply);
   const mappedUserJournals =
     [] || userAppInformation?.userJournals?.map((x) => x.title);
   const router = useRouter();

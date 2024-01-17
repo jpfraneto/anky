@@ -68,6 +68,7 @@ import axios from "axios";
 import Leaderboard from "./Leaderboard";
 import AboutModal from "./AboutModal";
 import TimerSettingsModal from "./TimerSettingsModal";
+import AskFarcaster from "./AskFarcaster";
 
 const righteous = Righteous({ weight: "400", subsets: ["latin"] });
 const inter = Inter({ subsets: ["cyrillic"], weight: ["400"] });
@@ -548,6 +549,8 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
         return <JournalPage userAppInformation={userAppInformation} />;
       case `/journal/new`:
         return <BuyNewJournal />;
+      case `/ask-farcaster`:
+        return <AskFarcaster />;
       case `/journal/${route.split("/").pop()}`:
         return (
           <JournalById
@@ -665,7 +668,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
         )}
 
       <div
-        className={`${righteous.className} grow text-black relative  items-center justify-center`}
+        className={`${inter.className} grow text-black relative  items-center justify-center`}
       >
         {displayWritingGameLanding ? (
           <div
@@ -781,60 +784,15 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
       >
         <Offcanvas.Body>
           <div className="md:flex flex-col h-full w-fit relative">
-            <small
-              onClick={async () => {
-                const newUserPrompt = prompt("ask a question to farcaster");
-                if (newUserPrompt.length > 280)
-                  return alert("your question needs to be shorter");
-                if (newUserPrompt) {
-                  console.log("in herasdassde", newUserPrompt);
-                  // upload the prompt to irys to get a cid
-                  const irysResponseCid = await uploadPromptToIrys(
-                    newUserPrompt
-                  );
-                  console.log("AFTER THE IRYS RESPONSE", irysResponseCid);
-                  // use that cid to publish the question on farcaster with an embed that links to /reply/:cid
-                  const newCastText = `${newUserPrompt}\n\n@anky`;
-                  const forEmbedding = [
-                    { url: `https://www.anky.lat/reply/${irysResponseCid}` },
-                  ];
-                  let response;
-                  if (farcasterUser.signerUuid) {
-                    response = await axios.post(
-                      `${process.env.NEXT_PUBLIC_API_ROUTE}/farcaster/api/cast`,
-                      {
-                        text: newCastText,
-                        signer_uuid: farcasterUser.signerUuid,
-                        embeds: forEmbedding,
-                        parent: {
-                          parent: "https://warpcast.com/~/channel/anky",
-                        },
-                        cid: irysResponseCid,
-                      }
-                    );
-                  } else {
-                    response = await axios.post(
-                      `${process.env.NEXT_PUBLIC_API_ROUTE}/farcaster/api/cast/anon`,
-                      {
-                        cid: irysResponseCid,
-                        text: newCastText,
-                        parent: "https://warpcast.com/~/channel/anky",
-                        embeds: forEmbedding,
-                      }
-                    );
-                  }
-                  console.log(
-                    "the response from asking the question is: ",
-                    response
-                  );
+            <Link href="/ask-farcaster" passHref>
+              <small
+                onClick={handleClose}
+                className="text-purple-600 hover:text-red-400 cursor-pointer absolute right-16 top-0"
+              >
+                <FaRegCircleQuestion size={24} />
+              </small>
+            </Link>
 
-                  // add the castwrapper to the db to fetch it later (using the newly created cast hash)
-                }
-              }}
-              className="text-purple-600 hover:text-red-400 cursor-pointer absolute right-16 top-0"
-            >
-              <FaRegCircleQuestion size={24} />
-            </small>
             <small
               onClick={() => {
                 const thisCastLink = prompt(
@@ -953,20 +911,26 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
                   )}
                 </div>
               )}
+              <p
+                className="my-1 hover:text-purple-600 cursor-pointer"
+                onClick={() => {
+                  handleClose();
+                  setDisplayAboutModal(!displayAboutModal);
+                }}
+              >
+                About Anky
+              </p>
 
               {authenticated && (
                 <div className="h-12 mt-2 w-96   flex">
                   <div className=" h-12 w-12  rounded-xl overflow-hidden relative">
-                    <Image src="/images/anky.png" fill />
+                    <Image
+                      src={farcasterUser?.pfp || `/images/anky.png`}
+                      fill
+                    />
                   </div>
                   <div className="flex py-1 px-3 items-center grow justify-between">
-                    <span
-                      className="hover:text-purple-600 hover:cursor-pointer"
-                      onClick={() => {
-                        handleClose();
-                        setDisplayAboutModal(!displayAboutModal);
-                      }}
-                    >
+                    <span className="hover:text-purple-600 hover:cursor-pointer">
                       {farcasterUser.displayName}
                     </span>
                     <Link
