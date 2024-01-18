@@ -371,7 +371,7 @@ const AskFarcaster = () => {
                 <li
                   key={channel.id}
                   className="cursor-pointer hover:bg-purple-400"
-                  onClick={() => setChosenChannel(channel.name.toLowerCase())}
+                  onClick={() => setChosenChannel(channel.id)}
                 >
                   {channel.name}
                 </li>
@@ -543,13 +543,7 @@ const AskFarcaster = () => {
               {askedCast ? (
                 <div>
                   <p className="mb-2">your question was successfully asked</p>
-                  <button
-                    onClick={() =>
-                      console.log("the asked cast is: ", askedCast)
-                    }
-                  >
-                    console
-                  </button>
+
                   <div className="flex justify-between">
                     <Button
                       buttonColor="bg-green-600"
