@@ -62,7 +62,6 @@ const AskFarcaster = () => {
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_API_ROUTE}/farcaster/get-channels`
         );
-        console.log("all the channels are: ", response.data);
         setAllChannels(response.data.channels);
       } catch (error) {
         console.log("there was an error fetching the channels");
@@ -144,7 +143,6 @@ const AskFarcaster = () => {
       if (promptForFarcaster && promptForFarcaster.length > 0) {
         // upload the prompt to irys to get a cid
         const irysResponseCid = await uploadPromptToIrys(promptForFarcaster);
-        console.log("the irys respoinse cid is: ", irysResponseCid);
         if (!irysResponseCid)
           return alert("there was an error uploading to irys");
         // use that cid to publish the question on farcaster with an embed that links to /reply/:cid
@@ -153,7 +151,6 @@ const AskFarcaster = () => {
             ? `${promptForFarcaster.slice(0, 300)}...`
             : promptForFarcaster
         }`;
-        console.log("the new cast text is: ", newCastText, irysResponseCid);
 
         const forEmbedding = [
           { url: `https://www.anky.lat/reply/${irysResponseCid}` },
@@ -163,12 +160,7 @@ const AskFarcaster = () => {
         const parentAsUrl = chosenChannel
           ? `https://warpcast.com/~/channel/${chosenChannel}`
           : "";
-        console.log(
-          "the parent as url is: ",
-          parentAsUrl,
-          castAs,
-          farcasterUser
-        );
+
         if (castAs == "user" && farcasterUser.signerUuid) {
           response = await axios.post(
             `${process.env.NEXT_PUBLIC_API_ROUTE}/farcaster/api/cast`,
@@ -191,10 +183,8 @@ const AskFarcaster = () => {
             }
           );
         }
-        console.log("the response data here is: ", response);
         setAskingTheQuestion(false);
         setAskedCast(response.data.cast);
-        console.log("the response from asking the question is: ", response);
       }
     } catch (error) {
       setAskingTheQuestion(false);

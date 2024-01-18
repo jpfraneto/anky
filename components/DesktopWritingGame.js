@@ -255,7 +255,6 @@ const DesktopWritingGame = ({
   };
 
   async function pingServerToStartWritingSession(now) {
-    console.log("inside the ping server to start writing session");
     try {
       let response;
       if (authenticated) {
@@ -289,8 +288,6 @@ const DesktopWritingGame = ({
           }
         );
       }
-
-      console.log("the response is: ", response);
     } catch (error) {
       console.log("there was an error requesting to ping the serve", error);
     }
@@ -298,7 +295,6 @@ const DesktopWritingGame = ({
 
   async function pingServerToEndWritingSession(now, frontendWrittenTime) {
     try {
-      console.log("pinging the server to finish the writing session");
       let response;
       if (authenticated) {
         const authToken = await getAccessToken();
@@ -340,18 +336,12 @@ const DesktopWritingGame = ({
       setAmountOfManaAdded(frontendWrittenTime);
       setResponseFromPinging(response.data.message);
       setUserDatabaseInformation((x) => {
-        console.log(
-          "updating the userdatabaseinformation",
-          x.manaBalance,
-          frontendWrittenTime
-        );
         return {
           ...x,
           manaBalance: response.data.data.manaBalance,
           streak: response.data.data.activeStreak,
         };
       });
-      console.log("the response is: ", response);
     } catch (error) {
       console.log("there was an error pinging the server here.", error);
     }
@@ -379,7 +369,6 @@ const DesktopWritingGame = ({
       // await window.ethereum.enable();
       if (!thisWallet) return;
       // const provider = new providers.Web3Provider(window.ethereum);
-      console.log("thiiiiis wallet is: ", thisWallet);
       const provider = await thisWallet.getEthersProvider();
 
       const url = "https://node2.irys.xyz";
@@ -428,8 +417,6 @@ const DesktopWritingGame = ({
   };
 
   const handleCast = async (cid) => {
-    console.log("the faracstrer user is: ", farcasterUser);
-    console.log("the cid is: ", cid);
     if (farcasterUser.signerStatus != "approved" || !farcasterUser?.signerUuid)
       return alert("you are not completely logged in yet");
     if (!text) return alert("please write something");
@@ -442,9 +429,6 @@ const DesktopWritingGame = ({
         text.length > 320
           ? `${text.slice(0, 280)}...\n\n(read full cast on anky)`
           : text;
-      // THIS WAS USED ON THE ERA ON WHICH THE CAST WAS SENT IN TWO CASTS.
-      // const newCastText = `${kannadaCid}\n\nwritten as anky - you can decode this by clicking on the embed on the next cast`;
-      console.log("sending the cast of the user to the api route");
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_ROUTE}/farcaster/api/cast`,
         {
@@ -463,23 +447,6 @@ const DesktopWritingGame = ({
       if (response.status === 200) {
         setCastHash(response.data.cast.hash);
         return response.data.cast.hash;
-        // const secondCastText = `welcome to a limitless era of farcaster:`;
-        // const secondResponse = await axios.post(
-        //   `${apiRoute}/farcaster/api/cast`,
-        //   {
-        //     parent: response.data.cast.hash,
-        //     text: secondCastText,
-        //     signer_uuid: farcasterUser?.signer_uuid,
-        //     embeds: [
-        //       { url: `https://www.anky.lat/r/${response.data.cast.hash}` },
-        //     ],
-        //   }
-        // );
-        // console.log("the second cast was sent");
-        // if (secondResponse.status === 200) {
-        //   setText("");
-        //   return response.data.cast.hash;
-        // }
       }
     } catch (error) {
       setIsCasting(false);
@@ -496,7 +463,6 @@ const DesktopWritingGame = ({
       // await window.ethereum.enable();
       if (!thisWallet) return;
       // const provider = new providers.Web3Provider(window.ethereum);
-      console.log("thiiiiis wallet is: ", thisWallet);
       const provider = await thisWallet.getEthersProvider();
 
       const url = "https://node2.irys.xyz";
@@ -512,7 +478,6 @@ const DesktopWritingGame = ({
     };
     const webIrys = await getWebIrys();
     let previousPageCid = 0;
-    console.log("JHSALCHSAKJHCAS", chosenJournal.entries);
     if (chosenJournal.entries.length > 0) {
       previousPageCid =
         chosenJournal.entries[chosenJournal.entries.length - 1].cid;
@@ -534,7 +499,6 @@ const DesktopWritingGame = ({
     ];
     try {
       const receipt = await webIrys.upload(text, { tags });
-      console.log(`Data uploaded ==> https://gateway.irys.xyz/${receipt.id}`);
       let newJournalEntry;
       setUserAppInformation((x) => {
         // Find the specific journal index by its id
@@ -578,7 +542,6 @@ const DesktopWritingGame = ({
     try {
       setIsCasting(true);
       let responseFromIrys, cid;
-      console.log("inside the handle anon cast route");
       if (!authenticated) setSavingRoundLoading(true);
       if (!irysResponseCid) {
         responseFromIrys = await axios.post(`${apiRoute}/upload-writing`, {
@@ -593,15 +556,10 @@ const DesktopWritingGame = ({
       // const newCastText = `${kannadaCid}\n\nwritten through anky. you can decode this clicking on the embed on the next cast.`;
 
       const forEmbedding = [{ url: `https://www.anky.lat/i/${cid}` }];
-      console.log("the for embedding is: ", forEmbedding);
       const newCastText =
         text.length > 320
           ? `${text.slice(0, 280)}...\n\n(read full cast on anky)`
           : text;
-
-      console.log("the new cast text asdasdkjaslkda: ", theAsyncCastToReply);
-      console.log("123", theAsyncCastToReply);
-      console.log("234", parentCastForReplying);
 
       let forReplyingVariable = "https://warpcast.com/~/channel/anky";
       if (theAsyncCastToReply) {
@@ -618,7 +576,6 @@ const DesktopWritingGame = ({
         embeds: forEmbedding,
       });
 
-      console.log("the response is: ", response);
       setCastHash(response.data.cast.hash);
       return {
         castHash: response.data.cast.hash,
@@ -667,16 +624,8 @@ const DesktopWritingGame = ({
   async function handleSaveSession() {
     try {
       let castResponse, irysResponseCid, irysResponseReceipt;
-      console.log(
-        "in hereasdascsa",
-        authenticated,
-        journalIdToSave,
-        userWantsToCastAnon,
-        farcasterUser,
-        irysResponseCid
-      );
+
       setSavingSessionState(true);
-      console.log("cast as me", castAs);
       if (authenticated) {
         if (journalIdToSave) {
           irysResponseReceipt = await saveTextToJournal();
@@ -684,45 +633,24 @@ const DesktopWritingGame = ({
           irysResponseReceipt = await sendTextToIrys();
         }
         irysResponseCid = irysResponseReceipt.id;
-
-        console.log(
-          "the irysResponseCid is. this is the unique identifier of this cast ",
-          irysResponseCid
-        );
       }
       if (!authenticated) {
-        console.log(
-          "this means that the user is not logged in, and we need to offer the option to just send to farcaster"
-        );
         if (userWantsToCastAnon) {
           let castResponseFromAnonCast = await handleAnonCast();
-          console.log(
-            "the cast response from anon cast is: ",
-            castResponseFromAnonCast
-          );
+
           irysResponseCid = castResponseFromAnonCast.responseFromIrys.data.cid;
         }
       }
       if (authenticated && farcasterUser.signerStatus != "approved") {
-        console.log("OPTION AAAA");
         if (userWantsToCastAnon) await handleAnonCast(irysResponseCid);
 
-        console.log(
-          "this means that the user is logged in, and we need to offer the option to save it eternally and cast anon"
-        );
         setAllUserWritings((x) => [
           { cid: irysResponseCid, text: text, timestamp: new Date().getTime() },
           ...x,
         ]);
       }
       if (authenticated && farcasterUser.signerStatus == "approved") {
-        console.log(
-          "this means that the user is logged in with privy and farcaster, what happens here?"
-        );
         if (castAs == "me") {
-          console.log(
-            "the person wants to cast as that which the person refers to as... me"
-          );
           castResponse = await handleCast(irysResponseCid);
         } else if (castAs == "anon") {
           castResponse = await handleAnonCast();
@@ -734,7 +662,6 @@ const DesktopWritingGame = ({
       }
 
       setDisplayWritingGameLanding(false);
-      console.log("right before, the irys repsonse cid is: ", irysResponseCid);
       router.push(`/i/${irysResponseCid}`);
     } catch (error) {
       console.log(

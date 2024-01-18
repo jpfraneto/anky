@@ -142,12 +142,9 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
     const fetchCastInformation = async () => {
       try {
         if (!router && !router.query) return;
-        console.log("inside the fetchCastInformation");
-        console.log(router.query.cid);
 
         async function searchThisText() {
           const writingFromIrys = await getOneWriting(router.query.cid);
-          console.log("0the writing from irys is: ", writingFromIrys);
           setPromptFromAnkyBeingTagged({
             text: writingFromIrys.text,
             timestamp: new Date(),
@@ -155,10 +152,10 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
         }
         async function fetchCastWrapper() {
           try {
-            console.log("fetching the cast wrapper");
             const responseFromServer = await axios.get(
               `${process.env.NEXT_PUBLIC_API_ROUTE}/farcaster/cast-by-cid/${router.query.cid}`
             );
+            if (!responseFromServer.data.castWrapper) return;
             setCastWrapper(responseFromServer.data.castWrapper);
             const warpcastUrl = `https://warpcast.com/${
               responseFromServer.data.cast.author.username
