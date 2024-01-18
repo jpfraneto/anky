@@ -88,8 +88,6 @@ const AskFarcaster = () => {
         // Ethers5 provider
         // await window.ethereum.enable();
         if (!wallet && !authenticated) return;
-        console.log("INSIIIIDE HERE, THE WALLET IS: ", wallet);
-        // const provider = new providers.Web3Provider(window.ethereum);
         const provider = await wallet.getEthersProvider();
 
         const url = "https://node2.irys.xyz";
@@ -102,26 +100,22 @@ const AskFarcaster = () => {
           name: "ethersv5",
           provider: provider,
         };
-        console.log("ininni¡,", irysWallet);
-        // Use the wallet object
+
         const webIrys = new WebIrys({ url, token, wallet: irysWallet });
         await webIrys.ready();
         return webIrys;
       };
       if (wallet && authenticated) {
-        console.log("weeeee have a wallet");
         const webIrys = await getWebIrys();
         const tags = [
           { name: "Content-Type", value: "text/plain" },
           { name: "application-id", value: "Anky Dementors" },
           { name: "container-type", value: "prompts-notebook" },
         ];
-        console.log("right before uploading");
+        // EXACTLY HERE IS WHERE THE ERROR HAPPENS
         const receipt = await webIrys.upload(prompt, { tags });
-        console.log("weeee have a receipt", receipt);
         return receipt.id;
       } else {
-        console.log("there is no wallet");
         let responseFromIrys = await axios.post(
           `${process.env.NEXT_PUBLIC_API_ROUTE}/upload-writing`,
           {
@@ -197,6 +191,7 @@ const AskFarcaster = () => {
             }
           );
         }
+        console.log("the response data here is: ", response);
         setAskingTheQuestion(false);
         setAskedCast(response.data.cast);
         console.log("the response from asking the question is: ", response);
@@ -363,7 +358,7 @@ const AskFarcaster = () => {
                   ? "opacity-50"
                   : "bg-green-500 text-white"
               }`}
-              disabled={currentStep === totalSteps}
+              disabled={promptForFarcaster.length == 0}
             >
               choose channel
             </button>
@@ -558,6 +553,13 @@ const AskFarcaster = () => {
               {askedCast ? (
                 <div>
                   <p className="mb-2">your question was successfully asked</p>
+                  <button
+                    onClick={() =>
+                      console.log("the asked cast is: ", askedCast)
+                    }
+                  >
+                    console
+                  </button>
                   <div className="flex justify-between">
                     <Button
                       buttonColor="bg-green-600"

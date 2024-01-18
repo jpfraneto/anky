@@ -600,6 +600,8 @@ const DesktopWritingGame = ({
           : text;
 
       console.log("the new cast text asdasdkjaslkda: ", theAsyncCastToReply);
+      console.log("123", theAsyncCastToReply);
+      console.log("234", parentCastForReplying);
 
       let forReplyingVariable = "https://warpcast.com/~/channel/anky";
       if (theAsyncCastToReply) {
