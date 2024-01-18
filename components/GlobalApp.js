@@ -923,6 +923,13 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
               >
                 About Anky
               </p>
+              <a
+                target="_blank"
+                href="https://t.me/ankytheape"
+                className="ml-auto hover:text-red-200"
+              >
+                join telegram feedback group
+              </a>
 
               {authenticated && (
                 <div className="h-12 mt-2 w-96   flex">

@@ -23,7 +23,7 @@ const StepIndicator = ({ stepNumber, currentStep }) => {
 const AskFarcaster = () => {
   const { authenticated, login } = usePrivy();
   const [currentStep, setCurrentStep] = useState(1);
-  const totalSteps = 4;
+  const totalSteps = 5;
   const [promptForFarcaster, setPromptForFarcaster] = useState("");
   const [filter, setFilter] = useState(""); // New state to hold the filter input
   const [filteredChannels, setFilteredChannels] = useState([]);
@@ -138,6 +138,11 @@ const AskFarcaster = () => {
     }
   }
   async function handleSubmitPrompt() {
+    console.log("setting the current step to 5");
+    setCurrentStep(5);
+
+    console.log("AFTER setting the current step to 5");
+
     try {
       setAskingTheQuestion(true);
       if (promptForFarcaster && promptForFarcaster.length > 0) {
@@ -190,6 +195,7 @@ const AskFarcaster = () => {
             }
           );
         }
+        setAskingTheQuestion(false);
         setAskedCast(response.data.cast);
         console.log("the response from asking the question is: ", response);
       }
@@ -520,7 +526,6 @@ const AskFarcaster = () => {
                     buttonAction={() => {
                       if (promptIsReadyToSubmit) {
                         handleSubmitPrompt();
-                        goToNextStep();
                       } else {
                         setPromptIsReadyToSubmit(!promptIsReadyToSubmit);
                       }
@@ -539,7 +544,7 @@ const AskFarcaster = () => {
       {currentStep === 5 && (
         <div>
           {askingTheQuestion ? (
-            <div className="flex flex-col">
+            <div className="flex flex-col items-center">
               <p>your question is being broadcasted...</p>
               <Spinner />
             </div>
