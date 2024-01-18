@@ -786,7 +786,10 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
           <div className="md:flex flex-col h-full w-fit relative">
             <Link href="/ask-farcaster" passHref>
               <small
-                onClick={handleClose}
+                onClick={() => {
+                  setDisplayWritingGameLanding(false);
+                  handleClose();
+                }}
                 className="text-purple-600 hover:text-red-400 cursor-pointer absolute right-16 top-0"
               >
                 <FaRegCircleQuestion size={24} />
