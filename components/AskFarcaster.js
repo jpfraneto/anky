@@ -134,6 +134,8 @@ const AskFarcaster = () => {
         return cid;
       }
     } catch (error) {
+      setAskingTheQuestion(false);
+      setErrorMessage("there was an error broadcasting your prompt");
       console.log("there was an error uploading the thing to irys", error);
     }
   }
@@ -216,19 +218,22 @@ const AskFarcaster = () => {
             connected:
           </p>
           <div className="flex mt-4">
-            <div className="flex justify-center w-96 mx-auto">
-              <Button
-                buttonText={`ask anon`}
-                buttonAction={() => {
-                  setCurrentStep(2);
-                  setCastAs("anon");
-                }}
-                buttonColor={`${
-                  castAs == "anon"
-                    ? "bg-green-600 border-white border-2"
-                    : "bg-green-400"
-                }`}
-              />
+            <div className="flex justify-between w-96 mx-auto">
+              <div>
+                <Button
+                  buttonText={`ask anon`}
+                  buttonAction={() => {
+                    setCurrentStep(2);
+                    setCastAs("anon");
+                  }}
+                  buttonColor={`${
+                    castAs == "anon"
+                      ? "bg-green-600 border-white border-2"
+                      : "bg-green-400"
+                  }`}
+                />
+              </div>
+
               {farcasterUser?.username && authenticated ? (
                 <div>
                   <Button
@@ -552,12 +557,14 @@ const AskFarcaster = () => {
             <div>
               {askedCast ? (
                 <div>
-                  <p>your prompt was successfully asked</p>
+                  <p className="mb-2">your question was successfully asked</p>
                   <div className="flex justify-between">
                     <Button
-                      buttonColor="bg-purple-600"
-                      buttonText="ask again"
+                      buttonColor="bg-green-600"
+                      buttonText="new question"
                       buttonAction={() => {
+                        setPromptIsReadyToSubmit(false);
+                        setFilter("");
                         setCurrentStep(1);
                         setPromptForFarcaster("");
                         setChosenChannel(null);
@@ -568,9 +575,9 @@ const AskFarcaster = () => {
                       href={`https://warpcast.com/${
                         askedCast.author.username
                       }/${askedCast.hash.substring(0, 10)}`}
-                      className="ml-auto hover:text-red-200"
+                      className="bg-purple-600 px-4 py-2 mx-auto hover:opacity-70 shadow shadow-slate-500 cursor-pointer rounded-xl border border-black"
                     >
-                      open prompt on warpcast
+                      open on warpcast
                     </a>
                   </div>
                 </div>
