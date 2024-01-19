@@ -625,7 +625,10 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
           </div>
           <Link
             href="/feed"
-            onClick={() => setDisplayWritingGameLanding(false)}
+            onClick={() => {
+              setTheAsyncCastToReply(null);
+              setDisplayWritingGameLanding(false);
+            }}
             className={`${righteous.className} hover:text-purple-600 text-3xl`}
           >
             anky
@@ -869,6 +872,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
                         <div
                           key={i}
                           onClick={() => {
+                            setTheAsyncCastToReply(null);
                             setDisplayWritingGameLanding(false);
                             handleClose();
                           }}
@@ -946,6 +950,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
                     >
                       <span
                         onClick={() => {
+                          setTheAsyncCastToReply(null);
                           setDisplayWritingGameLanding(false);
                           handleClose();
                         }}

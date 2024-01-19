@@ -14,7 +14,6 @@ const ConnectFarcasterModal = () => {
   const [loading, setLoading] = useState(false);
   const { getAccessToken, user, authenticated } = usePrivy();
   const { farcasterUser, setFarcasterUser } = useUser();
-  console.log("the farcaster user is: ", farcasterUser);
 
   const apiRoute =
     self.location.hostname === "localhost"

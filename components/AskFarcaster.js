@@ -198,17 +198,14 @@ const AskFarcaster = () => {
       {currentStep === 1 && (
         <div className="flex flex-col items-center justify-center">
           <p>
-            welcome. here you can ask a question to the farcaster community.
-          </p>
-          <p className="mt-2">
-            you can decide to ask it anonymously, or as the account you have
-            connected:
+            welcome. here you talk anonymously (or as you) with the farcaster
+            community.
           </p>
           <div className="flex mt-4">
             <div className="flex justify-between w-96 mx-auto">
               <div>
                 <Button
-                  buttonText={`ask anon`}
+                  buttonText={`cast anon`}
                   buttonAction={() => {
                     setCurrentStep(2);
                     setCastAs("anon");
@@ -224,7 +221,7 @@ const AskFarcaster = () => {
               {farcasterUser?.username && authenticated ? (
                 <div>
                   <Button
-                    buttonText={`ask as ${farcasterUser.username}`}
+                    buttonText={`cast as ${farcasterUser.username}`}
                     buttonAction={() => {
                       setCurrentStep(2);
                       setCastAs("user");
@@ -264,7 +261,7 @@ const AskFarcaster = () => {
       {currentStep === 2 && (
         <div className="">
           <p className="mb-2 text-xl shadow-yellow-600 shadow-lg">
-            what do you want to ask farcaster?
+            what do you want to say? (there is no character limit btw)
           </p>
           <textarea
             onChange={(e) => setPromptForFarcaster(e.target.value)}
@@ -346,9 +343,9 @@ const AskFarcaster = () => {
             <button
               onClick={goToNextStep}
               className={`px-4 py-2 rounded-lg ${
-                currentStep === totalSteps
-                  ? "opacity-50"
-                  : "bg-green-500 text-white"
+                promptForFarcaster.length > 0
+                  ? "bg-green-600"
+                  : "cursor-not-allowed bg-green-300"
               }`}
               disabled={promptForFarcaster.length == 0}
             >
@@ -545,7 +542,9 @@ const AskFarcaster = () => {
               {askedCast ? (
                 <div>
                   <p className="mb-2">your question was successfully asked</p>
-
+                  <p className="mb-2">
+                    (it may take a while to be displayed on warpcast)
+                  </p>
                   <div className="flex justify-between">
                     <Button
                       buttonColor="bg-green-600"

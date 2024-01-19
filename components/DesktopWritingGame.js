@@ -743,8 +743,10 @@ const DesktopWritingGame = ({
             </div>
           ) : (
             <div className="bg-purple-500 text-black p-2 my-2 rounded-xl flex space-x-2 items-center justify-center">
-              <div className="h-fit w-5/6 pl-8 flex items-center">
-                <p className="text-black">do you want to reply anonymously?</p>
+              <div className="h-fit w-5/6 pl-8 flex justify-center mx-auto items-center">
+                <p className="text-black text-center">
+                  do you want to cast this anonymously on farcaster?
+                </p>
                 <input
                   className="mx-4"
                   type="checkbox"
@@ -774,7 +776,7 @@ const DesktopWritingGame = ({
               <div className="flex">
                 <p className="text-black h-fit flex items-center">
                   do you want to save your writing on the eternal library of the
-                  ankyverse?
+                  ankyverse? (associated with your wallet address)
                 </p>
                 <input
                   className="mx-4 my-auto"
@@ -788,9 +790,10 @@ const DesktopWritingGame = ({
                 />
               </div>
 
-              {userWantsToStoreWritingForever && (
-                <div className="flex bg-purple-500 p-2 mt-2 rounded-xl">
-                  {authenticated && userAppInformation.userJournals && (
+              {userWantsToStoreWritingForever &&
+                authenticated &&
+                userAppInformation.userJournal && (
+                  <div className="flex bg-purple-500 p-2 mt-2 rounded-xl">
                     <div className="bg-purple-500 text-black px-2 my-2 rounded-xl w-full flex space-x-2 items-center justify-center">
                       <p>save to journal? </p>
                       {userAppInformation.userJournals &&
@@ -817,9 +820,8 @@ const DesktopWritingGame = ({
                           </div>
                         )}
                     </div>
-                  )}
-                </div>
-              )}
+                  </div>
+                )}
             </div>
           )}
 
