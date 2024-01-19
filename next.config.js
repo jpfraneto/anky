@@ -64,13 +64,13 @@ module.exports = {
       },
       {
         protocol: "https",
-        hostname: "noun.pics",
+        hostname: "openseauserdata.com",
         port: "",
         pathname: "/**",
       },
       {
         protocol: "https",
-        hostname: "img.seadn.i",
+        hostname: "*",
         port: "",
         pathname: "/**",
       },

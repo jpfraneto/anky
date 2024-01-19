@@ -7,6 +7,7 @@ import { getAnkyverseDay, getAnkyverseQuestion } from "../lib/ankyverse";
 import { useUser } from "../context/UserContext";
 import Offcanvas from "react-bootstrap/Offcanvas";
 import Image from "next/image";
+import FeedByFidPage from "./FeedByFidPage";
 import { getThisUserWritings } from "../lib/irys";
 import { IndividualWritingDisplayModal } from "./IndividualWritingDisplayModal";
 import Button from "./Button";
@@ -467,6 +468,8 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
         return <ReadCastPage />;
       case `/i/${route.split("/").pop()}`:
         return <ReadIrysPage setShow={setShow} />;
+      case `/feed-by-fid`:
+        return <FeedByFidPage />;
       case "/dementor":
         return (
           <AnkyDementorPage

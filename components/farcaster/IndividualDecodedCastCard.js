@@ -43,13 +43,13 @@ const IndividualDecodedCastCard = ({
   const [displaySendNewen, setDisplaySendNewen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [hasUserCommented, setHasUserCommented] = useState(false);
-  const hasUserRecastedThis = cast.reactions.recasts.some(
-    (recast) => recast.fid === farcasterUser.fid
-  );
+  const hasUserRecastedThis =
+    farcasterUser?.fid &&
+    cast.reactions.recasts.some((recast) => recast.fid === farcasterUser?.fid);
   const [hasUserRecasted, setHasUserRecasted] = useState(hasUserRecastedThis);
-  const hasUserLikedThis = cast.reactions.likes.some(
-    (like) => like.fid === farcasterUser.fid
-  );
+  const hasUserLikedThis =
+    farcasterUser?.fid &&
+    cast.reactions.likes.some((like) => like.fid === farcasterUser?.fid);
 
   const filterUniqueReactions = (reactions) => {
     const uniqueFids = new Set();
