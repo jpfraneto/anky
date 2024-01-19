@@ -104,7 +104,10 @@ const ConnectFarcasterModal = () => {
   async function createAndStoreSigner() {
     try {
       if (!authenticated) return;
+      console.log("the create and store signer is: ");
       const authToken = await getAccessToken();
+      console.log("the create and store signer is: ", authToken);
+
       const response = await axios.post(
         `${apiRoute}/farcaster/api/signer`,
         { privyId: user.id.split("did:privy:")[1] },
