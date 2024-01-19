@@ -170,12 +170,14 @@ const AskFarcaster = () => {
               embeds: forEmbedding,
               parent: parentAsUrl,
               cid: irysResponseCid,
+              channelId: chosenChannel,
             }
           );
         } else {
           response = await axios.post(
             `${process.env.NEXT_PUBLIC_API_ROUTE}/farcaster/api/cast/anon`,
             {
+              channelId: chosenChannel,
               cid: irysResponseCid,
               text: newCastText,
               parent: parentAsUrl,
