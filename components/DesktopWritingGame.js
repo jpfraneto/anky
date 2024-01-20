@@ -58,6 +58,7 @@ const DesktopWritingGame = ({
   const router = useRouter();
   const { login, authenticated, user, getAccessToken } = usePrivy();
   const { userSettings } = useSettings();
+  const [textareaHeight, setTextareaHeight] = useState("20vh"); // default height
   const { setUserDatabaseInformation, setAllUserWritings } = useUser();
   const audioRef = useRef();
   const [text, setText] = useState("");
@@ -114,6 +115,31 @@ const DesktopWritingGame = ({
       ? "http://localhost:3000"
       : "https://api.anky.lat";
 
+  const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+
+  const handleResize = () => {
+    if (isKeyboardOpen) {
+      // Adjust the height of the textarea when the keyboard is open
+      const availableHeight = window.innerHeight;
+      if (textareaRef.current) {
+        textareaRef.current.style.height = `${availableHeight * 0.6}px`; // Adjust the 0.6 (60%) as necessary
+      }
+    } else {
+      // Reset the height of the textarea when the keyboard is closed
+      if (textareaRef.current) {
+        textareaRef.current.style.height = "64px"; // Reset to default height or any other value as needed
+      }
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [isKeyboardOpen]);
+
   useEffect(() => {
     if (isActive && !isDone) {
       if (countdownTarget > 0) {
@@ -162,6 +188,11 @@ const DesktopWritingGame = ({
 
     return () => clearInterval(keystrokeIntervalRef.current);
   }, [isActive, lastKeystroke]);
+
+  const resetKeyboardState = () => {
+    setIsKeyboardOpen(false);
+    handleResize();
+  };
 
   const finishRun = async () => {
     try {
@@ -250,6 +281,9 @@ const DesktopWritingGame = ({
       if (authenticated) {
         pingServerToStartWritingSession(now);
       }
+    }
+    if (!text && event.target.value.length > 0) {
+      setIsKeyboardOpen(true);
     }
     setLastKeystroke(now);
   };
@@ -958,16 +992,15 @@ const DesktopWritingGame = ({
               ref={textareaRef}
               disabled={finished}
               style={{
-                top: `${text && "0"}%`,
-                bottom: `${text && "0"}%`,
-                left: `${text && "0"}%`,
-                right: `${text && "0"}%`,
-                transition: "top 1s, bottom 1s, left 1s, right 1s", // smooth transition over 1 second
+                transition: "top 1s, bottom 1s, left 1s, right 1s", // smooth transition
+                position: text ? "absolute" : "static", // use absolute positioning only when text is present
+                top: text ? "0" : "",
+                bottom: text ? "0" : "",
+                left: text ? "0" : "",
+                right: text ? "0" : "",
               }}
-              className={`${text && "absolute"} ${
-                text
-                  ? "md:aspect-video md:flex w-full h-full text-left"
-                  : "mt-8 w-4/5 md:w-3/5 h-64"
+              className={`${
+                text ? "w-full h-full text-left" : "mt-8 w-4/5 md:w-3/5 h-64"
               } p-2 text-white opacity-80 placeholder-white text-xl border placeholder:text-gray-300 border-white rounded-md bg-opacity-10 bg-black`}
               placeholder={
                 theAsyncCastToReply ? "reply here..." : "write here..."
@@ -975,7 +1008,6 @@ const DesktopWritingGame = ({
               value={text}
               onChange={handleTextChange}
             ></textarea>
-
             {text.length > 0 ||
               (!finished && (
                 <div>
