@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Button from "./Button";
 import { useRouter } from "next/router";
+import axios from "axios";
 
 const SettingsPage = () => {
   const router = useRouter();
@@ -14,6 +15,23 @@ const SettingsPage = () => {
   const [chosenTab, setChosenTab] = useState(router.query.link || "general");
   const openGeneralSettings = () => {
     alert("open the general settings");
+  };
+
+  const toggleNotifications = async (enable) => {
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_ROUTE}/user/toggle-notifications`,
+        {
+          userId: user.id.split("did:privy:")[1], // Make sure to get the correct user ID
+          enable: enable,
+        }
+      );
+
+      // Handle response
+      console.log(response.data.message);
+    } catch (error) {
+      console.error("Error toggling notifications:", error);
+    }
   };
 
   const renderSettings = () => {
@@ -89,6 +107,23 @@ const SettingsPage = () => {
               it would be great to enable some sort of notification here that
               allowed people to remember to come
             </p>
+            {farcasterUser && (
+              <div>
+                <label htmlFor="toggleNotifications">
+                  Enable Notifications:
+                </label>
+                <p>
+                  (if you enable this, anky will ping you on farcaster to remind
+                  you to write.)
+                </p>
+                <input
+                  type="checkbox"
+                  id="toggleNotifications"
+                  onChange={(e) => toggleNotifications(e.target.checked)}
+                />
+              </div>
+            )}
+
             {/* <div className="flex space-x-2">
               <p>do you want email notifications?</p>
               <input type="checkbox" />
