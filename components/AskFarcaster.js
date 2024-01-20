@@ -10,6 +10,7 @@ import { useUser } from "../context/UserContext";
 import { useWallets, usePrivy } from "@privy-io/react-auth";
 import axios from "axios";
 import Spinner from "./Spinner";
+import IndividualDecodedCastCard from "./farcaster/IndividualDecodedCastCard";
 
 const StepIndicator = ({ stepNumber, currentStep }) => {
   let className = "h-8 w-8 rounded-full border-2";
@@ -541,7 +542,8 @@ const AskFarcaster = () => {
             <div>
               {askedCast ? (
                 <div>
-                  <p className="mb-2">your question was successfully asked</p>
+                  <p className="mb-2">ready</p>
+                  <IndividualDecodedCastCard cast={askedCast} />
                   <p className="mb-2">
                     (it may take a while to be displayed on warpcast)
                   </p>

@@ -424,7 +424,10 @@ const DesktopWritingGame = ({
     setIsCasting(true);
     try {
       // const kannadaCid = encodeToAnkyverseLanguage(cid);
-      const forEmbedding = [{ url: `https://www.anky.lat/i/${cid || cid.id}` }];
+      let forEmbedding;
+      if (text.length > 300) {
+        forEmbedding = [{ url: `https://www.anky.lat/i/${cid || cid.id}` }];
+      }
       const newCastText =
         text.length > 320
           ? `${text.slice(0, 280)}...\n\n(read full cast on anky)`
@@ -554,8 +557,10 @@ const DesktopWritingGame = ({
 
       // const kannadaCid = encodeToAnkyverseLanguage(cid);
       // const newCastText = `${kannadaCid}\n\nwritten through anky. you can decode this clicking on the embed on the next cast.`;
-
-      const forEmbedding = [{ url: `https://www.anky.lat/i/${cid}` }];
+      let forEmbedding;
+      if (text.length > 300) {
+        forEmbedding = [{ url: `https://www.anky.lat/i/${cid}` }];
+      }
       const newCastText =
         text.length > 320
           ? `${text.slice(0, 280)}...\n\n(read full cast on anky)`
@@ -989,6 +994,7 @@ const DesktopWritingGame = ({
                             router.push("/");
                           }
                           setDisplayWritingGameLanding(false);
+                          router.push("/");
                         } else {
                           if (
                             router.pathname.includes("write") ||
@@ -996,7 +1002,7 @@ const DesktopWritingGame = ({
                           )
                             return router.push("/");
                           setDisplayWritingGameLanding(false);
-                          router.back();
+                          router.push("/");
                         }
                       }}
                     />

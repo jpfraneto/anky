@@ -10,7 +10,7 @@ const AboutModal = ({ setDisplayAboutModal, setDisplayWritingGameLanding }) => {
         onClick={() => setDisplayAboutModal(false)}
         className="fixed bg-black w-screen h-screen opacity-80 top-0 left-0"
       ></div>
-      <div className="fixed text-left pt-4 top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 bg-black h-4/5 rounded-xl w-5/6 md:w-1/3 z-40 mt-4 text-white overflow-y-scroll px-4 py-4">
+      <div className="fixed text-left pt-4 top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 bg-black h-4/5 rounded-xl w-5/6 md:w-2/3 lg:w-1/3 z-40 mt-4 text-white overflow-y-scroll px-4 py-4">
         <span
           className="fixed right-4 top-2 text-red-600 cursor-pointer"
           onClick={() => setDisplayAboutModal(false)}

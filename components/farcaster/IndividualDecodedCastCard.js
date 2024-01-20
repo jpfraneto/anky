@@ -53,6 +53,7 @@ const IndividualDecodedCastCard = ({
 
   const filterUniqueReactions = (reactions) => {
     const uniqueFids = new Set();
+    if (!reactions) return;
     return reactions.filter((reaction) => {
       const isDuplicate = uniqueFids.has(reaction.fid);
       uniqueFids.add(reaction.fid);
@@ -61,10 +62,10 @@ const IndividualDecodedCastCard = ({
   };
 
   const [uniqueLikes, setUniqueLikes] = useState(
-    filterUniqueReactions(cast.reactions.likes)
+    filterUniqueReactions(cast?.reactions?.likes || 0)
   );
   const [uniqueRecasts, setUniqueRecasts] = useState(
-    filterUniqueReactions(cast.reactions.recasts)
+    filterUniqueReactions(cast?.reactions?.recasts || 0)
   );
 
   const [hasUserLiked, setHasUserLiked] = useState(hasUserLikedThis);

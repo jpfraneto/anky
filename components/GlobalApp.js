@@ -627,7 +627,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
             <MdMenuOpen size={40} />
           </div>
           <Link
-            href="/feed"
+            href="/"
             onClick={() => {
               setTheAsyncCastToReply(null);
               setDisplayWritingGameLanding(false);
@@ -943,10 +943,17 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
                       fill
                     />
                   </div>
-                  <div className="flex py-1 px-3 items-center grow justify-between">
-                    <span className="hover:text-purple-600 hover:cursor-pointer">
+                  <div
+                    onClick={handleClose}
+                    className="flex py-1 px-3 items-center grow justify-between"
+                  >
+                    <Link
+                      href={`/u/${user.id.split("did:privy:")[1]}`}
+                      className="hover:text-purple-600 hover:cursor-pointer"
+                      passHref
+                    >
                       {farcasterUser.displayName}
-                    </span>
+                    </Link>
                     <Link
                       href="/settings"
                       className="hover:text-purple-600 cursor-pointer"
