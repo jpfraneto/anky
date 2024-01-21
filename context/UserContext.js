@@ -169,19 +169,6 @@ export const UserProvider = ({ children }) => {
     }
   }, [finalSetup]);
 
-  const shouldInitializeUser = () => {
-    // return authenticated && wallet && true;
-
-    return (
-      !localStorage.getItem("firstTimeUser189") ||
-      (authenticated &&
-        wallet &&
-        !userAppInformation?.ankyIndex &&
-        !userAppInformation?.ankyTbaAddress &&
-        !userAppInformation?.ankyTbaAddress?.length > 0)
-    );
-  };
-
   useEffect(() => {
     const loadUserDatabaseInformation = async () => {
       try {
@@ -190,11 +177,7 @@ export const UserProvider = ({ children }) => {
         const thisUserPrivyId = user.id.replace("did:privy:", "");
         const thisFarcasterAccount = farcasterUser || null;
         if (!thisFarcasterAccount?.fid) thisFarcasterAccount.fid = null;
-        console.log(
-          "right before sending the post request to the database to get the users information",
-          thisUserPrivyId,
-          authToken
-        );
+
         if (!authToken) return;
         const response = await axios.post(
           `${process.env.NEXT_PUBLIC_API_ROUTE}/user/${thisUserPrivyId}`,
@@ -206,8 +189,6 @@ export const UserProvider = ({ children }) => {
             },
           }
         );
-
-        console.log("IN HEassEERE", response, thisFarcasterAccount);
 
         setUserDatabaseInformation({
           streak: response.data.user.streak || 0,

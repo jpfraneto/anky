@@ -598,24 +598,24 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
     }
   }
 
-  if (mainAppLoading)
-    return (
-      <Transition in={mainAppLoading} timeout={500} mountOnEnter unmountOnExit>
-        {(state) => (
-          <div
-            className={`flex-col text-white h-screen w-screen bg-black flex justify-center items-center fade-${state}`}
-          >
-            <h1 className={`${righteous.className} text-5xl text-center `}>
-              anky
-            </h1>
-            <div className="lds-ripple">
-              <div></div>
-              <div></div>
-            </div>
-          </div>
-        )}
-      </Transition>
-    );
+  // if (mainAppLoading)
+  //   return (
+  //     <Transition in={mainAppLoading} timeout={500} mountOnEnter unmountOnExit>
+  //       {(state) => (
+  //         <div
+  //           className={`flex-col text-white h-screen w-screen bg-black flex justify-center items-center fade-${state}`}
+  //         >
+  //           <h1 className={`${righteous.className} text-5xl text-center `}>
+  //             anky
+  //           </h1>
+  //           <div className="lds-ripple">
+  //             <div></div>
+  //             <div></div>
+  //           </div>
+  //         </div>
+  //       )}
+  //     </Transition>
+  //   );
   return (
     <div className="fixed overflow-y-scroll text-center w-screen text-white flex flex-col h-screen">
       <div className="standalone:mt-8 flex-none text-gray-400 w-full h-16 justify-between md:flex items-center flex-col">
@@ -802,7 +802,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
             <small
               onClick={() => {
                 const thisCastLink = prompt(
-                  "please enter the warpcast url for the cast you want to reply to"
+                  "here, you can paste a warpcast url and reply to it writing through anky (earn newen, meditate and get to know your inherent crazyness)"
                 );
                 if (thisCastLink && thisCastLink.includes("0x")) {
                   fetchCastForReplyInformation(thisCastLink);
@@ -814,6 +814,12 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
               className="text-red-600 hover:text-red-400 cursor-pointer absolute right-8 top-0"
             >
               <FaRegCommentDots size={24} />
+            </small>
+            <small
+              onClick={handleClose}
+              className="text-red-600 hover:text-red-400 cursor-pointer absolute left-0 top-0 text-lg"
+            >
+              <IoMdClose size={24} />
             </small>
             <small
               onClick={handleClose}
@@ -927,13 +933,6 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
               >
                 About Anky
               </p>
-              <a
-                target="_blank"
-                href="https://t.me/ankytheape"
-                className="ml-auto hover:text-red-200"
-              >
-                join telegram feedback group
-              </a>
 
               {authenticated && (
                 <div className="h-12 mt-2 w-96   flex">

@@ -9,6 +9,7 @@ import { FaRegCommentAlt, FaRegHeart, FaPencilAlt } from "react-icons/fa";
 import { BsArrowRepeat } from "react-icons/bs";
 import Image from "next/image";
 import Head from "next/head";
+import Button from "../Button";
 import OgDisplay from "../OgDisplay";
 import { useUser } from "../../context/UserContext";
 import { usePrivy } from "@privy-io/react-auth";
@@ -288,31 +289,28 @@ const IndividualDecodedCastCard = ({
               <div className="px-2 w-full h-8 flex justify-between items-center">
                 <div className="pl-4 flex space-x-4 h-full">
                   <div
-                    onClick={handleDisplayComments}
                     className={`flex space-x-1 items-center ${
                       hasUserCommented && "text-gray-500"
                     } hover:text-gray-500 cursor-pointer`}
                   >
                     <FaRegCommentAlt size={14} />
-                    <span>{cast.replies.count}</span>
+                    <span>{cast?.replies?.count || 0}</span>
                   </div>
                   <div
-                    onClick={handleRecast}
                     className={`flex space-x-1 items-center ${
                       hasUserRecasted ? "text-green-300" : ""
                     } hover:text-green-500 cursor-pointer`}
                   >
                     <BsArrowRepeat size={19} />
-                    <span>{uniqueRecasts.length}</span>
+                    <span>{uniqueRecasts?.length || 0}</span>
                   </div>
                   <div
-                    onClick={handleLike}
                     className={`flex space-x-1 items-center ${
                       hasUserLiked ? "text-red-300" : ""
                     } hover:text-red-500 cursor-pointer`}
                   >
                     <FaRegHeart />
-                    <span>{uniqueLikes.length}</span>
+                    <span>{uniqueLikes?.length || 0}</span>
                   </div>
                   <div
                     onClick={() => {
@@ -348,7 +346,7 @@ const IndividualDecodedCastCard = ({
               <>
                 {authenticated && displaySendNewen && (
                   <div className="flex h-14  bg-purple-600 mt-2 border-white border-t-2 relative text-white w-full px-4 relative justify-between items-center">
-                    {userDatabaseInformation.manaBalance ? (
+                    {userDatabaseInformation?.manaBalance ? (
                       <>
                         <div className="flex flex-row w-3/5 items-center ">
                           <div className="flex flex-col items-center justify-around">
@@ -357,7 +355,7 @@ const IndividualDecodedCastCard = ({
                             </p>
 
                             <small className="text-purple-200 bottom-0">
-                              {userDatabaseInformation.manaBalance}
+                              {userDatabaseInformation?.manaBalance || 0}
                             </small>
                           </div>
                           <input
@@ -369,7 +367,7 @@ const IndividualDecodedCastCard = ({
                               setManaForCongratulation(e.target.value)
                             }
                             max={userDatabaseInformation?.manaBalance || 1000}
-                            value={manaForCongratulation}
+                            value={manaForCongratulation || 0}
                           />
                         </div>
 
@@ -419,6 +417,18 @@ const IndividualDecodedCastCard = ({
                 <p className="my-2">{writing}</p>
               )
             ) : null}
+            {writing.includes("(read full cast on anky)") && (
+              <Link
+                href={`/i/${cast?.embeds?.url?.slice(-43) || "error"}`}
+                passHref
+              >
+                <Button
+                  buttonAction=""
+                  buttonColor="bg-purple-600"
+                  buttonText="(click to read full cast)"
+                />
+              </Link>
+            )}
           </div>
         </div>
         {displayComments && (
@@ -445,119 +455,6 @@ const IndividualDecodedCastCard = ({
             </div>
           </div>
         )}
-        {/* <div className="w-96 h-2/12">
-            <div className="flex flex-col h-full py-1 bg-black text-white w-full left-0  relative">
-              <div className="px-2 w-full h-8 flex justify-between items-center">
-                <div className="pl-4 flex space-x-4 h-full">
-                  <div
-                    onClick={handleDisplayComments}
-                    className={`flex space-x-1 items-center ${
-                      hasUserCommented && "text-gray-500"
-                    } hover:text-gray-500 cursor-pointer`}
-                  >
-                    <FaRegCommentAlt size={14} />
-                    <span>{cast.replies.count}</span>
-                  </div>
-                  <div
-                    onClick={handleRecast}
-                    className={`flex space-x-1 items-center ${
-                      hasUserRecasted ? "text-green-300" : "text-green-200"
-                    } hover:text-green-300 cursor-pointer`}
-                  >
-                    <BsArrowRepeat size={19} />
-                    <span>{cast.reactions.recasts.length}</span>
-                  </div>
-                  <div
-                    onClick={handleLike}
-                    className={`flex space-x-1 items-center ${
-                      hasUserLiked ? "text-red-300" : "text-red-200"
-                    } hover:text-red-500 cursor-pointer`}
-                  >
-                    <FaRegHeart />
-                    <span>{cast.reactions.likes.length}</span>
-                  </div>
-                  <div
-                    onClick={() => {
-                      setDisplaySendNewen(!displaySendNewen);
-                    }}
-                    className={`flex space-x-1 items-center ${
-                      displaySendNewen ? "text-purple-300" : "text-purple-200"
-                    } hover:text-purple-500 cursor-pointer`}
-                  >
-                    <GiRollingEnergy />
-                    <span>{totalNewenEarned}</span>
-                  </div>
-                </div>
-                <a
-                  target="_blank"
-                  href={`https://warpcast.com/${
-                    cast.author.username
-                  }/${cast.hash.substring(0, 10)}`}
-                  className="bg-purple-600 px-2 py-1 rounded-xl border border-white ml-auto hover:text-red-200 text-white"
-                >
-                  Warpcast
-                </a>
-              </div>
-              <>
-                {authenticated && displaySendNewen && (
-                  <div className="flex h-14 mt-1 bg-purple-600 relative text-white w-full px-4 relative justify-between items-center">
-                    {userDatabaseInformation.manaBalance ? (
-                      <>
-                        <div className="flex flex-row w-full items-center">
-                          <div className="flex flex-col items-start justify-start">
-                            <p>$NEWEN{!authenticated && "*"}</p>
-
-                            <small className=" text-purple-200 bottom-0">
-                              your balance is{" "}
-                              {userDatabaseInformation.manaBalance}
-                            </small>
-                          </div>
-                          <input
-                            className="rounded-xl mx-auto w-24 h-fit text-black  px-4"
-                            type="number"
-                            disabled={!authenticated}
-                            min={0}
-                            onChange={(e) =>
-                              setManaForCongratulation(e.target.value)
-                            }
-                            max={userDatabaseInformation?.manaBalance || 1000}
-                            value={manaForCongratulation}
-                          />
-                        </div>
-
-                        <button
-                          onClick={sendManaToCastCreator}
-                          className="bg-purple-800 border border-white w-48 px-2 py-1 rounded-xl hover:text-green-500 active:text-yellow-500"
-                        >
-                          send to user
-                        </button>
-                      </>
-                    ) : (
-                      <>
-                        <p className="text-left text-sm">
-                          you need to write more than 30 seconds to earn your
-                          first $NEWEN and send it to this user.
-                        </p>
-                      </>
-                    )}{" "}
-                  </div>
-                )}
-
-                {displaySendNewen && !authenticated && (
-                  <small className="text-red-800">
-                    *
-                    <span
-                      className="text-red-500 hover:text-red-700 cursor-pointer shadow-md shadow-yellow-600"
-                      onClick={login}
-                    >
-                      login
-                    </span>{" "}
-                    to send $NEWEN to the creator of this cast
-                  </small>
-                )}
-              </>
-            </div>
-          </div> */}
       </div>
     </div>
   );

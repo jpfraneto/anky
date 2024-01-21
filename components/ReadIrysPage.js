@@ -31,6 +31,7 @@ const ReadIrysPage = ({ setShow }) => {
   const [thisWriting, setThisWriting] = useState(null);
   const [loadingPage, setLoadingPage] = useState(true);
   const [castWrapper, setCastWrapper] = useState({});
+  const [errorWrapper, setErrorWrapper] = useState(false);
   const [copyText, setCopyText] = useState("copy text");
   const [copyLinkText, setCopyLinkText] = useState("copy anky link");
   const { farcasterUser, userDatabaseInformation, allUserWritings } = useUser();
@@ -44,21 +45,25 @@ const ReadIrysPage = ({ setShow }) => {
 
   useEffect(() => {
     async function searchThisText() {
-      const thisIrysIndex = allUserWritings.findIndex((x) => {
-        return x.cid == router.query.cid;
-      });
-      if (thisIrysIndex == -1 || !authenticated || !allUserWritings) {
-        const writingFromIrys = await getOneWriting(router.query.cid);
-        setThisWriting({ text: writingFromIrys.text, timestamp: new Date() });
-        setLoadingPage(false);
-        console.log("the writing From irys is: ", writingFromIrys);
-      } else {
-        const writerPlaceholder = allUserWritings[thisIrysIndex];
-        console.log("the writer placeholder is: ", writerPlaceholder);
-        if (writerPlaceholder) {
-          setThisWriting(writerPlaceholder);
+      try {
+        const thisIrysIndex = allUserWritings.findIndex((x) => {
+          return x.cid == router.query.cid;
+        });
+        if (thisIrysIndex == -1 || !authenticated || !allUserWritings) {
+          const writingFromIrys = await getOneWriting(router.query.cid);
+          setThisWriting({ text: writingFromIrys.text, timestamp: new Date() });
           setLoadingPage(false);
+          console.log("the writing From irys is: ", writingFromIrys);
+        } else {
+          const writerPlaceholder = allUserWritings[thisIrysIndex];
+          console.log("the writer placeholder is: ", writerPlaceholder);
+          if (writerPlaceholder) {
+            setThisWriting(writerPlaceholder);
+            setLoadingPage(false);
+          }
         }
+      } catch (error) {
+        setErrorWrapper(true);
       }
     }
 
@@ -142,6 +147,15 @@ const ReadIrysPage = ({ setShow }) => {
     }, 1111);
   };
 
+  if (errorWrapper) {
+    return (
+      <div className="mt-4 text-white">
+        <p>there was an error</p>
+        <Link href="/feed">feed</Link>
+      </div>
+    );
+  }
+
   if (loadingPage)
     return (
       <div className="mt-4 text-white">
@@ -210,22 +224,6 @@ const ReadIrysPage = ({ setShow }) => {
             <p className="my-2">{thisWriting.text}</p>
           )
         ) : null}
-        <div className="w-full mt-4 mb-8 text-center">
-          <div className="text-white ">
-            {castWrapper && (
-              <a
-                className="rounded-xl hover:translate-x-2 hover:text-black bg-purple-600 border-2 border-white px-2 py-2 active:text-yellow-600"
-                rel="noopener noreferrer"
-                href={`https://warpcast.com/${
-                  castWrapper?.castAuthor
-                }/${castWrapper?.castHash?.slice(0, 10)}`}
-                target="_blank"
-              >
-                back to warpcast
-              </a>
-            )}
-          </div>
-        </div>
       </div>
     </div>
   );

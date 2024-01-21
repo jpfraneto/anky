@@ -559,15 +559,12 @@ const AskFarcaster = () => {
                         setChosenChannel(null);
                       }}
                     />
-                    <a
-                      target="_blank"
-                      href={`https://warpcast.com/${
-                        askedCast.author.username
-                      }/${askedCast.hash.substring(0, 10)}`}
+                    <Link
+                      href={`/feed`}
                       className="bg-purple-600 px-4 py-2 mx-auto hover:opacity-70 shadow shadow-slate-500 cursor-pointer rounded-xl border border-black"
                     >
-                      open on warpcast
-                    </a>
+                      close
+                    </Link>
                   </div>
                 </div>
               ) : (

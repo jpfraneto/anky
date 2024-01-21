@@ -870,6 +870,13 @@ const DesktopWritingGame = ({
               buttonAction={handleSaveSession}
               buttonColor="bg-green-600"
             />
+            <Button
+              buttonText={"close"}
+              buttonAction={() => {
+                setDisplayWritingGameLanding(false);
+              }}
+              buttonColor="bg-red-600"
+            />
           </div>
         </div>
       </div>
