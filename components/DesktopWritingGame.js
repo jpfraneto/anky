@@ -478,20 +478,20 @@ const DesktopWritingGame = ({
       (x) => x.journalId == journalIdToSave
     )[0];
     const getWebIrys = async () => {
-      // Ethers5 provider
-      // await window.ethereum.enable();
       if (!thisWallet) return;
-      // const provider = new providers.Web3Provider(window.ethereum);
-      const provider = await thisWallet.getEthersProvider();
-
       const url = "https://node2.irys.xyz";
       const token = "ethereum";
-      const rpcURL = "https://rpc-mumbai.maticvigil.com"; // Optional parameter
+      const rpcURL = "";
 
-      // Create a wallet object
-      const wallet = { rpcUrl: rpcURL, name: "ethersv5", provider: provider };
-      // Use the wallet object
-      const webIrys = new WebIrys({ url, token, wallet });
+      const provider = await thisWallet.getEthersProvider();
+      if (!provider) throw new Error(`Cannot find privy wallet`);
+
+      const irysWallet =
+        thisWallet?.walletClientType === "privy"
+          ? { name: "privy-embedded", provider, sendTransaction }
+          : { name: "privy", provider };
+
+      const webIrys = new WebIrys({ url, token, wallet: irysWallet });
       await webIrys.ready();
       return webIrys;
     };

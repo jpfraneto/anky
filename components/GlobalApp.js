@@ -220,25 +220,19 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
   async function uploadPromptToIrys(prompt) {
     try {
       const getWebIrys = async () => {
-        // Ethers5 provider
-        // await window.ethereum.enable();
-        if (!wallet && !authenticated) return;
-        console.log("INSIIIIDE HERE, THE WALLET IS: ", wallet);
-        // const provider = new providers.Web3Provider(window.ethereum);
-        const provider = await wallet.getEthersProvider();
-
+        if (!wallet) return;
         const url = "https://node2.irys.xyz";
         const token = "ethereum";
-        const rpcURL = "https://rpc-mumbai.maticvigil.com"; // Optional parameter
+        const rpcURL = "";
 
-        // Create a wallet object
-        const irysWallet = {
-          rpcUrl: rpcURL,
-          name: "ethersv5",
-          provider: provider,
-        };
-        console.log("ininni¡,", irysWallet);
-        // Use the wallet object
+        const provider = await wallet.getEthersProvider();
+        if (!provider) throw new Error(`Cannot find privy wallet`);
+
+        const irysWallet =
+          wallet?.walletClientType === "privy"
+            ? { name: "privy-embedded", provider, sendTransaction }
+            : { name: "privy", provider };
+
         const webIrys = new WebIrys({ url, token, wallet: irysWallet });
         await webIrys.ready();
         return webIrys;
