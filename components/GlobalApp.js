@@ -153,6 +153,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
         }
         async function fetchCastWrapper() {
           try {
+            if (!router.query.cid) return;
             const responseFromServer = await axios.get(
               `${process.env.NEXT_PUBLIC_API_ROUTE}/farcaster/cast-by-cid/${router.query.cid}`
             );
@@ -163,7 +164,11 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
             }/${responseFromServer.data.castWrapper.castHash.slice(0, 10)}`;
             setParentCastForReplying(warpcastUrl);
             fetchCastForReplyInformation(warpcastUrl);
-          } catch (error) {}
+          } catch (error) {
+            console.log(
+              "there was an error in the fetch cast wrapper function"
+            );
+          }
         }
         searchThisText();
         fetchCastWrapper();
@@ -793,7 +798,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
                   setDisplayWritingGameLanding(false);
                   handleClose();
                 }}
-                className="text-purple-600 hover:text-red-400 cursor-pointer absolute right-16 top-0"
+                className="text-purple-600 hover:text-red-400 cursor-pointer absolute right-8 top-0"
               >
                 <FaRegCircleQuestion size={24} />
               </small>
@@ -811,7 +816,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
                   handleClose();
                 }
               }}
-              className="text-red-600 hover:text-red-400 cursor-pointer absolute right-8 top-0"
+              className="text-red-600 hover:text-red-400 cursor-pointer absolute right-0 top-0"
             >
               <FaRegCommentDots size={24} />
             </small>
@@ -821,14 +826,8 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
             >
               <IoMdClose size={24} />
             </small>
-            <small
-              onClick={handleClose}
-              className="text-red-600 hover:text-red-400 cursor-pointer absolute right-0 top-0 text-lg"
-            >
-              <IoMdClose size={24} />
-            </small>
 
-            <div className={` ${!authenticated ? "mb-2" : "mb-0"}`}>
+            <div className={`mt-4 ${!authenticated ? "mb-2" : "mb-0"}`}>
               <p className="text-white text-2xl standalone:mt-12">
                 welcome to anky
               </p>

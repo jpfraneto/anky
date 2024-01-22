@@ -67,17 +67,7 @@ const ReadIrysPage = ({ setShow }) => {
       }
     }
 
-    async function fetchCastWrapper() {
-      try {
-        const responseFromServer = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_ROUTE}/farcaster/cast-by-cid/${router.query.cid}`
-        );
-        setCastWrapper(responseFromServer.data.castWrapper);
-        console.log("the response from the server is: ", responseFromServer);
-      } catch (error) {}
-    }
     searchThisText();
-    fetchCastWrapper();
   }, [allUserWritings, router]);
 
   async function handleDisplayComments() {

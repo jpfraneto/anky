@@ -73,21 +73,21 @@ const IndividualDecodedCastCard = ({
   const [displayComments, setDisplayComments] = useState(false);
   const [writing, setWriting] = useState(cast.text);
 
-  useEffect(() => {
-    const fetchThisUserByFid = async () => {
-      try {
-        if (userPrivyId) return;
-        const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_ROUTE}/user/fid/${cast.author.fid}`
-        );
-        const data = response.data;
-        setUserPrivyId("clmgol0to069tms0f3urwkiis");
-      } catch (error) {
-        console.log("the error is: ", error);
-      }
-    };
-    fetchThisUserByFid();
-  }, []);
+  // useEffect(() => {
+  //   const fetchThisUserByFid = async () => {
+  //     try {
+  //       if (userPrivyId) return;
+  //       const response = await axios.get(
+  //         `${process.env.NEXT_PUBLIC_API_ROUTE}/user/fid/${cast.author.fid}`
+  //       );
+  //       const data = response.data;
+  //       setUserPrivyId("clmgol0to069tms0f3urwkiis");
+  //     } catch (error) {
+  //       console.log("the error is: ", error);
+  //     }
+  //   };
+  //   fetchThisUserByFid();
+  // }, []);
 
   async function handleDisplayComments() {
     return alert("work on the comments functionality");
