@@ -36,6 +36,7 @@ import airdropABI from "../lib/airdropABI.json";
 import InstallPwaModal from "./InstallPwaModal";
 import { BsInfoLg } from "react-icons/bs";
 import NewNotebookPage from "./NewNotebookPage";
+import BountyPage from "./BountyPage";
 import WhatIsThisPage from "./WhatIsThisPage";
 import LandingPage from "./LandingPage";
 import ReadIrysPage from "./ReadIrysPage";
@@ -419,6 +420,12 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
         return <WelcomePage />;
       case "/leaderboard":
         return <Leaderboard />;
+      case "/bounty":
+        return (
+          <BountyPage
+            setDisplayWritingGameLanding={setDisplayWritingGameLanding}
+          />
+        );
       case "/farcaster":
         return (
           <FarcasterPage
@@ -658,7 +665,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
           ></div>
         </div>
       </div>
-      {authenticated &&
+      {/* {authenticated &&
         farcasterUser.status != "approved" &&
         farcasterUser.signerStatus != "approved" && (
           <div
@@ -673,7 +680,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
               go to settings
             </Link>
           </div>
-        )}
+        )} */}
 
       <div
         className={`${inter.className} grow text-black relative  items-center justify-center`}

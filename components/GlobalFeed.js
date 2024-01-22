@@ -27,7 +27,6 @@ const GlobalFeed = ({ thisWallet }) => {
   const [loadingFeed, setLoadingFeed] = useState(true);
   const [translatingCasts, setTranslatingCasts] = useState(false);
   const { globalFeed, refreshFeed } = useFarcaster();
-  console.log("in here, the global feed is: ", globalFeed);
 
   if (globalFeed.length == 0)
     return (

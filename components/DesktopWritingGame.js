@@ -392,7 +392,6 @@ const DesktopWritingGame = ({
   };
 
   const sendTextToIrys = async () => {
-    console.log("sending the text to irys");
     if (!authenticated) {
       if (confirm("You need to login to save your writings")) {
         return login();
@@ -418,9 +417,7 @@ const DesktopWritingGame = ({
       await webIrys.ready();
       return webIrys;
     };
-    console.log("right before the here");
     const webIrys = await getWebIrys();
-    console.log("the web irys is:", webIrys);
     let previousPageCid = 0;
     previousPageCid = "";
 
@@ -430,9 +427,7 @@ const DesktopWritingGame = ({
       { name: "container-type", value: "community-notebook" },
     ];
     try {
-      console.log("right before uploading");
       const receipt = await webIrys.upload(text, { tags });
-      console.log("the receipt is:", receipt);
       return receipt;
     } catch (error) {
       console.log("there was an error");
@@ -575,7 +570,6 @@ const DesktopWritingGame = ({
       } else {
         cid = irysResponseCid;
       }
-      console.log("handle the anon cast");
       // const kannadaCid = encodeToAnkyverseLanguage(cid);
       // const newCastText = `${kannadaCid}\n\nwritten through anky. you can decode this clicking on the embed on the next cast.`;
       let forEmbedding;
@@ -595,6 +589,7 @@ const DesktopWritingGame = ({
       }
 
       const response = await axios.post(`${apiRoute}/farcaster/api/cast/anon`, {
+        time: time,
         cid: cid,
         manaEarned: amountOfManaAdded,
         text: newCastText,
