@@ -56,7 +56,8 @@ const DesktopWritingGame = ({
   const mappedUserJournals =
     [] || userAppInformation?.userJournals?.map((x) => x.title);
   const router = useRouter();
-  const { login, authenticated, user, getAccessToken } = usePrivy();
+  const { login, authenticated, user, getAccessToken, sendTransaction } =
+    usePrivy();
   const { userSettings } = useSettings();
   const [textareaHeight, setTextareaHeight] = useState("20vh"); // default height
   const { setUserDatabaseInformation, setAllUserWritings } = useUser();
@@ -391,6 +392,7 @@ const DesktopWritingGame = ({
   };
 
   const sendTextToIrys = async () => {
+    console.log("sending the text to irys");
     if (!authenticated) {
       if (confirm("You need to login to save your writings")) {
         return login();
@@ -399,50 +401,39 @@ const DesktopWritingGame = ({
     }
     setSavingTextAnon(true);
     const getWebIrys = async () => {
-      // Ethers5 provider
-      // await window.ethereum.enable();
       if (!thisWallet) return;
-      // const provider = new providers.Web3Provider(window.ethereum);
-      const provider = await thisWallet.getEthersProvider();
-
       const url = "https://node2.irys.xyz";
       const token = "ethereum";
-      const rpcURL = "https://rpc-mumbai.maticvigil.com"; // Optional parameter
+      const rpcURL = "";
 
-      // Create a wallet object
-      const wallet = { rpcUrl: rpcURL, name: "ethersv5", provider: provider };
-      // Use the wallet object
-      const webIrys = new WebIrys({ url, token, wallet });
+      const provider = await thisWallet.getEthersProvider();
+      if (!provider) throw new Error(`Cannot find privy wallet`);
+
+      const irysWallet =
+        thisWallet?.walletClientType === "privy"
+          ? { name: "privy-embedded", provider, sendTransaction }
+          : { name: "privy", provider };
+
+      const webIrys = new WebIrys({ url, token, wallet: irysWallet });
       await webIrys.ready();
       return webIrys;
     };
-
+    console.log("right before the here");
     const webIrys = await getWebIrys();
+    console.log("the web irys is:", webIrys);
     let previousPageCid = 0;
     previousPageCid = "";
-
-    const containerId = "alohomora" || getAnkyverseDay();
-    const pageNumber = "3";
 
     const tags = [
       { name: "Content-Type", value: "text/plain" },
       { name: "application-id", value: "Anky Dementors" },
       { name: "container-type", value: "community-notebook" },
-      { name: "container-id", value: containerId },
-      { name: "page-number", value: pageNumber },
-      {
-        name: "previous-page",
-        value: previousPageCid.toString(),
-      },
     ];
     try {
+      console.log("right before uploading");
       const receipt = await webIrys.upload(text, { tags });
-      setLifeBarLength(0);
+      console.log("the receipt is:", receipt);
       return receipt;
-      // router.push(`/me`);
-      // setTimeout(() => {
-      //   setDisplayWritingGameLanding(false);
-      // }, 1000);
     } catch (error) {
       console.log("there was an error");
       console.log("the error is:", error);
@@ -451,13 +442,11 @@ const DesktopWritingGame = ({
   };
 
   const handleCast = async (cid) => {
-    if (farcasterUser.signerStatus != "approved" || !farcasterUser?.signerUuid)
-      return alert("you are not completely logged in yet");
+    console.log("in here, the farcaster user is: ", farcasterUser);
     if (!text) return alert("please write something");
-
+    console.log("inside the handleCast route", cid, parentCastForReplying);
     setIsCasting(true);
     try {
-      // const kannadaCid = encodeToAnkyverseLanguage(cid);
       let forEmbedding;
       if (text.length > 300) {
         forEmbedding = [{ url: `https://www.anky.lat/i/${cid || cid.id}` }];
@@ -472,10 +461,8 @@ const DesktopWritingGame = ({
           text: newCastText,
           signer_uuid: farcasterUser.signerUuid,
           embeds: forEmbedding,
-          parent: {
-            parent:
-              parentCastForReplying || "https://warpcast.com/~/channel/anky",
-          },
+          parent:
+            parentCastForReplying || "https://warpcast.com/~/channel/anky",
           cid: cid,
           manaEarned: amountOfManaAdded,
         }
@@ -588,7 +575,7 @@ const DesktopWritingGame = ({
       } else {
         cid = irysResponseCid;
       }
-
+      console.log("handle the anon cast");
       // const kannadaCid = encodeToAnkyverseLanguage(cid);
       // const newCastText = `${kannadaCid}\n\nwritten through anky. you can decode this clicking on the embed on the next cast.`;
       let forEmbedding;
@@ -614,18 +601,13 @@ const DesktopWritingGame = ({
         parent: forReplyingVariable,
         embeds: forEmbedding,
       });
+      console.log("the response from the server here is: ", response);
 
       setCastHash(response.data.cast.hash);
       return {
         castHash: response.data.cast.hash,
         responseFromIrys: responseFromIrys || irysResponseCid,
       };
-
-      // if (response.status === 200) {
-      //   setText(""); // Clear the text field
-      //   router.push(`https://www.anky.lat/r/${response.data.cast.hash}`);
-      //   setDisplayWritingGameLanding(false);
-      // }
     } catch (error) {
       alert("there was an error casting your cast anon");
       console.log(error);
@@ -662,16 +644,23 @@ const DesktopWritingGame = ({
 
   async function handleSaveSession() {
     try {
-      let castResponse, irysResponseCid, irysResponseReceipt;
+      let castResponse, irysResponseCid, irysResponseReceipt, responseFromIrys;
 
       setSavingSessionState(true);
       if (authenticated) {
         if (journalIdToSave) {
           irysResponseReceipt = await saveTextToJournal();
         } else {
-          irysResponseReceipt = await sendTextToIrys();
+          if (!userWantsToStoreWritingForever) {
+            responseFromIrys = await axios.post(`${apiRoute}/upload-writing`, {
+              text,
+            });
+            irysResponseCid = responseFromIrys.data.cid;
+          } else {
+            irysResponseReceipt = await sendTextToIrys();
+            irysResponseCid = irysResponseReceipt.id;
+          }
         }
-        irysResponseCid = irysResponseReceipt.id;
       }
       if (!authenticated) {
         if (userWantsToCastAnon) {
@@ -688,7 +677,10 @@ const DesktopWritingGame = ({
           ...x,
         ]);
       }
-      if (authenticated && farcasterUser.signerStatus == "approved") {
+      if (
+        (authenticated && farcasterUser.signerStatus == "approved") ||
+        (authenticated && farcasterUser.status == "approved")
+      ) {
         if (castAs == "me") {
           castResponse = await handleCast(irysResponseCid);
         } else if (castAs == "anon") {
@@ -707,6 +699,7 @@ const DesktopWritingGame = ({
         "There was an error in the handle finish session function",
         error
       );
+      setThereWasAnError(true);
     }
   }
 
@@ -814,8 +807,8 @@ const DesktopWritingGame = ({
             <div className=" bg-purple-600 p-2 mt-2 mb-0 w-full rounded-xl mx-auto flex flex-col justify-start items-center ">
               <div className="flex">
                 <p className="text-black h-fit flex items-center">
-                  do you want to save your writing on the eternal library of the
-                  ankyverse? (associated with your wallet address)
+                  do you want to save your writing forever (associated with your
+                  wallet address)
                 </p>
                 <input
                   className="mx-4 my-auto"
@@ -915,6 +908,14 @@ const DesktopWritingGame = ({
         <Spinner />
       </div>
     );
+
+  if (thereWasAnError) {
+    return (
+      <div className="text-white">
+        <p>there was an error uploading your text</p>
+      </div>
+    );
+  }
 
   return (
     <div className="h-full">
