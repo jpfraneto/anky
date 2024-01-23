@@ -1050,7 +1050,6 @@ const DesktopWritingGame = ({
                             router.push("/");
                           }
                           setDisplayWritingGameLanding(false);
-                          router.push("/");
                         } else {
                           if (
                             router.pathname.includes("write") ||
