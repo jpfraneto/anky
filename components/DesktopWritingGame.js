@@ -1037,7 +1037,10 @@ const DesktopWritingGame = ({
                       buttonAction={() => {
                         setThisIsTheFlag(true);
                         if (displayWritingGameLanding) {
-                          if (router.pathname.includes("u")) {
+                          if (router.pathname.includes("/u/")) {
+                            return setDisplayWritingGameLanding(false);
+                          }
+                          if (router.pathname.includes("/i/")) {
                             return setDisplayWritingGameLanding(false);
                           }
                           if (
