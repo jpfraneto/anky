@@ -1037,7 +1037,9 @@ const DesktopWritingGame = ({
                       buttonAction={() => {
                         setThisIsTheFlag(true);
                         if (displayWritingGameLanding) {
-                          console.log("in here!", router.pathname);
+                          if (router.pathname.includes("u")) {
+                            return setDisplayWritingGameLanding(false);
+                          }
                           if (
                             router.pathname.includes("write") ||
                             router.pathname.includes("w")

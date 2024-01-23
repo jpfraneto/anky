@@ -225,8 +225,8 @@ const UserDisplayPage = ({ thisUserInfo }) => {
   }
 
   const UserPfP = () => {
-    if (!thisUserFarcasterInfo) return;
-    return <Image src={thisUserFarcasterInfo.pfp.url} fill />;
+    if (!thisUserFarcasterInfo || !thisUserFarcasterInfo.pfp) return;
+    return <Image src={thisUserFarcasterInfo.pfp.url || ""} fill />;
   };
 
   if (userNotFound) {
@@ -235,7 +235,7 @@ const UserDisplayPage = ({ thisUserInfo }) => {
         <p>This user doesn&apos;t exist in the db yet.</p>
         <p>
           I need to make the connection between the farcaster fid and the user
-          inside the database.{" "}
+          inside the database.
         </p>
         <div className="w-48 mt-2 mx-auto">
           <Link href="/feed" passHref>
@@ -254,7 +254,7 @@ const UserDisplayPage = ({ thisUserInfo }) => {
     );
 
   return (
-    <div className="w-full  h-full overflow-y-scroll">
+    <div className="w-full h-full md:w-96 mx-auto overflow-y-scroll">
       <div className="flex w-full px-2 pt-3">
         <div className="w-1/5 rounded-full mx-1 mr-auto overflow-hidden border-2 border-white w-fit h-fit">
           <div className="w-full aspect-square md:h-48 md:w-48 z-5 bg-black relative">
@@ -266,7 +266,6 @@ const UserDisplayPage = ({ thisUserInfo }) => {
             {thisUserFarcasterInfo.displayName}
           </p>
           <div className="flex">
-            {" "}
             <p className="">@{thisUserFarcasterInfo.username}</p>
             {thisUserFarcasterInfo.viewerContext.followedBy && (
               <span className="px-2 py-1 bg-purple-600 rounded-xl border border-white ml-4">

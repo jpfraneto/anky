@@ -7,7 +7,6 @@ import { GiRollingEnergy } from "react-icons/gi";
 import { useUser } from "../context/UserContext";
 
 const SimpleCast = ({ cast, pfp, userInfo = null }) => {
-  console.log("the cast is: ", cast);
   const { farcasterUser } = useUser();
   const [editedCast, setEditedCast] = useState(cast);
   const [hasUserCommented, setHasUserCommented] = useState(false);
@@ -203,10 +202,7 @@ const SimpleCast = ({ cast, pfp, userInfo = null }) => {
   if (!userInfo) return;
   return (
     <div className="w-full pl-4 flex border-bottom border-purple-200 mt-2 relative">
-      <div
-        onClick={() => console.log(editedCast)}
-        className="w-16 h-16 pr-2 aspect-square md:h-48 md:w-48 z-5 bg-black relative"
-      >
+      <div className="w-16 h-16 pr-2 aspect-square md:h-20 md:w-20 rounded-full overflow-hidden z-5 bg-black relative">
         {pfp()}
       </div>
       <div className="w-full pb-4 flex flex-col items-start px-2">
