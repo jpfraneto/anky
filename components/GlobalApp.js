@@ -714,7 +714,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
         ) : (
           <div className="h-full">
             {getComponentForRoute(router.pathname, router)}
-            <nav className="hidden border-t-2 border-black standalone:flex w-full h-16  fixed bottom-0  bg-purple-200 space-x-4 justify-between items-center px-6 z-50">
+            {/* <nav className="hidden border-t-2 border-black standalone:flex w-full h-16  fixed bottom-0  bg-purple-200 space-x-4 justify-between items-center px-6 z-50">
               <Link href="/feed" passHref>
                 <span>
                   <IoIosHome size={40} />
@@ -754,7 +754,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
               <span onClick={() => setDisplayAboutModal(!displayAboutModal)}>
                 <BsInfoLg size={40} />
               </span>
-            </nav>
+            </nav> */}
           </div>
         )}
       </div>
