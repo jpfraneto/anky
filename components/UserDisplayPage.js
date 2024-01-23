@@ -256,8 +256,8 @@ const UserDisplayPage = ({ thisUserInfo }) => {
   return (
     <div className="w-full h-full md:w-96 mx-auto overflow-y-scroll">
       <div className="flex w-full px-2 pt-3">
-        <div className="w-1/5 rounded-full mx-1 mr-auto overflow-hidden border-2 border-white w-fit h-fit">
-          <div className="w-full aspect-square md:h-48 md:w-48 z-5 bg-black relative">
+        <div className="rounded-full mx-1 mr-auto overflow-hidden border-2 border-white w-fit h-fit">
+          <div className="w-16 h-16 md:h-48 md:w-48 z-5 bg-black relative">
             {UserPfP()}
           </div>
         </div>
