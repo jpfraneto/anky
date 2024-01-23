@@ -132,7 +132,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
   const [countdownTarget, setCountdownTarget] = useState(0);
   const [show, setShow] = useState(false);
   const [displayWritingGameLanding, setDisplayWritingGameLanding] =
-    useState(false);
+    useState(true);
   const [userWallet, setUserWallet] = useState(null);
   const [userIsMintingAnky, setUserIsMintingAnky] = useState(false);
   const wallets = useWallets();

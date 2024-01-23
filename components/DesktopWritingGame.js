@@ -112,11 +112,6 @@ const DesktopWritingGame = ({
   const keystrokeIntervalRef = useRef(null);
   const thisWallet = wallets[0];
 
-  const apiRoute =
-    self.location.hostname === "localhost"
-      ? "http://localhost:3000"
-      : "https://api.anky.lat";
-
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
 
   const handleResize = () => {
@@ -561,9 +556,12 @@ const DesktopWritingGame = ({
       let responseFromIrys, cid;
       if (!authenticated) setSavingRoundLoading(true);
       if (!irysResponseCid) {
-        responseFromIrys = await axios.post(`${apiRoute}/upload-writing`, {
-          text,
-        });
+        responseFromIrys = await axios.post(
+          `${process.env.NEXT_PUBLIC_API_ROUTE}/upload-writing`,
+          {
+            text,
+          }
+        );
         cid = responseFromIrys.data.cid;
       } else {
         cid = irysResponseCid;
@@ -583,14 +581,17 @@ const DesktopWritingGame = ({
         forReplyingVariable = parentCastForReplying;
       }
 
-      const response = await axios.post(`${apiRoute}/farcaster/api/cast/anon`, {
-        time: time,
-        cid: cid,
-        manaEarned: amountOfManaAdded,
-        text: newCastText,
-        parent: forReplyingVariable,
-        embeds: forEmbedding,
-      });
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_ROUTE}/farcaster/api/cast/anon`,
+        {
+          time: time,
+          cid: cid,
+          manaEarned: amountOfManaAdded,
+          text: newCastText,
+          parent: forReplyingVariable,
+          embeds: forEmbedding,
+        }
+      );
       console.log("the response from the server here is: ", response);
 
       setCastHash(response.data.cast.hash);
@@ -642,9 +643,12 @@ const DesktopWritingGame = ({
           irysResponseReceipt = await saveTextToJournal();
         } else {
           if (!userWantsToStoreWritingForever) {
-            responseFromIrys = await axios.post(`${apiRoute}/upload-writing`, {
-              text,
-            });
+            responseFromIrys = await axios.post(
+              `${process.env.NEXT_PUBLIC_API_ROUTE}/upload-writing`,
+              {
+                text,
+              }
+            );
             irysResponseCid = responseFromIrys.data.cid;
           } else {
             irysResponseReceipt = await sendTextToIrys();

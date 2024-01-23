@@ -198,10 +198,7 @@ const AskFarcaster = () => {
     <div className="w-96 mx-auto mt-4 text-white mb-12 h-screen overflow-y-scroll">
       {currentStep === 1 && (
         <div className="flex flex-col items-center justify-center">
-          <p>
-            welcome. here you talk anonymously (or as you) with the farcaster
-            community.
-          </p>
+          <p>talk anonymously (or as you) with the farcaster community.</p>
           <div className="flex mt-4">
             <div className="flex justify-between w-96 mx-auto">
               <div>
