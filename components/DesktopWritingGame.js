@@ -52,6 +52,8 @@ const DesktopWritingGame = ({
   lifeBarLength,
   farcasterUser,
   countdownTarget,
+  text,
+  setText,
 }) => {
   const mappedUserJournals =
     [] || userAppInformation?.userJournals?.map((x) => x.title);
@@ -62,7 +64,6 @@ const DesktopWritingGame = ({
   const [textareaHeight, setTextareaHeight] = useState("20vh"); // default height
   const { setUserDatabaseInformation, setAllUserWritings } = useUser();
   const audioRef = useRef();
-  const [text, setText] = useState("");
   const [amountOfManaAdded, setAmountOfManaAdded] = useState(0);
   const [time, setTime] = useState(countdownTarget || 0);
   const [whatIsThis, setWhatIsThis] = useState(false);
@@ -443,13 +444,10 @@ const DesktopWritingGame = ({
     setIsCasting(true);
     try {
       let forEmbedding;
-      if (text.length > 300) {
+      if (text.length > 320) {
         forEmbedding = [{ url: `https://www.anky.lat/i/${cid || cid.id}` }];
       }
-      const newCastText =
-        text.length > 320
-          ? `${text.slice(0, 280)}...\n\n(read full cast on anky)`
-          : text;
+      const newCastText = text.length > 320 ? `${text.slice(0, 317)}...` : text;
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_ROUTE}/farcaster/api/cast`,
         {
@@ -573,13 +571,10 @@ const DesktopWritingGame = ({
       // const kannadaCid = encodeToAnkyverseLanguage(cid);
       // const newCastText = `${kannadaCid}\n\nwritten through anky. you can decode this clicking on the embed on the next cast.`;
       let forEmbedding;
-      if (text.length > 300) {
+      if (text.length > 320) {
         forEmbedding = [{ url: `https://www.anky.lat/i/${cid}` }];
       }
-      const newCastText =
-        text.length > 320
-          ? `${text.slice(0, 280)}...\n\n(read full cast on anky)`
-          : text;
+      const newCastText = text.length > 320 ? `${text.slice(0, 317)}` : text;
 
       let forReplyingVariable = "https://warpcast.com/~/channel/anky";
       if (theAsyncCastToReply) {
@@ -660,8 +655,10 @@ const DesktopWritingGame = ({
       if (!authenticated) {
         if (userWantsToCastAnon) {
           let castResponseFromAnonCast = await handleAnonCast();
-
           irysResponseCid = castResponseFromAnonCast.responseFromIrys.data.cid;
+        } else {
+          setDisplayWritingGameLanding(false);
+          return router.push("/welcome");
         }
       }
       if (authenticated && farcasterUser.signerStatus != "approved") {
@@ -705,18 +702,27 @@ const DesktopWritingGame = ({
           text && "fade-in"
         } flex flex-col justify-center items-center absolute w-screen top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-opacity-20 mb-4`}
       >
-        <div className="border-white border-2 mx-16 md:mx-auto w-5/6 md:w-2/3 xl:w-3/5 rounded-xl bg-black p-2 text-white">
+        <div className="border-white border-2 mx-16 md:mx-auto w-5/6 md:w-2/3 xl:w-2/5 rounded-xl bg-black p-2 text-white">
           <p className="text-lg md:text-3xl">your writing session is over</p>
           {time < 30 ? (
-            <p className="text-red-400 text-xs">
-              *in here, there is a currency that represents time. you can earn
-              it if you {!authenticated && "log in and "} write for more than 30
-              seconds.
+            <p className="text-red-400 text-md">
+              *maybe that was a bit fast. the interface recognizes when you
+              write, and for now, it is set to end your session after{" "}
+              {userSettings.secondsBetweenKeystrokes} seconds. you can change
+              that by clicking{" "}
+              <span
+                onClick={() => {
+                  setDisplaySettingsModal(true);
+                }}
+                className="text-purple-500 hover:text-yellow-600 cursor-pointer"
+              >
+                HERE
+              </span>
             </p>
           ) : (
             <p className="text-red-400 text-sm">
               {!authenticated
-                ? "you need to be logged in to earn $NEWEN"
+                ? "you need to be logged in to earn $newen"
                 : responseFromPinging}
             </p>
           )}
@@ -771,11 +777,11 @@ const DesktopWritingGame = ({
           ) : (
             <div className="bg-purple-500 text-black p-2 my-2 rounded-xl flex space-x-2 items-center justify-center">
               <div className="h-fit w-5/6 pl-8 flex justify-center mx-auto items-center">
-                <p className="text-black text-center">
-                  do you want to cast this anonymously on farcaster?
+                <p className="text-left text-black">
+                  do you want to share what you wrote anonymously on farcaster?
                 </p>
                 <input
-                  className="mx-4"
+                  className="mx-4 w-10 h-10 rounded-xl bg-purple-600"
                   type="checkbox"
                   onChange={(e) => {
                     setUserWantsToCastAnon(!userWantsToCastAnon);
@@ -854,7 +860,13 @@ const DesktopWritingGame = ({
 
           <div className="flex justify-center mt-4">
             <Button
-              buttonText={savingSessionState ? "broadcasting..." : "submit"}
+              buttonText={
+                savingSessionState
+                  ? "broadcasting..."
+                  : userWantsToCastAnon
+                  ? "cast anon"
+                  : "finish session"
+              }
               buttonAction={handleSaveSession}
               buttonColor="bg-green-600"
             />

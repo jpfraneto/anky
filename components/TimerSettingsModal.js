@@ -43,7 +43,7 @@ const TimerSettingsModal = ({
         <h2 className="text-2xl">customize your writing experience</h2>
         <ol className="flex flex-col w-full space-y-2">
           <li className="flex flex-col">
-            <span className="text-purple-600 mb-2">
+            <span className="text-purple-200 mb-2">
               <span className="text-xl text-yellow-600">
                 {maxTimeBetweenKeystrokes}
               </span>{" "}
@@ -57,7 +57,7 @@ const TimerSettingsModal = ({
               value={maxTimeBetweenKeystrokes}
               onChange={(e) => setMaxTimeBetweenKeystrokes(e.target.value)}
             />
-            <span className="text-purple-600 mb-2">
+            <span className="text-purple-200 mb-2">
               you will earn{" "}
               <span className="text-xl text-yellow-600">
                 {Math.floor(300 / maxTimeBetweenKeystrokes)}%

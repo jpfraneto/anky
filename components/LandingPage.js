@@ -82,15 +82,15 @@ function LandingPage({
               ) : (
                 <div className="text-gray-400">
                   <div className="mt-2 w-full space-x-2 flex mx-auto justify-center">
-                    <Link href="/ask-farcaster">
-                      <Button
-                        buttonText="cast anon"
-                        buttonColor="bg-gradient-to-r from-red-500 via-yellow-600 to-violet-500 text-black"
-                      />
-                    </Link>
+                    <Button
+                      buttonAction={() => setDisplayWritingGameLanding(true)}
+                      buttonText="write"
+                      buttonColor="bg-gradient-to-r from-red-500 via-yellow-600 to-violet-500 text-black"
+                    />
+
                     <Link href="/feed">
                       <Button
-                        buttonText="feed"
+                        buttonText="read"
                         buttonColor="bg-gradient-to-r from-red-500 via-yellow-600 to-violet-500 text-black"
                       />
                     </Link>

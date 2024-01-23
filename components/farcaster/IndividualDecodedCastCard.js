@@ -73,21 +73,34 @@ const IndividualDecodedCastCard = ({
   const [displayComments, setDisplayComments] = useState(false);
   const [writing, setWriting] = useState(cast.text);
 
-  // useEffect(() => {
-  //   const fetchThisUserByFid = async () => {
-  //     try {
-  //       if (userPrivyId) return;
-  //       const response = await axios.get(
-  //         `${process.env.NEXT_PUBLIC_API_ROUTE}/user/fid/${cast.author.fid}`
-  //       );
-  //       const data = response.data;
-  //       setUserPrivyId("clmgol0to069tms0f3urwkiis");
-  //     } catch (error) {
-  //       console.log("the error is: ", error);
-  //     }
-  //   };
-  //   fetchThisUserByFid();
-  // }, []);
+  useEffect(() => {
+    const fetchThisCast = async () => {
+      try {
+        var parts = cast.embeds[0].url.split("/");
+        var cid = parts.pop() || "";
+        if (cid.length == 43) {
+          const thisWriting = await getOneWriting(cid);
+          setWriting(thisWriting.text);
+        }
+
+        // if (userPrivyId) return;
+        // const response = await axios.get(
+        //   `${process.env.NEXT_PUBLIC_API_ROUTE}/user/fid/${cast.author.fid}`
+        // );
+        // const data = response.data;
+        // setUserPrivyId("clmgol0to069tms0f3urwkiis");
+      } catch (error) {
+        console.log("the error is: ", error);
+      }
+    };
+    if (
+      cast &&
+      cast.embeds.length > 0 &&
+      cast.embeds[0].url.includes("anky.lat")
+    ) {
+      fetchThisCast();
+    }
+  }, []);
 
   async function handleDisplayComments() {
     return alert("work on the comments functionality");
@@ -97,7 +110,6 @@ const IndividualDecodedCastCard = ({
   // Function to handle recast toggle
   const handleRecast = async (e) => {
     e.preventDefault();
-    console.log("inside the handle recast", farcasterUser);
     if (farcasterUser.status === "approved") {
       const isRecasted = hasUserRecasted; // store the initial state
       const newRecast = {
@@ -202,6 +214,7 @@ const IndividualDecodedCastCard = ({
 
   async function handleLike(e) {
     try {
+      console.log("the farcaster user is:", farcasterUser);
       if (farcasterUser.status === "approved") {
         const isLiked = hasUserLiked;
         const newLike = {
@@ -259,25 +272,21 @@ const IndividualDecodedCastCard = ({
       <div className="w-full md:w-96 mx-auto h-full bg-gray-300 text-gray-700 relative">
         <span
           onClick={copyTheText}
-          className={` absolute top-1 left-3 active:text-orange-600 hover:text-purple-600 hover:cursor-pointer`}
+          className={` absolute top-1 left-2 text-xs active:text-orange-600 hover:text-purple-600 hover:cursor-pointer`}
         >
           {textForCopy}
         </span>
-        <div className="h-full flex flex-col">
+        <p className="absolute top-1 right-2 text-xs italic flex-none h-4 flex items-center">
+          {new Date(cast.timestamp).toLocaleDateString("en-US", options)}
+        </p>
+        <div className="h-full flex flex-col pt-2">
           <div className="text-xs italic py-3 flex-none h-32 flex items-center justify-center ">
             {previewCast ? (
               <div className="w-24 h-24 rounded-full overflow-hidden relative shadow-2xl">
                 <Image src={cast.author.pfp_url} fill />
               </div>
             ) : (
-              <Link
-                href={`/u/${
-                  cast.author.fid == 18350
-                    ? "clmgp49nc026wmf0fl8ulevqp"
-                    : userPrivyId
-                }`}
-                passHref
-              >
+              <Link href={`/u/${cast.author.fid}`} passHref>
                 <div className="w-24 h-24 active:translate-x-2 rounded-full overflow-hidden relative shadow-2xl">
                   <Image src={cast.author.pfp_url} fill />
                 </div>
@@ -289,6 +298,7 @@ const IndividualDecodedCastCard = ({
               <div className="px-2 w-full h-8 flex justify-between items-center">
                 <div className="pl-4 flex space-x-4 h-full">
                   <div
+                    onClick={handleDisplayComments}
                     className={`flex space-x-1 items-center ${
                       hasUserCommented && "text-gray-500"
                     } hover:text-gray-500 cursor-pointer`}
@@ -297,6 +307,7 @@ const IndividualDecodedCastCard = ({
                     <span>{cast?.replies?.count || 0}</span>
                   </div>
                   <div
+                    onClick={handleRecast}
                     className={`flex space-x-1 items-center ${
                       hasUserRecasted ? "text-green-300" : ""
                     } hover:text-green-500 cursor-pointer`}
@@ -305,6 +316,7 @@ const IndividualDecodedCastCard = ({
                     <span>{uniqueRecasts?.length || 0}</span>
                   </div>
                   <div
+                    onClick={handleLike}
                     className={`flex space-x-1 items-center ${
                       hasUserLiked ? "text-red-300" : ""
                     } hover:text-red-500 cursor-pointer`}
@@ -390,15 +402,15 @@ const IndividualDecodedCastCard = ({
                 )}
 
                 {displaySendNewen && !authenticated && (
-                  <small className="text-red-800">
+                  <small className="text-purple-200">
                     *
                     <span
-                      className="text-red-500 hover:text-red-700 cursor-pointer shadow-md shadow-yellow-600"
+                      className="text-purple-500 cursor-pointer shadow-md shadow-yellow-600"
                       onClick={login}
                     >
                       login
                     </span>{" "}
-                    to send $NEWEN to the creator of this cast
+                    to send $newen to the creator of this cast
                   </small>
                 )}
               </>
@@ -417,7 +429,7 @@ const IndividualDecodedCastCard = ({
                 <p className="my-2">{writing}</p>
               )
             ) : null}
-            {writing.includes("(read full cast on anky)") && (
+            {/* {writing.includes("(read full cast on anky)") && (
               <Link
                 href={`/i/${cast?.embeds?.url?.slice(-43) || "error"}`}
                 passHref
@@ -428,7 +440,7 @@ const IndividualDecodedCastCard = ({
                   buttonText="(click to read full cast)"
                 />
               </Link>
-            )}
+            )} */}
           </div>
         </div>
         {displayComments && (

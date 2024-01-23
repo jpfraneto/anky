@@ -103,6 +103,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
     setAllUserWritings,
   } = useUser();
   const { userSettings, setUserSettings } = useSettings();
+  const [text, setText] = useState("");
   const router = useRouter();
   const [lifeBarLength, setLifeBarLength] = useState(100);
   const [displayManaInfo, setDisplayManaInfo] = useState(false);
@@ -381,6 +382,8 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
               setLifeBarLength={setLifeBarLength}
               setThisIsTheFlag={setThisIsTheFlag}
               lifeBarLength={lifeBarLength}
+              text={text}
+              setText={setText}
               setDisableButton={setDisableButton}
               setDisplayNavbar={setDisplayNavbar}
               displayWritingGameLanding={displayWritingGameLanding}
@@ -400,6 +403,8 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
             setUserAppInformation={setUserAppInformation}
             userAppInformation={userAppInformation}
             setLifeBarLength={setLifeBarLength}
+            text={text}
+            setText={setText}
             setDisplayNavbar={setDisplayNavbar}
             setThisIsTheFlag={setThisIsTheFlag}
             lifeBarLength={lifeBarLength}
@@ -411,7 +416,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
           />
         );
       case "/welcome":
-        return <WelcomePage />;
+        return <WelcomePage text={text} />;
       case "/leaderboard":
         return <Leaderboard />;
       case "/bounty":
@@ -453,6 +458,8 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
               setLifeBarLength={setLifeBarLength}
               setThisIsTheFlag={setThisIsTheFlag}
               lifeBarLength={lifeBarLength}
+              text={text}
+              setText={setText}
               setDisableButton={setDisableButton}
               setDisplayNavbar={setDisplayNavbar}
               displayWritingGameLanding={displayWritingGameLanding}
@@ -525,6 +532,8 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
             userAppInformation={userAppInformation}
             parentCastForReplying={parentCastForReplying}
             theAsyncCastToReply={theAsyncCastToReply}
+            text={text}
+            setText={setText}
             setLifeBarLength={setLifeBarLength}
             setThisIsTheFlag={setThisIsTheFlag}
             setDisplaySettingsModal={setDisplaySettingsModal}
@@ -592,6 +601,8 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
             userAppInformation={userAppInformation}
             setLifeBarLength={setLifeBarLength}
             setThisIsTheFlag={setThisIsTheFlag}
+            text={text}
+            setText={setText}
             lifeBarLength={lifeBarLength}
             setDisableButton={setDisableButton}
             setDisplayNavbar={setDisplayNavbar}
@@ -604,24 +615,6 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
     }
   }
 
-  // if (mainAppLoading)
-  //   return (
-  //     <Transition in={mainAppLoading} timeout={500} mountOnEnter unmountOnExit>
-  //       {(state) => (
-  //         <div
-  //           className={`flex-col text-white h-screen w-screen bg-black flex justify-center items-center fade-${state}`}
-  //         >
-  //           <h1 className={`${righteous.className} text-5xl text-center `}>
-  //             anky
-  //           </h1>
-  //           <div className="lds-ripple">
-  //             <div></div>
-  //             <div></div>
-  //           </div>
-  //         </div>
-  //       )}
-  //     </Transition>
-  //   );
   return (
     <div className="fixed overflow-y-scroll text-center w-screen text-white flex flex-col h-screen">
       <div className="standalone:mt-8 flex-none text-gray-400 w-full h-16 justify-between md:flex items-center flex-col">
@@ -644,7 +637,11 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
           </Link>
           <div
             className="active:text-purple-600 md:mb-1 mt-1 hover:text-purple-600"
-            onClick={() => setDisplayWritingGameLanding(true)}
+            onClick={() => {
+              setTheAsyncCastToReply(null);
+              setDisplayWritingGameLanding(true);
+              setText("");
+            }}
           >
             <FaPencilAlt size={30} />
           </div>
@@ -702,6 +699,8 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
               theAsyncCastToReply={theAsyncCastToReply}
               setLifeBarLength={setLifeBarLength}
               setThisIsTheFlag={setThisIsTheFlag}
+              text={text}
+              setText={setText}
               setDisplaySettingsModal={setDisplaySettingsModal}
               lifeBarLength={lifeBarLength}
               setDisplayNavbar={setDisplayNavbar}

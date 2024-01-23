@@ -4,6 +4,7 @@ import axios from "axios";
 import { getThisUserWritings } from "../lib/irys";
 import Spinner from "./Spinner";
 import { Bar } from "react-chartjs-2";
+import { GiRollingEnergy } from "react-icons/gi";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -15,6 +16,8 @@ import {
 } from "chart.js";
 import Link from "next/link";
 import Button from "./Button";
+import { useRouter } from "next/router";
+import SimpleCast from "./SimpleCast";
 
 var options = {
   weekday: "long",
@@ -37,13 +40,16 @@ ChartJS.register(
 );
 
 const UserDisplayPage = ({ thisUserInfo }) => {
+  const router = useRouter();
   const [usersAnkyFeed, setUsersAnkyFeed] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingUser, setLoadingUser] = useState(true);
   const [allUserWritings, setAllUserWritings] = useState([]);
+  const [thisUserFeed, setThisUserFeed] = useState({});
   const [entryForDisplay, setEntryForDisplay] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [longestRun, setLongestRun] = useState(null);
+  const [thisUserFarcasterInfo, setThisUserFarcasterInfo] = useState({});
   const [writingsLoading, setWritingsLoading] = useState(true);
   const [thisFarcasterUser, setThisFarcasterUser] = useState({});
   const [userNotFound, setUserNotFound] = useState(false);
@@ -74,37 +80,47 @@ const UserDisplayPage = ({ thisUserInfo }) => {
     const fetchUsersInformation = async () => {
       try {
         if (!thisUserInfo) return;
-        const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_ROUTE}/user/farcaster/${thisUserInfo}`
-        );
+        console.log("the this user info is: ", thisUserInfo);
+        if (router.query.fid) {
+          const response = await axios.get(
+            `${process.env.NEXT_PUBLIC_API_ROUTE}/user/farcaster-feed/${router.query.fid}`
+          );
+          console.log("the response is: ", response);
+          setThisUserFarcasterInfo(response.data.user);
+          setThisUserFeed(response.data.feed);
+        }
 
-        const manaByDate = response.data.manaData;
-        const labels = Object.keys(manaByDate);
-        const data = Object.values(manaByDate);
-        const backgroundColors = data.map(
-          (value) => `rgba(53, 162, ${value % 255}, 0.5)` // Dynamic color based on value
-        );
-        setChartData({
-          labels,
-          datasets: [
-            {
-              label: "newen earned",
-              data,
-              backgroundColor: backgroundColors,
-            },
-          ],
-        });
-        setThisAnkyUser(response.data.ankyUser);
-        setLongestRun(response.data.longestRun);
+        // const response = await axios.get(
+        //   `${process.env.NEXT_PUBLIC_API_ROUTE}/user/farcaster/${thisUserInfo}`
+        // );
+
+        // const manaByDate = response.data.manaData;
+        // const labels = Object.keys(manaByDate);
+        // const data = Object.values(manaByDate);
+        // const backgroundColors = data.map(
+        //   (value) => `rgba(53, 162, ${value % 255}, 0.5)` // Dynamic color based on value
+        // );
+        // setChartData({
+        //   labels,
+        //   datasets: [
+        //     {
+        //       label: "newen earned",
+        //       data,
+        //       backgroundColor: backgroundColors,
+        //     },
+        //   ],
+        // });
+        // setThisAnkyUser(response.data.ankyUser);
+        // setLongestRun(response.data.longestRun);
         setLoadingUser(false);
       } catch (error) {
-        console.log("this user doesnt exist");
+        console.log("this user doesnt exist", error);
         setLoading(false);
         setUserNotFound(true);
       }
     };
     fetchUsersInformation();
-  }, []);
+  }, [router]);
 
   const handleKeyDown = (event) => {
     if (event.key === "ArrowLeft") {
@@ -207,6 +223,12 @@ const UserDisplayPage = ({ thisUserInfo }) => {
       )
     );
   }
+
+  const UserPfP = () => {
+    if (!thisUserFarcasterInfo) return;
+    return <Image src={thisUserFarcasterInfo.pfp.url} fill />;
+  };
+
   if (userNotFound) {
     return (
       <div className="mt-4 text-white px-4">
@@ -232,16 +254,74 @@ const UserDisplayPage = ({ thisUserInfo }) => {
     );
 
   return (
-    <div className="w-full px-4 h-full ">
-      <div className="  rounded-xl overflow-hidden border-2 border-white w-fit mx-auto mt-4">
-        <div className="w-28 h-28 md:h-48 md:w-48 z-5 bg-black relative">
-          <Image
-            src={`${thisAnkyUser?.farcasterAccount?.pfp || "/ankys/anky.png"}`}
-            fill
+    <div className="w-full  h-full overflow-y-scroll">
+      <div className="flex w-full px-2 pt-3">
+        <div className="w-1/5 rounded-full mx-1 mr-auto overflow-hidden border-2 border-white w-fit h-fit">
+          <div className="w-full aspect-square md:h-48 md:w-48 z-5 bg-black relative">
+            {UserPfP()}
+          </div>
+        </div>
+        <div className="pl-2 w-4/5 text-purple-200 text-left">
+          <p className="text-bold text-xl">
+            {thisUserFarcasterInfo.displayName}
+          </p>
+          <div className="flex">
+            {" "}
+            <p className="">@{thisUserFarcasterInfo.username}</p>
+            {thisUserFarcasterInfo.viewerContext.followedBy && (
+              <span className="px-2 py-1 bg-purple-600 rounded-xl border border-white ml-4">
+                Follows you
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+      <div className="text-purple-200 px-2 mt-2">
+        <p>{thisUserFarcasterInfo.profile.bio.text}</p>
+        <div className="flex ml-2 mt-2">
+          <span className="mr-2">
+            {thisUserFarcasterInfo.followingCount} Followers
+          </span>
+          <span>{thisUserFarcasterInfo.followerCount} Following</span>
+        </div>
+      </div>
+      <div className="text-purple-200 px-2 mt-2 flex">
+        <div className="w-1/2 px-1">
+          {thisUserFarcasterInfo.viewerContext.following ? (
+            <Button
+              buttonText="unfollow"
+              buttonColor="bg-transparent-600 border-white border-2"
+              buttonAction={() => alert("unfollow this user")}
+            />
+          ) : (
+            <Button
+              buttonText="follow"
+              buttonColor="bg-purple-600 border-black border-2"
+              buttonAction={() => alert("follow this user")}
+            />
+          )}
+        </div>
+        <div className="w-1/2 px-1">
+          <Button
+            buttonText={`gift newen`}
+            buttonColor="bg-gradient-to-r from-red-500 via-yellow-600 to-violet-500 text-black border-black border-2"
+            buttonAction={() => alert("send x newen to user")}
           />
         </div>
       </div>
-      {thisAnkyUser ? (
+      <div className="w-full  mt-2">
+        {thisUserFeed.map((cast, i) => {
+          return (
+            <SimpleCast
+              cast={cast}
+              key={i}
+              pfp={UserPfP}
+              userInfo={thisUserFarcasterInfo}
+            />
+          );
+        })}
+      </div>
+      {/* {thisAnkyUser ? (
         <div>
           <div className="md:w-full px-4 mt-4 flex justify-between py-4 h-fit z-1 rounded-xl bg-blue-200  mx-auto">
             <div className="w-1/3 flex ">
@@ -380,7 +460,7 @@ const UserDisplayPage = ({ thisUserInfo }) => {
                         );
                       })}
                   </>
-                )} */}
+                )} 
               </div>
             </div>
           </div>
@@ -403,7 +483,7 @@ const UserDisplayPage = ({ thisUserInfo }) => {
             open in warpcast
           </a>
         </div>
-      )}
+      )}*/}
       {renderModal()}
     </div>
   );
