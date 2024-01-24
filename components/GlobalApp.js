@@ -113,6 +113,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
   const [promptFromAnkyBeingTagged, setPromptFromAnkyBeingTagged] = useState(
     {}
   );
+  const [displayAnkyModalState, setDisplayAnkyModalState] = useState("");
   const [refreshUsersStateLoading, setRefreshUsersStateLoading] =
     useState(false);
   const [checkingIfYouOwnAnky, setCheckingIfYouOwnAnky] = useState(false);
@@ -280,6 +281,10 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
     }
   }
 
+  async function displayAnkyModal(string) {
+    setDisplayAnkyModalState(string);
+  }
+
   async function fetchCastForReplyInformation(warpcastUrl) {
     try {
       const response = await axios.post(
@@ -435,7 +440,12 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
           />
         );
       case `/u/${route.split("/").pop()}`:
-        return <UserDisplayPage thisUserInfo={router.query.fid} />;
+        return (
+          <UserDisplayPage
+            thisUserInfo={router.query.fid}
+            displayAnkyModal={displayAnkyModal}
+          />
+        );
 
       case "/farcaster/feed":
         return <FarcasterFeedPage router={router} />;
@@ -773,6 +783,8 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
         />
       )}
 
+      {/* {displayAnkyModalState && <p>display the anky modal state</p>} */}
+
       {displayAboutModal && (
         <AboutModal
           setDisplayAboutModal={setDisplayAboutModal}
@@ -923,6 +935,16 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
                   )}
                 </div>
               )}
+
+              <p
+                className="bg-purple-400 text-center p-2 text-black border-yellow-500  border-4 rounded-xl hover:bg-green-200  w-48 left"
+                onClick={() => {
+                  alert("do you think i should add this feature tomorrow?");
+                }}
+              >
+                mint your anky generated with your writing for $1 degen
+              </p>
+
               <p
                 className="my-1 hover:text-purple-600 cursor-pointer"
                 onClick={() => {

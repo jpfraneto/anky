@@ -34,6 +34,8 @@ const ReadIrysPage = ({ setShow }) => {
   const [errorWrapper, setErrorWrapper] = useState(false);
   const [copyText, setCopyText] = useState("copy text");
   const [copyLinkText, setCopyLinkText] = useState("copy anky link");
+  const [showCopyTextButton, setShowCopyTextButton] = useState(true);
+  const [showCopyLinkButton, setShowCopyLinkButton] = useState(true);
   const { farcasterUser, userDatabaseInformation, allUserWritings } = useUser();
 
   const scrollToTop = () => {
@@ -120,10 +122,12 @@ const ReadIrysPage = ({ setShow }) => {
   const copyToClipboard = async () => {
     if (!thisWriting) return;
     await navigator.clipboard.writeText(thisWriting.text);
-    setCopyText("copied");
-    setTimeout(() => {
-      setCopyText("copy text");
-    }, 1111);
+    setCopyText("anky copied"); // Change here to reflect the action
+    setShowCopyLinkButton(false); // Hide the link copy button
+    // setTimeout(() => {
+    //   setCopyText("copy text");
+    //   setShowCopyLinkButton(true); // Show the link copy button again after some time
+    // }, 3000); // Increased timeout for better user experience
   };
 
   const copyLinkToClipboard = async () => {
@@ -131,10 +135,12 @@ const ReadIrysPage = ({ setShow }) => {
     await navigator.clipboard.writeText(
       `https://www.anky.lat/i/${router.query.cid}`
     );
-    setCopyLinkText("copied");
-    setTimeout(() => {
-      setCopyLinkText("copy anky link");
-    }, 1111);
+    setCopyLinkText("link to anky copied"); // Change here to reflect the action
+    setShowCopyTextButton(false); // Hide the text copy button
+    // setTimeout(() => {
+    //   setCopyLinkText("copy anky link");
+    //   setShowCopyTextButton(true); // Show the text copy button again after some time
+    // }, 3000); // Increased timeout for better user experience
   };
 
   if (errorWrapper) {
@@ -184,23 +190,24 @@ const ReadIrysPage = ({ setShow }) => {
       className={`${inter.className} h-full flex flex-col items-start justify-start text-left pt-8`}
     >
       <div className="overflow-y-scroll h-full md:w-96 mx-auto text-white ">
-        <span
-          onClick={() => console.log("the cast wrapper is: ", castWrapper)}
-          className="text-sm  w-96 top-1 left-1/2 -translate-x-1/2"
-        >
+        <span className="text-sm  w-96 top-1 left-1/2 -translate-x-1/2">
           {new Date(thisWriting.timestamp).toLocaleDateString("en-US", options)}
         </span>
         <div className="my-2 flex ">
-          <Button
-            buttonAction={copyToClipboard}
-            buttonText={copyText}
-            buttonColor="bg-green-600 mx-2 w-32 text-center"
-          />
-          <Button
-            buttonAction={copyLinkToClipboard}
-            buttonText={copyLinkText}
-            buttonColor="bg-purple-600 w-48 text-center"
-          />
+          {showCopyTextButton && (
+            <Button
+              buttonAction={copyToClipboard}
+              buttonText={copyText}
+              buttonColor="bg-green-600 mx-2 w-fit text-center"
+            />
+          )}
+          {showCopyLinkButton && (
+            <Button
+              buttonAction={copyLinkToClipboard}
+              buttonText={copyLinkText}
+              buttonColor="bg-purple-600 w-fit text-center"
+            />
+          )}
         </div>
 
         {thisWriting ? (

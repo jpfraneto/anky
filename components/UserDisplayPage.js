@@ -39,7 +39,7 @@ ChartJS.register(
   Legend
 );
 
-const UserDisplayPage = ({ thisUserInfo }) => {
+const UserDisplayPage = ({ thisUserInfo, displayAnkyModal }) => {
   const router = useRouter();
   const [usersAnkyFeed, setUsersAnkyFeed] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -296,7 +296,9 @@ const UserDisplayPage = ({ thisUserInfo }) => {
             <Button
               buttonText="follow"
               buttonColor="bg-purple-600 border-black border-2"
-              buttonAction={() => alert("follow this user")}
+              buttonAction={() => {
+                router.push("/settings?link=farcaster");
+              }}
             />
           )}
         </div>

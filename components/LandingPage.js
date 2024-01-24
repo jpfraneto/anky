@@ -104,38 +104,52 @@ function LandingPage({
 
       {!authenticated && (
         <>
-          <div className="py-8 px-2 w-full md:px-64 bg-gray-200">
-            <p className="mb-4">You are reading.</p>
-            <p className="mb-4">You want to know what this thing is about.</p>
-            <p className="mb-4">But this is not a place for reading.</p>
-            <p className="mb-4">
-              It is the most important tool that you have found to get to know
-              yourself through writing.
-            </p>
-            <p className="mb-4">Are you ready?</p>
-            <p className="mb-4">Just write.</p>
-            <p className="mb-4">
-              Everything that takes you away from that is resistance.
-            </p>
-            <div className="flex justify-center w-48 mx-auto my-4">
-              <Button
-                buttonText="im ready"
-                buttonAction={() => setDisplayWritingGameLanding(true)}
-                buttonColor="bg-gradient-to-r from-red-500 via-yellow-600 to-violet-500 text-black"
-              />
+          <div className="py-8 px-2 w-full md:px-64 bg-gray-200 ">
+            <div className="w-96 mx-auto text-left">
+              <p className="mb-4">you are reading.</p>
+              <p className="mb-4">
+                you want to know what this thing is about...
+              </p>
+              <p className="mb-4">but this is not a place for reading.</p>
+              <p className="mb-4">
+                it is the most important tool that you have found to get to know
+                yourself through the process of writing.
+              </p>
+              <p className="mb-4">are you ready?</p>
+              <p className="mb-4">just write.</p>
+              <p className="mb-4">
+                everything that takes you away from that is resistance.
+              </p>
+              <div className="flex justify-center w-48 mx-auto my-4">
+                <Button
+                  buttonText="im ready"
+                  buttonAction={() => setDisplayWritingGameLanding(true)}
+                  buttonColor="bg-gradient-to-r from-red-500 via-yellow-600 to-violet-500 text-black"
+                />
+              </div>
             </div>
           </div>
 
           {/* Journey with Anky Section */}
-          <div className="py-8 px-2 w-full md:px-64 bg-white">
-            <h2 className="text-3xl font-semibold mb-6">
-              when there is no time to think, your truth comes forth
-            </h2>
-            <p className="mb-4">anky is built on top of a pioneer interface:</p>
-            <p className="mb-4">
-              if you stop writing for more than three seconds, the session is
-              over.
-            </p>
+          <div className="py-8 px-2 w-full md:px-64 bg-white h-fit relative">
+            <div className="w-96 mr-auto absolute left-48">
+              <h2 className="text-3xl font-semibold mb-6">
+                when there is no time to think, your truth comes forth
+              </h2>
+              <p className="mb-4">
+                anky is built on top of a pioneer interface:
+              </p>
+              <p className="mb-4">
+                if you stop writing for more than X seconds, the session is
+                over.
+              </p>
+              <p className="mb-4">
+                the default value of X is 3 seconds. if you want it to be
+                faster, you can click (or tap) the gear at the bottom of the
+                time on the writing screen. then you can move the slider and
+                choose between 1 and 8 seconds. you decide.
+              </p>
+            </div>
           </div>
 
           {/* Discover your Anky Section */}
@@ -207,12 +221,18 @@ function LandingPage({
                 https://www.github.com/ankylat
               </a>
             </div>
-            <div className="flex justify-center w-48 mx-auto my-4">
+            <div className="flex justify-center w-96 flex-col mx-auto my-4">
               <Button
                 buttonText="im ready to write"
                 buttonAction={() => setDisplayWritingGameLanding(true)}
                 buttonColor="bg-gradient-to-r from-red-500 via-yellow-600 to-violet-500 text-black"
               />
+              <Link href="/u/18350" passHref>
+                <Button
+                  buttonText="i don't want to write yet"
+                  buttonColor="w-fit mt-8 text-xs text-black hover:bg-purple-600"
+                />
+              </Link>
             </div>
           </div>
         </>

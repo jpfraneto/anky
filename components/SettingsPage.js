@@ -150,7 +150,7 @@ const SettingsPage = () => {
   if (!authenticated)
     return (
       <div className="mt-4 text-white">
-        <p>please login so that you can access the settings</p>
+        <p>please login so that you can connect your farcaster account</p>
         <Button
           buttonAction={login}
           buttonText="login"

@@ -160,7 +160,7 @@ const ConnectFarcasterModal = () => {
       )}
       {farcasterUser?.status == "pending_approval" &&
         farcasterUser?.signer_approval_url && (
-          <div className="signer-approval-container flex flex-col h-fit bg-white text-black p-4 rounded-xl mt-2 items-left justify-center ">
+          <div className="signer-approval-container bg-purple-600 flex flex-col h-fit text-white p-4 rounded-xl mt-2 items-left justify-center ">
             <p className="hidden md:flex mb-2 justify-center mt-2">
               scan this qr code to authenticate with warpcast and link your
               account to anky
