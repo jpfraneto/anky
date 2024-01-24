@@ -33,11 +33,7 @@ const SimpleCast = ({ cast, pfp, userInfo = null }) => {
         console.log("the error is: ", error);
       }
     };
-    if (
-      cast &&
-      cast.embeds.length > 0 &&
-      cast.embeds[0].url.includes("anky.lat")
-    ) {
+    if (cast && cast?.embeds[0]?.url?.includes("anky.lat")) {
       fetchThisCast();
     }
   }, []);
@@ -202,15 +198,15 @@ const SimpleCast = ({ cast, pfp, userInfo = null }) => {
   if (!userInfo) return;
   return (
     <div className="w-full pl-4 flex border-bottom border-purple-200 mt-2 relative">
-      <div className="w-20 h-16 pr-2 md:h-20 md:w-20 rounded-full overflow-hidden bg-black relative">
+      <div className="w-16 h-16 pr-2 md:h-20 md:w-20 rounded-full overflow-hidden bg-black relative">
         {pfp()}
       </div>
-      <div className="w-full pb-4 flex flex-col items-start px-2">
+      <div className="grow pb-4 flex flex-col items-start px-2">
         <p className="text-purple-200">
           <span className="text-white ">{userInfo.displayName}</span>{" "}
           <span>@{userInfo.username}</span>
         </p>
-        <p className="text-purple-200 text-left">
+        <p className="text-purple-200 text-left break-words">
           {editedCast.text ? (
             editedCast.text.includes("\n") ? (
               editedCast.text.split("\n").map((x, i) => (
