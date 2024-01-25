@@ -216,15 +216,15 @@ const SimpleCast = ({ cast, pfp, userInfo = null }) => {
           <span>@{userInfo?.username || editedCast?.author?.username}</span>
         </p>
         <p className="text-purple-200 text-left break-words">
-          {editedCast.text ? (
-            editedCast.text.includes("\n") ? (
-              editedCast.text.split("\n").map((x, i) => (
+          {editedCast?.text ? (
+            editedCast?.text?.includes("\n") ? (
+              editedCast?.text?.split("\n").map((x, i) => (
                 <p className="mb-4" key={i}>
                   {x}
                 </p>
               ))
             ) : (
-              <p className="my-2">{editedCast.text}</p>
+              <p className="my-2">{editedCast.text || ""}</p>
             )
           ) : null}
         </p>

@@ -395,7 +395,6 @@ const DesktopWritingGame = ({
       }
       return router.push("/what-is-this");
     }
-    setSavingTextAnon(true);
     const getWebIrys = async () => {
       if (!thisWallet) return;
       const url = "https://node2.irys.xyz";
@@ -711,7 +710,7 @@ const DesktopWritingGame = ({
           text && "fade-in"
         } flex flex-col justify-center items-center absolute w-screen top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-opacity-20 mb-4`}
       >
-        <div className="border-white border-2 mx-16 md:mx-auto w-5/6 md:w-2/3 xl:w-2/5 rounded-xl bg-black p-2 text-white">
+        <div className=" text-2xl border-white border-2 mx-16 md:mx-auto w-5/6 md:w-2/3 xl:w-2/5 rounded-xl bg-black p-2 text-white">
           <p className="text-2xl md:text-3xl">your writing session is over</p>
           {time < 30 ? (
             <p className="text-red-400 text-lg">
@@ -740,8 +739,8 @@ const DesktopWritingGame = ({
           (farcasterUser.status == "approved" ||
             farcasterUser.signerStatus == "approved") ? (
             <div className="bg-purple-500 text-black p-2 my-2 rounded-xl flex space-x-2 items-center justify-center">
-              <div className="flex md:flex-row flex-col space-x-2 items-center justify-center">
-                <p className="">share on farcaster?</p>
+              <div className="flex  md:flex-row flex-col space-x-2 items-center justify-center">
+                <p className="mb-2">share on farcaster?</p>
                 <div className="flex  space-x-2">
                   <p
                     onClick={() => setCastAs("")}
@@ -873,8 +872,12 @@ const DesktopWritingGame = ({
                 savingSessionState
                   ? "broadcasting..."
                   : userWantsToCastAnon
-                  ? "cast anon"
-                  : "finish session"
+                  ? castAs == ""
+                    ? "save and close"
+                    : `cast ${castAs}`
+                  : castAs == "me"
+                  ? `cast as ${farcasterUser.fid}`
+                  : "finish"
               }
               buttonAction={handleSaveSession}
               buttonColor="mt-2 md:mt-0 bg-green-600"
@@ -930,7 +933,15 @@ const DesktopWritingGame = ({
   if (thereWasAnError) {
     return (
       <div className="text-white">
-        <p>there was an error uploading your text</p>
+        <p>
+          There was an error. But you can always keep your writing if you want.
+        </p>
+        <p>I&apos;m sorry. I&apos;m doing my best to make this thing work.</p>
+        <Button
+          buttonColor="bg-thegreenbtn"
+          buttonAction={pasteText}
+          buttonText={copyText}
+        />
       </div>
     );
   }
