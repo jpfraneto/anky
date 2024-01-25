@@ -71,7 +71,7 @@ function LandingPage({
                       buttonText="write"
                       buttonColor="bg-gradient-to-r from-red-500 via-yellow-600 to-violet-500 text-black"
                     />
-                    <Link href="/feed" passHref>
+                    <Link href="/u/18350" passHref>
                       <Button
                         buttonText="read"
                         buttonColor="bg-purple-400 text-black"
@@ -88,7 +88,7 @@ function LandingPage({
                       buttonColor="bg-gradient-to-r from-red-500 via-yellow-600 to-violet-500 text-black"
                     />
 
-                    <Link href="/feed">
+                    <Link href="/u/18350">
                       <Button
                         buttonText="read"
                         buttonColor="bg-gradient-to-r from-red-500 via-yellow-600 to-violet-500 text-black"

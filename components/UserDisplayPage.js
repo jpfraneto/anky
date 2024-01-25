@@ -4,7 +4,7 @@ import axios from "axios";
 import { getThisUserWritings } from "../lib/irys";
 import Spinner from "./Spinner";
 import { Bar } from "react-chartjs-2";
-import { GiRollingEnergy } from "react-icons/gi";
+import { useUser } from "../context/UserContext";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -18,6 +18,7 @@ import Link from "next/link";
 import Button from "./Button";
 import { useRouter } from "next/router";
 import SimpleCast from "./SimpleCast";
+import { usePrivy } from "@privy-io/react-auth";
 
 var options = {
   weekday: "long",
@@ -39,8 +40,14 @@ ChartJS.register(
   Legend
 );
 
-const UserDisplayPage = ({ thisUserInfo, displayAnkyModal }) => {
+const UserDisplayPage = ({
+  thisUserInfo,
+  displayAnkyModal,
+  setDisplayFarcasterConnectionModalState,
+}) => {
   const router = useRouter();
+  const { farcasterUser } = useUser();
+  const { authenticated } = usePrivy();
   const [usersAnkyFeed, setUsersAnkyFeed] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingUser, setLoadingUser] = useState(true);
@@ -297,7 +304,17 @@ const UserDisplayPage = ({ thisUserInfo, displayAnkyModal }) => {
               buttonText="follow"
               buttonColor="bg-purple-600 border-black border-2"
               buttonAction={() => {
-                router.push("/settings?link=farcaster");
+                if (authenticated && !farcasterUser?.status) {
+                  setDisplayFarcasterConnectionModalState(true);
+                } else {
+                  if (!authenticated) {
+                    alert(
+                      "you need to login first and then connect your farcaster account to do this"
+                    );
+                  } else {
+                    alert("follow this user");
+                  }
+                }
               }}
             />
           )}
@@ -306,7 +323,7 @@ const UserDisplayPage = ({ thisUserInfo, displayAnkyModal }) => {
           <Button
             buttonText={`gift newen`}
             buttonColor="bg-gradient-to-r from-red-500 via-yellow-600 to-violet-500 text-black border-black border-2"
-            buttonAction={() => alert("send x newen to user")}
+            buttonAction={() => alert("send x newen to this user")}
           />
         </div>
       </div>
@@ -322,169 +339,6 @@ const UserDisplayPage = ({ thisUserInfo, displayAnkyModal }) => {
           );
         })}
       </div>
-      {/* {thisAnkyUser ? (
-        <div>
-          <div className="md:w-full px-4 mt-4 flex justify-between py-4 h-fit z-1 rounded-xl bg-blue-200  mx-auto">
-            <div className="w-1/3 flex ">
-              <div className="flex w-1/2 h-full  items-center justify-center flex-col">
-                <p className="text-md">writing streak</p>
-                <p className="text-2xl">
-                  {Math.max(thisAnkyUser.longestStreak, thisAnkyUser.streak)}
-                </p>
-              </div>
-              <div className="flex w-1/2 h-full items-center justify-center flex-col">
-                <p className="text-md">newen balance</p>
-                <p className="text-2xl">{thisAnkyUser.manaBalance}</p>
-              </div>
-            </div>
-            <div className="text-black flex flex-col items-center justify-center ">
-              <p>{thisAnkyUser?.farcasterAccount?.displayName}</p>
-              <p>@{thisAnkyUser?.farcasterAccount?.username || "anon"}</p>
-            </div>
-            <div className="w-1/3 flex ">
-              <div className="flex w-1/2 h-full items-center justify-center flex-col">
-                <p className="text-md">rank</p>
-                <p className="text-2xl">???</p>
-              </div>
-              <div className="flex w-1/2 h-full items-center justify-center flex-col">
-                <p className="text-md">level</p>
-                <p className="text-2xl">???</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="md:w-1/3 flex justify-between h-4 mt-4 z-1 rounded-lg bg-white  mx-auto">
-            <div className="h-full w-full">
-              <div
-                className="h-full opacity-50"
-                style={{
-                  width: `${20}%`,
-                  backgroundColor: 50 > 30 ? "green" : "red",
-                }}
-              ></div>
-            </div>
-          </div>
-          <p className="text-white">2000 newen to level 9</p>
-          <div className="w-full mt-2 h-full flex flex-col md:flex-row">
-            <div className="flex w-full md:w-1/2 flex-col">
-              <div className="w-full grow-0 h-fit bg-black text-white flex flex-col p-2 justify-start items-start">
-                <p className="text-xl ">Stats</p>
-                <hr className="text-white h-2" />
-                <div className="flex justify-between px-2 w-full">
-                  <p>total newen earned: </p>
-                  <p>{thisAnkyUser.totalManaEarned}</p>
-                </div>
-                <div className="flex justify-between px-2 w-full">
-                  <p>longest streak: </p>
-                  <p>
-                    {Math.max(thisAnkyUser.longestStreak, thisAnkyUser.streak)}
-                  </p>
-                </div>
-                <div className="flex justify-between px-2 w-full">
-                  <p>longest writing session: </p>
-                  <p>{longestRun?.amount || 0} s</p>
-                </div>
-              </div>
-              <div className="w-full bg-purple-100 text-black">
-                <Bar
-                  data={chartData}
-                  options={{
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                      x: {
-                        title: {
-                          display: true,
-                          text: "Date",
-                        },
-                      },
-                      y: {
-                        title: {
-                          display: true,
-                          text: "newen Earned",
-                        },
-                      },
-                    },
-                    plugins: {
-                      tooltip: {
-                        callbacks: {
-                          label: function (context) {
-                            let label = context.dataset.label || "";
-                            if (label) {
-                              label += ": ";
-                            }
-                            if (context.parsed.y !== null) {
-                              label += `${context.parsed.y} newen`;
-                            }
-                            return label;
-                          },
-                        },
-                      },
-                      legend: {
-                        display: false,
-                      },
-                    },
-                  }}
-                />
-              </div>
-            </div>
-
-            <div className="w-full md:w-2/3 mt-2 md:mt-0 overflow-y-scroll  grow bg-black text-white flex flex-col p-2 justify-start items-start">
-              <p className="text-xl ">Writing Feed</p>
-              <hr className="text-white h-2" />
-              <div className="w-full flex overflow-y-scroll justify-center flex-wrap  h-fit p-2 my-2">
-                <p>
-                  waiting for neynar&apos;s functionality to display the feed of
-                  a user inside a specific channel (in this case, /anky on
-                  farcaster).
-                </p>
-                {/* {writingsLoading ? (
-                  <>
-                    <Spinner />
-                    <p>loading your writings</p>
-                  </>
-                ) : (
-                  <>
-                    {allUserWritings &&
-                      allUserWritings.map((writing, i) => {
-                        return (
-                          <div
-                            key={i}
-                            onClick={() => {
-                              setEntryForDisplay(i);
-                              setIsModalOpen(true);
-                            }}
-                            className="px-2 text-black border-black border py-1 m-1 w-10 h-10 flex justify-center items-center hover:shadow-xl hover:shadow-black hover:bg-blue-600 text-xl cursor-pointer bg-blue-400 rounded-xl"
-                          >
-                            {i + 1}
-                          </div>
-                        );
-                      })}
-                  </>
-                )} 
-              </div>
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div className="text-white mt-24">
-          <p>
-            @{thisFarcasterUser?.username || null} doesn&apos;t have an account
-            on anky yet
-          </p>
-          <p>please extend a warm invitation to this person</p>
-          <p>this community is built together</p>
-          <a
-            target="_blank"
-            href={`https://warpcast.com/${
-              thisFarcasterUser?.username || "anky"
-            }/`}
-            className="ml-auto hover:text-red-200"
-          >
-            open in warpcast
-          </a>
-        </div>
-      )}*/}
       {renderModal()}
     </div>
   );

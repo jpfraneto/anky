@@ -3,6 +3,7 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import { decodeFromAnkyverseLanguage } from "../lib/ankyverse";
 import { getOneWriting } from "../lib/irys";
+import SimpleCast from "./SimpleCast";
 import Link from "next/link";
 import Button from "./Button";
 import { Inter } from "next/font/google";
@@ -30,7 +31,9 @@ const ReadIrysPage = ({ setShow }) => {
   const { authenticated, login } = usePrivy();
   const [thisWriting, setThisWriting] = useState(null);
   const [loadingPage, setLoadingPage] = useState(true);
+  const [thisFullCast, setThisFullCast] = useState(null);
   const [castWrapper, setCastWrapper] = useState({});
+  const [thisCast, setThisCast] = useState(null);
   const [errorWrapper, setErrorWrapper] = useState(false);
   const [copyText, setCopyText] = useState("copy text");
   const [copyLinkText, setCopyLinkText] = useState("copy anky link");
@@ -61,6 +64,9 @@ const ReadIrysPage = ({ setShow }) => {
           console.log("the writer placeholder is: ", writerPlaceholder);
           if (writerPlaceholder) {
             setThisWriting(writerPlaceholder);
+            setThisCast((x) => {
+              return { ...x, text: writerPlaceholder, timestamp: new Date() };
+            });
             setLoadingPage(false);
           }
         }
@@ -68,7 +74,29 @@ const ReadIrysPage = ({ setShow }) => {
         setErrorWrapper(true);
       }
     }
-
+    async function getCastByCid() {
+      try {
+        if (!router?.query?.cid) return;
+        console.log("inside the get cast by cid function", router.query.cid);
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_ROUTE}/farcaster/get-cast-by-cid/${router.query.cid}`
+        );
+        console.log("the response here is: ", response);
+        if (response?.data?.cast) {
+          console.log(
+            "inside the get cast by cid, the cast is: ",
+            response.data
+          );
+          setThisFullCast(response.data.cast);
+        }
+      } catch (error) {
+        console.log(
+          "there was an error inside the get cast by cid function",
+          error
+        );
+      }
+    }
+    getCastByCid();
     searchThisText();
   }, [allUserWritings, router]);
 
@@ -143,6 +171,11 @@ const ReadIrysPage = ({ setShow }) => {
     // }, 3000); // Increased timeout for better user experience
   };
 
+  const UserPfP = () => {
+    if (!thisFullCast || !thisFullCast.author.pfp_url) return;
+    return <Image src={thisFullCast.author.pfp_url || ""} fill />;
+  };
+
   if (errorWrapper) {
     return (
       <div className="mt-4 text-white">
@@ -187,41 +220,51 @@ const ReadIrysPage = ({ setShow }) => {
 
   return (
     <div
-      className={`${inter.className} h-full flex flex-col items-start justify-start text-left pt-8`}
+      className={`${inter.className} h-full px-3 flex flex-col items-start justify-start text-left pt-8`}
     >
-      <div className="overflow-y-scroll h-full md:w-96 mx-auto text-white ">
-        <span className="text-sm  w-96 top-1 left-1/2 -translate-x-1/2">
-          {new Date(thisWriting.timestamp).toLocaleDateString("en-US", options)}
-        </span>
-        <div className="my-2 flex ">
-          {showCopyTextButton && (
-            <Button
-              buttonAction={copyToClipboard}
-              buttonText={copyText}
-              buttonColor="bg-green-600 mx-2 w-fit text-center"
-            />
-          )}
-          {showCopyLinkButton && (
-            <Button
-              buttonAction={copyLinkToClipboard}
-              buttonText={copyLinkText}
-              buttonColor="bg-purple-600 w-fit text-center"
-            />
-          )}
+      {thisFullCast ? (
+        <div className="text-white w-96 mx-auto">
+          <SimpleCast cast={thisFullCast} pfp={UserPfP} />
         </div>
+      ) : (
+        <div className="overflow-y-scroll h-full md:w-96 mx-auto text-white ">
+          <span className="text-sm  w-96 top-1 left-1/2 -translate-x-1/2">
+            {new Date(thisWriting.timestamp).toLocaleDateString(
+              "en-US",
+              options
+            )}
+          </span>
+          <div className="my-2 flex ">
+            {showCopyTextButton && (
+              <Button
+                buttonAction={copyToClipboard}
+                buttonText={copyText}
+                buttonColor="bg-green-600 mx-2 w-fit text-center"
+              />
+            )}
+            {showCopyLinkButton && (
+              <Button
+                buttonAction={copyLinkToClipboard}
+                buttonText={copyLinkText}
+                buttonColor="bg-purple-600 w-fit text-center"
+              />
+            )}
+          </div>
 
-        {thisWriting ? (
-          thisWriting.text.includes("\n") ? (
-            thisWriting.text.split("\n").map((x, i) => (
-              <p className="my-2" key={i}>
-                {x}
-              </p>
-            ))
-          ) : (
-            <p className="my-2">{thisWriting.text}</p>
-          )
-        ) : null}
-      </div>
+          {thisWriting ? (
+            thisWriting.text.includes("\n") ? (
+              thisWriting.text.split("\n").map((x, i) => (
+                <p className="my-2" key={i}>
+                  {x}
+                </p>
+              ))
+            ) : (
+              <p className="my-2">{thisWriting.text}</p>
+            )
+          ) : null}
+          <SimpleCast cast={thisCast} pfp={UserPfP} />
+        </div>
+      )}
     </div>
   );
 };

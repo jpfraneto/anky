@@ -6,6 +6,7 @@ import { WebIrys } from "@irys/sdk";
 import { useWallets } from "@privy-io/react-auth";
 import { saveTextAnon } from "../lib/backend";
 import { ethers } from "ethers";
+import SimpleCast from "./SimpleCast";
 import { setUserData } from "../lib/idbHelper";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
@@ -635,8 +636,12 @@ const DesktopWritingGame = ({
 
   async function handleSaveSession() {
     try {
-      let castResponse, irysResponseCid, irysResponseReceipt, responseFromIrys;
-
+      let castResponse,
+        irysResponseCid,
+        irysResponseReceipt,
+        responseFromIrys,
+        publishedCast;
+      publishedCast = { cast: {}, pfp: "", userInfo: null };
       setSavingSessionState(true);
       if (authenticated) {
         if (journalIdToSave) {
@@ -688,8 +693,8 @@ const DesktopWritingGame = ({
         ]);
       }
 
-      setDisplayWritingGameLanding(false);
       router.push(`/i/${irysResponseCid}`);
+      setDisplayWritingGameLanding(false);
     } catch (error) {
       console.log(
         "There was an error in the handle finish session function",
@@ -707,9 +712,9 @@ const DesktopWritingGame = ({
         } flex flex-col justify-center items-center absolute w-screen top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-opacity-20 mb-4`}
       >
         <div className="border-white border-2 mx-16 md:mx-auto w-5/6 md:w-2/3 xl:w-2/5 rounded-xl bg-black p-2 text-white">
-          <p className="text-lg md:text-3xl">your writing session is over</p>
+          <p className="text-2xl md:text-3xl">your writing session is over</p>
           {time < 30 ? (
-            <p className="text-red-400 text-md">
+            <p className="text-red-400 text-lg">
               *maybe that was a bit fast. the interface recognizes when you
               write, and for now, it is set to end your session after{" "}
               {userSettings.secondsBetweenKeystrokes} seconds. you can change
@@ -862,7 +867,7 @@ const DesktopWritingGame = ({
             </div>
           )}
 
-          <div className="flex justify-center mt-4">
+          <div className="flex flex-col md:flex-row  justify-center mt-4 md:mt-0">
             <Button
               buttonText={
                 savingSessionState
@@ -872,14 +877,16 @@ const DesktopWritingGame = ({
                   : "finish session"
               }
               buttonAction={handleSaveSession}
-              buttonColor="bg-green-600"
+              buttonColor="mt-2 md:mt-0 bg-green-600"
             />
             <Button
-              buttonText={"close"}
+              buttonText={"copy writing and close"}
               buttonAction={() => {
+                copyToClipboard();
+                startNewRun();
                 setDisplayWritingGameLanding(false);
               }}
-              buttonColor="bg-red-600"
+              buttonColor="mt-2 md:mt-0 bg-red-600"
             />
           </div>
         </div>

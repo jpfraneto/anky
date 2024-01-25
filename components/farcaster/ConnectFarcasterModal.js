@@ -137,7 +137,7 @@ const ConnectFarcasterModal = () => {
           <p>You can link your farcaster account to your profile here:</p>
           <Button
             buttonAction={handleSignIn}
-            buttonColor="w-64 mx-auto bg-green-600 mt-4"
+            buttonColor="w-64  text-center mx-auto bg-green-600 mt-4"
             buttonText={loading ? "loading..." : "connect with farcaster"}
           />
         </div>
@@ -199,7 +199,7 @@ const ConnectFarcasterModal = () => {
             <div>
               <Button
                 buttonAction={handleSignIn}
-                buttonColor="w-64 mx-auto bg-transparent mt-4"
+                buttonColor="w-64 mx-auto text-center bg-transparent mt-4"
                 buttonText={loading ? "loading..." : "reset link"}
               />
             </div>

@@ -7,6 +7,7 @@ import { getAnkyverseDay, getAnkyverseQuestion } from "../lib/ankyverse";
 import { useUser } from "../context/UserContext";
 import Offcanvas from "react-bootstrap/Offcanvas";
 import Image from "next/image";
+import FarcasterConnectionModal from "./farcaster/FarcasterConnectionModal";
 import FeedByFidPage from "./FeedByFidPage";
 import { getThisUserWritings } from "../lib/irys";
 import { IndividualWritingDisplayModal } from "./IndividualWritingDisplayModal";
@@ -116,6 +117,10 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
   const [displayAnkyModalState, setDisplayAnkyModalState] = useState("");
   const [refreshUsersStateLoading, setRefreshUsersStateLoading] =
     useState(false);
+  const [
+    displayFarcasterConnectionModalState,
+    setDisplayFarcasterConnectionModalState,
+  ] = useState(false);
   const [checkingIfYouOwnAnky, setCheckingIfYouOwnAnky] = useState(false);
   const [ankyButtonText, setAnkyButtonText] = useState("i already own one");
   const [writingForDisplay, setWritingForDisplay] = useState(null);
@@ -444,6 +449,9 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
           <UserDisplayPage
             thisUserInfo={router.query.fid}
             displayAnkyModal={displayAnkyModal}
+            setDisplayFarcasterConnectionModalState={
+              setDisplayFarcasterConnectionModalState
+            }
           />
         );
 
@@ -453,6 +461,10 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
         return <DashboardPage router={router} />;
       case `/w/${route.split("/").pop()}`:
         if (thisIsTheFlag || !router.isReady) return null;
+        let formattedPrompt2 = router.query.prompt.replaceAll("-", " ");
+        if (!formattedPrompt2) formattedPrompt = "";
+        setThisIsThePrompt(formattedPrompt2);
+        setDisplayWritingGameLanding(true);
         if (
           router.query.prompt == undefined ||
           !router.query?.prompt?.length > 0
@@ -478,10 +490,6 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
               countdownTarget={countdownTarget}
             />
           );
-        let formattedPrompt2 = router.query.prompt.replaceAll("-", " ");
-        if (!formattedPrompt2) formattedPrompt = "";
-        setThisIsThePrompt(formattedPrompt2);
-        setDisplayWritingGameLanding(true);
 
       case "/what-is-this":
         return <WhatIsThisPage />;
@@ -724,47 +732,6 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
         ) : (
           <div className="h-full">
             {getComponentForRoute(router.pathname, router)}
-            {/* <nav className="hidden border-t-2 border-black standalone:flex w-full h-16  fixed bottom-0  bg-purple-200 space-x-4 justify-between items-center px-6 z-50">
-              <Link href="/feed" passHref>
-                <span>
-                  <IoIosHome size={40} />
-                </span>
-              </Link>
-
-              {authenticated ? (
-                <Link
-                  className="active:text-yellow-500"
-                  href="/settings"
-                  passHref
-                >
-                  <span>
-                    <IoMdSettings size={40} />
-                  </span>
-                </Link>
-              ) : (
-                <span onClick={login}>
-                  <IoMdSettings size={40} />
-                </span>
-              )}
-              {authenticated ? (
-                <Link
-                  href={`/u/${user?.id.replace("did:privy:", "")}`}
-                  passHref
-                >
-                  <span>
-                    <FaUserAstronaut size={40} />
-                  </span>
-                </Link>
-              ) : (
-                <span onClick={login}>
-                  <FaUserAstronaut size={40} />
-                </span>
-              )}
-
-              <span onClick={() => setDisplayAboutModal(!displayAboutModal)}>
-                <BsInfoLg size={40} />
-              </span>
-            </nav> */}
           </div>
         )}
       </div>
@@ -783,6 +750,14 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
         />
       )}
 
+      {displayFarcasterConnectionModalState && (
+        <FarcasterConnectionModal
+          setDisplayFarcasterConnectionModalState={
+            setDisplayFarcasterConnectionModalState
+          }
+        />
+      )}
+
       {/* {displayAnkyModalState && <p>display the anky modal state</p>} */}
 
       {displayAboutModal && (
@@ -795,31 +770,31 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
         <InstallPwaModal setDisplayInstallPWA={setDisplayInstallPWA} />
       )}
       <Offcanvas
-        className={`${inter.className} bg-black text-gray-600`}
+        className={`${inter.className} bg-black text-gray-600 h-screen`}
         placement="start"
         backdrop="true"
         scroll="false"
         show={show}
         onHide={handleClose}
       >
-        <Offcanvas.Body>
-          <div className="md:flex flex-col h-full w-fit relative">
+        <div className="pl-4 h-full">
+          <div className="md:flex flex-col h-full  w-fit relative">
             <Link href="/ask-farcaster" passHref>
               <small
                 onClick={() => {
                   setDisplayWritingGameLanding(false);
                   handleClose();
                 }}
-                className="text-purple-600 hover:text-red-400 cursor-pointer absolute right-8 top-0"
+                className="text-purple-600 text-xl hover:text-red-400 cursor-pointer absolute right-16 top-0"
               >
-                <FaRegCircleQuestion size={24} />
+                cast
               </small>
             </Link>
 
             <small
               onClick={() => {
                 const thisCastLink = prompt(
-                  "here, you can paste a warpcast url and reply to it writing through anky (earn newen, meditate and get to know your inherent crazyness)"
+                  "paste a warpcast url to reply to it writing through anky"
                 );
                 if (thisCastLink && thisCastLink.includes("0x")) {
                   fetchCastForReplyInformation(thisCastLink);
@@ -828,9 +803,9 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
                   handleClose();
                 }
               }}
-              className="text-red-600 hover:text-red-400 cursor-pointer absolute right-0 top-0"
+              className="text-red-600 text-xl  hover:text-red-400 cursor-pointer absolute right-0 top-0"
             >
-              <FaRegCommentDots size={24} />
+              reply
             </small>
             <small
               onClick={handleClose}
@@ -839,7 +814,11 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
               <IoMdClose size={24} />
             </small>
 
-            <div className={`mt-4 ${!authenticated ? "mb-2" : "mb-0"}`}>
+            <div
+              className={`flex-none mt-4 h-fit ${
+                !authenticated ? "mb-2" : "mb-0"
+              }`}
+            >
               <p className="text-white text-2xl standalone:mt-12">
                 welcome to anky
               </p>
@@ -847,7 +826,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
                 a meditation practice like no other
               </small>
             </div>
-            <div className=" h-fit w-full ">
+            <div className="grow w-full">
               {authenticated ? (
                 <div className="flex flex-col h-full w-full items-start">
                   <div className="flex space-x-2">
@@ -886,7 +865,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
                   </div>
 
                   <hr className="h-2 border-white border-2 bg-red-200" />
-                  <div className="p-2 border border-white rounded-xl h-96  flex-col overflow-y-scroll text-white shadow-xl shadow-yellow-600 text-xl w-72 mb-12 mt-0">
+                  <div className="p-2 border border-white rounded-xl h-64  flex-col overflow-y-scroll text-white shadow-xl shadow-yellow-600 text-xl w-72 mt-0">
                     {allUserWritings.map((writing, i) => {
                       return (
                         <div
@@ -919,7 +898,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
                 </div>
               )}
             </div>
-            <div className="w-full fixed text-white bottom-3">
+            <div className="flex-none mt-5 w-full h-96 text-white">
               {authenticated && (
                 <div className="flex flex-col mr-auto">
                   <small
@@ -937,7 +916,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
               )}
 
               <p
-                className="bg-purple-400 text-center p-2 text-black border-yellow-500  border-4 rounded-xl hover:bg-green-200  w-48 left"
+                className="bg-purple-400 text-center p-2 text-black border-yellow-500 w-full text-sm border-4 rounded-xl hover:bg-green-200 w-48 left"
                 onClick={() => {
                   alert("do you think i should add this feature tomorrow?");
                 }}
@@ -946,7 +925,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
               </p>
 
               <p
-                className="my-1 hover:text-purple-600 cursor-pointer"
+                className="h-4 my-1 hover:text-purple-600 cursor-pointer"
                 onClick={() => {
                   handleClose();
                   setDisplayAboutModal(!displayAboutModal);
@@ -968,7 +947,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
                     className="flex py-1 px-3 items-center grow justify-between"
                   >
                     <Link
-                      href={`/u/${user.id.split("did:privy:")[1]}`}
+                      href={`/u/${farcasterUser.fid}`}
                       className="hover:text-purple-600 hover:cursor-pointer"
                       passHref
                     >
@@ -993,7 +972,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
               )}
             </div>
           </div>
-        </Offcanvas.Body>
+        </div>
       </Offcanvas>
     </div>
   );
