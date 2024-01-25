@@ -2,11 +2,13 @@ import { usePrivy } from "@privy-io/react-auth";
 import Button from "../Button";
 import React, { useState, useEffect } from "react";
 import ConnectFarcasterModal from "./ConnectFarcasterModal";
+import { useUser } from "../../context/UserContext";
 
 const FarcasterConnectionModal = ({
   setDisplayFarcasterConnectionModalState,
 }) => {
   const { login, authenticated } = usePrivy();
+
   const [displayConnectFarcaster, setDisplayConnectFarcaster] = useState(false);
   return (
     <div>
