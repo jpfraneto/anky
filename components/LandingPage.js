@@ -132,7 +132,7 @@ function LandingPage({
 
           {/* Journey with Anky Section */}
           <div className="py-8 px-2 w-full md:px-64 bg-white h-fit relative">
-            <div className="w-96 mr-auto absolute left-48">
+            <div className="w-96 mx-auto">
               <h2 className="text-3xl font-semibold mb-6">
                 when there is no time to think, your truth comes forth
               </h2>
