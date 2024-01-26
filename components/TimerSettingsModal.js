@@ -28,7 +28,7 @@ const TimerSettingsModal = ({
   }, [displaySettingsModal]);
 
   return (
-    <div>
+    <div className="z-40">
       <div
         onClick={() => setDisplaySettingsModal(false)}
         className="fixed bg-black w-screen h-screen opacity-80 top-0 left-0"

@@ -426,7 +426,12 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
           />
         );
       case "/welcome":
-        return <WelcomePage text={text} />;
+        return (
+          <WelcomePage
+            text={text}
+            setDisplayWritingGameLanding={setDisplayWritingGameLanding}
+          />
+        );
       case "/leaderboard":
         return <Leaderboard />;
       case "/bounty":

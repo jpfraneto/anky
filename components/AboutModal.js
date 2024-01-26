@@ -24,13 +24,13 @@ const AboutModal = ({ setDisplayAboutModal, setDisplayWritingGameLanding }) => {
         </p>
         <ol className="flex flex-col space-y-2">
           <li>
-            <span className="text-purple-600">Login:</span> you can log in using
+            <span className="text-purple-400">Login:</span> you can log in using
             any email that you control, or an ethereum wallet directly. We use
             Privy as a provider, and every transaction that happens in here is
             secured by their system.
           </li>
           <li>
-            <span className="text-purple-600">Connect to Farcaster:</span> it is
+            <span className="text-purple-400">Connect to Farcaster:</span> it is
             ideal that you connect your farcaster account. For doing so, go into
             the settings tab and click on the Farcaster integration. If you
             follow the flow, you will get a QR code (on desktop) or a fancy
@@ -38,7 +38,7 @@ const AboutModal = ({ setDisplayAboutModal, setDisplayWritingGameLanding }) => {
             will allow you to cast under your account and connect with others.
           </li>
           <li>
-            <span className="text-purple-600">Feed:</span> The landing feed is
+            <span className="text-purple-400">Feed:</span> The landing feed is
             the chronological organization of all the casts that have been
             written through Anky, wether it is anonymously or under
             people&apos;s connected account. The invitation is to be honest,
@@ -46,7 +46,7 @@ const AboutModal = ({ setDisplayAboutModal, setDisplayWritingGameLanding }) => {
             hard to deal with personally.
           </li>
           <li>
-            <span className="text-purple-600">$NEWEN:</span> This is a currency
+            <span className="text-purple-400">$NEWEN:</span> This is a currency
             that represents time. For each second that you spend writing in
             here, you will earn it. You will then be able to spend it on
             different ways: &quot;super liking&quot; a cast you&apos;ve read by
@@ -57,7 +57,7 @@ const AboutModal = ({ setDisplayAboutModal, setDisplayWritingGameLanding }) => {
             in our life.
           </li>
           <li>
-            <span className="text-purple-600">$ANKY:</span> This is the
+            <span className="text-purple-400">$ANKY:</span> This is the
             economical currency inside this system, and its tokenomics is
             currently under development. If you want to contribute to it, you
             can gather more information and comment on{" "}
@@ -81,7 +81,7 @@ const AboutModal = ({ setDisplayAboutModal, setDisplayWritingGameLanding }) => {
             platform together to get to that point.
           </li>
           <li>
-            <span className="text-purple-600">open source:</span> All of the
+            <span className="text-purple-400">open source:</span> All of the
             code for what happens here is open source. You can contribute to it
             here:{" "}
             <a
@@ -94,7 +94,7 @@ const AboutModal = ({ setDisplayAboutModal, setDisplayWritingGameLanding }) => {
             </a>
           </li>
           <li>
-            <span className="text-purple-600">tech:</span> Every writing is
+            <span className="text-purple-400">Tech:</span> Every writing is
             stored on arweave using Irys as the proxy. If you logged in using
             your wallet, you will get a modal every time that you submit your
             writing. That is because your personal wallet signs that message and
@@ -102,7 +102,7 @@ const AboutModal = ({ setDisplayAboutModal, setDisplayWritingGameLanding }) => {
             with email this is done under the hood.
           </li>
           <li>
-            <span className="text-purple-600">Ankyverse:</span> The journey
+            <span className="text-purple-400">Ankyverse:</span> The journey
             through the human experience that you will embark through this
             platform has as a guiding process this allegorical interpretation of
             the human experience. There are 8 kingdoms, each one representing an
@@ -119,18 +119,19 @@ const AboutModal = ({ setDisplayAboutModal, setDisplayWritingGameLanding }) => {
             .
           </li>
           <li>
-            <span className="text-purple-600">Collaborate:</span> Today, one of
+            <span className="text-purple-400">Collaborate:</span> Today, one of
             the most powerful ways on which you can contribute to what is
             happening here (besides writing!) is to get your Anky Genesis NFT.
-            The contract is deployed on ethereum mainnet, the price is 0.01618
-            eth and you can mint yours here:{" "}
+            The contract is deployed on ethereum mainnet and price is 0.01618
+            eth. There are infinite Ankys, but only 8888 that are part of this
+            genesis collection. Mint here:{" "}
             <a
               className="text-purple-400 active:text-purple-600"
               rel="noopener noreferrer"
               href="https://mint.anky.lat"
               target="_blank"
             >
-              mint my anky
+              https://mint.anky.lat
             </a>
             .
           </li>

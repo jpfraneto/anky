@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { FaRegCommentAlt, FaRegHeart, FaPencilAlt } from "react-icons/fa";
+import { FaRegCommentAlt, FaRegHeart } from "react-icons/fa";
 import { BsArrowRepeat } from "react-icons/bs";
+import { GiRollingEnergy } from "react-icons/gi";
 import Link from "next/link";
 import { getOneWriting } from "../lib/irys";
-import { GiRollingEnergy } from "react-icons/gi";
+
 import { useUser } from "../context/UserContext";
 
 const SimpleCast = ({ cast, pfp, userInfo = null }) => {
