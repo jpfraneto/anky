@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { Inter, Righteous } from "next/font/google";
 import axios from "axios";
+import ErrorBoundary from "../components/ErrorBoundary"; // Make sure the path is correct
 import { PrivyProvider, usePrivy } from "@privy-io/react-auth";
 import { PrivyWagmiConnector } from "@privy-io/wagmi-connector";
 import { base } from "@wagmi/chains";
@@ -190,35 +191,36 @@ function MyApp({ Component, pageProps }) {
         />
         <script src="/main.js" defer></script>
       </Head>
-
-      <PrivyProvider
-        appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID}
-        onSuccess={handleLogin}
-        config={{
-          embeddedWallets: {
-            noPromptOnSignature: true,
-          },
-          loginMethods: ["email", "wallet"],
-          appearance: {
-            theme: "dark",
-            accentColor: "#364CAC",
-            logo: "",
-          },
-          embeddedWallets: {
-            createOnLogin: "users-without-wallets",
-          },
-        }}
-      >
-        <PrivyWagmiConnector wagmiChainsConfig={configureChainsConfig}>
-          <UserProvider>
-            <FarcasterProvider>
-              <SettingsProvider>
-                <GlobalApp alchemy={alchemy} loginResponse={loginResponse} />
-              </SettingsProvider>
-            </FarcasterProvider>
-          </UserProvider>
-        </PrivyWagmiConnector>
-      </PrivyProvider>
+      <ErrorBoundary>
+        <PrivyProvider
+          appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID}
+          onSuccess={handleLogin}
+          config={{
+            embeddedWallets: {
+              noPromptOnSignature: true,
+            },
+            loginMethods: ["email", "wallet"],
+            appearance: {
+              theme: "dark",
+              accentColor: "#364CAC",
+              logo: "",
+            },
+            embeddedWallets: {
+              createOnLogin: "users-without-wallets",
+            },
+          }}
+        >
+          <PrivyWagmiConnector wagmiChainsConfig={configureChainsConfig}>
+            <UserProvider>
+              <FarcasterProvider>
+                <SettingsProvider>
+                  <GlobalApp alchemy={alchemy} loginResponse={loginResponse} />
+                </SettingsProvider>
+              </FarcasterProvider>
+            </UserProvider>
+          </PrivyWagmiConnector>
+        </PrivyProvider>
+      </ErrorBoundary>
     </main>
   );
 }
