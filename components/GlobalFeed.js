@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getOneWriting } from "../lib/irys";
+import Image from "next/image";
 import { usePrivy } from "@privy-io/react-auth";
 import axios from "axios";
 import Button from "./Button";
@@ -8,6 +9,7 @@ import IndividualDecodedCastCard from "./farcaster/IndividualDecodedCastCard";
 import Spinner from "./Spinner";
 import { useUser } from "../context/UserContext";
 import { useFarcaster } from "../context/FarcasterContext";
+import SimpleCast from "./SimpleCast";
 
 var options = {
   weekday: "long",
@@ -46,13 +48,11 @@ const GlobalFeed = ({ thisWallet }) => {
     <div className="w-full grow ">
       <div className="w-full  flex justify-around flex-wrap md:w-96  mx-auto">
         {globalFeed.map((x, i) => {
-          return (
-            <IndividualDecodedCastCard
-              cast={x}
-              key={i}
-              farcasterUser={farcasterUser}
-            />
-          );
+          console.log("the cast is.?, ", x);
+          const UserPfP = () => {
+            return <Image src={x.author?.pfp_url || ""} fill />;
+          };
+          return <SimpleCast key={i} cast={x} pfp={UserPfP} />;
         })}
       </div>
     </div>

@@ -915,15 +915,6 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
                 </div>
               )}
 
-              {/* <p
-                className="bg-purple-400 text-center p-2 text-black border-yellow-500 w-full text-sm border-4 rounded-xl hover:bg-green-200 w-48 left"
-                onClick={() => {
-                  alert("do you think i should add this feature tomorrow?");
-                }}
-              >
-                mint your anky generated with your writing for $1 degen
-              </p> */}
-
               <p
                 className="h-4 my-1 hover:text-purple-600 cursor-pointer"
                 onClick={() => {
