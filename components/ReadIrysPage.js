@@ -86,6 +86,8 @@ const ReadIrysPage = ({ setShow }) => {
             response.data
           );
           setThisFullCast(response.data.cast);
+        } else {
+          setThisFullCast(null);
         }
       } catch (error) {
         console.log(
@@ -182,13 +184,6 @@ const ReadIrysPage = ({ setShow }) => {
       </div>
     );
   }
-  if (!thisFullCast)
-    return (
-      <div className="mt-4 text-white">
-        <p>loading cast...</p>
-        <Spinner />
-      </div>
-    );
 
   if (loadingPage)
     return (
@@ -220,6 +215,13 @@ const ReadIrysPage = ({ setShow }) => {
             />
           </div>
         )}
+      </div>
+    );
+
+  if (!thisFullCast)
+    return (
+      <div className="mt-4 text-white">
+        <p>the cast was not found.</p>
       </div>
     );
 
