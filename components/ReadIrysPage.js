@@ -96,7 +96,7 @@ const ReadIrysPage = ({ setShow }) => {
     }
     getCastByCid();
     searchThisText();
-  }, [allUserWritings, router]);
+  }, [allUserWritings, router.query]);
 
   async function handleDisplayComments() {
     setDisplayComments((x) => !x);
@@ -182,6 +182,13 @@ const ReadIrysPage = ({ setShow }) => {
       </div>
     );
   }
+  if (!thisFullCast)
+    return (
+      <div className="mt-4 text-white">
+        <p>loading cast...</p>
+        <Spinner />
+      </div>
+    );
 
   if (loadingPage)
     return (

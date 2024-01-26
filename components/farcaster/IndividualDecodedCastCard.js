@@ -76,7 +76,7 @@ const IndividualDecodedCastCard = ({
   useEffect(() => {
     const fetchThisCast = async () => {
       try {
-        var parts = cast.embeds[0].url.split("/");
+        var parts = cast?.embeds[0]?.url?.split("/");
         var cid = parts.pop() || "";
         if (cid.length == 43) {
           const thisWriting = await getOneWriting(cid);
@@ -95,8 +95,9 @@ const IndividualDecodedCastCard = ({
     };
     if (
       cast &&
-      cast.embeds.length > 0 &&
-      cast.embeds[0].url.includes("anky.lat")
+      cast.embeds &&
+      cast?.embeds?.length > 0 &&
+      cast?.embeds[0]?.url?.includes("anky.lat")
     ) {
       fetchThisCast();
     }

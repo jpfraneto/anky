@@ -241,7 +241,7 @@ const DesktopWritingGame = ({
       setIsDone(false);
       setFinished(false);
       setSavedText(false);
-      copyToClipboard();
+      // copyToClipboard();
       setCopyText("Copy my writing");
     } catch (error) {
       console.log("there was an error in the start new run function");
@@ -566,8 +566,6 @@ const DesktopWritingGame = ({
       } else {
         cid = irysResponseCid;
       }
-      // const kannadaCid = encodeToAnkyverseLanguage(cid);
-      // const newCastText = `${kannadaCid}\n\nwritten through anky. you can decode this clicking on the embed on the next cast.`;
       let forEmbedding;
       if (text.length > 320) {
         forEmbedding = [{ url: `https://www.anky.lat/i/${cid}` }];
@@ -592,9 +590,12 @@ const DesktopWritingGame = ({
           embeds: forEmbedding,
         }
       );
-      console.log("the response from the server here is: ", response);
+      console.log(
+        "The cast was shipped anonymously, and this is the response: ",
+        response
+      );
 
-      setCastHash(response.data.cast.hash);
+      // setCastHash(response.data.cast.hash);
       return {
         castHash: response.data.cast.hash,
         responseFromIrys: responseFromIrys || irysResponseCid,
@@ -664,6 +665,10 @@ const DesktopWritingGame = ({
         if (userWantsToCastAnon) {
           let castResponseFromAnonCast = await handleAnonCast();
           irysResponseCid = castResponseFromAnonCast.responseFromIrys.data.cid;
+          console.log(
+            "AFTER THE ANON CAST, THE IRYS RESPONSE CID IS: ",
+            irysResponseCid
+          );
         } else {
           setDisplayWritingGameLanding(false);
           return router.push("/welcome");
@@ -691,7 +696,7 @@ const DesktopWritingGame = ({
           ...x,
         ]);
       }
-
+      startNewRun();
       router.push(`/i/${irysResponseCid}`, null, { shallow: true });
       setDisplayWritingGameLanding(false);
     } catch (error) {
@@ -963,7 +968,7 @@ const DesktopWritingGame = ({
                 <div className="flex h-32">
                   <div className="h-30 p-2">
                     <div className="h-5/6 mx-auto flex justify-center items-center rounded-full overflow-hidden aspect-square relative">
-                      <Image src={theAsyncCastToReply.author.pfp_url} fill />
+                      <Image src={theAsyncCastToReply?.author.pfp_url} fill />
                     </div>
                     <div>
                       <div className="flex space-x-4 h-full text-lg">
@@ -971,14 +976,14 @@ const DesktopWritingGame = ({
                           className={`flex space-x-1 items-center  hover:text-gray-500 cursor-pointer`}
                         >
                           <FaRegCommentAlt />
-                          <span>{theAsyncCastToReply.replies.count}</span>
+                          <span>{theAsyncCastToReply?.replies.count}</span>
                         </div>
                         <div
                           className={`flex space-x-1 items-center  hover:text-green-300 cursor-pointer`}
                         >
                           <BsArrowRepeat size={19} />
                           <span>
-                            {theAsyncCastToReply.reactions.recasts.length}
+                            {theAsyncCastToReply?.reactions.recasts.length}
                           </span>
                         </div>
                         <div
@@ -986,7 +991,7 @@ const DesktopWritingGame = ({
                         >
                           <FaRegHeart />
                           <span>
-                            {theAsyncCastToReply.reactions.likes.length}
+                            {theAsyncCastToReply?.reactions.likes.length}
                           </span>
                         </div>
                       </div>
@@ -995,14 +1000,14 @@ const DesktopWritingGame = ({
 
                   <div className="px-2 w-full flex flex-col justify-between h-full  text-lg">
                     <div className="w-full overflow-y-scroll">
-                      {theAsyncCastToReply.text.includes("\n") ? (
-                        theAsyncCastToReply.text.split("\n").map((x, i) => (
+                      {theAsyncCastToReply?.text.includes("\n") ? (
+                        theAsyncCastToReply?.text.split("\n").map((x, i) => (
                           <p className="" key={i}>
                             {x}
                           </p>
                         ))
                       ) : (
-                        <p className="my-2">{theAsyncCastToReply.text}</p>
+                        <p className="my-2">{theAsyncCastToReply?.text}</p>
                       )}
                     </div>
                   </div>

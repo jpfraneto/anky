@@ -22,7 +22,6 @@ const SimpleCast = ({ cast, pfp, userInfo = null }) => {
     const fetchThisCast = async () => {
       try {
         if (!cast) return;
-        console.log("IN HERE, THE CAST IS: ", cast);
         var parts = cast.embeds[0].url.split("/");
         var cid = parts.pop() || "";
         if (cid.length == 43) {
@@ -215,7 +214,7 @@ const SimpleCast = ({ cast, pfp, userInfo = null }) => {
           </span>
           <span>@{userInfo?.username || editedCast?.author?.username}</span>
         </p>
-        <p className="text-purple-200 text-left break-words">
+        <div className="text-purple-200 text-left break-words">
           {editedCast?.text ? (
             editedCast?.text?.includes("\n") ? (
               editedCast?.text?.split("\n").map((x, i) => (
@@ -227,7 +226,7 @@ const SimpleCast = ({ cast, pfp, userInfo = null }) => {
               <p className="my-2">{editedCast.text || ""}</p>
             )
           ) : null}
-        </p>
+        </div>
         <div className="px-2 text-xl w-full h-4 flex justify-between text-purple-200 items-center">
           <div className="flex space-x-4 h-full">
             <div

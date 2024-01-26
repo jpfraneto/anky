@@ -36,11 +36,10 @@ const IndividualCastCard = ({ cast }) => {
       const encodedCid = cast.text.split("\n")[0];
       const decodedCid = decodeFromAnkyverseLanguage(encodedCid);
       const writingText = await getOneWriting(decodedCid);
-      console.log("writing text is: ", writingText);
-      if (writingText.text.includes("Not Found")) {
-        setWriting(cast.text);
+      if (writingText?.text?.includes("Not Found")) {
+        setWriting(cast?.text);
       } else {
-        setWriting(writingText.text);
+        setWriting(writingText?.text);
       }
     };
     decodeAnkyverseLanguage();
