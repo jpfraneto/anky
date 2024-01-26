@@ -21,6 +21,7 @@ var options = {
 const WelcomePage = ({ text, setDisplayWritingGameLanding }) => {
   console.log("the welcome page is:stext ", text);
   const { login, authenticated, user } = usePrivy();
+  const [castText, setCastText] = useState(text);
   const [copyText, setCopyText] = useState("copy text");
   const [copyLinkText, setCopyLinkText] = useState("copy anky link");
   const [displayMoreInformation, setDisplayMoreInformation] = useState(false);
@@ -66,15 +67,15 @@ const WelcomePage = ({ text, setDisplayWritingGameLanding }) => {
             <span>@anky</span>
           </p>
           <div className="text-purple-200 text-left break-words">
-            {text ? (
-              text?.includes("\n") ? (
-                text?.split("\n").map((x, i) => (
+            {castText ? (
+              castText?.includes("\n") ? (
+                castText?.split("\n").map((x, i) => (
                   <p className="mb-4" key={i}>
                     {x}
                   </p>
                 ))
               ) : (
-                <p className="my-2">{text || ""}</p>
+                <p className="my-2">{castText || ""}</p>
               )
             ) : null}
           </div>
@@ -138,16 +139,16 @@ const WelcomePage = ({ text, setDisplayWritingGameLanding }) => {
       </div>
       {displayMoreInformation && (
         <div className={`text-purple-300 h-fit md:w-96 mx-auto text-white p-2`}>
-          <p>welcome to anky</p>
-          <p>this is a place for writing.</p>
-          <p>
-            for getting to know yourself, through the experience of writing.
+          <p className="mb-2">welcome to anky</p>
+          <p className="mb-2">
+            this is a place for getting to know yourself, through the experience
+            of writing.
           </p>
-          <p>
+          <p className="mb-2">
             it is simple, yet that simplicity is what ends up being the vehicle.
           </p>
-          <p>for you to discover who you are.</p>
-          <p>through the power of curiosity.</p>
+          <p className="mb-2">for you to discover who you are.</p>
+          <p className="mb-2">through the power of curiosity.</p>
           <div className="mt-2 w-fit flex space-x-2">
             {authenticated ? (
               <Button

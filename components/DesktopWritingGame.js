@@ -686,7 +686,9 @@ const DesktopWritingGame = ({
           irysResponseCid = castResponseFromAnonCast.responseFromIrys.data.cid;
         } else {
           setDisplayWritingGameLanding(false);
-          startNewRun();
+          setTimeout(() => {
+            startNewRun();
+          }, 4000);
           return router.push("/welcome");
         }
       }
