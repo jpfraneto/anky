@@ -692,7 +692,7 @@ const DesktopWritingGame = ({
         ]);
       }
 
-      router.push(`/i/${irysResponseCid}`);
+      router.push(`/i/${irysResponseCid}`, null, { shallow: true });
       setDisplayWritingGameLanding(false);
     } catch (error) {
       console.log(

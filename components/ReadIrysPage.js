@@ -58,10 +58,8 @@ const ReadIrysPage = ({ setShow }) => {
           const writingFromIrys = await getOneWriting(router.query.cid);
           setThisWriting({ text: writingFromIrys.text, timestamp: new Date() });
           setLoadingPage(false);
-          console.log("the writing From irys is: ", writingFromIrys);
         } else {
           const writerPlaceholder = allUserWritings[thisIrysIndex];
-          console.log("the writer placeholder is: ", writerPlaceholder);
           if (writerPlaceholder) {
             setThisWriting(writerPlaceholder);
             setThisCast((x) => {
