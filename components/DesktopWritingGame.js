@@ -97,6 +97,10 @@ const DesktopWritingGame = ({
   const [userWantsToCastAnon, setUserWantsToCastAnon] = useState(true);
   const [savingRound, setSavingRound] = useState(false);
   const [castAs, setCastAs] = useState("");
+  const [
+    userWantsToCreateImageFromWriting,
+    setUserWantsToCreateImageFromWriting,
+  ] = useState(false);
   const [castForPreview, setCastForPreview] = useState(null);
   const [userWantsToStoreWritingForever, setUserWantsToStoreWritingForever] =
     useState(true);
@@ -714,6 +718,19 @@ const DesktopWritingGame = ({
           ...x,
         ]);
       }
+      if (userWantsToCreateImageFromWriting) {
+        const responseFromMidjourneyServer = await axios.post(
+          `${process.env.NEXT_PUBLIC_API_ROUTE}/ai/process-writing`,
+          {
+            text,
+            cid: irysResponseCid,
+          }
+        );
+        console.log(
+          "the response from the midjourney server is: ",
+          responseFromMidjourneyServer.data
+        );
+      }
       router.push(`/i/${irysResponseCid}`, null, { shallow: true });
       setModalVisible(false);
       startNewRun();
@@ -804,47 +821,66 @@ const DesktopWritingGame = ({
             (farcasterUser.status == "approved" ||
               farcasterUser.signerStatus == "approved") ? (
               <div className="bg-purple-500 text-black p-2 my-2 rounded-xl flex space-x-2 items-center justify-center">
-                <div className="flex  md:flex-row flex-col space-x-2 items-center justify-center">
-                  <p className="mb-2">share on farcaster?</p>
-                  <div className="flex  space-x-2">
-                    <p
-                      onClick={() => setCastAs("")}
-                      className={` p-2 border-black   cursor-pointer rounded-xl ${
-                        castAs == ""
-                          ? "bg-red-500 shadow-md shadow-black border-2"
-                          : "bg-red-200 hover:bg-red-300 "
-                      }`}
-                    >
-                      don&apos;t {theAsyncCastToReply ? "reply" : "cast"}
-                    </p>
-                    <p
-                      onClick={() => {
-                        setCastAs("me");
-                        setUserWantsToCastAnon(false);
-                      }}
-                      className={` p-2 border-black  cursor-pointer rounded-xl ${
-                        castAs == "me"
-                          ? "bg-green-500 shadow-md shadow-black border-2"
-                          : "bg-green-300 hover:bg-green-300"
-                      }`}
-                    >
-                      {theAsyncCastToReply ? "reply" : "cast"} as{" "}
-                      {farcasterUser.fid}
-                    </p>
-                    <p
-                      onClick={() => {
-                        setCastAs("anon");
-                        setUserWantsToCastAnon(true);
-                      }}
-                      className={` p-2 border-black   cursor-pointer rounded-xl ${
-                        castAs == "anon"
-                          ? "bg-purple-600 shadow-md shadow-black border-2"
-                          : "bg-purple-300 hover:bg-purple-300"
-                      }`}
-                    >
-                      {theAsyncCastToReply ? "reply" : "cast"} anon
-                    </p>
+                <div className="w-full flex flex-col">
+                  <div className="flex  md:flex-row flex-col space-x-2 items-center justify-center">
+                    <p className="mb-2">share on farcaster?</p>
+                    <div className="flex  space-x-2">
+                      <p
+                        onClick={() => setCastAs("")}
+                        className={` p-2 border-black   cursor-pointer rounded-xl ${
+                          castAs == ""
+                            ? "bg-red-500 shadow-md shadow-black border-2"
+                            : "bg-red-200 hover:bg-red-300 "
+                        }`}
+                      >
+                        don&apos;t {theAsyncCastToReply ? "reply" : "cast"}
+                      </p>
+                      <p
+                        onClick={() => {
+                          setCastAs("me");
+                          setUserWantsToCastAnon(false);
+                        }}
+                        className={` p-2 border-black  cursor-pointer rounded-xl ${
+                          castAs == "me"
+                            ? "bg-green-500 shadow-md shadow-black border-2"
+                            : "bg-green-300 hover:bg-green-300"
+                        }`}
+                      >
+                        {theAsyncCastToReply ? "reply" : "cast"} as{" "}
+                        {farcasterUser.fid}
+                      </p>
+                      <p
+                        onClick={() => {
+                          setCastAs("anon");
+                          setUserWantsToCastAnon(true);
+                        }}
+                        className={` p-2 border-black   cursor-pointer rounded-xl ${
+                          castAs == "anon"
+                            ? "bg-purple-600 shadow-md shadow-black border-2"
+                            : "bg-purple-300 hover:bg-purple-300"
+                        }`}
+                      >
+                        {theAsyncCastToReply ? "reply" : "cast"} anon
+                      </p>
+                    </div>
                   </div>
+                  {time > 480 && (
+                    <div>
+                      <p className="text-left text-black flex">
+                        do you want to create a custom anky with your writing?
+                      </p>
+                      <input
+                        className="mx-4 w-10 h-10 rounded-xl bg-purple-600"
+                        type="checkbox"
+                        onChange={(e) => {
+                          setUserWantsToCreateImageFromWriting(
+                            !userWantsToCreateImageFromWriting
+                          );
+                        }}
+                        checked={userWantsToCreateImageFromWriting}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
             ) : (
@@ -863,18 +899,6 @@ const DesktopWritingGame = ({
                     checked={userWantsToCastAnon}
                   />
                 </div>
-
-                {/* <div>
-                {userWantsToCastAnon && (
-                  <div className="flex justify-between w-32">
-                    <Button
-                      buttonText={"preview"}
-                      buttonAction={previewCastAction}
-                      buttonColor="bg-purple-800 w-32"
-                    />
-                  </div>
-                )}
-              </div> */}
               </div>
             )}
 
@@ -938,7 +962,7 @@ const DesktopWritingGame = ({
                     ? "broadcasting..."
                     : userWantsToCastAnon
                     ? castAs == ""
-                      ? "cast and close"
+                      ? "dont cast and close"
                       : `cast ${castAs}`
                     : castAs == "me"
                     ? `cast as ${farcasterUser.fid}`
@@ -1004,7 +1028,7 @@ const DesktopWritingGame = ({
         </p>
         <p>I&apos;m sorry. I&apos;m doing my best to make this thing work.</p>
         <Button
-          buttonColor="bg-thegreenbtn"
+          buttonColor="bg-green-400 mx-auto w-48 text-black"
           buttonAction={pasteText}
           buttonText={copyText}
         />

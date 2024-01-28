@@ -62,6 +62,7 @@ const ReadIrysPage = ({ setShow }) => {
           const writerPlaceholder = allUserWritings[thisIrysIndex];
           if (writerPlaceholder) {
             setThisWriting(writerPlaceholder);
+            console.log("in hereee", writerPlaceholder);
             setThisCast((x) => {
               return { ...x, text: writerPlaceholder, timestamp: new Date() };
             });
@@ -74,7 +75,7 @@ const ReadIrysPage = ({ setShow }) => {
     }
     async function getCastByCid() {
       try {
-        if (!router?.query?.cid) return;
+        if (!router?.query?.cid || !authenticated) return;
         console.log("inside the get cast by cid function", router.query.cid);
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_API_ROUTE}/farcaster/get-cast-by-cid/${router.query.cid}`
@@ -218,13 +219,6 @@ const ReadIrysPage = ({ setShow }) => {
       </div>
     );
 
-  if (!thisFullCast)
-    return (
-      <div className="mt-4 text-white">
-        <p>the cast was not found.</p>
-      </div>
-    );
-
   return (
     <div
       className={`${inter.className} h-full px-3 flex flex-col items-start justify-start text-left pt-8`}
@@ -269,7 +263,7 @@ const ReadIrysPage = ({ setShow }) => {
               <p className="my-2">{thisWriting.text}</p>
             )
           ) : null}
-          <SimpleCast cast={thisCast} pfp={UserPfP} />
+          {/* <SimpleCast cast={thisCast} pfp={UserPfP} /> */}
         </div>
       )}
     </div>
