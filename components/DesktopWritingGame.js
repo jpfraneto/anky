@@ -866,7 +866,7 @@ const DesktopWritingGame = ({
                       </p>
                     </div>
                   </div>
-                  {time > 10 && (
+                  {time > 480 && (
                     <div>
                       <p className="text-left text-black flex">
                         do you want to create a custom anky with your writing?
