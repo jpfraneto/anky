@@ -430,7 +430,7 @@ const DesktopWritingGame = ({
       const token = "ethereum";
       const rpcURL = "";
 
-      const provider = await thisWallet.getEthersProvider();
+      const provider = await thisWallet.getEthereumProvider();
       if (!provider) throw new Error(`Cannot find privy wallet`);
 
       const irysWallet =
@@ -503,7 +503,7 @@ const DesktopWritingGame = ({
       const token = "ethereum";
       const rpcURL = "";
 
-      const provider = await thisWallet.getEthersProvider();
+      const provider = await thisWallet.getEthereumProvider();
       if (!provider) throw new Error(`Cannot find privy wallet`);
 
       const irysWallet =
@@ -719,11 +719,13 @@ const DesktopWritingGame = ({
         ]);
       }
       if (userWantsToCreateImageFromWriting) {
+        console.log("IIIIIN HERE, THE FARCASTER USER:", farcasterUser);
         const responseFromMidjourneyServer = await axios.post(
           `${process.env.NEXT_PUBLIC_API_ROUTE}/ai/process-writing`,
           {
             text,
             cid: irysResponseCid,
+            userFid: farcasterUser.fid,
           }
         );
         console.log(
@@ -864,7 +866,7 @@ const DesktopWritingGame = ({
                       </p>
                     </div>
                   </div>
-                  {time > 480 && (
+                  {time > 10 && (
                     <div>
                       <p className="text-left text-black flex">
                         do you want to create a custom anky with your writing?

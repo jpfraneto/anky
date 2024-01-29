@@ -96,7 +96,7 @@ const LibraryPage = ({}) => {
     setAnkyButtonText("looking for your anky...");
     if (!wallet) return alert("you are not logged in");
     try {
-      let provider = await wallet.getEthersProvider();
+      let provider = await wallet.getEthereumProvider();
       let signer = await provider.getSigner();
       const ankyAirdropContract = new ethers.Contract(
         process.env.NEXT_PUBLIC_ANKY_AIRDROP_SMART_CONTRACT,

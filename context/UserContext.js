@@ -215,7 +215,7 @@ export const UserProvider = ({ children }) => {
       ) {
         setLoadingLibrary(true);
         const { tba } = await callTba(wallet.address, setUserAppInformation);
-        let provider = await wallet?.getEthersProvider();
+        let provider = await wallet?.getEthereumProvider();
         const signer = await provider.getSigner();
         let userTba = userAppInformation?.tbaAddress || tba;
 
@@ -287,7 +287,7 @@ export const UserProvider = ({ children }) => {
   async function fetchUsersAnky() {
     if (!wallet || !wallet.address) return;
     try {
-      let provider = await wallet.getEthersProvider();
+      let provider = await wallet.getEthereumProvider();
       let signer = await provider.getSigner();
       if (!provider) return;
       const ankyAirdropContract = new ethers.Contract(
@@ -419,7 +419,7 @@ export const UserProvider = ({ children }) => {
       await changeChain();
       setCurrentStep(1);
 
-      let provider = await wallet.getEthersProvider();
+      let provider = await wallet.getEthereumProvider();
       if (checkIfUserIsTheSame || !userAppInformation.ankyIndex) {
         await getTestEthAndAidropAnky(wallet, provider, authToken);
       }
