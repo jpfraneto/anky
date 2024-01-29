@@ -78,7 +78,6 @@ const IrysPage = () => {
   };
 
   const queryWritingData = async () => {
-    console.log("querying the data: ", containerType, containerId);
     const myQuery = new Query({ url: "https://node2.irys.xyz/graphql" });
     const results = await myQuery
       .search("irys:transactions")
@@ -89,7 +88,6 @@ const IrysPage = () => {
       ])
       .sort("DESC")
       .limit(20);
-    console.log("the results are: ", results);
     const processedPages = await Promise.all(
       results.map(async (result) => {
         const content = await fetch(`${str}/${result.id}`);
@@ -102,7 +100,7 @@ const IrysPage = () => {
 
   if (!authenticated) {
     return (
-      <div>
+      <div className="text-white">
         <p>please login</p>
         <button onClick={login}>login</button>
       </div>

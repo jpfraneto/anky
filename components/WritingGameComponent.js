@@ -241,9 +241,6 @@ const WritingGameComponent = ({
         backgroundRepeat: "no-repeat",
       }}
     >
-      <audio ref={audioRef}>
-        <source src="/sounds/bell.mp3" />
-      </audio>
       <div className="md:block text-white  w-screen h-full ">
         <div className="flex h-full  items-center flex-col">
           <div

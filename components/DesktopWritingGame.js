@@ -425,37 +425,47 @@ const DesktopWritingGame = ({
       return router.push("/what-is-this");
     }
     const getWebIrys = async () => {
-      if (!thisWallet) return;
       const url = "https://node2.irys.xyz";
-      const token = "ethereum";
-      const rpcURL = "";
+      const token = "base-eth";
 
-      const provider = await thisWallet.getEthereumProvider();
+      // const ethersProvider = await thisWallet?.getEthersProvider();
+      const ethereumProvider = await thisWallet?.getEthereumProvider();
+      const provider = await ethereumProvider.provider;
+      console.log("in here, the ethereum provider is: ", ethereumProvider);
+
+      console.log("this walasdaslet", thisWallet.walletClientType);
       if (!provider) throw new Error(`Cannot find privy wallet`);
-
+      console.log("the provider is: ", provider);
       const irysWallet =
         thisWallet?.walletClientType === "privy"
           ? { name: "privy-embedded", provider, sendTransaction }
           : { name: "privy", provider };
 
-      const webIrys = new WebIrys({ url, token, wallet: irysWallet });
+      const webIrys = new WebIrys({
+        url: url,
+        token: token,
+        wallet: irysWallet,
+      });
+      console.log("the web irys is: ", webIrys);
+
       await webIrys.ready();
+      console.log("after here", webIrys);
       return webIrys;
     };
+    console.log("this wallet", thisWallet);
     const webIrys = await getWebIrys();
-    let previousPageCid = 0;
-    previousPageCid = "";
-
+    console.log("iiiin here", webIrys);
     const tags = [
       { name: "Content-Type", value: "text/plain" },
       { name: "application-id", value: "Anky Dementors" },
       { name: "container-type", value: "community-notebook" },
     ];
     try {
+      console.log("1231823721 here", webIrys);
       const receipt = await webIrys.upload(text, { tags });
       return receipt;
     } catch (error) {
-      console.log("there was an error");
+      console.log("there was an error uploading the text");
       console.log("the error is:", error);
       // setDisplayWritingGameLanding(false);
     }
@@ -503,7 +513,9 @@ const DesktopWritingGame = ({
       const token = "ethereum";
       const rpcURL = "";
 
-      const provider = await thisWallet.getEthereumProvider();
+      const providerResponse = await thisWallet.getEthereumProvider();
+      const provider = providerResponse.provider;
+      console.log("inside here,asdasdjas", provider);
       if (!provider) throw new Error(`Cannot find privy wallet`);
 
       const irysWallet =
@@ -629,34 +641,6 @@ const DesktopWritingGame = ({
     }
   };
 
-  const previewCastAction = async () => {
-    try {
-      const anonCastPreview = {
-        author: {
-          active_status: "inactive",
-          custody_address: "0x3ae59405ea68e9ce61442cadf74c335abfbc6b60",
-          display_name: "Anky",
-          fid: 18350,
-          pfp_url: "https://i.imgur.com/PPYWuJU.jpg",
-          username: "anky",
-        },
-        hash: "0x398492dsjcasc",
-        text: text,
-        reactions: {
-          likes: [2, 3, 5, 1, 51, 6],
-          recasts: [2, 2, 4, 5, 2, 2, 4, 5, 6, 1, 2, 2],
-        },
-        replies: { count: 8 },
-        root_parent_url: "https://warpcast.com/~/channel/anky",
-        timestamp: new Date(),
-      };
-      setCastForPreview(anonCastPreview);
-      setPreviewCast(true);
-    } catch (error) {
-      console.log("there was an error previewing your cast.");
-    }
-  };
-
   async function handleSaveSession() {
     try {
       let castResponse,
@@ -680,6 +664,7 @@ const DesktopWritingGame = ({
             irysResponseCid = responseFromIrys.data.cid;
           } else {
             irysResponseReceipt = await sendTextToIrys();
+            console.log("te irys response receipt is: ", irysResponseReceipt);
             irysResponseCid = irysResponseReceipt.id;
           }
         }
@@ -866,7 +851,7 @@ const DesktopWritingGame = ({
                       </p>
                     </div>
                   </div>
-                  {time > 480 && (
+                  {time > 8 && (
                     <div>
                       <p className="text-left text-black flex">
                         do you want to create a custom anky with your writing?
@@ -1040,9 +1025,6 @@ const DesktopWritingGame = ({
 
   return (
     <div className="h-full">
-      <audio ref={audioRef}>
-        <source src="/sounds/bell.mp3" />
-      </audio>
       <div className="md:block text-white relative w-full h-full mx-auto">
         <div className="flex h-full flex-col">
           <div

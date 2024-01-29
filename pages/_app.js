@@ -207,6 +207,7 @@ function MyApp({ Component, pageProps }) {
             },
             embeddedWallets: {
               createOnLogin: "users-without-wallets",
+              noPromptOnSignature: true,
             },
           }}
         >

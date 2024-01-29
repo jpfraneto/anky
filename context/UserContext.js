@@ -98,13 +98,9 @@ export const UserProvider = ({ children }) => {
     async function getAllUserWritings() {
       if (!wallet) return;
       if (!authenticated) return;
-      console.log("IN HEREEEE, THE WALLET IS.", wallet);
       const writings = await getThisUserWritings(wallet.address);
       const sortedWritings = writings.sort(sortWritings);
-      console.log(
-        "all the sorted writings are inside the user contextr:",
-        sortedWritings
-      );
+
       setAllUserWritings(sortedWritings);
     }
 
@@ -116,7 +112,6 @@ export const UserProvider = ({ children }) => {
     async function handleInitialization() {
       if (loading && !ready) return;
       if (ready && !wallet && !authenticated) {
-        console.log("INEIS");
         setMainAppLoading(false);
         setAppLoading(false);
         return;
@@ -141,7 +136,7 @@ export const UserProvider = ({ children }) => {
       setMainAppLoading(false);
       if (loadingUserStoredData) return;
 
-      if (wallet && !wallet.chainId.includes("8453")) await changeChain();
+      // if (wallet && !wallet.chainId.includes("8453")) await changeChain();
       setLibraryLoading(false);
       setAppLoading(false);
     }
@@ -215,7 +210,7 @@ export const UserProvider = ({ children }) => {
       ) {
         setLoadingLibrary(true);
         const { tba } = await callTba(wallet.address, setUserAppInformation);
-        let provider = await wallet?.getEthereumProvider();
+        let provider = await wallet?.getEthersProvider();
         const signer = await provider.getSigner();
         let userTba = userAppInformation?.tbaAddress || tba;
 
@@ -287,7 +282,7 @@ export const UserProvider = ({ children }) => {
   async function fetchUsersAnky() {
     if (!wallet || !wallet.address) return;
     try {
-      let provider = await wallet.getEthereumProvider();
+      let provider = await wallet.getEthersProvider();
       let signer = await provider.getSigner();
       if (!provider) return;
       const ankyAirdropContract = new ethers.Contract(
@@ -459,7 +454,7 @@ export const UserProvider = ({ children }) => {
 
   const changeChain = async () => {
     if (authenticated && wallet) {
-      await wallet.switchChain(8453);
+      // await wallet.switchChain(8453);
       setUserAppInformation((x) => {
         return { ...x, wallet: wallet };
       });
