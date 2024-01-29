@@ -15,16 +15,16 @@ const LoggedInUser = ({ startNewRun, text, prompt }) => {
   const wallet = wallets.wallets[0];
   const changeChain = async () => {
     console.log("in here");
-    // if (wallet) {
-    //   await wallet.switchChain(8453);
-    //   setBaseActive(true);
-    //   setUserWallet(wallet);
-    //   console.log("the chain was changed");
-    // }
+    if (wallet) {
+      await wallet.switchChain(8453);
+      setBaseActive(true);
+      setUserWallet(wallet);
+      console.log("the chain was changed");
+    }
   };
-  // useEffect(() => {
-  //   changeChain();
-  // }, [wallet]);
+  useEffect(() => {
+    changeChain();
+  }, [wallet]);
 
   const pasteText = async () => {
     await navigator.clipboard.writeText(text);

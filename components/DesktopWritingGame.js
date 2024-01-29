@@ -5,21 +5,13 @@ import Image from "next/image";
 import { WebIrys } from "@irys/sdk";
 import { useWallets } from "@privy-io/react-auth";
 import { LuCopyCheck, LuCopy } from "react-icons/lu";
-
-import { saveTextAnon } from "../lib/backend";
-import { ethers } from "ethers";
-import SimpleCast from "./SimpleCast";
 import { setUserData } from "../lib/idbHelper";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
-import LoggedInUser from "./LoggedInUser";
 import { useRouter } from "next/router";
 import { BsArrowRepeat } from "react-icons/bs";
 import { FaRegCommentAlt, FaRegHeart } from "react-icons/fa";
 import { IoSettings } from "react-icons/io5";
-import buildersABI from "../lib/buildersABI.json";
-import { encodeToAnkyverseLanguage } from "../lib/ankyverse";
-
 import { usePrivy } from "@privy-io/react-auth";
 import Spinner from "./Spinner";
 import { useUser } from "../context/UserContext";
@@ -428,23 +420,29 @@ const DesktopWritingGame = ({
       const url = "https://node2.irys.xyz";
       const token = "base-eth";
 
-      // const ethersProvider = await thisWallet?.getEthersProvider();
-      const ethereumProvider = await thisWallet?.getEthereumProvider();
-      const provider = await ethereumProvider.provider;
-      console.log("in here, the ethereum provider is: ", ethereumProvider);
+      const provider = await thisWallet?.getEthersProvider();
+      // const ethereumProvider = await thisWallet?.getEthereumProvider();
+      // const provider = await ethereumProvider.provider;
 
-      console.log("this walasdaslet", thisWallet.walletClientType);
       if (!provider) throw new Error(`Cannot find privy wallet`);
       console.log("the provider is: ", provider);
+      console.log("authenticates", authenticated);
+      console.log("userrrrr", user);
+      const rpcURL = "https://mainnet.base.org";
       const irysWallet =
         thisWallet?.walletClientType === "privy"
-          ? { name: "privy-embedded", provider, sendTransaction }
+          ? {
+              name: "privy-embedded",
+              provider,
+              sendTransaction,
+            }
           : { name: "privy", provider };
 
       const webIrys = new WebIrys({
         url: url,
         token: token,
         wallet: irysWallet,
+        config: { providerUrl: rpcURL },
       });
       console.log("the web irys is: ", webIrys);
 
@@ -452,7 +450,6 @@ const DesktopWritingGame = ({
       console.log("after here", webIrys);
       return webIrys;
     };
-    console.log("this wallet", thisWallet);
     const webIrys = await getWebIrys();
     console.log("iiiin here", webIrys);
     const tags = [
