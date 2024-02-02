@@ -12,7 +12,7 @@ const SettingsPage = () => {
   const router = useRouter();
   const { farcasterUser } = useUser();
   const { authenticated, user, login, logout } = usePrivy();
-  const [chosenTab, setChosenTab] = useState(router.query.link || "general");
+  const [chosenTab, setChosenTab] = useState(router.query.link || "farcaster");
   const openGeneralSettings = () => {
     alert("open the general settings");
   };
@@ -188,7 +188,7 @@ const SettingsPage = () => {
               } my-2 border-white border`}
             />
           </div>
-          <div className="w-fit mx-auto">
+          {/* <div className="w-fit mx-auto">
             <Button
               buttonAction={() => setChosenTab("notifications")}
               buttonText="notifications"
@@ -198,7 +198,7 @@ const SettingsPage = () => {
                   : "bg-transparent  text-white"
               } my-2 border-white border`}
             />
-          </div>
+          </div> */}
 
           <div className="w-fit mx-auto">
             <Button

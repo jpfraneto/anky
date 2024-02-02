@@ -292,6 +292,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
 
   async function fetchCastForReplyInformation(warpcastUrl) {
     try {
+      console.log("IN HERE, THE WARPCASTER URL IS : ", warpcastUrl);
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_ROUTE}/farcaster/api/get-cast`,
         { url: warpcastUrl }
@@ -299,10 +300,8 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
       console.log("the response from the server is: ", response);
       setTheAsyncCastToReply(response.data.cast);
     } catch (error) {
-      console.log(
-        "there was an error on the fetchCastForReplyInformation",
-        error
-      );
+      console.log("there was an error on the fetchCastForReplyInformation");
+      console.log(error);
     }
   }
 

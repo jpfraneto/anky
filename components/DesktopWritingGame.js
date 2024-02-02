@@ -88,7 +88,7 @@ const DesktopWritingGame = ({
   const [isCasting, setIsCasting] = useState(false);
   const [userWantsToCastAnon, setUserWantsToCastAnon] = useState(true);
   const [savingRound, setSavingRound] = useState(false);
-  const [castAs, setCastAs] = useState("");
+  const [castAs, setCastAs] = useState("anon");
   const [
     userWantsToCreateImageFromWriting,
     setUserWantsToCreateImageFromWriting,
@@ -248,7 +248,7 @@ const DesktopWritingGame = ({
 
   const startNewRun = () => {
     try {
-      audioRef.current.pause();
+      console.log("inside the start new run function");
       setTime(0);
       setDisableButton(false);
       setLifeBarLength(100);
@@ -651,7 +651,9 @@ const DesktopWritingGame = ({
         if (journalIdToSave) {
           irysResponseReceipt = await saveTextToJournal();
         } else {
+          console.log("IN HERE", userWantsToStoreWritingForever);
           if (!userWantsToStoreWritingForever) {
+            console.log("the user doesnt want to store this forever");
             responseFromIrys = await axios.post(
               `${process.env.NEXT_PUBLIC_API_ROUTE}/upload-writing`,
               {
@@ -660,6 +662,7 @@ const DesktopWritingGame = ({
             );
             irysResponseCid = responseFromIrys.data.cid;
           } else {
+            console.log("in her2113e");
             irysResponseReceipt = await sendTextToIrys();
             console.log("te irys response receipt is: ", irysResponseReceipt);
             irysResponseCid = irysResponseReceipt.id;
@@ -695,10 +698,16 @@ const DesktopWritingGame = ({
         } else if (castAs == "anon") {
           castResponse = await handleAnonCast();
         }
-        setAllUserWritings((x) => [
-          { cid: irysResponseCid, text: text, timestamp: new Date().getTime() },
-          ...x,
-        ]);
+        if (userWantsToStoreWritingForever) {
+          setAllUserWritings((x) => [
+            {
+              cid: irysResponseCid,
+              text: text,
+              timestamp: new Date().getTime(),
+            },
+            ...x,
+          ]);
+        }
       }
       if (userWantsToCreateImageFromWriting) {
         console.log("IIIIIN HERE, THE FARCASTER USER:", farcasterUser);
@@ -715,10 +724,11 @@ const DesktopWritingGame = ({
           responseFromMidjourneyServer.data
         );
       }
-      router.push(`/i/${irysResponseCid}`, null, { shallow: true });
-      setModalVisible(false);
+      console.log("at the end of the world.");
       startNewRun();
       setDisplayWritingGameLanding(false);
+      router.push(`/i/${irysResponseCid}`, null, { shallow: true });
+      setModalVisible(false);
     } catch (error) {
       console.log(
         "There was an error in the handle finish session function",

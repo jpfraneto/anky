@@ -22,11 +22,6 @@ const FarcasterFeedPage = ({ router }) => {
   ] = useState(false);
   const [error, setError] = useState(false);
 
-  const apiRoute =
-    self.location.hostname === "localhost"
-      ? "http://localhost:3000"
-      : "https://api.anky.lat";
-
   useEffect(() => {
     if (collectionAddress) {
       loadTheFarcasterCollection(collectionAddress);
@@ -145,10 +140,9 @@ export default FarcasterFeedPage;
 const FarcasterCard = ({ user, setChosenUserToDisplay }) => {
   const random = Math.floor(5 * Math.random());
   return (
-    <div
-      onClick={() => {
-        setChosenUserToDisplay(user);
-      }}
+    <Link
+      passHref
+      href={`/u/${user.fid}`}
       className="flex m-1 relative w-16 h-16 "
     >
       <div className="border border-white w-16 h-16 rounded-full overflow-hidden relative hover:border hover:border-white cursor-pointer">
@@ -157,6 +151,6 @@ const FarcasterCard = ({ user, setChosenUserToDisplay }) => {
       <div className="absolute bg-red-600 hover:bg-red-400 px-3 border border-white rounded-full w-1 flex items-center justify-center text-white font-2xl -top-2 -right-0">
         {random}
       </div>
-    </div>
+    </Link>
   );
 };

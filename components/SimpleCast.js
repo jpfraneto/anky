@@ -27,7 +27,6 @@ const SimpleCast = ({ cast, pfp, userInfo = null }) => {
         var cid = parts.pop() || "";
         if (cid.length == 43) {
           const thisWriting = await getOneWriting(cid);
-          console.log("the edited cast is: ", editedCast);
           setEditedCast((x) => {
             return { ...x, text: thisWriting.text };
           });
