@@ -67,7 +67,11 @@ const DesktopWritingGame = ({
     usePrivy();
   const { userSettings, setUserSettings } = useSettings();
   const [textareaHeight, setTextareaHeight] = useState("20vh"); // default height
-  const { setUserDatabaseInformation, setAllUserWritings } = useUser();
+  const {
+    setUserDatabaseInformation,
+    setAllUserWritings,
+    userDatabaseInformation,
+  } = useUser();
   const audioRef = useRef();
 
   const [maxTimeBetweenKeystrokes, setMaxTimeBetweenKeystrokes] = useState(
@@ -652,20 +656,21 @@ const DesktopWritingGame = ({
           irysResponseReceipt = await saveTextToJournal();
         } else {
           console.log("IN HERE", userWantsToStoreWritingForever);
-          if (!userWantsToStoreWritingForever) {
-            console.log("the user doesnt want to store this forever");
+          if (userWantsToStoreWritingForever) {
+            irysResponseReceipt = await sendTextToIrys();
+            irysResponseCid = irysResponseReceipt.id;
+          } else {
             responseFromIrys = await axios.post(
               `${process.env.NEXT_PUBLIC_API_ROUTE}/upload-writing`,
               {
                 text,
               }
             );
+            console.log(
+              "in here, the response from irys is: ?",
+              responseFromIrys
+            );
             irysResponseCid = responseFromIrys.data.cid;
-          } else {
-            console.log("in her2113e");
-            irysResponseReceipt = await sendTextToIrys();
-            console.log("te irys response receipt is: ", irysResponseReceipt);
-            irysResponseCid = irysResponseReceipt.id;
           }
         }
       }
@@ -710,7 +715,7 @@ const DesktopWritingGame = ({
         }
       }
       if (userWantsToCreateImageFromWriting) {
-        console.log("IIIIIN HERE, THE FARCASTER USER:", farcasterUser);
+        console.log("the cid is: ", irysResponseCid);
         const responseFromMidjourneyServer = await axios.post(
           `${process.env.NEXT_PUBLIC_API_ROUTE}/ai/process-writing`,
           {
@@ -858,23 +863,6 @@ const DesktopWritingGame = ({
                       </p>
                     </div>
                   </div>
-                  {time > 8 && (
-                    <div>
-                      <p className="text-left text-black flex">
-                        do you want to create a custom anky with your writing?
-                      </p>
-                      <input
-                        className="mx-4 w-10 h-10 rounded-xl bg-purple-600"
-                        type="checkbox"
-                        onChange={(e) => {
-                          setUserWantsToCreateImageFromWriting(
-                            !userWantsToCreateImageFromWriting
-                          );
-                        }}
-                        checked={userWantsToCreateImageFromWriting}
-                      />
-                    </div>
-                  )}
                 </div>
               </div>
             ) : (
@@ -897,14 +885,14 @@ const DesktopWritingGame = ({
             )}
 
             {authenticated && (
-              <div className=" bg-purple-600 p-2 mt-2 mb-0 w-full rounded-xl mx-auto flex flex-col justify-start items-center ">
+              <div className="bg-purple-500 text-black p-3 my-2 rounded-xl flex space-x-2 items-center justify-center">
                 <div className="flex">
-                  <p className="text-black h-fit flex items-center">
+                  <p className="text-black text-left">
                     do you want to save your writing forever (associated with
                     your wallet address)
                   </p>
                   <input
-                    className="mx-4 my-auto"
+                    className="mx-4 w-10 h-10 rounded-xl bg-purple-600"
                     type="checkbox"
                     onChange={(e) => {
                       setUserWantsToStoreWritingForever(
@@ -946,6 +934,31 @@ const DesktopWritingGame = ({
                       </div>
                     </div>
                   )}
+              </div>
+            )}
+
+            {authenticated && time > 8 && (
+              <div className="bg-purple-500 text-black p-3 my-2 rounded-xl flex space-x-2 items-center justify-center">
+                <div className="flex flex-col">
+                  <p className="text-left text-black flex">
+                    do you want to create a custom anky with your writing?
+                    (costs 480 $newen)
+                  </p>
+                  <small className="text-xs">
+                    your balance is {userDatabaseInformation.manaBalance} $newen
+                  </small>
+                </div>
+
+                <input
+                  className="mx-4 w-10 h-10 rounded-xl bg-purple-600"
+                  type="checkbox"
+                  onChange={(e) => {
+                    setUserWantsToCreateImageFromWriting(
+                      !userWantsToCreateImageFromWriting
+                    );
+                  }}
+                  checked={userWantsToCreateImageFromWriting}
+                />
               </div>
             )}
 

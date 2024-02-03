@@ -37,12 +37,6 @@ const WelcomePage = ({ text, setDisplayWritingGameLanding }) => {
   const copyLinkToClipboard = async () => {
     setDisplayMoreInformation(!displayMoreInformation);
   };
-  if (!text)
-    return (
-      <div className="text-white mt-4">
-        <p>please write first before coming into this page.</p>
-      </div>
-    );
 
   return (
     <div

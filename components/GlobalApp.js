@@ -448,6 +448,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
             setDisplayWritingGameLanding={setDisplayWritingGameLanding}
           />
         );
+
       case `/u/${route.split("/").pop()}`:
         return (
           <UserDisplayPage
