@@ -57,13 +57,13 @@ const TimerSettingsModal = ({
               value={maxTimeBetweenKeystrokes}
               onChange={(e) => setMaxTimeBetweenKeystrokes(e.target.value)}
             />
-            <span className="text-purple-200 mb-2">
+            {/* <span className="text-purple-200 mb-2">
               you will earn{" "}
               <span className="text-xl text-yellow-600">
                 {Math.floor(300 / maxTimeBetweenKeystrokes)}%
               </span>{" "}
               of the amount of newen for each second written.
-            </span>
+            </span> */}
           </li>
         </ol>
         <div className="mt-2 w-24 flex ">

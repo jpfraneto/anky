@@ -161,9 +161,6 @@ const SettingsPage = () => {
   return (
     <div className="pt-4 md:w-full h-full flex flex-col mx-auto text-white px-4">
       <h2 className="text-4xl ">Settings</h2>
-      <small className="text-xs mb-2">
-        (this is the bare bones of this part of the app)
-      </small>
       <div className="flex flex-col md:flex-row h-full">
         <div className="w-full md:w-1/5 flex flex-row flex-wrap md:flex-col ">
           {/* <div className="w-fit mx-auto">

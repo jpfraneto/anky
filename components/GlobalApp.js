@@ -72,6 +72,7 @@ import Leaderboard from "./Leaderboard";
 import AboutModal from "./AboutModal";
 import TimerSettingsModal from "./TimerSettingsModal";
 import AskFarcaster from "./AskFarcaster";
+import MintYourAnky from "./MintYourAnky";
 
 const righteous = Righteous({ weight: "400", subsets: ["latin"] });
 const inter = Inter({ subsets: ["cyrillic"], weight: ["400"] });
@@ -540,6 +541,8 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
             router={router}
           />
         );
+      case `/mint-your-anky/${route.split("/").pop()}`:
+        return <MintYourAnky cid={router.query.cid} />;
 
       case "/community-notebook":
         return <GlobalFeed thisWallet={wallet} />;
@@ -762,8 +765,6 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
           }
         />
       )}
-
-      {/* {displayAnkyModalState && <p>display the anky modal state</p>} */}
 
       {displayAboutModal && (
         <AboutModal

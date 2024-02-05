@@ -62,6 +62,7 @@ module.exports = {
         port: "",
         pathname: "/**",
       },
+
       {
         protocol: "https",
         hostname: "openseauserdata.com",

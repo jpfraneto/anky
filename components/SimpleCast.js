@@ -41,6 +41,7 @@ const SimpleCast = ({ cast, pfp, userInfo = null }) => {
   }, [cast]);
 
   async function handleDisplayComments() {
+    return;
     return alert("work on the comments functionality");
     setDisplayComments((x) => !x);
   }
@@ -48,6 +49,7 @@ const SimpleCast = ({ cast, pfp, userInfo = null }) => {
   // Function to handle recast toggle
   const handleRecast = async (e) => {
     e.preventDefault();
+    return;
     if (farcasterUser.status === "approved") {
       const isRecasted = hasUserRecasted; // store the initial state
       const newRecast = {
@@ -152,6 +154,7 @@ const SimpleCast = ({ cast, pfp, userInfo = null }) => {
 
   async function handleLike(e) {
     try {
+      return;
       console.log("the farcaster user is:", farcasterUser);
       if (farcasterUser.status === "approved") {
         const isLiked = hasUserLiked;
@@ -273,10 +276,7 @@ const SimpleCast = ({ cast, pfp, userInfo = null }) => {
         </div>
       </div>
 
-      <span
-        onClick={() => alert("open cast options")}
-        className="absolute top-0 right-2 text-purple-200 "
-      >
+      <span className="absolute top-0 right-2 text-purple-200 hover:text-purple-500 cursor-pointer">
         · · ·
       </span>
     </div>
