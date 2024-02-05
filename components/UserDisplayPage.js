@@ -304,7 +304,6 @@ const UserDisplayPage = ({
               buttonText="follow"
               buttonColor="bg-purple-600 border-black border-2"
               buttonAction={() => {
-                console.log("the farcaster user is: ", farcasterUser);
                 if (authenticated && farcasterUser?.status != "approved") {
                   if (farcasterUser.signerStatus == "approved") {
                     return alert("follow this user");

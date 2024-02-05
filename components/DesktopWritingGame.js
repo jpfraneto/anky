@@ -715,18 +715,20 @@ const DesktopWritingGame = ({
         }
       }
       if (userWantsToCreateImageFromWriting) {
-        console.log("the cid is: ", irysResponseCid);
+        const authToken = await getAccessToken();
         const responseFromMidjourneyServer = await axios.post(
           `${process.env.NEXT_PUBLIC_API_ROUTE}/ai/process-writing`,
           {
             text,
             cid: irysResponseCid,
             userFid: farcasterUser.fid,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${authToken}`,
+            },
           }
-        );
-        console.log(
-          "the response from the midjourney server is: ",
-          responseFromMidjourneyServer.data
         );
       }
       console.log("at the end of the world.");
@@ -1199,43 +1201,6 @@ const DesktopWritingGame = ({
           </div>
         </div>
       </Overlay>
-      {/* <Overlay show={showOverlay && !authenticated && !farcasterUser?.fid}>
-        <div className="flex flex-col h-full justify-center items-center w-full ">
-          <div className="flex flex-col text-white h-48">
-            <p>you are not logged in</p>
-            <p>you won&apos;t be able to store your writings forever</p>
-            <div className="flex justify-center">
-              <Button
-                buttonAction={login}
-                buttonText="log in"
-                buttonColor="bg-green-600 mx-auto w-fit my-2"
-              />
-              <Button
-                buttonAction={() => {
-                  setShowOverlay(false);
-                  setHardcoreContinue(true);
-                }}
-                buttonText="continue anon"
-                buttonColor="bg-purple-600 mx-auto w-fit my-2"
-              />
-            </div>
-            <p
-              onClick={() => setWhatIsThis(!whatIsThis)}
-              className={`small  ${
-                whatIsThis ? "text-purple-400" : "text-gray-300"
-              } hover:text-purple-400 cursor-pointer mb-2`}
-            >
-              what is this?
-            </p>
-            {whatIsThis && (
-              <div>
-                <p className="small text-white mb-2">just write</p>
-                <p className="small text-white">it is all an excuse</p>
-              </div>
-            )}
-          </div>
-        </div>
-      </Overlay> */}
     </div>
   );
 };
