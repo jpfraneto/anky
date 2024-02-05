@@ -937,7 +937,7 @@ const DesktopWritingGame = ({
               </div>
             )}
 
-            {authenticated && time > 8 && (
+            {authenticated && time > 8 && farcasterUser?.fid && (
               <div className="bg-purple-500 text-black p-3 my-2 rounded-xl flex space-x-2 items-center justify-center">
                 <div className="flex flex-col">
                   <p className="text-left text-black flex">
