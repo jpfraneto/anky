@@ -370,7 +370,6 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
 
   function getComponentForRoute(route, router) {
     if (!ready || loading) return;
-
     switch (route) {
       case "/":
         return (
@@ -542,6 +541,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
           />
         );
       case `/mint-your-anky/${route.split("/").pop()}`:
+        console.log("IN HERE");
         return <MintYourAnky cid={router.query.cid} />;
 
       case "/community-notebook":

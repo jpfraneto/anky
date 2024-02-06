@@ -82,6 +82,7 @@ const DesktopWritingGame = ({
     useState(false);
   const [amountOfManaAdded, setAmountOfManaAdded] = useState(0);
   const [time, setTime] = useState(countdownTarget || 0);
+  const [bottomMessage, setBottomMessage] = useState("");
   const [whatIsThis, setWhatIsThis] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [isActive, setIsActive] = useState(false);
@@ -90,7 +91,7 @@ const DesktopWritingGame = ({
   const [userWantsFeedbackFromAnky, setUserWantsFeedbackFromAnky] =
     useState(false);
   const [isCasting, setIsCasting] = useState(false);
-  const [userWantsToCastAnon, setUserWantsToCastAnon] = useState(true);
+  const [userWantsToCastAnon, setUserWantsToCastAnon] = useState(false);
   const [savingRound, setSavingRound] = useState(false);
   const [castAs, setCastAs] = useState("anon");
   const [
@@ -104,6 +105,7 @@ const DesktopWritingGame = ({
   const [moreThanMinRun, setMoreThanMinRound] = useState(null);
   const [savingTextAnon, setSavingTextAnon] = useState(false);
   const [savedText, setSavedText] = useState(false);
+  const [backgroundVisible, setBackgroundVisible] = useState(false);
   const [cid, setCid] = useState("");
   const [sessionIsOver, setSessionIsOver] = useState(false);
   const [previewCast, setPreviewCast] = useState(false);
@@ -731,6 +733,7 @@ const DesktopWritingGame = ({
         );
       }
       console.log("at the end of the world.");
+
       startNewRun();
       setDisplayWritingGameLanding(false);
       router.push(`/i/${irysResponseCid}`, null, { shallow: true });
@@ -752,7 +755,11 @@ const DesktopWritingGame = ({
             text && "fade-in"
           } flex flex-col justify-center items-center absolute w-screen top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-opacity-20 mb-4`}
         >
-          <div className="relative  text-2xl border-white border-2 mx-16 md:mx-auto w-5/6 md:w-2/3 xl:w-2/5 rounded-xl bg-black p-2 text-white">
+          <div
+            className={`relative  text-2xl border-white border-2 mx-16 md:mx-auto w-5/6 md:w-2/3 xl:w-2/5 rounded-xl ${
+              backgroundVisible ? "bg-transparent" : "bg-black"
+            } p-2 text-white`}
+          >
             <span className="absolute top-2 right-2 cursor-pointer ">
               {copyToClipboardState ? (
                 <LuCopyCheck className="text-yellow-600" />
@@ -877,10 +884,33 @@ const DesktopWritingGame = ({
                     className="mx-4 w-10 h-10 rounded-xl bg-purple-600"
                     type="checkbox"
                     onChange={(e) => {
-                      setUserWantsToCastAnon(!userWantsToCastAnon);
+                      if (time < 30) {
+                        setUserWantsToCastAnon(!userWantsToCastAnon);
+                        setBottomMessage(true);
+                      } else {
+                        setUserWantsToCastAnon();
+                      }
                     }}
                     checked={userWantsToCastAnon}
                   />
+                  {time < 30 && bottomMessage && (
+                    <small className="text-xs text-red-400">
+                      if you had written for at least 30 seconds, you could
+                      transform what you just wrote into a unique anky. go can
+                      try again if you want, by tapping{" "}
+                      <span
+                        className="text-yellow-600 text-xl hover:text-purple-300 cursor-pointer"
+                        onClick={() => {
+                          setBackgroundVisible(true);
+                          setModalVisible(false);
+                          startNewRun();
+                          setBottomMessage(false);
+                        }}
+                      >
+                        here
+                      </span>
+                    </small>
+                  )}
                 </div>
               </div>
             )}
@@ -938,16 +968,19 @@ const DesktopWritingGame = ({
               </div>
             )}
 
-            {authenticated && time > 30 && (
+            {time > 30 && (
               <div className="bg-purple-500 text-black p-3 my-2 rounded-xl flex space-x-2 items-center justify-center">
                 <div className="flex flex-col">
                   <p className="text-left text-black flex">
                     do you want to create a custom anky with your writing?
                     (costs 480 $newen)
                   </p>
-                  <small className="text-xs">
-                    your balance is {userDatabaseInformation.manaBalance} $newen
-                  </small>
+                  {userDatabaseInformation?.manaBalance && (
+                    <small className="text-xs">
+                      your balance is {userDatabaseInformation.manaBalance}{" "}
+                      $newen
+                    </small>
+                  )}
                 </div>
 
                 <input
