@@ -630,6 +630,10 @@ const DesktopWritingGame = ({
           embeds: forEmbedding,
         }
       );
+      console.log(
+        "the response after sending the anon cast is: ",
+        response.data
+      );
 
       // setCastHash(response.data.cast.hash);
       return {
@@ -676,8 +680,8 @@ const DesktopWritingGame = ({
       }
       if (!authenticated) {
         if (userWantsToCastAnon) {
-          let castResponseFromAnonCast = await handleAnonCast();
-          irysResponseCid = castResponseFromAnonCast.responseFromIrys.data.cid;
+          castResponse = await handleAnonCast();
+          irysResponseCid = castResponse.responseFromIrys.data.cid;
         } else {
           setDisplayWritingGameLanding(false);
           setTimeout(() => {
@@ -686,14 +690,7 @@ const DesktopWritingGame = ({
           return router.push("/welcome");
         }
       }
-      if (authenticated && farcasterUser.signerStatus != "approved") {
-        if (userWantsToCastAnon) await handleAnonCast(irysResponseCid);
 
-        setAllUserWritings((x) => [
-          { cid: irysResponseCid, text: text, timestamp: new Date().getTime() },
-          ...x,
-        ]);
-      }
       if (
         (authenticated && farcasterUser.signerStatus == "approved") ||
         (authenticated && farcasterUser.status == "approved")
@@ -715,13 +712,15 @@ const DesktopWritingGame = ({
         }
       }
       if (userWantsToCreateImageFromWriting) {
+        console.log("IN HERE, THE CAST RESPONSE IS :", castResponse);
         const authToken = await getAccessToken();
         const responseFromMidjourneyServer = await axios.post(
           `${process.env.NEXT_PUBLIC_API_ROUTE}/ai/process-writing`,
           {
             text,
             cid: irysResponseCid,
-            userFid: farcasterUser.fid,
+            userFid: farcasterUser?.fid || 18350,
+            parentCastHash: castResponse.castHash,
           },
           {
             headers: {
@@ -939,7 +938,7 @@ const DesktopWritingGame = ({
               </div>
             )}
 
-            {authenticated && time > 8 && farcasterUser?.fid && (
+            {authenticated && time > 30 && (
               <div className="bg-purple-500 text-black p-3 my-2 rounded-xl flex space-x-2 items-center justify-center">
                 <div className="flex flex-col">
                   <p className="text-left text-black flex">
