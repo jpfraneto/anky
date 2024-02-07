@@ -153,10 +153,6 @@ const ReadIrysPage = ({ setShow }) => {
     await navigator.clipboard.writeText(thisWriting.text);
     setCopyText("anky copied"); // Change here to reflect the action
     setShowCopyLinkButton(false); // Hide the link copy button
-    // setTimeout(() => {
-    //   setCopyText("copy text");
-    //   setShowCopyLinkButton(true); // Show the link copy button again after some time
-    // }, 3000); // Increased timeout for better user experience
   };
 
   const copyLinkToClipboard = async () => {
@@ -166,10 +162,6 @@ const ReadIrysPage = ({ setShow }) => {
     );
     setCopyLinkText("link to anky copied"); // Change here to reflect the action
     setShowCopyTextButton(false); // Hide the text copy button
-    // setTimeout(() => {
-    //   setCopyLinkText("copy anky link");
-    //   setShowCopyTextButton(true); // Show the text copy button again after some time
-    // }, 3000); // Increased timeout for better user experience
   };
 
   const UserPfP = () => {

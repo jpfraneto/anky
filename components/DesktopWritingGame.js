@@ -885,10 +885,10 @@ const DesktopWritingGame = ({
                     type="checkbox"
                     onChange={(e) => {
                       if (time < 30) {
-                        setUserWantsToCastAnon(!userWantsToCastAnon);
                         setBottomMessage(true);
                       } else {
-                        setUserWantsToCastAnon();
+                        setUserWantsToCastAnon(!userWantsToCastAnon);
+                        setUserWantsToCastAnon(true);
                       }
                     }}
                     checked={userWantsToCastAnon}

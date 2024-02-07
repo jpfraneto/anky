@@ -541,7 +541,6 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
           />
         );
       case `/mint-your-anky/${route.split("/").pop()}`:
-        console.log("IN HERE");
         return <MintYourAnky cid={router.query.cid} />;
 
       case "/community-notebook":
