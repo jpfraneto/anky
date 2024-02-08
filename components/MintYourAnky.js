@@ -5,18 +5,18 @@ import { getOneWriting } from "../lib/irys";
 import Button from "./Button";
 
 const MintYourAnky = ({ cid }) => {
-  console.log("inside the mint your anky function", cid);
   const [anky, setAnky] = useState({});
   const [chosenImage, setChosenImage] = useState(null);
   const [loading, setLoading] = useState(true);
   const [mintingAnky, setMintingAnky] = useState(false);
   const [thisWriting, setThisWriting] = useState("");
+  const [votePercentages, setVotePercentages] = useState([]);
+  const [votes, setVotes] = useState([]);
   const [imageUrls, setImageUrls] = useState([]);
   useEffect(() => {
     const fetchWritingFromIrys = async (cid) => {
       try {
         const writingFromIrys = await getOneWriting(cid);
-        console.log("the writing from irys is: ", writingFromIrys);
         setThisWriting(writingFromIrys.text);
       } catch (error) {
         console.log("there was an error fetching the writing from irys", error);
@@ -24,13 +24,35 @@ const MintYourAnky = ({ cid }) => {
     };
     const thisAnkyForMinting = async () => {
       try {
-        console.log("trying the mint youasd");
+        console.log("sending to ", process.env.NEXT_PUBLIC_API_ROUTE);
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_API_ROUTE}/ai/mint-your-anky/${cid}`
         );
         console.log("the response is: ", response);
         setAnky(response.data.anky);
-        setChosenImage(response.data.anky.chosenImageIndex - 1);
+        const responseVotes = response.data.votes;
+        setVotes(responseVotes);
+        let voteCounts = [0, 0, 0, 0];
+        responseVotes.forEach((vote) => {
+          if (vote.voteIndex >= 0 && vote.voteIndex < 4) {
+            voteCounts[vote.voteIndex]++;
+          }
+        });
+        // Calculate total votes for normalization
+        const totalVotes = votes.length;
+
+        // Calculate percentages for each option
+        let votePercentagesResponse = voteCounts.map((count) => {
+          return totalVotes > 0 ? ((count / totalVotes) * 100).toFixed(2) : 0;
+        });
+        console.log(
+          "the response votes",
+          responseVotes,
+          votePercentagesResponse
+        );
+        setVotePercentages(votePercentagesResponse);
+
+        setChosenImage(response.data.anky.imageOneUrl);
         setImageUrls([
           response.data.anky.imageOneUrl,
           response.data.anky.imageTwoUrl,
@@ -76,7 +98,7 @@ const MintYourAnky = ({ cid }) => {
       <p className="text-white mt-2 text-xl">MINT THIS ANKY</p>
       <div className="flex flex-col w-96">
         <div className="my-2 w-full aspect-square relative">
-          <Image src={imageUrls[chosenImage]} alt="image" fill />
+          <Image src={chosenImage} alt="image" fill />
         </div>
         <div className="flex flex-row justify-between mb-2 w-full h-fit">
           {imageUrls &&
@@ -84,6 +106,7 @@ const MintYourAnky = ({ cid }) => {
               return (
                 <div
                   key={i}
+                  onClick={() => setChosenImage(imageUrls[i])}
                   className={`${
                     chosenImage == i
                       ? "border-white border-2"
