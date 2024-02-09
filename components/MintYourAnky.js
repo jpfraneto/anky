@@ -13,6 +13,26 @@ const MintYourAnky = ({ cid }) => {
   const [votePercentages, setVotePercentages] = useState([]);
   const [votes, setVotes] = useState([]);
   const [imageUrls, setImageUrls] = useState([]);
+  const [votingOn, setVotingOn] = useState(false);
+  const [mintingEnded, setMintingEnded] = useState(false);
+  const [countdownTimer, setCountdownTimer] = useState("");
+
+  useEffect(() => {
+    // Your existing useEffect code for fetching Anky data
+    // After setting Anky data, calculate and set timers
+    if (anky.createdAt) {
+      updateTimers();
+    }
+  }, [anky.createdAt]);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      updateTimers();
+    }, 1000); // Update every second
+
+    return () => clearInterval(timer); // Cleanup interval on component unmount
+  }, []);
+
   useEffect(() => {
     const fetchWritingFromIrys = async (cid) => {
       try {
@@ -51,14 +71,22 @@ const MintYourAnky = ({ cid }) => {
           votePercentagesResponse
         );
         setVotePercentages(votePercentagesResponse);
+        const highestVoteIndex = votePercentagesResponse.findIndex(
+          (percentage) => {
+            return percentage == Math.max(...votePercentagesResponse);
+          }
+        );
 
-        setChosenImage(response.data.anky.imageOneUrl);
-        setImageUrls([
+        const newImageUrls = [
           response.data.anky.imageOneUrl,
           response.data.anky.imageTwoUrl,
           response.data.anky.imageThreeUrl,
           response.data.anky.imageFourUrl,
-        ]);
+        ];
+        setImageUrls(newImageUrls);
+        const highestVoteImageUrl = newImageUrls[highestVoteIndex];
+        setChosenImage(highestVoteImageUrl);
+
         if (cid) {
           fetchWritingFromIrys(cid);
         }
@@ -70,6 +98,35 @@ const MintYourAnky = ({ cid }) => {
     console.log("right before this");
     thisAnkyForMinting();
   }, []);
+
+  const updateTimers = () => {
+    const now = Date.now();
+    const votingEnds = new Date(anky.createdAt).getTime() + 8 * 60 * 60 * 1000; // 8 hours from createdAt
+    const mintingEnds = votingEnds + 24 * 60 * 60 * 1000; // Additional 24 hours for minting window
+    console.log("aloja");
+    if (now < votingEnds) {
+      setVotingOn(true);
+      setCountdownTimer(formatTime(votingEnds - now));
+    } else if (now >= votingEnds && now < mintingEnds) {
+      setVotingOn(false); // Voting period ended, minting period starts
+      setCountdownTimer(formatTime(mintingEnds - now));
+    } else {
+      setMintingEnded(true); // Both voting and minting periods have ended
+      setCountdownTimer("00:00:00");
+    }
+  };
+
+  const formatTime = (milliseconds) => {
+    let totalSeconds = Math.floor(milliseconds / 1000);
+    let hours = Math.floor(totalSeconds / 3600);
+    totalSeconds %= 3600;
+    let minutes = Math.floor(totalSeconds / 60);
+    let seconds = totalSeconds % 60;
+
+    return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+  };
+
+  const pad = (num) => (num < 10 ? `0${num}` : num);
 
   async function mintThisAnky() {
     try {
@@ -95,12 +152,12 @@ const MintYourAnky = ({ cid }) => {
   console.log("this writing is: ", thisWriting);
   return (
     <div className="w-96 mx-auto">
-      <p className="text-white mt-2 text-xl">MINT THIS ANKY</p>
+      <p className="text-white mt-2 text-xl">{anky.title || ""}</p>
       <div className="flex flex-col w-96">
         <div className="my-2 w-full aspect-square relative">
           <Image src={chosenImage} alt="image" fill />
         </div>
-        <div className="flex flex-row justify-between mb-2 w-full h-fit">
+        <div className="flex flex-row mb-4 justify-between mb-2 w-full h-fit">
           {imageUrls &&
             imageUrls.map((x, i) => {
               return (
@@ -114,18 +171,43 @@ const MintYourAnky = ({ cid }) => {
                   } w-1/5 aspect-square relative `}
                 >
                   <Image src={x} alt="image" fill />
+                  <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 text-xl text-white">
+                    {votePercentages[i]}%
+                  </span>
                 </div>
               );
             })}
         </div>
-        <div>
-          <Button
-            buttonText={`${
-              mintingAnky ? "minting..." : "mint this anky (888 $degen)"
-            }`}
-            buttonAction={mintThisAnky}
-            buttonColor="bg-purple-600 text-white"
-          />
+        <div className="text-white">
+          <p>
+            {votingOn
+              ? `Voting closes in ${countdownTimer}`
+              : mintingEnded
+              ? "Minting period ended"
+              : `Minting ends in ${countdownTimer}`}
+          </p>
+        </div>
+        <div className="flex space-x-2 justify-center w-full mt-2">
+          <a
+            target="_blank"
+            href={`https://warpcast.com/anky/${anky.frameCastHash.substring(
+              0,
+              10
+            )}`}
+            className=" hover:text-red-200"
+          >
+            <Button
+              buttonText="vote in warpcast"
+              buttonColor="bg-purple-600 text-white"
+            />
+          </a>
+          {!votingOn && !mintingEnded && (
+            <Button
+              buttonText={`${mintingAnky ? "minting..." : "mint (222 $degen)"}`}
+              buttonAction={mintThisAnky}
+              buttonColor="bg-purple-600 text-white"
+            />
+          )}
         </div>
       </div>
       <div className="text-white text-left">
