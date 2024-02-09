@@ -20,14 +20,14 @@ const MintYourAnky = ({ cid }) => {
   useEffect(() => {
     // Your existing useEffect code for fetching Anky data
     // After setting Anky data, calculate and set timers
-    if (anky.createdAt) {
+    if (anky?.createdAt) {
       updateTimers();
     }
-  }, [anky.createdAt]);
+  }, [anky?.createdAt]);
 
   useEffect(() => {
     // Assuming `anky.createdAt` is a timestamp or a date string that can be parsed by `Date`
-    if (anky && anky.createdAt) {
+    if (anky && anky?.createdAt) {
       const intervalId = setInterval(() => {
         updateTimers();
       }, 1000); // Update every second
@@ -35,7 +35,8 @@ const MintYourAnky = ({ cid }) => {
       // Cleanup interval on component unmount or when `anky.createdAt` changes
       return () => clearInterval(intervalId);
     }
-  }, [anky.createdAt]);
+  }, [anky?.createdAt]);
+
   useEffect(() => {
     const fetchWritingFromIrys = async (cid) => {
       try {
@@ -50,6 +51,7 @@ const MintYourAnky = ({ cid }) => {
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_API_ROUTE}/ai/mint-your-anky/${cid}`
         );
+        if (!anky) return;
         setAnky(response.data.anky);
         const responseVotes = response.data.votes;
         setVotes(responseVotes);
@@ -59,6 +61,7 @@ const MintYourAnky = ({ cid }) => {
             voteCounts[vote.voteIndex]++;
           }
         });
+        setVotes(responseVotes);
         // Calculate total votes for normalization
         const totalVotes = responseVotes.length;
 
@@ -125,7 +128,8 @@ const MintYourAnky = ({ cid }) => {
 
   async function mintThisAnky() {
     try {
-      alert("now the anky should be minted");
+      alert("now the anky should be minted. i dont know how to do this. help");
+      return;
       setMintingAnky(true);
       const thisProvider = await thisWallet.getEthersProvider();
       let signer = await thisProvider.getSigner();
@@ -150,7 +154,7 @@ const MintYourAnky = ({ cid }) => {
         <div className="my-2 w-full aspect-square relative">
           <Image src={chosenImage} alt="image" fill />
         </div>
-        <div className="flex flex-row mb-4 justify-between mb-2 w-full h-fit">
+        <div className="flex flex-row mb-4 justify-between  w-full h-fit">
           {imageUrls &&
             imageUrls.map((x, i) => {
               return (
@@ -162,7 +166,7 @@ const MintYourAnky = ({ cid }) => {
                     } else if (mintingEnded) {
                       alert("the minting process for this anky is closed");
                     } else {
-                      alert("those were not chosen");
+                      alert("that anky was not voted");
                     }
                   }}
                   className={`${
@@ -171,7 +175,7 @@ const MintYourAnky = ({ cid }) => {
                       : "cursor-not-allowed"
                   } w-1/5 aspect-square relative `}
                 >
-                  <Image src={votingOn ? x : chosenImage} alt="image" fill />
+                  <Image src={x} alt="image" fill />
                   <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 text-xl text-white">
                     {votePercentages[i]}%
                   </span>
@@ -179,6 +183,8 @@ const MintYourAnky = ({ cid }) => {
               );
             })}
         </div>
+        {votes && <div className="text-white">{votes.length} votes</div>}
+
         <div className="text-white">
           <p>
             {votingOn
@@ -189,26 +195,29 @@ const MintYourAnky = ({ cid }) => {
           </p>
         </div>
         <div className="flex space-x-2 justify-center w-full mt-2">
-          <a
-            target="_blank"
-            href={`https://warpcast.com/anky/${anky.frameCastHash.substring(
-              0,
-              10
-            )}`}
-            className=" hover:text-red-200"
-          >
-            <Button
-              buttonText="vote in warpcast"
-              buttonColor="bg-purple-600 text-white"
-            />
-          </a>
-          {!votingOn && !mintingEnded && (
+          {votingOn && (
+            <a
+              target="_blank"
+              href={`https://warpcast.com/anky/${anky.frameCastHash.substring(
+                0,
+                10
+              )}`}
+              className=" hover:text-red-200"
+            >
+              <Button
+                buttonText="vote in warpcast"
+                buttonColor="bg-purple-600 text-white"
+              />
+            </a>
+          )}
+          {!votingOn && !mintingEnded}
+          {
             <Button
               buttonText={`${mintingAnky ? "minting..." : "mint (222 $degen)"}`}
               buttonAction={mintThisAnky}
               buttonColor="bg-purple-600 text-white"
             />
-          )}
+          }
         </div>
       </div>
       <div className="text-white text-left">
