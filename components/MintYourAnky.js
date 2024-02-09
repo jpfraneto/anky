@@ -26,13 +26,16 @@ const MintYourAnky = ({ cid }) => {
   }, [anky.createdAt]);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      updateTimers();
-    }, 1000); // Update every second
+    // Assuming `anky.createdAt` is a timestamp or a date string that can be parsed by `Date`
+    if (anky && anky.createdAt) {
+      const intervalId = setInterval(() => {
+        updateTimers();
+      }, 1000); // Update every second
 
-    return () => clearInterval(timer); // Cleanup interval on component unmount
-  }, []);
-
+      // Cleanup interval on component unmount or when `anky.createdAt` changes
+      return () => clearInterval(intervalId);
+    }
+  }, [anky.createdAt]);
   useEffect(() => {
     const fetchWritingFromIrys = async (cid) => {
       try {
@@ -44,11 +47,9 @@ const MintYourAnky = ({ cid }) => {
     };
     const thisAnkyForMinting = async () => {
       try {
-        console.log("sending to ", process.env.NEXT_PUBLIC_API_ROUTE);
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_API_ROUTE}/ai/mint-your-anky/${cid}`
         );
-        console.log("the response is: ", response);
         setAnky(response.data.anky);
         const responseVotes = response.data.votes;
         setVotes(responseVotes);
@@ -59,17 +60,13 @@ const MintYourAnky = ({ cid }) => {
           }
         });
         // Calculate total votes for normalization
-        const totalVotes = votes.length;
+        const totalVotes = responseVotes.length;
 
         // Calculate percentages for each option
         let votePercentagesResponse = voteCounts.map((count) => {
           return totalVotes > 0 ? ((count / totalVotes) * 100).toFixed(2) : 0;
         });
-        console.log(
-          "the response votes",
-          responseVotes,
-          votePercentagesResponse
-        );
+
         setVotePercentages(votePercentagesResponse);
         const highestVoteIndex = votePercentagesResponse.findIndex(
           (percentage) => {
@@ -95,7 +92,6 @@ const MintYourAnky = ({ cid }) => {
         console.log("there was an error here", error);
       }
     };
-    console.log("right before this");
     thisAnkyForMinting();
   }, []);
 
@@ -103,7 +99,6 @@ const MintYourAnky = ({ cid }) => {
     const now = Date.now();
     const votingEnds = new Date(anky.createdAt).getTime() + 8 * 60 * 60 * 1000; // 8 hours from createdAt
     const mintingEnds = votingEnds + 24 * 60 * 60 * 1000; // Additional 24 hours for minting window
-    console.log("aloja");
     if (now < votingEnds) {
       setVotingOn(true);
       setCountdownTimer(formatTime(votingEnds - now));
@@ -147,9 +142,7 @@ const MintYourAnky = ({ cid }) => {
     }
   }
   if (loading) return <p>loading...</p>;
-  console.log("HERE", imageUrls[chosenImage]);
-  console.log("the image urls0", imageUrls, chosenImage);
-  console.log("this writing is: ", thisWriting);
+
   return (
     <div className="w-96 mx-auto">
       <p className="text-white mt-2 text-xl">{anky.title || ""}</p>
@@ -163,14 +156,22 @@ const MintYourAnky = ({ cid }) => {
               return (
                 <div
                   key={i}
-                  onClick={() => setChosenImage(imageUrls[i])}
+                  onClick={() => {
+                    if (votingOn) {
+                      setChosenImage(imageUrls[i]);
+                    } else if (mintingEnded) {
+                      alert("the minting process for this anky is closed");
+                    } else {
+                      alert("those were not chosen");
+                    }
+                  }}
                   className={`${
                     chosenImage == i
                       ? "border-white border-2"
                       : "cursor-not-allowed"
                   } w-1/5 aspect-square relative `}
                 >
-                  <Image src={x} alt="image" fill />
+                  <Image src={votingOn ? x : chosenImage} alt="image" fill />
                   <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 text-xl text-white">
                     {votePercentages[i]}%
                   </span>
