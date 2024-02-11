@@ -254,7 +254,6 @@ const DesktopWritingGame = ({
 
   const startNewRun = () => {
     try {
-      console.log("inside the start new run function");
       setTime(0);
       setDisableButton(false);
       setLifeBarLength(100);
@@ -632,10 +631,6 @@ const DesktopWritingGame = ({
           embeds: forEmbedding,
         }
       );
-      console.log(
-        "the response after sending the anon cast is: ",
-        response.data
-      );
 
       // setCastHash(response.data.cast.hash);
       return {
@@ -714,7 +709,6 @@ const DesktopWritingGame = ({
         }
       }
       if (userWantsToCreateImageFromWriting) {
-        console.log("IN HERE, THE CAST RESPONSE IS :", castResponse);
         const authToken = await getAccessToken();
         const responseFromMidjourneyServer = await axios.post(
           `${process.env.NEXT_PUBLIC_API_ROUTE}/ai/process-writing`,
@@ -732,7 +726,6 @@ const DesktopWritingGame = ({
           }
         );
       }
-      console.log("at the end of the world.");
 
       startNewRun();
       setDisplayWritingGameLanding(false);
@@ -772,8 +765,9 @@ const DesktopWritingGame = ({
               <p className="text-red-400 text-lg">
                 *maybe that was a bit fast. the interface recognizes when you
                 write, and for now, it is set to end your session after{" "}
-                {userSettings.secondsBetweenKeystrokes} seconds. you can change
-                that by clicking{" "}
+                {userSettings.secondsBetweenKeystrokes} seconds if you stop.
+                there is no time to think. (hint: that&apos;s the whole point).
+                you can change that by clicking{" "}
                 <span
                   onClick={() => {
                     setDisplayChangeTimeForWriting(
@@ -874,8 +868,8 @@ const DesktopWritingGame = ({
                 </div>
               </div>
             ) : (
-              <div className="bg-purple-500 text-black p-2 my-2 rounded-xl flex space-x-2 items-center justify-center">
-                <div className="h-fit w-5/6 pl-8 flex justify-center mx-auto items-center">
+              <div className="bg-purple-500 text-black p-3 my-2 rounded-xl flex space-x-2 items-center justify-center">
+                <div className="h-fit flex justify-center mx-auto items-center">
                   <p className="text-left text-black">
                     do you want to share what you wrote anonymously on
                     farcaster?
@@ -888,7 +882,6 @@ const DesktopWritingGame = ({
                         setBottomMessage(true);
                       } else {
                         setUserWantsToCastAnon(!userWantsToCastAnon);
-                        setUserWantsToCastAnon(true);
                       }
                     }}
                     checked={userWantsToCastAnon}
@@ -973,7 +966,6 @@ const DesktopWritingGame = ({
                 <div className="flex flex-col">
                   <p className="text-left text-black flex">
                     do you want to create a custom anky with your writing?
-                    (costs 480 $newen)
                   </p>
                   {userDatabaseInformation?.manaBalance && (
                     <small className="text-xs">
@@ -987,9 +979,15 @@ const DesktopWritingGame = ({
                   className="mx-4 w-10 h-10 rounded-xl bg-purple-600"
                   type="checkbox"
                   onChange={(e) => {
-                    setUserWantsToCreateImageFromWriting(
-                      !userWantsToCreateImageFromWriting
-                    );
+                    if (userWantsToCastAnon) {
+                      setUserWantsToCreateImageFromWriting(
+                        !userWantsToCreateImageFromWriting
+                      );
+                    } else {
+                      alert(
+                        "you need to cast anonymously for us to know where to share the image with you"
+                      );
+                    }
                   }}
                   checked={userWantsToCreateImageFromWriting}
                 />

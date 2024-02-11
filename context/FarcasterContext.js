@@ -24,34 +24,6 @@ export const FarcasterProvider = ({ children }) => {
           `${process.env.NEXT_PUBLIC_API_ROUTE}/farcaster/feed`
         );
         setGlobalFeed(response.data.feed);
-        // let response = await axios.get(
-        //   `${process.env.NEXT_PUBLIC_API_ROUTE}/farcaster/anky-channel-feed`
-        // );
-
-        // let ankyChannelFeed = response.data.feed.casts;
-        // setTranslatingCasts(true);
-
-        // const encodedCids = ankyChannelFeed.map(
-        //   (cast) => cast.text.split("\n")[0]
-        // );
-
-        // // Decode cids and fetch their content
-        // const fetchPromises = encodedCids.map(async (encodedCid) => {
-        //   const decodedCid = decodeFromAnkyverseLanguage(encodedCid);
-        //   const writing = await getOneWriting(decodedCid);
-        //   return writing.text;
-        // });
-        // const writings = await Promise.all(fetchPromises);
-
-        // const decodedFeed = ankyChannelFeed.map((cast, index) => {
-        //   return { ...cast, text: writings[index] };
-        // });
-        // console.log(
-        //   "the decoded fHEEEERE IN THE FARCASTER CONTEXT eed is: ",
-        //   decodedFeed
-        // );
-        // setTranslatingCasts(false);
-        // setGlobalFeed(decodedFeed);
 
         setLoadingFeed(false);
       } catch (error) {

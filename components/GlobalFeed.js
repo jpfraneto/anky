@@ -48,7 +48,6 @@ const GlobalFeed = ({ thisWallet }) => {
     <div className="w-full grow ">
       <div className="w-full  flex justify-around flex-wrap md:w-96  mx-auto">
         {globalFeed.map((x, i) => {
-          console.log("the cast is.?, ", x);
           const UserPfP = () => {
             return <Image src={x.author?.pfp_url || ""} fill />;
           };

@@ -109,7 +109,7 @@ function MyApp({ Component, pageProps }) {
       style={{ WebkitTapHighlightColor: "transparent" }}
     >
       <Head>
-        <title>Anky</title>
+        <title>anky</title>
         <meta
           name="description"
           content="Transform writing into a meditation practice like no other."

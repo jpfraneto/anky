@@ -268,69 +268,8 @@ const UserDisplayPage = ({
             {UserPfP()}
           </div>
         </div>
-        <div className="pl-2 w-4/5 text-purple-200 text-left">
-          <p className="text-bold text-xl">
-            {thisUserFarcasterInfo.displayName}
-          </p>
-          <div className="flex">
-            <p className="">@{thisUserFarcasterInfo.username}</p>
-            {thisUserFarcasterInfo.viewerContext.followedBy && (
-              <span className="px-2 py-1 bg-purple-600 rounded-xl border border-white ml-4">
-                Follows you
-              </span>
-            )}
-          </div>
-        </div>
       </div>
-      <div className="text-purple-200 px-2 mt-2">
-        <p>{thisUserFarcasterInfo.profile.bio.text}</p>
-        <div className="flex ml-2 mt-2">
-          <span className="mr-2">
-            {thisUserFarcasterInfo.followingCount} Followers
-          </span>
-          <span>{thisUserFarcasterInfo.followerCount} Following</span>
-        </div>
-      </div>
-      <div className="text-purple-200 px-2 mt-2 flex">
-        <div className="w-1/2 px-1">
-          {thisUserFarcasterInfo.viewerContext.following ? (
-            <Button
-              buttonText="unfollow"
-              buttonColor="bg-transparent-600 border-white border-2"
-              buttonAction={() => alert("unfollow this user")}
-            />
-          ) : (
-            <Button
-              buttonText="follow"
-              buttonColor="bg-purple-600 border-black border-2"
-              buttonAction={() => {
-                if (authenticated && farcasterUser?.status != "approved") {
-                  if (farcasterUser.signerStatus == "approved") {
-                    return alert("follow this user");
-                  } else {
-                    setDisplayFarcasterConnectionModalState(true);
-                  }
-                } else {
-                  if (!authenticated) {
-                    alert(
-                      "you need to login first and then connect your farcaster account to do this"
-                    );
-                  } else {
-                    alert("follow this user");
-                  }
-                }
-              }}
-            />
-          )}
-        </div>
-        <div className="w-1/2 px-1">
-          <Button
-            buttonText={`gift newen`}
-            buttonColor="bg-gradient-to-r from-red-500 via-yellow-600 to-violet-500 text-black border-black border-2"
-            buttonAction={() => alert("send x newen to this user")}
-          />
-        </div>
-      </div>
+
       <div className="w-full  mt-2">
         {thisUserFeed.map((cast, i) => {
           return (

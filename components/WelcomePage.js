@@ -73,35 +73,27 @@ const WelcomePage = ({ text, setDisplayWritingGameLanding }) => {
               )
             ) : null}
           </div>
-          <div className="px-2 text-xl w-full h-4 flex justify-between text-purple-200 items-center">
+          <div className="mt-2 text-xl w-full h-4 flex justify-between text-purple-200 items-center">
             <div className="flex space-x-4 h-full">
               <div
-                onClick={() => alert("display the comments!")}
                 className={`flex space-x-1 items-center  hover:text-gray-500 cursor-pointer`}
               >
                 <FaRegCommentAlt size={18} />
                 <span>{5}</span>
               </div>
               <div
-                onClick={() => alert("recast!")}
                 className={`flex space-x-1 items-center  hover:text-green-500 cursor-pointer`}
               >
                 <BsArrowRepeat size={19} />
                 <span>{8}</span>
               </div>
               <div
-                onClick={() => alert("like!")}
                 className={`flex space-x-1 items-center  hover:text-red-500 cursor-pointer`}
               >
                 <FaRegHeart />
                 <span>{8}</span>
               </div>
               <div
-                onClick={() => {
-                  alert(
-                    "this button is for sending newen, the currency you earn by writing"
-                  );
-                }}
                 className={`flex space-x-1 items-center hover:text-purple-500 cursor-pointer`}
               >
                 <GiRollingEnergy />
@@ -110,13 +102,6 @@ const WelcomePage = ({ text, setDisplayWritingGameLanding }) => {
             </div>
           </div>
         </div>
-
-        <span
-          onClick={() => alert("open cast options")}
-          className="absolute top-0 right-2 text-purple-200 "
-        >
-          · · ·
-        </span>
       </div>
       <div className="w-fit mt-4">
         <Button

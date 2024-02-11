@@ -927,7 +927,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
                   setDisplayAboutModal(!displayAboutModal);
                 }}
               >
-                About Anky
+                about
               </p>
 
               {authenticated && (
