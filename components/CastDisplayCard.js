@@ -57,7 +57,6 @@ const CastDisplayCard = ({ thisCast }) => {
         setWriting(writingText.text);
 
         if (cast.replies.count > 0) {
-          console.log("calling for the felies");
           const repliesResponse = await axios.post(
             `${apiRoute}/farcaster/api/cast/replies/${cast.hash}`,
             {
@@ -98,7 +97,6 @@ const CastDisplayCard = ({ thisCast }) => {
   }
   async function handleLike(e) {
     try {
-      console.log("THE EEEEE IS: ", e);
       e.currentTarget.blur();
       const prev = hasUserLiked;
       setHasUserLiked(!prev);
@@ -129,8 +127,6 @@ const CastDisplayCard = ({ thisCast }) => {
         <Link href="/farcaster">write</Link>
       </div>
     );
-  console.log("the cast replioes are :", castReplies);
-
   return (
     <div className="h-3/5 w-full my-4">
       <div className="active:none w-full h-full md:max-w-2xl md:mx-auto flex flex-col relative">

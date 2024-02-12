@@ -122,9 +122,7 @@ const AskFarcaster = () => {
             text: prompt,
           }
         );
-        console.log("IN HERE, THE REPSONSE FROM IRYS IS: ", responseFromIrys);
         let cid = responseFromIrys.data.cid;
-        console.log("weeee have a cid", cid);
         return cid;
       }
     } catch (error) {
@@ -134,10 +132,7 @@ const AskFarcaster = () => {
     }
   }
   async function handleSubmitPrompt() {
-    console.log("setting the current step to 5");
     setCurrentStep(5);
-
-    console.log("AFTER setting the current step to 5");
 
     try {
       setAskingTheQuestion(true);

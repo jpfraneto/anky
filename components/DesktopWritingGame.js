@@ -430,9 +430,7 @@ const DesktopWritingGame = ({
       // const provider = await ethereumProvider.provider;
 
       if (!provider) throw new Error(`Cannot find privy wallet`);
-      console.log("the provider is: ", provider);
-      console.log("authenticates", authenticated);
-      console.log("userrrrr", user);
+
       const rpcURL = "https://mainnet.base.org";
       const irysWallet =
         thisWallet?.walletClientType === "privy"
@@ -449,21 +447,17 @@ const DesktopWritingGame = ({
         wallet: irysWallet,
         config: { providerUrl: rpcURL },
       });
-      console.log("the web irys is: ", webIrys);
 
       await webIrys.ready();
-      console.log("after here", webIrys);
       return webIrys;
     };
     const webIrys = await getWebIrys();
-    console.log("iiiin here", webIrys);
     const tags = [
       { name: "Content-Type", value: "text/plain" },
       { name: "application-id", value: "Anky Dementors" },
       { name: "container-type", value: "community-notebook" },
     ];
     try {
-      console.log("1231823721 here", webIrys);
       const receipt = await webIrys.upload(text, { tags });
       return receipt;
     } catch (error) {

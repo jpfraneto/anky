@@ -151,7 +151,7 @@ const ReadIrysPage = ({ setShow }) => {
   const copyToClipboard = async () => {
     if (!thisWriting) return;
     await navigator.clipboard.writeText(thisWriting.text);
-    setCopyText("anky copied"); // Change here to reflect the action
+    setCopyText("text copied"); // Change here to reflect the action
     setShowCopyLinkButton(false); // Hide the link copy button
   };
 

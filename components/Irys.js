@@ -40,14 +40,7 @@ const IrysPage = () => {
 
   const uploadData = async () => {
     const webIrys = await getWebIrys();
-    console.log(
-      "in here",
-      containerType,
-      containerId,
-      pageNumber,
-      thisWallet.address,
-      version
-    );
+
     const dataToUpload = JSON.stringify({
       containerType: containerType,
       containerId: containerId,
@@ -94,7 +87,6 @@ const IrysPage = () => {
         return content.text();
       })
     );
-    console.log("the processed pages are: ", processedPages);
     setPages(processedPages);
   };
 

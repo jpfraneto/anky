@@ -14,7 +14,6 @@ const LoggedInUser = ({ startNewRun, text, prompt }) => {
   const wallets = useWallets();
   const wallet = wallets.wallets[0];
   const changeChain = async () => {
-    console.log("in here");
     if (wallet) {
       await wallet.switchChain(8453);
       setBaseActive(true);

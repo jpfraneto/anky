@@ -246,28 +246,22 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
         return webIrys;
       };
       if (wallet && authenticated) {
-        console.log("weeeee have a wallet");
         const webIrys = await getWebIrys();
         const tags = [
           { name: "Content-Type", value: "text/plain" },
           { name: "application-id", value: "Anky Dementors" },
           { name: "container-type", value: "prompts-notebook" },
         ];
-        console.log("right before uploading");
         const receipt = await webIrys.upload(prompt, { tags });
-        console.log("weeee have a receipt", receipt);
         return receipt.id;
       } else {
-        console.log("there is no wallet");
         let responseFromIrys = await axios.post(
           `${process.env.NEXT_PUBLIC_API_ROUTE}/upload-writing`,
           {
             text: prompt,
           }
         );
-        console.log("IN HERE, THE REPSONSE FROM IRYS IS: ", responseFromIrys);
         let cid = responseFromIrys.data.cid;
-        console.log("weeee have a cid", cid);
         return cid;
       }
     } catch (error) {
@@ -293,12 +287,10 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
 
   async function fetchCastForReplyInformation(warpcastUrl) {
     try {
-      console.log("IN HERE, THE WARPCASTER URL IS : ", warpcastUrl);
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_ROUTE}/farcaster/api/get-cast`,
         { url: warpcastUrl }
       );
-      console.log("the response from the server is: ", response);
       setTheAsyncCastToReply(response.data.cast);
     } catch (error) {
       console.log("there was an error on the fetchCastForReplyInformation");
@@ -308,20 +300,12 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
 
   async function refreshUsersState() {
     try {
-      console.log("refreshing the users state");
       if (!authenticated) return;
       setRefreshUsersStateLoading(true);
-      console.log("the user is: ", user, authenticated);
       const authToken = await getAccessToken();
-      console.log("the auth token is:", authToken);
       const thisUserPrivyId = user.id.replace("did:privy:", "");
       const thisFarcasterAccount = farcasterUser || null;
       if (!thisFarcasterAccount?.fid) thisFarcasterAccount.fid = null;
-      console.log(
-        "right before sending the post request to the database to get the users information",
-        thisUserPrivyId,
-        authToken
-      );
       if (!authToken) return setRefreshUsersStateLoading(false);
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_ROUTE}/user/${thisUserPrivyId}`,
@@ -341,13 +325,9 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
       async function getAllUserWritings() {
         if (!wallet) return;
         if (!authenticated) return;
-        console.log("IN HEREEEE, THE WALLET IS.", wallet);
         const writings = await getThisUserWritings(wallet.address);
         const sortedWritings = writings.sort(sortWritings);
-        console.log(
-          "all the sorted writings are: inside the global app",
-          sortedWritings
-        );
+
         setAllUserWritings(sortedWritings);
         setUserWritingsHere(sortedWritings);
       }
@@ -540,7 +520,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
             router={router}
           />
         );
-      case `/mint-your-anky/${route.split("/").pop()}`:
+      case `/mint-an-anky/${route.split("/").pop()}`:
         return <MintYourAnky cid={router.query.cid} />;
 
       case "/community-notebook":

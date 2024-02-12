@@ -4,6 +4,23 @@ import React, { useState, useEffect } from "react";
 
 const AboutModal = ({ setDisplayAboutModal, setDisplayWritingGameLanding }) => {
   const { login } = usePrivy();
+  const [displayWalletAddress, setDisplayWalletAddress] = useState(
+    "0xC669E04070ce18bF24ffa69fE311B64585F400d6"
+  );
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(
+        "0xC669E04070ce18bF24ffa69fE311B64585F400d6"
+      );
+      setDisplayWalletAddress("copied");
+      setTimeout(() => {
+        setDisplayWalletAddress("0xC669E04070ce18bF24ffa69fE311B64585F400d6");
+      }, 2222);
+    } catch (error) {
+      console.log("there was an error copying the wallet address", error);
+    }
+  };
   return (
     <div>
       <div
@@ -17,44 +34,38 @@ const AboutModal = ({ setDisplayAboutModal, setDisplayWritingGameLanding }) => {
         >
           close
         </span>
-        <h2 className="text-2xl">About Anky</h2>
-        <p className="mb-2">
-          first of all, welcome. it is great to have you here. these are some
-          guidelines for using this app.
+        <p className="mb-2 mt-2">
+          first of all, welcome.these are some guidelines for using this app.
         </p>
         <ol className="flex flex-col space-y-2">
           <li>
             <span className="text-purple-400">Login:</span> you can log in using
-            any email that you control, or an ethereum wallet directly. We use
-            Privy as a provider, and every transaction that happens in here is
-            secured by their system.
+            any email that you control, or a "cryptocurrency backpack" (as
+            0xDesigner would say) directly. We use Privy as a provider, and
+            every transaction that happens in here is secured by their awesome
+            product.
           </li>
           <li>
-            <span className="text-purple-400">Connect to Farcaster:</span> it is
-            ideal that you connect your farcaster account. For doing so, go into
-            the settings tab and click on the Farcaster integration. If you
-            follow the flow, you will get a QR code (on desktop) or a fancy
-            button (on mobile) that will take you to Warpcast. This connection
-            will allow you to cast under your account and connect with others.
+            <span className="text-purple-400">Link to Farcaster:</span> it is
+            ideal that you connect your account. For doing so, go into the
+            settings tab and click on the Farcaster integration. If you follow
+            the flow, you will get a QR code (on desktop) or a fancy button (on
+            mobile) that will take you to Warpcast. This connection will allow
+            you to cast under your account and connect with others.
           </li>
           <li>
             <span className="text-purple-400">Feed:</span> The landing feed is
             the chronological organization of all the casts that have been
             written through Anky, wether it is anonymously or under
             people&apos;s connected account. The invitation is to be honest,
-            sincere, and to use this space as a collective trigger for what is
-            hard to deal with personally.
+            sincere, and to use this space as a collective trigger of the
+            spiritual evolution of humanity.
           </li>
           <li>
             <span className="text-purple-400">$NEWEN:</span> This is a currency
             that represents time. For each second that you spend writing in
-            here, you will earn it. You will then be able to spend it on
-            different ways: &quot;super liking&quot; a cast you&apos;ve read by
-            sending newen to the writer, attending events that before were
-            &quot;free&quot;, but now require something that is &quot;free&quot;
-            (your time writing here), but doesn&apos;t have economical value.
-            This whole journey is an exploration into the role that time plays
-            in our life.
+            here, you will earn it, to then be able to spend it on different
+            ways. We have to decide how as a community.
           </li>
           <li>
             <span className="text-purple-400">$ANKY:</span> This is the
@@ -81,7 +92,7 @@ const AboutModal = ({ setDisplayAboutModal, setDisplayWritingGameLanding }) => {
             platform together to get to that point.
           </li>
           <li>
-            <span className="text-purple-400">open source:</span> All of the
+            <span className="text-purple-400">Open source:</span> All of the
             code for what happens here is open source. You can contribute to it
             here:{" "}
             <a
@@ -94,19 +105,26 @@ const AboutModal = ({ setDisplayAboutModal, setDisplayWritingGameLanding }) => {
             </a>
           </li>
           <li>
-            <span className="text-purple-400">Tech:</span> Every writing is
-            stored on arweave using Irys as the proxy. If you logged in using
-            your wallet, you will get a modal every time that you submit your
-            writing. That is because your personal wallet signs that message and
-            the writing is stored forever associated with it. If you logged in
-            with email this is done under the hood.
+            <span className="text-purple-400">Tech:</span> Every piece of
+            writing is stored on arweave using Irys as the proxy. If you logged
+            in using your wallet, you will get a modal every time that you
+            submit your writing. That is because your personal wallet signs that
+            message and the writing is stored forever associated with it. If you
+            logged in with email this is done under the hood. If you decide to
+            cast anonymously, the text will be stored with anky&apos;s wallet:{" "}
+            <br />
+            <span
+              onClick={copyToClipboard}
+              className="cursor-pointer text-purple-300 hover:text-purple-500"
+            >
+              {displayWalletAddress}
+            </span>
           </li>
           <li>
             <span className="text-purple-400">Ankyverse:</span> The journey
             through the human experience that you will embark through this
-            platform has as a guiding process this allegorical interpretation of
-            the human experience. There are 8 kingdoms, each one representing an
-            aspect of the human experience. You can get to know more about the
+            platform has as a guiding process a story. There are 8 kingdoms,
+            each one representing a chakra. You can get to know more about the
             lore of anky on the{" "}
             <a
               className="text-purple-400 active:text-purple-600"
@@ -122,8 +140,8 @@ const AboutModal = ({ setDisplayAboutModal, setDisplayWritingGameLanding }) => {
             <span className="text-purple-400">Collaborate:</span> Today, one of
             the most powerful ways on which you can contribute to what is
             happening here (besides writing!) is to get your Anky Genesis NFT.
-            The contract is deployed on ethereum mainnet and price is 0.01618
-            eth. There are infinite Ankys, but only 8888 that are part of this
+            The contract is deployed on ethereum mainnet. The price is 0.01618
+            eth. There are infinite Ankys, but only 8888 that are part of the
             genesis collection. Mint here:{" "}
             <a
               className="text-purple-400 active:text-purple-600"

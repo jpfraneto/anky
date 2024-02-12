@@ -19,7 +19,6 @@ const Leaderboard = () => {
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_API_ROUTE}/mana/leaderboard/${category}`
       );
-      console.log("the data is: ", response.data);
       setLeaderboardData(response.data);
     } catch (error) {
       console.error("Error fetching leaderboard data:", error);

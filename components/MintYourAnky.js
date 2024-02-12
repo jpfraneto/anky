@@ -10,6 +10,7 @@ const MintYourAnky = ({ cid }) => {
   const [loading, setLoading] = useState(true);
   const [mintingAnky, setMintingAnky] = useState(false);
   const [thisWriting, setThisWriting] = useState("");
+  const [userTriedToMint, setUserTriedToMint] = useState(false);
   const [votePercentages, setVotePercentages] = useState([]);
   const [votes, setVotes] = useState([]);
   const [imageUrls, setImageUrls] = useState([]);
@@ -49,7 +50,7 @@ const MintYourAnky = ({ cid }) => {
     const thisAnkyForMinting = async () => {
       try {
         const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_ROUTE}/ai/mint-your-anky/${cid}`
+          `${process.env.NEXT_PUBLIC_API_ROUTE}/ai/mint-an-anky/${cid}`
         );
         if (!anky) return;
         setAnky(response.data.anky);
@@ -128,7 +129,16 @@ const MintYourAnky = ({ cid }) => {
 
   async function mintThisAnky() {
     try {
-      alert("now the anky should be minted. i dont know how to do this. help");
+      if (votingOn) {
+        setUserTriedToMint(true);
+        setTimeout(() => {
+          setUserTriedToMint(false);
+        }, 2222);
+      } else {
+        alert(
+          "now the anky should be minted. i dont know how to do this. help"
+        );
+      }
       return;
       setMintingAnky(true);
       const thisProvider = await thisWallet.getEthersProvider();
@@ -185,7 +195,11 @@ const MintYourAnky = ({ cid }) => {
         </div>
         {votes && <div className="text-white">{votes.length} votes</div>}
 
-        <div className="text-white">
+        <div
+          className={`${
+            votingOn && userTriedToMint ? "text-red-200 text-lg" : "text-white"
+          }`}
+        >
           <p>
             {votingOn
               ? `Voting closes in ${countdownTimer}`
@@ -210,14 +224,13 @@ const MintYourAnky = ({ cid }) => {
               />
             </a>
           )}
-          {!votingOn && !mintingEnded}
-          {
+          {!votingOn && !mintingEnded && (
             <Button
               buttonText={`${mintingAnky ? "minting..." : "mint (222 $degen)"}`}
               buttonAction={mintThisAnky}
-              buttonColor="bg-purple-600 text-white"
+              buttonColor={`bg-purple-600 text-white`}
             />
-          }
+          )}
         </div>
       </div>
       <div className="text-white text-left">

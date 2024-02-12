@@ -16,7 +16,6 @@ const FeedByFidPage = () => {
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_API_ROUTE}/farcaster/feed-by-fid/${fid}`
       );
-      console.log("the response is: ", response);
       setThisFeed(response.data.feed);
       setLoadingFeed(false);
     } catch (error) {

@@ -209,12 +209,6 @@ function NewNotebookPage({}) {
         thisWallet,
         JSON.stringify(notebookMetadata)
       );
-      console.log(
-        "The notebook information cid 2 is: ",
-        notebookInformationCID
-      );
-
-      console.log("the user wallet is: ", thisWallet);
 
       if (thisWallet && signer) {
         // The thing here is that I'm trying to send this transaction from the wallet of the user, not from the erc6551 token.
