@@ -218,7 +218,6 @@ function NewNotebookPage({}) {
           notebookABI,
           signer
         );
-        console.log("the notebooks contract is: ", notebooksContract);
         const userEnteredPriceInWei = ethers.utils.parseEther(price.toString());
         // Call the contract's method and send the transaction
         const transactionResponse = await notebooksContract.createNotebook(

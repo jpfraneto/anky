@@ -3,6 +3,8 @@ import axios from "axios";
 import Image from "next/image";
 import { getOneWriting } from "../lib/irys";
 import Button from "./Button";
+import ankyOneABI from "../lib/ankyOne.json";
+import { useWallets } from "@privy-io/react-auth";
 
 const MintYourAnky = ({ cid }) => {
   const [anky, setAnky] = useState({});
@@ -17,6 +19,10 @@ const MintYourAnky = ({ cid }) => {
   const [votingOn, setVotingOn] = useState(false);
   const [mintingEnded, setMintingEnded] = useState(false);
   const [countdownTimer, setCountdownTimer] = useState("");
+
+  const { wallets } = useWallets();
+
+  const thisWallet = wallets[0];
 
   useEffect(() => {
     // Your existing useEffect code for fetching Anky data
@@ -135,8 +141,29 @@ const MintYourAnky = ({ cid }) => {
           setUserTriedToMint(false);
         }, 2222);
       } else {
-        alert(
-          "now the anky should be minted. i dont know how to do this. help"
+        const lastAnkyDecision = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_ROUTE}/ai/get-anky-information-for-minting/${cid}`
+        );
+        console.log("the last anky decision is: ", lastAnkyDecision);
+        // function setAnkyInfo(string memory _cid, string memory _metadataHash, uint256 _priceInDegen) public onlyOwner {
+        const ankyCid = cid;
+        const metadataHash = lastAnkyDecision.metadataHash;
+        const priceInDegen = lastAnkyDecision.priceInDegen;
+
+        let provider = await thisWallet.getEthersProvider();
+        let signer = await provider.getSigner();
+        // THIS IS FOR NOTEBOOKS; UPDATE IT
+        const notebooksContract = new ethers.Contract(
+          process.env.NEXT_PUBLIC_ANKY_ONE_CONTRACT,
+          ankyOneABI,
+          signer
+        );
+        const userEnteredPriceInWei = ethers.utils.parseEther(price.toString());
+        // Call the contract's method and send the transaction
+        const transactionResponse = await notebooksContract.createNotebook(
+          notebookInformationCID,
+          supply,
+          userEnteredPriceInWei
         );
       }
       return;
@@ -219,7 +246,7 @@ const MintYourAnky = ({ cid }) => {
               className=" hover:text-red-200"
             >
               <Button
-                buttonText="vote in warpcast"
+                buttonText="vote on warpcast"
                 buttonColor="bg-purple-600 text-white"
               />
             </a>
