@@ -40,8 +40,8 @@ const AboutModal = ({ setDisplayAboutModal, setDisplayWritingGameLanding }) => {
         <ol className="flex flex-col space-y-2">
           <li>
             <span className="text-purple-400">Login:</span> you can log in using
-            any email that you control, or a "cryptocurrency backpack" (as
-            0xDesigner would say) directly. We use Privy as a provider, and
+            any email that you control, or a &quot;cryptocurrency backpack&quot;
+            (as 0xDesigner would say) directly. We use Privy as a provider, and
             every transaction that happens in here is secured by their awesome
             product.
           </li>

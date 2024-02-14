@@ -24,13 +24,8 @@ const baseSepoliaOverride = addRpcUrlOverrideToChain(
   "https://base-sepolia.g.alchemy.com/v2/-XjSUiZfQBrvjrGpf0jdEpcyYX5kcTd3"
 );
 
-// const configureChainsConfig = configureChains(
-//   [base, baseSepoliaOverride],
-//   [publicProvider()]
-// );
-
 const settings = {
-  apiKey: process.env.NEXT_PUBLIC_ALCHEMY_SEPOLIA_API_KEY,
+  apiKey: "",
   network: Network.BASE_SEPOLIA,
 };
 
