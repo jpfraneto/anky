@@ -7,8 +7,9 @@ import axios from "axios";
 import ErrorBoundary from "../components/ErrorBoundary"; // Make sure the path is correct
 import { PrivyProvider, usePrivy } from "@privy-io/react-auth";
 import { PrivyWagmiConnector } from "@privy-io/wagmi-connector";
-import { base } from "@wagmi/chains";
-import { configureChains, createConfig } from "wagmi";
+import { base, baseSepolia } from "viem/chains";
+import { addRpcUrlOverrideToChain } from "@privy-io/react-auth";
+import { configureChains } from "wagmi";
 import { publicProvider } from "wagmi/providers/public";
 import Head from "next/head";
 import { UserProvider } from "../context/UserContext";
@@ -16,14 +17,21 @@ import { FarcasterProvider } from "../context/FarcasterContext";
 import { SettingsProvider } from "../context/SettingsContext";
 import { useRouter } from "next/router";
 import { initializeDB } from "../lib/idbHelper";
-
 import { Network, Alchemy } from "alchemy-sdk";
 
-const configureChainsConfig = configureChains([base], [publicProvider()]);
+const baseSepoliaOverride = addRpcUrlOverrideToChain(
+  baseSepolia,
+  "https://base-sepolia.g.alchemy.com/v2/-XjSUiZfQBrvjrGpf0jdEpcyYX5kcTd3"
+);
+
+// const configureChainsConfig = configureChains(
+//   [base, baseSepoliaOverride],
+//   [publicProvider()]
+// );
 
 const settings = {
-  apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY,
-  network: Network.BASE_MAINNET,
+  apiKey: process.env.NEXT_PUBLIC_ALCHEMY_SEPOLIA_API_KEY,
+  network: Network.BASE_SEPOLIA,
 };
 
 const alchemy = new Alchemy(settings);
@@ -196,6 +204,8 @@ function MyApp({ Component, pageProps }) {
           appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID}
           onSuccess={handleLogin}
           config={{
+            defaultChain: baseSepoliaOverride,
+            supportedChains: [base, baseSepoliaOverride],
             embeddedWallets: {
               noPromptOnSignature: true,
             },
@@ -211,15 +221,13 @@ function MyApp({ Component, pageProps }) {
             },
           }}
         >
-          <PrivyWagmiConnector wagmiChainsConfig={configureChainsConfig}>
-            <UserProvider>
-              <FarcasterProvider>
-                <SettingsProvider>
-                  <GlobalApp alchemy={alchemy} loginResponse={loginResponse} />
-                </SettingsProvider>
-              </FarcasterProvider>
-            </UserProvider>
-          </PrivyWagmiConnector>
+          <UserProvider>
+            <FarcasterProvider>
+              <SettingsProvider>
+                <GlobalApp alchemy={alchemy} loginResponse={loginResponse} />
+              </SettingsProvider>
+            </FarcasterProvider>
+          </UserProvider>
         </PrivyProvider>
       </ErrorBoundary>
     </main>

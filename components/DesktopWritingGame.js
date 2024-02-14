@@ -91,7 +91,7 @@ const DesktopWritingGame = ({
   const [userWantsFeedbackFromAnky, setUserWantsFeedbackFromAnky] =
     useState(false);
   const [isCasting, setIsCasting] = useState(false);
-  const [userWantsToCastAnon, setUserWantsToCastAnon] = useState(false);
+  const [userWantsToCastAnon, setUserWantsToCastAnon] = useState(true);
   const [savingRound, setSavingRound] = useState(false);
   const [castAs, setCastAs] = useState("anon");
   const [

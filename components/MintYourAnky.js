@@ -3,10 +3,14 @@ import axios from "axios";
 import Image from "next/image";
 import { getOneWriting } from "../lib/irys";
 import Button from "./Button";
+import { ethers } from "ethers";
 import ankyOneABI from "../lib/ankyOne.json";
 import { useWallets } from "@privy-io/react-auth";
+import { usePrivy } from "@privy-io/react-auth";
 
 const MintYourAnky = ({ cid }) => {
+  console.log("the cid issss", cid);
+  const { authenticated, login } = usePrivy();
   const [anky, setAnky] = useState({});
   const [chosenImage, setChosenImage] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -135,36 +139,52 @@ const MintYourAnky = ({ cid }) => {
 
   async function mintThisAnky() {
     try {
+      if (!authenticated) return alert("login to mint");
+
       if (votingOn) {
         setUserTriedToMint(true);
         setTimeout(() => {
           setUserTriedToMint(false);
         }, 2222);
       } else {
+        const changeChain = async () => {
+          if (thisWallet) {
+            await thisWallet.switchChain(84532);
+            console.log("the chain was changed to base sepolia");
+          }
+        };
+        if (!thisWallet.chainId.includes("84532")) {
+          await changeChain();
+        }
         const lastAnkyDecision = await axios.get(
           `${process.env.NEXT_PUBLIC_API_ROUTE}/ai/get-anky-information-for-minting/${cid}`
         );
         console.log("the last anky decision is: ", lastAnkyDecision);
         // function setAnkyInfo(string memory _cid, string memory _metadataHash, uint256 _priceInDegen) public onlyOwner {
         const ankyCid = cid;
-        const metadataHash = lastAnkyDecision.metadataHash;
-        const priceInDegen = lastAnkyDecision.priceInDegen;
+        const metadataHash = lastAnkyDecision.data.metadataHash;
+        const priceInDegen = lastAnkyDecision.data.priceInDegen;
+        console.log(ankyCid, metadataHash, priceInDegen);
 
         let provider = await thisWallet.getEthersProvider();
         let signer = await provider.getSigner();
         // THIS IS FOR NOTEBOOKS; UPDATE IT
-        const notebooksContract = new ethers.Contract(
+        console.log("in here", process.env.NEXT_PUBLIC_ANKY_ONE_CONTRACT);
+        const ankyOneContract = new ethers.Contract(
           process.env.NEXT_PUBLIC_ANKY_ONE_CONTRACT,
           ankyOneABI,
           signer
         );
-        const userEnteredPriceInWei = ethers.utils.parseEther(price.toString());
-        // Call the contract's method and send the transaction
-        const transactionResponse = await notebooksContract.createNotebook(
-          notebookInformationCID,
-          supply,
-          userEnteredPriceInWei
+        console.log("the anky one contract is: ", ankyOneContract);
+        // THIS ONLY NEEDS TO BE DOABLE BY THE PERSON THAT CREATED THIS ANKY
+        console.log("THIS WALLET IS: ", thisWallet);
+
+        const transactionResponse = await ankyOneContract.setAnkyInfo(
+          cid,
+          metadataHash,
+          priceInDegen
         );
+        console.log("the transaction response is: ", transactionResponse);
       }
       return;
       setMintingAnky(true);
@@ -179,7 +199,7 @@ const MintYourAnky = ({ cid }) => {
       const tx = await ankyFirstContract.mintThisAnky(to, cid, metadataHash);
       console.log("the tx is: ", tx);
     } catch (error) {
-      console.log("there was an error minting this anky");
+      console.log("there was an error minting this anky", error);
     }
   }
   if (loading) return <p>loading...</p>;
@@ -251,10 +271,22 @@ const MintYourAnky = ({ cid }) => {
               />
             </a>
           )}
-          {!votingOn && !mintingEnded && (
+          {authenticated ? (
+            <>
+              {!votingOn && !mintingEnded && (
+                <Button
+                  buttonText={`${
+                    mintingAnky ? "minting..." : "mint (222 $degen)"
+                  }`}
+                  buttonAction={mintThisAnky}
+                  buttonColor={`bg-purple-600 text-white`}
+                />
+              )}
+            </>
+          ) : (
             <Button
-              buttonText={`${mintingAnky ? "minting..." : "mint (222 $degen)"}`}
-              buttonAction={mintThisAnky}
+              buttonText={`login to mint`}
+              buttonAction={login}
               buttonColor={`bg-purple-600 text-white`}
             />
           )}
