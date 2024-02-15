@@ -31,7 +31,6 @@ const settings = {
 
 const alchemy = new Alchemy(settings);
 
-const righteous = Righteous({ subsets: ["latin"], weight: ["400"] });
 const inter = Inter({ subsets: ["cyrillic"], weight: ["400"] });
 const GlobalApp = dynamic(() => import("../components/GlobalApp"));
 
@@ -92,14 +91,12 @@ function MyApp({ Component, pageProps }) {
 
   const handleLogin = async (user) => {
     try {
-      console.log("inside the handle login");
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_ROUTE}/user/login`,
         {
           privyId: user.id.split("did:privy:")[1],
         }
       );
-      console.log("the response after the logging in", response);
       setLoginResponse(response.data);
     } catch (error) {
       console.log("the error is: ", error);
