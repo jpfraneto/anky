@@ -68,7 +68,7 @@ const GlobalFeed = ({ thisWallet }) => {
           <div>
             {globalFeed.votableAnkys.map((x, i) => {
               return (
-                <div>
+                <div key={i}>
                   <div className="flex flex-wrap w-96 h-96 mb-8">
                     <div className="w-48 h-48 relative">
                       <Image src={x.imageOneUrl} fill />
@@ -108,7 +108,7 @@ const GlobalFeed = ({ thisWallet }) => {
           <div>
             {globalFeed.mintableAnkys.map((x, i) => {
               return (
-                <div>
+                <div key={i}>
                   <div className="w-96 h-96 relative mb-4">
                     <Image src={x.winningImageUrl} fill />
                   </div>
