@@ -23,7 +23,7 @@ export const FarcasterProvider = ({ children }) => {
         let response = await axios.get(
           `${process.env.NEXT_PUBLIC_API_ROUTE}/farcaster/feed`
         );
-        setGlobalFeed(response.data.feed);
+        setGlobalFeed(response.data);
 
         setLoadingFeed(false);
       } catch (error) {
