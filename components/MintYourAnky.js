@@ -283,8 +283,8 @@ const MintYourAnky = ({ cid }) => {
               {authenticated ? (
                 <>
                   {ankyMinted ? (
-                    <div>
-                      <p>your anky was minted successfully</p>
+                    <div className="text-white">
+                      <p>congratulations. your anky was minted successfully</p>
                     </div>
                   ) : (
                     <>
