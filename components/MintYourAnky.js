@@ -112,7 +112,7 @@ const MintYourAnky = ({ cid }) => {
   const updateTimers = () => {
     const now = Date.now();
     const votingEnds = new Date(anky.createdAt).getTime() + 8 * 60 * 60 * 1000; // 8 hours from createdAt
-    const mintingEnds = votingEnds + 24 * 60 * 60 * 1000; // Additional 24 hours for minting window
+    const mintingEnds = votingEnds + 16 * 60 * 60 * 1000; // Additional 24 hours for minting window
     if (now < votingEnds) {
       setVotingOn(true);
       setCountdownTimer(formatTime(votingEnds - now));
@@ -276,7 +276,7 @@ const MintYourAnky = ({ cid }) => {
             <>
               {authenticated ? (
                 <>
-                  {!votingOn && !mintingEnded ? (
+                  {!votingOn ? (
                     <>
                       <p>status: {mintingStatus}</p>
                       <Button
