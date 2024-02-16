@@ -16,11 +16,13 @@ const MintYourAnky = ({ cid }) => {
   const [loading, setLoading] = useState(true);
   const [mintingAnky, setMintingAnky] = useState(false);
   const [thisWriting, setThisWriting] = useState("");
+  const [ankyMinted, setAnkyMinted] = useState(false);
   const [userTriedToMint, setUserTriedToMint] = useState(false);
   const [votePercentages, setVotePercentages] = useState([]);
   const [votes, setVotes] = useState([]);
   const [imageUrls, setImageUrls] = useState([]);
   const [votingOn, setVotingOn] = useState(false);
+  const [mintingStatus, setMintingStatus] = useState("");
   const [mintingEnded, setMintingEnded] = useState(false);
   const [countdownTimer, setCountdownTimer] = useState("");
 
@@ -139,6 +141,7 @@ const MintYourAnky = ({ cid }) => {
 
   async function mintThisAnky() {
     try {
+      console.log("minting this anky");
       if (!authenticated) return alert("login to mint");
       if (!thisWallet) {
         alert("No wallet found.");
@@ -151,7 +154,6 @@ const MintYourAnky = ({ cid }) => {
           setUserTriedToMint(false);
         }, 2222);
       } else {
-        setLoading(true);
         const changeChain = async () => {
           if (thisWallet) {
             setMintingStatus("changing the chain...");
@@ -162,41 +164,38 @@ const MintYourAnky = ({ cid }) => {
         if (!thisWallet.chainId.includes("84532")) {
           await changeChain();
         }
-        setMintingStatus("fetching anky minting information...");
-
-        const ankyInformationForMinting = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_ROUTE}/ai/get-anky-information-for-minting/${cid}`
-        );
-
         setMintingStatus("approving $DEGEN spending...");
         let provider = await thisWallet.getEthersProvider();
         let signer = await provider.getSigner();
-        const degenTokenContract = new ethers.Contract(
-          "0xfee293840D23B0B2De8C55e1Cf7A9F01C157767c", // The address of the $DEGEN token contract
-          degenSepoliaABI, // ABI of the $DEGEN token contract
-          signer // An instance of ethers.Signer
-        );
-
-        const price = ankyInformationForMinting.data.thisAnkyPriceInDegen;
-
-        const approvalTx = await degenTokenContract.approve(
-          process.env.NEXT_PUBLIC_ANKY_ONE_CONTRACT, // The address of the AnkyOne contract
-          price // The amount of $DEGEN to approve
-        );
-        setMintingStatus("approval complete. minting anky...");
-
-        await approvalTx.wait(); // Wait for the transaction to be mined
-
         const ankyOneContract = new ethers.Contract(
           process.env.NEXT_PUBLIC_ANKY_ONE_CONTRACT,
           ankyOneABI,
           signer
         );
+        const degenTokenContract = new ethers.Contract(
+          "0xfee293840D23B0B2De8C55e1Cf7A9F01C157767c", // The address of the $DEGEN token contract
+          degenSepoliaABI, // ABI of the $DEGEN token contract
+          signer // An instance of ethers.Signer
+        );
+        console.log("the degen token contract");
+
+        const priceResponse = await ankyOneContract.getAnkyPriceInDegen(cid);
+        const priceInDegen = ethers.utils.formatUnits(priceResponse, 0);
+        console.log("the response dfreom the price is: ", priceInDegen);
+
+        const approvalTx = await degenTokenContract.approve(
+          process.env.NEXT_PUBLIC_ANKY_ONE_CONTRACT, // The address of the AnkyOne contract
+          priceInDegen // The amount of $DEGEN to approve
+        );
+        setMintingStatus("approval complete. minting anky...");
+
+        await approvalTx.wait(); // Wait for the transaction to be mined
 
         const transactionResponse = await ankyOneContract.mintAnky(cid);
 
         await transactionResponse.wait(); // Wait for the minting transaction to be mined
         setMintingStatus("anky minted successfully!");
+        setAnkyMinted(true);
         console.log("Anky minted successfully!");
       }
     } catch (error) {
@@ -212,50 +211,57 @@ const MintYourAnky = ({ cid }) => {
         <div className="my-2 w-full aspect-square relative">
           <Image src={chosenImage} alt="image" fill />
         </div>
-        <div className="flex flex-row mb-4 justify-between  w-full h-fit">
-          {imageUrls &&
-            imageUrls.map((x, i) => {
-              return (
-                <div
-                  key={i}
-                  onClick={() => {
-                    if (votingOn) {
-                      setChosenImage(imageUrls[i]);
-                    } else if (mintingEnded) {
-                      alert("the minting process for this anky is closed");
-                    } else {
-                      alert("that anky was not voted");
-                    }
-                  }}
-                  className={`${
-                    chosenImage == i && "border-white border-2"
-                  } w-1/5 aspect-square relative ${
-                    !votingOn ? "cursor-not-allowed" : "cursor-pointer"
-                  }`}
-                >
-                  <Image src={x} alt="image" fill />
-                  <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 text-xl text-white">
-                    {votePercentages[i]}%
-                  </span>
-                </div>
-              );
-            })}
-        </div>
-        {votes && <div className="text-white">{votes.length} votes</div>}
+        {votingOn && (
+          <div className="flex flex-row mb-4 justify-between  w-full h-fit">
+            {imageUrls &&
+              imageUrls.map((x, i) => {
+                return (
+                  <div
+                    key={i}
+                    onClick={() => {
+                      if (votingOn) {
+                        setChosenImage(imageUrls[i]);
+                      } else if (mintingEnded) {
+                        alert("the minting process for this anky is closed");
+                      } else {
+                        alert("that anky was not voted");
+                      }
+                    }}
+                    className={`${
+                      chosenImage == i && "border-white border-2"
+                    } w-1/5 aspect-square relative ${
+                      !votingOn ? "cursor-not-allowed" : "cursor-pointer"
+                    }`}
+                  >
+                    <Image src={x} alt="image" fill />
+                    <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 text-xl text-white">
+                      {votePercentages[i]}%
+                    </span>
+                  </div>
+                );
+              })}
+          </div>
+        )}
 
-        <div
-          className={`${
-            votingOn && userTriedToMint ? "text-red-200 text-lg" : "text-white"
-          }`}
-        >
-          <p>
-            {votingOn
-              ? `Voting closes in ${countdownTimer}`
-              : mintingEnded
-              ? "Minting period ended"
-              : `Minting ends in ${countdownTimer}`}
-          </p>
-        </div>
+        {votingOn && <div className="text-white">{votes.length} votes</div>}
+        {votingOn && (
+          <div
+            className={`${
+              votingOn && userTriedToMint
+                ? "text-red-200 text-lg"
+                : "text-white"
+            }`}
+          >
+            <p>
+              {votingOn
+                ? `Voting closes in ${countdownTimer}`
+                : mintingEnded
+                ? "Minting period ended"
+                : `Minting ends in ${countdownTimer}`}
+            </p>
+          </div>
+        )}
+
         <div className="flex space-x-2 justify-center w-full mt-2">
           {votingOn && (
             <a
@@ -276,18 +282,26 @@ const MintYourAnky = ({ cid }) => {
             <>
               {authenticated ? (
                 <>
-                  {!votingOn ? (
+                  {ankyMinted ? (
+                    <div>
+                      <p>your anky was minted successfully</p>
+                    </div>
+                  ) : (
                     <>
-                      <p>status: {mintingStatus}</p>
-                      <Button
-                        buttonText={
-                          mintingAnky ? "minting..." : "mint (222 $degen)"
-                        }
-                        buttonAction={mintThisAnky}
-                        buttonColor="bg-purple-600 text-white"
-                      />
+                      {!votingOn ? (
+                        <div className="flex flex-col text-white">
+                          {mintingStatus.length > 0 && <p> {mintingStatus}</p>}
+                          <Button
+                            buttonText={
+                              mintingAnky ? "minting..." : "mint (222 $degen)"
+                            }
+                            buttonAction={mintThisAnky}
+                            buttonColor="bg-purple-600 text-white"
+                          />
+                        </div>
+                      ) : null}
                     </>
-                  ) : null}
+                  )}
                 </>
               ) : (
                 <Button
