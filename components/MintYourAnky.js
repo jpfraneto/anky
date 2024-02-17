@@ -158,11 +158,11 @@ const MintYourAnky = ({ cid }) => {
         const changeChain = async () => {
           if (thisWallet) {
             setMintingStatus("changing the chain...");
-            await thisWallet.switchChain(84532);
+            await thisWallet.switchChain(8453);
             console.log("your wallet is active on base sepolia now");
           }
         };
-        if (!thisWallet.chainId.includes("84532")) {
+        if (!thisWallet.chainId.includes("8453")) {
           await changeChain();
         }
         setMintingStatus("approving $DEGEN spending...");

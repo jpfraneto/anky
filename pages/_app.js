@@ -19,14 +19,14 @@ import { useRouter } from "next/router";
 import { initializeDB } from "../lib/idbHelper";
 import { Network, Alchemy } from "alchemy-sdk";
 
-const baseSepoliaOverride = addRpcUrlOverrideToChain(
-  baseSepolia,
-  "https://base-sepolia.g.alchemy.com/v2/-XjSUiZfQBrvjrGpf0jdEpcyYX5kcTd3"
+const baseOverride = addRpcUrlOverrideToChain(
+  base,
+  "https://base-mainnet.g.alchemy.com/v2/a2iIM92F0NkI34tOv4fNdIHQ266oPEiD"
 );
 
 const settings = {
   apiKey: "",
-  network: Network.BASE_SEPOLIA,
+  network: Network.BASE_MAINNET,
 };
 
 const alchemy = new Alchemy(settings);
@@ -196,8 +196,8 @@ function MyApp({ Component, pageProps }) {
           appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID}
           onSuccess={handleLogin}
           config={{
-            defaultChain: baseSepoliaOverride,
-            supportedChains: [base, baseSepoliaOverride],
+            defaultChain: base,
+            supportedChains: [base],
             embeddedWallets: {
               noPromptOnSignature: true,
             },

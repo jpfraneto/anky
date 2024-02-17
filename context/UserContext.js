@@ -454,7 +454,7 @@ export const UserProvider = ({ children }) => {
 
   const changeChain = async () => {
     if (authenticated && wallet) {
-      await wallet.switchChain(84532);
+      await wallet.switchChain(8453);
       setUserAppInformation((x) => {
         return { ...x, wallet: wallet };
       });
