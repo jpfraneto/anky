@@ -5,7 +5,7 @@ import { getOneWriting } from "../lib/irys";
 import Button from "./Button";
 import { ethers } from "ethers";
 import ankyOneABI from "../lib/ankyOne.json";
-import degenSepoliaABI from "../lib/degenSepolia.json";
+import degenBaseMainnetAbi from "../lib/degenBaseMainnetAbi.json";
 import { useWallets } from "@privy-io/react-auth";
 import { usePrivy } from "@privy-io/react-auth";
 
@@ -13,6 +13,7 @@ const MintYourAnky = ({ cid }) => {
   const { authenticated, login } = usePrivy();
   const [anky, setAnky] = useState({});
   const [chosenImage, setChosenImage] = useState(null);
+  const [error, setError] = useState(""); // New state for holding error message
   const [loading, setLoading] = useState(true);
   const [mintingAnky, setMintingAnky] = useState(false);
   const [thisWriting, setThisWriting] = useState("");
@@ -168,13 +169,13 @@ const MintYourAnky = ({ cid }) => {
         let provider = await thisWallet.getEthersProvider();
         let signer = await provider.getSigner();
         const ankyOneContract = new ethers.Contract(
-          process.env.NEXT_PUBLIC_ANKY_ONE_CONTRACT,
+          "0x9A4f51E83793DFf928F2Ae0702147Ab925115697",
           ankyOneABI,
           signer
         );
         const degenTokenContract = new ethers.Contract(
-          "0xfee293840D23B0B2De8C55e1Cf7A9F01C157767c", // The address of the $DEGEN token contract
-          degenSepoliaABI, // ABI of the $DEGEN token contract
+          "0x4ed4E862860beD51a9570b96d89aF5E1B0Efefed", // The address of the $DEGEN token contract
+          degenBaseMainnetAbi, // ABI of the $DEGEN token contract
           signer // An instance of ethers.Signer
         );
         console.log("the degen token contract");
@@ -184,7 +185,7 @@ const MintYourAnky = ({ cid }) => {
         console.log("the response dfreom the price is: ", priceInDegen);
 
         const approvalTx = await degenTokenContract.approve(
-          process.env.NEXT_PUBLIC_ANKY_ONE_CONTRACT, // The address of the AnkyOne contract
+          "0x9A4f51E83793DFf928F2Ae0702147Ab925115697", // The address of the AnkyOne contract
           priceInDegen // The amount of $DEGEN to approve
         );
         setMintingStatus("approval complete. minting anky...");
@@ -200,6 +201,9 @@ const MintYourAnky = ({ cid }) => {
       }
     } catch (error) {
       console.log("there was an error minting this anky", error);
+      setError(
+        "There was an error minting this Anky. Please ensure you have enough funds for the transaction. You can copy your wallet address by clicking on it on the left menu."
+      );
     }
   }
   if (loading) return <p>loading...</p>;
@@ -320,6 +324,7 @@ const MintYourAnky = ({ cid }) => {
             </>
           )}
         </div>
+        {error && <p className="text-red-500">{error}</p>}
       </div>
       <div className="text-white text-left">
         {thisWriting ? (
