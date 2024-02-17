@@ -159,7 +159,7 @@ const MintYourAnky = ({ cid }) => {
           if (thisWallet) {
             setMintingStatus("changing the chain...");
             await thisWallet.switchChain(8453);
-            console.log("your wallet is active on base sepolia now");
+            console.log("your wallet is active on base mainnet now");
           }
         };
         if (!thisWallet.chainId.includes("8453")) {

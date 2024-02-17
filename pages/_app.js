@@ -7,7 +7,7 @@ import axios from "axios";
 import ErrorBoundary from "../components/ErrorBoundary"; // Make sure the path is correct
 import { PrivyProvider, usePrivy } from "@privy-io/react-auth";
 import { PrivyWagmiConnector } from "@privy-io/wagmi-connector";
-import { base, baseSepolia } from "viem/chains";
+import { base } from "viem/chains";
 import { addRpcUrlOverrideToChain } from "@privy-io/react-auth";
 import { configureChains } from "wagmi";
 import { publicProvider } from "wagmi/providers/public";
@@ -196,8 +196,8 @@ function MyApp({ Component, pageProps }) {
           appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID}
           onSuccess={handleLogin}
           config={{
-            defaultChain: base,
-            supportedChains: [base],
+            defaultChain: baseOverride,
+            supportedChains: [base, baseOverride],
             embeddedWallets: {
               noPromptOnSignature: true,
             },
