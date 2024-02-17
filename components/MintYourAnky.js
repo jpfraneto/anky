@@ -169,7 +169,7 @@ const MintYourAnky = ({ cid }) => {
         let provider = await thisWallet.getEthersProvider();
         let signer = await provider.getSigner();
         const ankyOneContract = new ethers.Contract(
-          "0x9A4f51E83793DFf928F2Ae0702147Ab925115697",
+          "0x87586325d3Fb4bd4F2dc712728Da84277051C641",
           ankyOneABI,
           signer
         );
@@ -185,7 +185,7 @@ const MintYourAnky = ({ cid }) => {
         console.log("the response dfreom the price is: ", priceInDegen);
 
         const approvalTx = await degenTokenContract.approve(
-          "0x9A4f51E83793DFf928F2Ae0702147Ab925115697", // The address of the AnkyOne contract
+          "0x87586325d3Fb4bd4F2dc712728Da84277051C641", // The address of the AnkyOne contract
           priceInDegen // The amount of $DEGEN to approve
         );
         setMintingStatus("approval complete. minting anky...");
