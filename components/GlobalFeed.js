@@ -32,7 +32,6 @@ const GlobalFeed = ({ thisWallet }) => {
   const [loadingFeed, setLoadingFeed] = useState(true);
   const [translatingCasts, setTranslatingCasts] = useState(false);
   const { globalFeed, refreshFeed } = useFarcaster();
-  console.log("am i authenticated?", authenticated);
 
   if (!globalFeed)
     return (
@@ -51,10 +50,9 @@ const GlobalFeed = ({ thisWallet }) => {
     if (activeFeed == "mintables") setActiveFeed("votables");
     if (activeFeed == "votables") setActiveFeed("mintables");
   };
-  console.log("in here, the global feed is: ", globalFeed);
   return (
     <div className="text-white w-full grow ">
-      <div className="w-full  flex flex-col justify-around flex-wrap md:w-96  mx-auto">
+      <div className="w-full flex flex-col justify-around flex-wrap md:w-96 mt-3 mx-auto">
         <div>
           <Button
             buttonAction={swapFeed}
@@ -63,7 +61,7 @@ const GlobalFeed = ({ thisWallet }) => {
                 ? "display mintables"
                 : "display votables"
             }
-            buttonColor="bg-green-600 w-48 mt-2 mb-4"
+            buttonColor="bg-green-600 w-48"
           />
         </div>
         {activeFeed == "votables" && (

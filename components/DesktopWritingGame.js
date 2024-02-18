@@ -97,7 +97,7 @@ const DesktopWritingGame = ({
   const [
     userWantsToCreateImageFromWriting,
     setUserWantsToCreateImageFromWriting,
-  ] = useState(false);
+  ] = useState(true);
   const [castForPreview, setCastForPreview] = useState(null);
   const [userWantsToStoreWritingForever, setUserWantsToStoreWritingForever] =
     useState(true);

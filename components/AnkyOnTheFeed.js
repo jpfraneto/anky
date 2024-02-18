@@ -63,8 +63,7 @@ const AnkyOnTheFeed = ({ anky, mintable, votable }) => {
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_API_ROUTE}/ai/mint-an-anky/${anky.cid}`
         );
-        if (!anky) return;
-        setAnky(response.data.anky);
+        if (!response) return;
         const responseVotes = response.data.votes;
         setVotes(responseVotes);
         let voteCounts = [0, 0, 0, 0];
@@ -99,8 +98,8 @@ const AnkyOnTheFeed = ({ anky, mintable, votable }) => {
         const highestVoteImageUrl = newImageUrls[highestVoteIndex];
         setChosenImage(highestVoteImageUrl);
 
-        if (cid) {
-          fetchWritingFromIrys(cid);
+        if (anky.cid) {
+          fetchWritingFromIrys(anky.cid);
         }
         setLoading(false);
       } catch (error) {
@@ -231,7 +230,7 @@ const AnkyOnTheFeed = ({ anky, mintable, votable }) => {
 
   if (mintable) {
     return (
-      <div className="h-fit my-4 border-white border-2 p-2 rounded-xl">
+      <div className="h-fit my-2 border-white border-2 p-2 rounded-xl">
         <p className="mb-2 text-xl">{anky.title}</p>
         <div className="w-96 h-96 relative mb-2">
           <Image src={anky.winningImageUrl} fill />
@@ -284,8 +283,9 @@ const AnkyOnTheFeed = ({ anky, mintable, votable }) => {
   }
   if (votable) {
     return (
-      <div>
-        <div className="flex flex-wrap w-96 h-96 mb-8">
+      <div className="h-fit my-4 border-white border-2 p-2 rounded-xl">
+        <p className="mb-2 text-xl">{anky.title}</p>
+        <div className="flex flex-wrap w-96 h-96 mb-3">
           <div className="w-48 h-48 relative">
             <Image src={anky.imageOneUrl} fill />
           </div>
@@ -299,6 +299,22 @@ const AnkyOnTheFeed = ({ anky, mintable, votable }) => {
             <Image src={anky.imageFourUrl} fill />
           </div>
         </div>
+        <div className="w-48 mx-auto my-1">
+          <a
+            target="_blank"
+            href={`https://warpcast.com/anky/${anky.frameCastHash.substring(
+              0,
+              10
+            )}`}
+            className=" hover:text-red-200"
+          >
+            <Button
+              buttonText="vote on warpcast"
+              buttonColor="bg-purple-600 text-white"
+            />
+          </a>
+        </div>
+
         {/* <Link href={`/mint-an-anky/${anky.cid}`} passHref>
           <div className="w-full flex justify-between">
             <div className="px-4 py-2 cursor-pointer rounded-lg bg-red-200 text-black">
