@@ -7,6 +7,7 @@ import { getAnkyverseDay, getAnkyverseQuestion } from "../lib/ankyverse";
 import { useUser } from "../context/UserContext";
 import Offcanvas from "react-bootstrap/Offcanvas";
 import Image from "next/image";
+import MintYourAnky from "./MintYourAnky";
 import FarcasterConnectionModal from "./farcaster/FarcasterConnectionModal";
 import FeedByFidPage from "./FeedByFidPage";
 import { getThisUserWritings } from "../lib/irys";
@@ -531,6 +532,8 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
             router={router}
           />
         );
+      case `/mint-an-anky/${route.split("/").pop()}`:
+        return <MintYourAnky cid={router.query.cid} />;
 
       case "/community-notebook":
         return <GlobalFeed thisWallet={wallet} />;
