@@ -28,7 +28,7 @@ const GlobalFeed = ({ thisWallet }) => {
   const { authenticated, login } = usePrivy();
   const { farcasterUser } = useUser();
   const [userWritings, setUserWritings] = useState([]);
-  const [activeFeed, setActiveFeed] = useState("votables");
+  const [activeFeed, setActiveFeed] = useState("mintables");
   const [loadingFeed, setLoadingFeed] = useState(true);
   const [translatingCasts, setTranslatingCasts] = useState(false);
   const { globalFeed, refreshFeed } = useFarcaster();
@@ -76,42 +76,6 @@ const GlobalFeed = ({ thisWallet }) => {
                 />
               );
             })}
-            {/* {globalFeed.votableAnkys.map((x, i) => {
-              return (
-                <div key={i}>
-                  <div className="flex flex-wrap w-96 h-96 mb-8">
-                    <div className="w-48 h-48 relative">
-                      <Image src={x.imageOneUrl} fill />
-                    </div>
-                    <div className="w-48 h-48 relative">
-                      <Image src={x.imageTwoUrl} fill />
-                    </div>
-                    <div className="w-48 h-48 relative">
-                      <Image src={x.imageThreeUrl} fill />
-                    </div>
-                    <div className="w-48 h-48 relative">
-                      <Image src={x.imageFourUrl} fill />
-                    </div>
-                  </div>
-                  <Link href={`/mint-an-anky/${x.cid}`} passHref>
-                    <div className="w-full flex justify-between">
-                      <div className="px-4 py-2 cursor-pointer rounded-lg bg-red-200 text-black">
-                        1
-                      </div>
-                      <div className="px-4 py-2 cursor-pointer rounded-lg bg-red-200 text-black">
-                        2
-                      </div>{" "}
-                      <div className="px-4 py-2 cursor-pointer rounded-lg bg-red-200 text-black">
-                        3
-                      </div>{" "}
-                      <div className="px-4 py-2 cursor-pointer rounded-lg bg-red-200 text-black">
-                        4
-                      </div>{" "}
-                    </div>
-                  </Link>
-                </div>
-              );
-            })} */}
           </div>
         )}
         {activeFeed == "mintables" && (
@@ -128,12 +92,6 @@ const GlobalFeed = ({ thisWallet }) => {
             })}
           </div>
         )}
-        {/* {globalFeed.map((x, i) => {
-          const UserPfP = () => {
-            return <Image src={x.author?.pfp_url || ""} fill />;
-          };
-          return <SimpleCast key={i} cast={x} pfp={UserPfP} />;
-        })} */}
       </div>
     </div>
   );

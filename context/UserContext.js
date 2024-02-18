@@ -113,7 +113,6 @@ export const UserProvider = ({ children }) => {
     try {
       const balance = await provider.getBalance(address);
       const balanceInEth = ethers.utils.formatEther(balance);
-      console.log(`User's ETH Balance: ${balanceInEth}`);
       return balanceInEth; // Returns the balance in Ether (ETH)
     } catch (error) {
       console.log(
@@ -159,13 +158,6 @@ export const UserProvider = ({ children }) => {
   // Check initialization and setup status
   useEffect(() => {
     async function handleInitialization() {
-      console.log(
-        "this function -handle initialization- is being called",
-        wallet,
-        ready,
-        authenticated
-      );
-
       if (loading && !ready) return;
       if (ready && !wallet && !authenticated) {
         setMainAppLoading(false);
@@ -186,7 +178,6 @@ export const UserProvider = ({ children }) => {
         setUserOwnsAnky(false);
         return setMainAppLoading(false);
       }
-      console.log("the users wallet is: ", wallet);
       setUsersAnkyUri(usersAnkyUri);
       setUsersAnkyImage(usersImage);
       setUserOwnsAnky(true);
