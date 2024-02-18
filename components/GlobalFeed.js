@@ -11,6 +11,7 @@ import Spinner from "./Spinner";
 import { useUser } from "../context/UserContext";
 import { useFarcaster } from "../context/FarcasterContext";
 import SimpleCast from "./SimpleCast";
+import AnkyOnTheFeed from "./AnkyOnTheFeed";
 
 var options = {
   weekday: "long",
@@ -24,13 +25,14 @@ var options = {
 };
 
 const GlobalFeed = ({ thisWallet }) => {
-  const { login } = usePrivy();
+  const { authenticated, login } = usePrivy();
   const { farcasterUser } = useUser();
   const [userWritings, setUserWritings] = useState([]);
   const [activeFeed, setActiveFeed] = useState("votables");
   const [loadingFeed, setLoadingFeed] = useState(true);
   const [translatingCasts, setTranslatingCasts] = useState(false);
   const { globalFeed, refreshFeed } = useFarcaster();
+  console.log("am i authenticated?", authenticated);
 
   if (!globalFeed)
     return (
@@ -68,6 +70,16 @@ const GlobalFeed = ({ thisWallet }) => {
           <div>
             {globalFeed.votableAnkys.map((x, i) => {
               return (
+                <AnkyOnTheFeed
+                  key={i}
+                  anky={x}
+                  votable={true}
+                  mintable={false}
+                />
+              );
+            })}
+            {/* {globalFeed.votableAnkys.map((x, i) => {
+              return (
                 <div key={i}>
                   <div className="flex flex-wrap w-96 h-96 mb-8">
                     <div className="w-48 h-48 relative">
@@ -101,24 +113,19 @@ const GlobalFeed = ({ thisWallet }) => {
                   </Link>
                 </div>
               );
-            })}
+            })} */}
           </div>
         )}
         {activeFeed == "mintables" && (
           <div>
             {globalFeed.mintableAnkys.map((x, i) => {
               return (
-                <div key={i}>
-                  <div className="w-96 h-96 relative mb-4">
-                    <Image src={x.winningImageUrl} fill />
-                  </div>
-                  <Link
-                    href={`/mint-an-anky/${x.cid}`}
-                    className="px-8 py-2 bg-red-200 text-black rounded-xl text-2x"
-                  >
-                    mint
-                  </Link>
-                </div>
+                <AnkyOnTheFeed
+                  key={i}
+                  anky={x}
+                  votable={false}
+                  mintable={true}
+                />
               );
             })}
           </div>

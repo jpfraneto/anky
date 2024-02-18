@@ -72,7 +72,7 @@ import Leaderboard from "./Leaderboard";
 import AboutModal from "./AboutModal";
 import TimerSettingsModal from "./TimerSettingsModal";
 import AskFarcaster from "./AskFarcaster";
-import MintYourAnky from "./MintYourAnky";
+import MyCollectionGallery from "./MyCollectionGallery";
 
 const righteous = Righteous({ weight: "400", subsets: ["latin"] });
 const inter = Inter({ subsets: ["cyrillic"], weight: ["400"] });
@@ -531,8 +531,6 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
             router={router}
           />
         );
-      case `/mint-an-anky/${route.split("/").pop()}`:
-        return <MintYourAnky cid={router.query.cid} />;
 
       case "/community-notebook":
         return <GlobalFeed thisWallet={wallet} />;
@@ -568,6 +566,8 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
         return <UserFeed exportWallet={exportWallet} thisWallet={wallet} />;
       case "/eulogias":
         return <EulogiasListPage />;
+      case "/my-collection":
+        return <MyCollectionGallery />;
       case "/library":
         return <LibraryPage />;
       case "/write?":

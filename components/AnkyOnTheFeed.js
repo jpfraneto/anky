@@ -9,12 +9,10 @@ import degenBaseMainnetAbi from "../lib/degenBaseMainnetAbi.json";
 import { useWallets } from "@privy-io/react-auth";
 import { usePrivy } from "@privy-io/react-auth";
 
-const MintYourAnky = ({ cid }) => {
+const AnkyOnTheFeed = ({ anky, mintable, votable }) => {
   const { authenticated, login } = usePrivy();
-  const [anky, setAnky] = useState({});
   const [chosenImage, setChosenImage] = useState(null);
   const [error, setError] = useState(""); // New state for holding error message
-  const [loading, setLoading] = useState(true);
   const [mintingAnky, setMintingAnky] = useState(false);
   const [thisWriting, setThisWriting] = useState("");
   const [ankyMinted, setAnkyMinted] = useState(false);
@@ -63,7 +61,7 @@ const MintYourAnky = ({ cid }) => {
     const thisAnkyForMinting = async () => {
       try {
         const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_ROUTE}/ai/mint-an-anky/${cid}`
+          `${process.env.NEXT_PUBLIC_API_ROUTE}/ai/mint-an-anky/${anky.cid}`
         );
         if (!anky) return;
         setAnky(response.data.anky);
@@ -180,7 +178,9 @@ const MintYourAnky = ({ cid }) => {
         );
         console.log("the degen token contract");
 
-        const priceResponse = await ankyOneContract.getAnkyPriceInDegen(cid);
+        const priceResponse = await ankyOneContract.getAnkyPriceInDegen(
+          anky.cid
+        );
         const priceInDegen = ethers.utils.formatUnits(priceResponse, 18);
         console.log("the response dfreom the price is: ", priceInDegen);
 
@@ -209,11 +209,17 @@ const MintYourAnky = ({ cid }) => {
             "approval not needed, sufficient allowance detected"
           );
         }
-        const transactionResponse = await ankyOneContract.mintAnky(cid);
-        await transactionResponse.wait(); // Wait for the minting transaction to be mined
-        setMintingStatus("anky minted successfully!");
-        setAnkyMinted(true);
-        console.log("Anky minted successfully!");
+        try {
+          const transactionResponse = await ankyOneContract.mintAnky(anky.cid);
+          await transactionResponse.wait(); // Wait for the minting transaction to be mined
+          setMintingStatus("anky minted successfully!");
+          setAnkyMinted(true);
+          console.log("Anky minted successfully!");
+        } catch (error) {
+          setMintingStatus(
+            "there was an error. are you sure you have enough $degen (or base eth) balance?"
+          );
+        }
       }
     } catch (error) {
       console.log("there was an error minting this anky", error);
@@ -223,7 +229,95 @@ const MintYourAnky = ({ cid }) => {
     }
   }
 
-  if (loading) return <p>loading...</p>;
+  if (mintable) {
+    return (
+      <div className="h-fit my-4 border-white border-2 p-2 rounded-xl">
+        <p className="mb-2 text-xl">{anky.title}</p>
+        <div className="w-96 h-96 relative mb-2">
+          <Image src={anky.winningImageUrl} fill />
+        </div>
+        {anky.mintOpen && (
+          <>
+            {authenticated ? (
+              <>
+                {ankyMinted ? (
+                  <div className="text-white">
+                    <p>congratulations. your anky was minted successfully</p>
+                  </div>
+                ) : (
+                  <>
+                    {!votingOn ? (
+                      <div className="flex flex-col text-white">
+                        <p>
+                          {votingOn
+                            ? `Voting closes in ${countdownTimer}`
+                            : mintingEnded
+                            ? "Minting period ended"
+                            : `Minting ends in ${countdownTimer}`}
+                        </p>
+                        {mintingStatus.length > 0 && <p> {mintingStatus}</p>}
+                        <Button
+                          buttonText={
+                            mintingAnky ? "minting..." : "mint (222 $degen)"
+                          }
+                          buttonAction={mintThisAnky}
+                          buttonColor="bg-purple-600 text-white"
+                        />
+                      </div>
+                    ) : null}
+                  </>
+                )}
+              </>
+            ) : (
+              <div>
+                <Button
+                  buttonText="login to mint"
+                  buttonAction={login}
+                  buttonColor="bg-purple-600 text-white"
+                />
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    );
+  }
+  if (votable) {
+    return (
+      <div>
+        <div className="flex flex-wrap w-96 h-96 mb-8">
+          <div className="w-48 h-48 relative">
+            <Image src={anky.imageOneUrl} fill />
+          </div>
+          <div className="w-48 h-48 relative">
+            <Image src={anky.imageTwoUrl} fill />
+          </div>
+          <div className="w-48 h-48 relative">
+            <Image src={anky.imageThreeUrl} fill />
+          </div>
+          <div className="w-48 h-48 relative">
+            <Image src={anky.imageFourUrl} fill />
+          </div>
+        </div>
+        {/* <Link href={`/mint-an-anky/${anky.cid}`} passHref>
+          <div className="w-full flex justify-between">
+            <div className="px-4 py-2 cursor-pointer rounded-lg bg-red-200 text-black">
+              1
+            </div>
+            <div className="px-4 py-2 cursor-pointer rounded-lg bg-red-200 text-black">
+              2
+            </div>{" "}
+            <div className="px-4 py-2 cursor-pointer rounded-lg bg-red-200 text-black">
+              3
+            </div>{" "}
+            <div className="px-4 py-2 cursor-pointer rounded-lg bg-red-200 text-black">
+              4
+            </div>{" "}
+          </div>
+        </Link> */}
+      </div>
+    );
+  }
 
   return (
     <div className="w-96 mx-auto">
@@ -332,11 +426,13 @@ const MintYourAnky = ({ cid }) => {
                   )}
                 </>
               ) : (
-                <Button
-                  buttonText="login to mint"
-                  buttonAction={login}
-                  buttonColor="bg-purple-600 text-white"
-                />
+                <div>
+                  <Button
+                    buttonText="login to mint"
+                    buttonAction={login}
+                    buttonColor="bg-purple-600 text-white"
+                  />
+                </div>
               )}
             </>
           )}
@@ -360,4 +456,4 @@ const MintYourAnky = ({ cid }) => {
   );
 };
 
-export default MintYourAnky;
+export default AnkyOnTheFeed;
