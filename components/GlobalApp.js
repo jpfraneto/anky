@@ -145,6 +145,16 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
   const wallets = useWallets();
   const wallet = wallets.wallets[0];
 
+  const isAuthenticated = ready && authenticated;
+
+  // Check that your user has an embedded wallet
+  const hasEmbeddedWallet =
+    user &&
+    !!user.linkedAccounts.find(
+      (account) =>
+        account.type === "wallet" && account.walletClientType === "privy"
+    );
+
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
@@ -338,6 +348,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
         streak: response.data.user.streak || 0,
         manaBalance: response.data.user.manaBalance || 0,
       });
+
       if (response.data.farcasterAccount) {
         setFarcasterUser(response.data.farcasterAccount);
       }
@@ -897,6 +908,21 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
                       Farcaster: @{farcasterUser.username}
                     </small>
                   )}
+                  <div className="flex flex-col">
+                    <p>
+                      base eth balance: {userDatabaseInformation.baseEthBalance}
+                    </p>
+                    <p>
+                      $degen balance: {userDatabaseInformation.degenBalance}
+                    </p>
+                    {/* <p
+                      className="text-xs hover:text-yellow-600 cursor-pointer"
+                      onClick={exportWallet}
+                      disabled={!isAuthenticated || !hasEmbeddedWallet}
+                    >
+                      export wallet
+                    </p> */}
+                  </div>
                 </div>
               )}
 

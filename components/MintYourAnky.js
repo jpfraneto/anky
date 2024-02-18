@@ -181,19 +181,35 @@ const MintYourAnky = ({ cid }) => {
         console.log("the degen token contract");
 
         const priceResponse = await ankyOneContract.getAnkyPriceInDegen(cid);
-        const priceInDegen = ethers.utils.formatUnits(priceResponse, 0);
+        const priceInDegen = ethers.utils.formatUnits(priceResponse, 18);
         console.log("the response dfreom the price is: ", priceInDegen);
 
-        const approvalTx = await degenTokenContract.approve(
-          "0x87586325d3Fb4bd4F2dc712728Da84277051C641", // The address of the AnkyOne contract
-          priceInDegen // The amount of $DEGEN to approve
+        const currentAllowance = await degenTokenContract.allowance(
+          await signer.getAddress(), // The owner's address
+          "0x87586325d3Fb4bd4F2dc712728Da84277051C641" // The address of the AnkyOne contract
         );
-        setMintingStatus("approval complete. minting anky...");
+        const formattedAllowance = ethers.utils.formatUnits(
+          currentAllowance,
+          18
+        );
 
-        await approvalTx.wait(); // Wait for the transaction to be mined
-
+        // we need to check if to approve first.
+        if (parseFloat(formattedAllowance) < parseFloat(priceInDegen)) {
+          setMintingStatus("approving $DEGEN spending...");
+          const approvalTx = await degenTokenContract.approve(
+            "0x87586325d3Fb4bd4F2dc712728Da84277051C641", // The address of the AnkyOne contract
+            ethers.utils.parseUnits(priceInDegen, 18) // The amount of $DEGEN to approve, parsed to the correct unit
+          );
+          await approvalTx.wait(); // Wait for the transaction to be mined
+          setMintingStatus(
+            "approval transaction successful... minting your anky"
+          );
+        } else {
+          setMintingStatus(
+            "approval not needed, sufficient allowance detected"
+          );
+        }
         const transactionResponse = await ankyOneContract.mintAnky(cid);
-
         await transactionResponse.wait(); // Wait for the minting transaction to be mined
         setMintingStatus("anky minted successfully!");
         setAnkyMinted(true);
@@ -206,6 +222,7 @@ const MintYourAnky = ({ cid }) => {
       );
     }
   }
+
   if (loading) return <p>loading...</p>;
 
   return (

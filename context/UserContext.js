@@ -2,6 +2,8 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { Wallet, ethers } from "ethers";
 import axios from "axios";
+import ankyOneABI from "../lib/ankyOne.json";
+import degenBaseMainnetAbi from "../lib/degenBaseMainnetAbi.json";
 import {
   fetchUserEulogias,
   fetchUserTemplates,
@@ -107,9 +109,63 @@ export const UserProvider = ({ children }) => {
     getAllUserWritings();
   }, [wallet]);
 
+  async function getUsersEthBalance(provider, address) {
+    try {
+      const balance = await provider.getBalance(address);
+      const balanceInEth = ethers.utils.formatEther(balance);
+      console.log(`User's ETH Balance: ${balanceInEth}`);
+      return balanceInEth; // Returns the balance in Ether (ETH)
+    } catch (error) {
+      console.log(
+        "there was an error fetching the user's base ETH balance",
+        error
+      );
+      return null;
+    }
+  }
+
+  async function getUsersDegenBalance(provider, address) {
+    try {
+      const signer = await provider.getSigner();
+      const degenTokenContractAddress =
+        "0x4ed4E862860beD51a9570b96d89aF5E1B0Efefed"; // Example address, replace with actual $DEGEN contract address
+      const degenTokenContract = new ethers.Contract(
+        degenTokenContractAddress,
+        degenBaseMainnetAbi,
+        signer
+      );
+
+      const balance = await degenTokenContract.balanceOf(address);
+      const balanceInDegen = ethers.utils.formatUnits(balance, 18); // Assuming the $DEGEN token has 18 decimals
+      console.log(`User's $DEGEN Balance: ${balanceInDegen}`);
+      return balanceInDegen; // Returns the balance in $DEGEN
+    } catch (error) {
+      console.log(
+        "there was an error fetching the user's DEGEN balance",
+        error
+      );
+      return null;
+    }
+  }
+
+  async function getUsersAnkyLibrary(address) {
+    try {
+    } catch (error) {
+      console.log("there was an error fetching the users ankys");
+      return [];
+    }
+  }
+
   // Check initialization and setup status
   useEffect(() => {
     async function handleInitialization() {
+      console.log(
+        "this function -handle initialization- is being called",
+        wallet,
+        ready,
+        authenticated
+      );
+
       if (loading && !ready) return;
       if (ready && !wallet && !authenticated) {
         setMainAppLoading(false);
@@ -130,13 +186,13 @@ export const UserProvider = ({ children }) => {
         setUserOwnsAnky(false);
         return setMainAppLoading(false);
       }
+      console.log("the users wallet is: ", wallet);
       setUsersAnkyUri(usersAnkyUri);
       setUsersAnkyImage(usersImage);
       setUserOwnsAnky(true);
       setMainAppLoading(false);
       if (loadingUserStoredData) return;
 
-      // if (wallet && !wallet.chainId.includes("8453")) await changeChain();
       setLibraryLoading(false);
       setAppLoading(false);
     }
@@ -184,10 +240,22 @@ export const UserProvider = ({ children }) => {
             },
           }
         );
+        const provider = await wallet.getEthersProvider();
+        // get the users ether and degen balance
+        const baseEthBalance = await getUsersEthBalance(
+          provider,
+          wallet.address
+        );
+        const degenBalance = await getUsersDegenBalance(
+          provider,
+          wallet.address
+        );
 
         setUserDatabaseInformation({
           streak: response.data.user.streak || 0,
           manaBalance: response.data.user.manaBalance || 0,
+          baseEthBalance: baseEthBalance,
+          degenBalance: degenBalance,
         });
         if (response.data.farcasterAccount) {
           setFarcasterUser(response.data.farcasterAccount);
@@ -320,137 +388,6 @@ export const UserProvider = ({ children }) => {
       console.log("there was an error", error);
     }
   }
-
-  async function getTestEthAndAidropAnky(wallet, provider, authToken) {
-    const testEthResponse = await sendTestEth(wallet, provider, authToken);
-    if (!testEthResponse.success) {
-      setErrorMessage("There was an error sending you the test eth");
-      throw new Error("There was an error sending the test eth.");
-    }
-    const airdropCallResponse = await airdropCall(
-      wallet,
-      setUserAppInformation,
-      authToken
-    );
-    setUserAppInformation((x) => {
-      return {
-        ...x,
-        tokenUri: airdropCallResponse.tokenUri,
-        ankyIndex: airdropCallResponse.ankyIndex,
-        userWalletAddress: wallet.address,
-      };
-    });
-    if (!airdropCallResponse.success) {
-      setErrorMessage("There was an error gifting you your anky.");
-      throw new Error("There was an error with the airdrop call.");
-      return;
-    }
-    await new Promise((resolve) => setTimeout(resolve, 8000));
-  }
-  async function getTbaInformation(wallet, setUserAppInformation) {
-    const callTbaResponse = await callTba(
-      wallet.address,
-      setUserAppInformation
-    );
-    setUserAppInformation((x) => {
-      return {
-        ...x,
-        tbaAddress: callTbaResponse.tba,
-      };
-    });
-    if (!callTbaResponse.success) {
-      setErrorMessage("There was an error retrieving your tba.");
-      throw new Error("There was an error with the tba call.");
-      return;
-    }
-  }
-  async function airdropUsersFirstJournal(address, authToken, provider) {
-    const response = await airdropFirstJournal(address, authToken);
-
-    if (response && response.success) {
-      const txHash = response.txHash;
-      // Assuming you have a provider instance to query the Ethereum network
-      const txReceipt = await provider.getTransactionReceipt(txHash);
-
-      const eventTopic = ethers.utils.id(
-        "JournalAirdropped(tokenId, usersAnkyAddress)"
-      );
-
-      for (const log of txReceipt.logs) {
-        if (log.topics[0] === eventTopic) {
-          const decodedLog = journalsContract.interface.parseLog(log);
-          const { tokenId } = decodedLog.args;
-          const newJournalElement = {
-            journalId: tokenId,
-            entries: [],
-            journalType: 0,
-            metadataCID: "",
-          };
-
-          setUserAppInformation((x) => {
-            return {
-              ...x,
-              userJournals: [newJournalElement],
-            };
-          });
-          setUserData("userJournals", [newJournalElement]);
-          break;
-        }
-      }
-    } else {
-      setErrorMessage("There was an error with your journal.");
-    }
-  }
-
-  const initializeUser = async () => {
-    try {
-      if (setupIsReady) return;
-      if (loading) return;
-      if (!wallet && !wallet?.address) return;
-
-      setShowProgressModal(true);
-      setSettingThingsUp(true);
-      const authToken = await getAccessToken();
-      await changeChain();
-      setCurrentStep(1);
-
-      let provider = await wallet.getEthereumProvider();
-      if (checkIfUserIsTheSame || !userAppInformation.ankyIndex) {
-        await getTestEthAndAidropAnky(wallet, provider, authToken);
-      }
-      setCurrentStep(2);
-      setCurrentStep(3);
-
-      if (checkIfUserIsTheSame || (!userAppInformation.tbaAddress && wallet)) {
-        await getTbaInformation(wallet, setUserAppInformation);
-      }
-      setCurrentStep(4);
-
-      if (
-        checkIfUserIsTheSame ||
-        !userAppInformation.userJournals ||
-        (userAppInformation.userJournals.length === 0 && wallet)
-      ) {
-        try {
-          const airdropJournalResponse = await airdropUsersFirstJournal(
-            wallet.address,
-            authToken,
-            provider
-          );
-        } catch (error) {
-          console.log("there was an error airdropping her ");
-        }
-      }
-      setCurrentStep(5);
-
-      localStorage.setItem("firstTimeUser189", "done");
-      setUserIsReadyNow(true);
-      setShowProgressModal(false);
-      return setSetupIsReady(true);
-    } catch (error) {
-      console.log("Error initializing user", error);
-    }
-  };
 
   const changeChain = async () => {
     if (authenticated && wallet) {
