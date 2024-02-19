@@ -52,7 +52,7 @@ const GlobalFeed = ({ thisWallet }) => {
     if (activeFeed == "votables") setActiveFeed("mintables");
   };
   return (
-    <div className="text-white w-full grow ">
+    <div className="text-white w-full grow mb-16">
       <div className="w-full flex flex-col justify-around flex-wrap md:w-96 mt-3 mx-auto">
         <div>
           <Button

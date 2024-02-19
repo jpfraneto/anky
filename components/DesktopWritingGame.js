@@ -270,25 +270,6 @@ const DesktopWritingGame = ({
     }
   };
 
-  const startNewCountdownRun = () => {
-    try {
-      audioRef.current.pause();
-      setCopyText("Copy my writing");
-      setTime(countdownTarget);
-      setDisableButton(false);
-      setLifeBarLength(100);
-      setText("");
-      // setSavingRound(false);
-      // setSavedToDb(false);
-      setIsDone(false);
-      setFinished(false);
-      // setSavedText(false);
-      copyToClipboard();
-    } catch (error) {
-      console.log("there was an error");
-    }
-  };
-
   const handleTextChange = (event) => {
     setText(event.target.value);
     const now = Date.now();
@@ -650,7 +631,6 @@ const DesktopWritingGame = ({
         if (journalIdToSave) {
           irysResponseReceipt = await saveTextToJournal();
         } else {
-          console.log("IN HERE", userWantsToStoreWritingForever);
           if (userWantsToStoreWritingForever) {
             irysResponseReceipt = await sendTextToIrys();
             irysResponseCid = irysResponseReceipt.id;
@@ -702,7 +682,7 @@ const DesktopWritingGame = ({
           ]);
         }
       }
-      if (userWantsToCreateImageFromWriting) {
+      if (time > 30 && userWantsToCreateImageFromWriting) {
         const authToken = await getAccessToken();
         const responseFromMidjourneyServer = await axios.post(
           `${process.env.NEXT_PUBLIC_API_ROUTE}/ai/process-writing`,
