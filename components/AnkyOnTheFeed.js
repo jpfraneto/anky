@@ -237,7 +237,7 @@ const AnkyOnTheFeed = ({ anky, mintable, votable }) => {
 
   if (mintable) {
     return (
-      <div className="h-fit my-2 border-white border-2 p-2 rounded-xl">
+      <div className="h-fit my-2 border-white border-2 p-2 rounded-xl flex flex-col items-center">
         <p className="mb-2 text-xl">{anky.title}</p>
         <div
           onClick={toggleOverlay}
@@ -310,11 +310,11 @@ const AnkyOnTheFeed = ({ anky, mintable, votable }) => {
   }
   if (votable) {
     return (
-      <div className="h-fit my-2 border-white border-2 p-2 rounded-xl">
+      <div className="h-fit my-2 border-white border-2 p-2 rounded-xl flex flex-col items-center">
         <p className="mb-2 text-xl">{anky.title}</p>
         <div
           onClick={toggleOverlay}
-          className="cursor-pointer relative flex flex-wrap w-96 h-96 mb-3"
+          className="cursor-pointer relative flex justify-center flex-wrap w-96 h-96 mb-3"
         >
           <div className="w-48 h-48 relative">
             <Image src={anky.imageOneUrl} fill />
