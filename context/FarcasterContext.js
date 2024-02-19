@@ -24,7 +24,6 @@ export const FarcasterProvider = ({ children }) => {
           `${process.env.NEXT_PUBLIC_API_ROUTE}/farcaster/feed`
         );
         setGlobalFeed(response.data);
-
         setLoadingFeed(false);
       } catch (error) {
         console.log(

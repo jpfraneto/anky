@@ -287,10 +287,9 @@ const MintYourAnky = ({ cid }) => {
           {votingOn && (
             <a
               target="_blank"
-              href={`https://warpcast.com/anky/${anky.frameCastHash.substring(
-                0,
-                10
-              )}`}
+              href={`https://warpcast.com/anky/${
+                anky?.frameCastHash?.substring(0, 10) || ""
+              }`}
               className=" hover:text-red-200"
             >
               <Button

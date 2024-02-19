@@ -40,6 +40,7 @@ import { BsInfoLg } from "react-icons/bs";
 import NewNotebookPage from "./NewNotebookPage";
 import BountyPage from "./BountyPage";
 import WhatIsThisPage from "./WhatIsThisPage";
+import MyGalleryPage from "./MyGalleryPage";
 import LandingPage from "./LandingPage";
 import ReadIrysPage from "./ReadIrysPage";
 import DementorPage from "./DementorById";
@@ -492,6 +493,8 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
         return <WhatIsThisPage />;
       case "/mana":
         return <ManaPage />;
+      case "/my-gallery":
+        return <MyGalleryPage />;
       case `/r/${route.split("/").pop()}`:
         return <ReadCastPage />;
       case `/i/${route.split("/").pop()}`:
@@ -928,16 +931,35 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
                   </div>
                 </div>
               )}
-
-              <p
-                className="h-4 my-1 hover:text-purple-600 cursor-pointer"
+              <div
                 onClick={() => {
                   handleClose();
-                  setDisplayAboutModal(!displayAboutModal);
                 }}
+                className="flex"
               >
-                about
-              </p>
+                <p
+                  className="h-4 my-1 hover:text-purple-600 cursor-pointer"
+                  onClick={() => {
+                    setDisplayAboutModal(!displayAboutModal);
+                  }}
+                >
+                  about
+                </p>
+
+                {authenticated && (
+                  <>
+                    <span>
+                      {"  "}· · ·{"  "}
+                    </span>{" "}
+                    <Link
+                      className="h-4 my-1 hover:text-purple-600 cursor-pointer"
+                      href="/my-gallery"
+                    >
+                      my gallery
+                    </Link>
+                  </>
+                )}
+              </div>
 
               {authenticated && (
                 <div className="h-12 mt-2 w-96   flex">

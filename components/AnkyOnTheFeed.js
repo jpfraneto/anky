@@ -17,9 +17,11 @@ const AnkyOnTheFeed = ({ anky, mintable, votable }) => {
   const [mintingAnky, setMintingAnky] = useState(false);
   const [thisWriting, setThisWriting] = useState("");
   const [ankyMinted, setAnkyMinted] = useState(false);
+  const [showOverlay, setShowOverlay] = useState(false);
   const [userTriedToMint, setUserTriedToMint] = useState(false);
   const [votePercentages, setVotePercentages] = useState([]);
   const [votes, setVotes] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [imageUrls, setImageUrls] = useState([]);
   const [votingOn, setVotingOn] = useState(false);
   const [mintingStatus, setMintingStatus] = useState("");
@@ -29,6 +31,10 @@ const AnkyOnTheFeed = ({ anky, mintable, votable }) => {
   const { wallets } = useWallets();
 
   const thisWallet = wallets[0];
+
+  const toggleOverlay = () => {
+    setShowOverlay(!showOverlay);
+  };
 
   useEffect(() => {
     // Your existing useEffect code for fetching Anky data
@@ -233,8 +239,26 @@ const AnkyOnTheFeed = ({ anky, mintable, votable }) => {
     return (
       <div className="h-fit my-2 border-white border-2 p-2 rounded-xl">
         <p className="mb-2 text-xl">{anky.title}</p>
-        <div className="w-96 h-96 relative mb-2">
+        <div
+          onClick={toggleOverlay}
+          className="cursor-pointer w-96 h-96 relative mb-2"
+        >
           <Image src={anky.winningImageUrl} fill />
+          <div className={`overlay ${!showOverlay && "hidden"}`}>
+            <div className="text-white text-left">
+              {thisWriting ? (
+                thisWriting.includes("\n") ? (
+                  thisWriting.split("\n").map((x, i) => (
+                    <p className="my-2" key={i}>
+                      {x}
+                    </p>
+                  ))
+                ) : (
+                  <p className="my-2">{thisWriting}</p>
+                )
+              ) : null}
+            </div>
+          </div>
         </div>
         {anky.mintOpen && (
           <>
@@ -257,12 +281,6 @@ const AnkyOnTheFeed = ({ anky, mintable, votable }) => {
                         </p>
                         {mintingStatus.length > 0 && <p> {mintingStatus}</p>}
                         <div className="flex flex-row w-full justify-between">
-                          <Link href={`/mint-an-anky/${anky.cid}`}>
-                            <Button
-                              buttonText="read this anky"
-                              buttonColor="bg-green-600"
-                            />
-                          </Link>
                           <Button
                             buttonText={
                               mintingAnky ? "minting..." : "mint (222 $degen)"
@@ -277,13 +295,7 @@ const AnkyOnTheFeed = ({ anky, mintable, votable }) => {
                 )}
               </>
             ) : (
-              <div className="flex flex-row w-full justify-between">
-                <Link href={`/mint-an-anky/${anky.cid}`}>
-                  <Button
-                    buttonText="read this anky"
-                    buttonColor="bg-green-600"
-                  />
-                </Link>
+              <div className="w-full flex mx-auto justify-center flex-row my-1">
                 <Button
                   buttonText="login to mint"
                   buttonAction={login}
@@ -298,9 +310,12 @@ const AnkyOnTheFeed = ({ anky, mintable, votable }) => {
   }
   if (votable) {
     return (
-      <div className="h-fit my-4 border-white border-2 p-2 rounded-xl">
+      <div className="h-fit my-2 border-white border-2 p-2 rounded-xl">
         <p className="mb-2 text-xl">{anky.title}</p>
-        <div className="flex flex-wrap w-96 h-96 mb-3">
+        <div
+          onClick={toggleOverlay}
+          className="cursor-pointer relative flex flex-wrap w-96 h-96 mb-3"
+        >
           <div className="w-48 h-48 relative">
             <Image src={anky.imageOneUrl} fill />
           </div>
@@ -313,17 +328,28 @@ const AnkyOnTheFeed = ({ anky, mintable, votable }) => {
           <div className="w-48 h-48 relative">
             <Image src={anky.imageFourUrl} fill />
           </div>
+          <div className={`overlay ${!showOverlay && "hidden"}`}>
+            <div className="text-white text-left">
+              {thisWriting ? (
+                thisWriting.includes("\n") ? (
+                  thisWriting.split("\n").map((x, i) => (
+                    <p className="my-2" key={i}>
+                      {x}
+                    </p>
+                  ))
+                ) : (
+                  <p className="my-2">{thisWriting}</p>
+                )
+              ) : null}
+            </div>
+          </div>
         </div>
-        <div className="w-full flex mx-auto justify-between flex-row my-1">
-          <Link href={`/mint-an-anky/${anky.cid}`}>
-            <Button buttonText="read this anky" buttonColor="bg-green-600" />
-          </Link>
+        <div className="w-full flex mx-auto justify-center flex-row my-1">
           <a
             target="_blank"
-            href={`https://warpcast.com/anky/${anky.frameCastHash.substring(
-              0,
-              10
-            )}`}
+            href={`https://warpcast.com/anky/${
+              anky?.frameCastHash?.substring(0, 10) || ""
+            }`}
             className=" hover:text-red-200"
           >
             <Button
@@ -332,23 +358,6 @@ const AnkyOnTheFeed = ({ anky, mintable, votable }) => {
             />
           </a>
         </div>
-
-        {/* <Link href={`/mint-an-anky/${anky.cid}`} passHref>
-          <div className="w-full flex justify-between">
-            <div className="px-4 py-2 cursor-pointer rounded-lg bg-red-200 text-black">
-              1
-            </div>
-            <div className="px-4 py-2 cursor-pointer rounded-lg bg-red-200 text-black">
-              2
-            </div>{" "}
-            <div className="px-4 py-2 cursor-pointer rounded-lg bg-red-200 text-black">
-              3
-            </div>{" "}
-            <div className="px-4 py-2 cursor-pointer rounded-lg bg-red-200 text-black">
-              4
-            </div>{" "}
-          </div>
-        </Link> */}
       </div>
     );
   }
@@ -411,7 +420,7 @@ const AnkyOnTheFeed = ({ anky, mintable, votable }) => {
           </div>
         )}
 
-        <div className="flex space-x-2 justify-center w-full mt-2">
+        <div className="w-full flex mx-auto justify-center flex-row my-1">
           {votingOn && (
             <a
               target="_blank"
@@ -460,7 +469,7 @@ const AnkyOnTheFeed = ({ anky, mintable, votable }) => {
                   )}
                 </>
               ) : (
-                <div>
+                <div className="w-full flex mx-auto justify-center flex-row my-1">
                   <Button
                     buttonText="login to mint"
                     buttonAction={login}

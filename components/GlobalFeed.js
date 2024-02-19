@@ -32,6 +32,7 @@ const GlobalFeed = ({ thisWallet }) => {
   const [loadingFeed, setLoadingFeed] = useState(true);
   const [translatingCasts, setTranslatingCasts] = useState(false);
   const { globalFeed, refreshFeed } = useFarcaster();
+  console.log("the global feed is: ", globalFeed);
 
   if (!globalFeed)
     return (
@@ -66,30 +67,32 @@ const GlobalFeed = ({ thisWallet }) => {
         </div>
         {activeFeed == "votables" && (
           <div>
-            {globalFeed.votableAnkys.map((x, i) => {
-              return (
-                <AnkyOnTheFeed
-                  key={i}
-                  anky={x}
-                  votable={true}
-                  mintable={false}
-                />
-              );
-            })}
+            {globalFeed &&
+              globalFeed.votableAnkys?.map((x, i) => {
+                return (
+                  <AnkyOnTheFeed
+                    key={i}
+                    anky={x}
+                    votable={true}
+                    mintable={false}
+                  />
+                );
+              })}
           </div>
         )}
         {activeFeed == "mintables" && (
           <div>
-            {globalFeed.mintableAnkys.map((x, i) => {
-              return (
-                <AnkyOnTheFeed
-                  key={i}
-                  anky={x}
-                  votable={false}
-                  mintable={true}
-                />
-              );
-            })}
+            {globalFeed &&
+              globalFeed.mintableAnkys?.map((x, i) => {
+                return (
+                  <AnkyOnTheFeed
+                    key={i}
+                    anky={x}
+                    votable={false}
+                    mintable={true}
+                  />
+                );
+              })}
           </div>
         )}
       </div>
