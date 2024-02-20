@@ -5,6 +5,7 @@ import { getOneWriting } from "../lib/irys";
 import Button from "./Button";
 import Link from "next/link";
 import { ethers } from "ethers";
+import { LuShare2 } from "react-icons/lu";
 import ankyOneABI from "../lib/ankyOne.json";
 import degenBaseMainnetAbi from "../lib/degenBaseMainnetAbi.json";
 import { useWallets } from "@privy-io/react-auth";
@@ -16,6 +17,7 @@ const AnkyOnTheFeed = ({ anky, mintable, votable }) => {
   const [error, setError] = useState(""); // New state for holding error message
   const [mintingAnky, setMintingAnky] = useState(false);
   const [thisWriting, setThisWriting] = useState("");
+  const [copiedToClipboard, setCopiedToClipboard] = useState(false);
   const [ankyMinted, setAnkyMinted] = useState(false);
   const [showOverlay, setShowOverlay] = useState(false);
   const [userTriedToMint, setUserTriedToMint] = useState(false);
@@ -148,6 +150,20 @@ const AnkyOnTheFeed = ({ anky, mintable, votable }) => {
     }
   };
 
+  const copyLinkToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(
+        `https://www.anky.lat/mint-an-anky/${anky.cid}`
+      );
+      setCopiedToClipboard(true);
+      setTimeout(() => {
+        setCopiedToClipboard(false);
+      }, 2222);
+    } catch (error) {
+      console.log("there was an error");
+    }
+  };
+
   const formatTime = (milliseconds) => {
     let totalSeconds = Math.floor(milliseconds / 1000);
     let hours = Math.floor(totalSeconds / 3600);
@@ -253,8 +269,11 @@ const AnkyOnTheFeed = ({ anky, mintable, votable }) => {
 
   if (mintable) {
     return (
-      <div className="h-fit my-2 border-white border-2 p-2 rounded-xl flex flex-col items-center">
+      <div className="h-fit my-2 border-white border-2 p-2 rounded-xl flex flex-col items-center relative">
         <p className="mb-2 text-2xl">{anky.title}</p>
+        <span className="absolute right-0 top-0" onClick={copyLinkToClipboard}>
+          <LuShare2 size={22} color={copiedToClipboard ? "green" : "purple"} />
+        </span>
         <div
           onClick={toggleOverlay}
           className="cursor-pointer w-96 h-96 relative mb-2"
@@ -334,7 +353,10 @@ const AnkyOnTheFeed = ({ anky, mintable, votable }) => {
   }
   if (votable) {
     return (
-      <div className="h-fit my-2 border-white border-2 p-2 rounded-xl flex flex-col items-center">
+      <div className="h-fit my-2 border-white border-2 p-2 rounded-xl flex flex-col items-center relative">
+        <span className="absolute right-0 top-0" onClick={copyLinkToClipboard}>
+          <LuShare2 size={22} color={copiedToClipboard ? "green" : "purple"} />
+        </span>
         <p className="mb-2 text-xl">{anky.title}</p>
         <div
           onClick={toggleOverlay}

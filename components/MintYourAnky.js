@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Image from "next/image";
+import { LuShare2 } from "react-icons/lu";
 import { getOneWriting } from "../lib/irys";
 import Button from "./Button";
 import { ethers } from "ethers";
@@ -12,6 +13,7 @@ import { usePrivy } from "@privy-io/react-auth";
 const MintYourAnky = ({ cid }) => {
   const { authenticated, login } = usePrivy();
   const [anky, setAnky] = useState({});
+  const [copiedToClipboard, setCopiedToClipboard] = useState(false);
   const [chosenImage, setChosenImage] = useState(null);
   const [error, setError] = useState(""); // New state for holding error message
   const [loading, setLoading] = useState(true);
@@ -226,8 +228,28 @@ const MintYourAnky = ({ cid }) => {
 
   if (loading) return <p>loading...</p>;
 
+  const copyLinkToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(
+        `https://www.anky.lat/mint-an-anky/${anky.cid}`
+      );
+      setCopiedToClipboard(true);
+      setTimeout(() => {
+        setCopiedToClipboard(false);
+      }, 2222);
+    } catch (error) {
+      console.log("there was an error");
+    }
+  };
+
   return (
-    <div className="w-96 mx-auto">
+    <div className="w-96 mx-auto relative">
+      <span
+        className="cursor-pointer absolute right-0 top-0"
+        onClick={copyLinkToClipboard}
+      >
+        <LuShare2 size={22} color={copiedToClipboard ? "green" : "purple"} />
+      </span>
       <p className="text-white mt-2 text-xl">{anky.title || ""}</p>
       <div className="flex flex-col w-96">
         <div className="my-2 w-full aspect-square relative">
