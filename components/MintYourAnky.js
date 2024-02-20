@@ -331,7 +331,7 @@ const MintYourAnky = ({ cid }) => {
                     </div>
                   ) : (
                     <>
-                      {!votingOn ? (
+                      {!votingOn && !mintingEnded && (
                         <div className="flex flex-col text-white">
                           <p>
                             {votingOn
@@ -349,7 +349,7 @@ const MintYourAnky = ({ cid }) => {
                             buttonColor="bg-purple-600 text-white"
                           />
                         </div>
-                      ) : null}
+                      )}
                     </>
                   )}
                 </>
