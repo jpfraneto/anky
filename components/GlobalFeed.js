@@ -64,6 +64,7 @@ const GlobalFeed = ({ thisWallet }) => {
             }
             buttonColor="bg-green-600 w-48"
           />
+          <p>(you can tap on top of an anky to read it)</p>
         </div>
         {activeFeed == "votables" && (
           <div>

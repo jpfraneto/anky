@@ -42,7 +42,7 @@ const AnkyOnTheFeed = ({ anky, mintable, votable }) => {
     if (anky?.createdAt) {
       updateTimers();
     }
-  }, [anky?.createdAt]);
+  }, [anky?.createdAt, cid]);
 
   useEffect(() => {
     // Assuming `anky.createdAt` is a timestamp or a date string that can be parsed by `Date`
@@ -79,6 +79,21 @@ const AnkyOnTheFeed = ({ anky, mintable, votable }) => {
             voteCounts[vote.voteIndex]++;
           }
         });
+        const now = Date.now();
+        const votingEnds =
+          new Date(anky.createdAt).getTime() + 8 * 60 * 60 * 1000; // 8 hours from createdAt
+        const mintingEnds = votingEnds + 16 * 60 * 60 * 1000; // Additional 24 hours for minting window
+        if (now < votingEnds) {
+          setVotingOn(true);
+          setCountdownTimer(formatTime(votingEnds - now));
+        } else if (now >= votingEnds && now < mintingEnds) {
+          setVotingOn(false); // Voting period ended, minting period starts
+          setCountdownTimer(formatTime(mintingEnds - now));
+        } else {
+          console.log("set minting ended");
+          setMintingEnded(true); // Both voting and minting periods have ended
+          setCountdownTimer("00:00:00");
+        }
         setVotes(responseVotes);
         // Calculate total votes for normalization
         const totalVotes = responseVotes.length;
@@ -114,7 +129,7 @@ const AnkyOnTheFeed = ({ anky, mintable, votable }) => {
       }
     };
     thisAnkyForMinting();
-  }, []);
+  }, [cid]);
 
   const updateTimers = () => {
     const now = Date.now();
@@ -127,6 +142,7 @@ const AnkyOnTheFeed = ({ anky, mintable, votable }) => {
       setVotingOn(false); // Voting period ended, minting period starts
       setCountdownTimer(formatTime(mintingEnds - now));
     } else {
+      console.log("set minting ended");
       setMintingEnded(true); // Both voting and minting periods have ended
       setCountdownTimer("00:00:00");
     }
@@ -238,7 +254,7 @@ const AnkyOnTheFeed = ({ anky, mintable, votable }) => {
   if (mintable) {
     return (
       <div className="h-fit my-2 border-white border-2 p-2 rounded-xl flex flex-col items-center">
-        <p className="mb-2 text-xl">{anky.title}</p>
+        <p className="mb-2 text-2xl">{anky.title}</p>
         <div
           onClick={toggleOverlay}
           className="cursor-pointer w-96 h-96 relative mb-2"
@@ -271,25 +287,33 @@ const AnkyOnTheFeed = ({ anky, mintable, votable }) => {
                 ) : (
                   <>
                     {!votingOn ? (
-                      <div className="flex flex-col text-white">
-                        <p>
-                          {votingOn
-                            ? `Voting closes in ${countdownTimer}`
-                            : mintingEnded
-                            ? "Minting period ended"
-                            : `Minting ends in ${countdownTimer}`}
-                        </p>
-                        {mintingStatus.length > 0 && <p> {mintingStatus}</p>}
-                        <div className="flex flex-row w-full justify-between">
-                          <Button
-                            buttonText={
-                              mintingAnky ? "minting..." : "mint (222 $degen)"
-                            }
-                            buttonAction={mintThisAnky}
-                            buttonColor="bg-purple-600 text-white"
-                          />
-                        </div>
-                      </div>
+                      <>
+                        {!mintingEnded && (
+                          <div className="flex flex-col text-white">
+                            <p>
+                              {votingOn
+                                ? `Voting closes in ${countdownTimer}`
+                                : mintingEnded
+                                ? "Minting period ended"
+                                : `Minting ends in ${countdownTimer}`}
+                            </p>
+                            {mintingStatus.length > 0 && (
+                              <p> {mintingStatus}</p>
+                            )}
+                            <div className="flex flex-row w-full justify-between">
+                              <Button
+                                buttonText={
+                                  mintingAnky
+                                    ? "minting..."
+                                    : "mint (222 $degen)"
+                                }
+                                buttonAction={mintThisAnky}
+                                buttonColor="bg-purple-600 text-white"
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </>
                     ) : null}
                   </>
                 )}

@@ -880,7 +880,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
                           className="w-full text-nowrap odd:text-purple-400"
                         >
                           <Link
-                            href={`/i/${writing.cid}`}
+                            href={`/mint-an-anky/${writing.cid}`}
                             className="my-2 hover:cursor-pointer hover:text-purple-600 "
                           >
                             {writing.text}

@@ -65,6 +65,7 @@ const MintYourAnky = ({ cid }) => {
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_API_ROUTE}/ai/mint-an-anky/${cid}`
         );
+        console.log("the response is: ", response);
         if (!anky) return;
         setAnky(response.data.anky);
         const responseVotes = response.data.votes;
@@ -110,7 +111,7 @@ const MintYourAnky = ({ cid }) => {
       }
     };
     thisAnkyForMinting();
-  }, []);
+  }, [cid]);
 
   const updateTimers = () => {
     const now = Date.now();

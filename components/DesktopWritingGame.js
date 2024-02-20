@@ -741,7 +741,7 @@ const DesktopWritingGame = ({
                 write, and for now, it is set to end your session after{" "}
                 {userSettings.secondsBetweenKeystrokes} seconds if you stop.
                 there is no time to think. (hint: that&apos;s the whole point).
-                you can change that by clicking{" "}
+                you can change that time{" "}
                 <span
                   onClick={() => {
                     setDisplayChangeTimeForWriting(
@@ -842,44 +842,50 @@ const DesktopWritingGame = ({
                 </div>
               </div>
             ) : (
-              <div className="bg-purple-500 text-black p-3 my-2 rounded-xl flex space-x-2 items-center justify-center">
-                <div className="h-fit flex justify-center mx-auto items-center">
-                  <p className="text-left text-black">
-                    do you want to share what you wrote anonymously on
-                    farcaster?
-                  </p>
-                  <input
-                    className="mx-4 w-10 h-10 rounded-xl bg-purple-600"
-                    type="checkbox"
-                    onChange={(e) => {
-                      if (time < 30) {
-                        setBottomMessage(true);
-                      } else {
-                        setUserWantsToCastAnon(!userWantsToCastAnon);
-                      }
-                    }}
-                    checked={userWantsToCastAnon}
-                  />
-                  {time < 30 && bottomMessage && (
-                    <small className="text-xs text-red-400">
-                      if you had written for at least 30 seconds, you could
-                      transform what you just wrote into a unique anky. go can
-                      try again if you want, by tapping{" "}
-                      <span
-                        className="text-yellow-600 text-xl hover:text-purple-300 cursor-pointer"
-                        onClick={() => {
-                          setBackgroundVisible(true);
-                          setModalVisible(false);
-                          startNewRun();
-                          setBottomMessage(false);
-                        }}
-                      >
-                        here
-                      </span>
-                    </small>
-                  )}
-                </div>
-              </div>
+              <>
+                {time > 30 && (
+                  <div className="bg-purple-500 text-black p-3 my-2 rounded-xl flex space-x-2 items-center justify-center">
+                    {time > 30 && (
+                      <div className="h-fit flex justify-center mx-auto items-center">
+                        <p className="text-left text-black">
+                          do you want to share what you wrote anonymously on
+                          farcaster?
+                        </p>
+                        <input
+                          className="mx-4 w-10 h-10 rounded-xl bg-purple-600"
+                          type="checkbox"
+                          onChange={(e) => {
+                            if (time < 30) {
+                              setBottomMessage(true);
+                            } else {
+                              setUserWantsToCastAnon(!userWantsToCastAnon);
+                            }
+                          }}
+                          checked={userWantsToCastAnon}
+                        />
+                        {time < 30 && bottomMessage && (
+                          <small className="text-xs text-red-400">
+                            if you had written for at least 30 seconds, you
+                            could transform what you just wrote into a unique
+                            anky. go can try again if you want, by tapping{" "}
+                            <span
+                              className="text-yellow-600 text-xl hover:text-purple-300 cursor-pointer"
+                              onClick={() => {
+                                setBackgroundVisible(true);
+                                setModalVisible(false);
+                                startNewRun();
+                                setBottomMessage(false);
+                              }}
+                            >
+                              here
+                            </span>
+                          </small>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </>
             )}
 
             {authenticated && (
@@ -969,30 +975,43 @@ const DesktopWritingGame = ({
             )}
 
             <div className="flex flex-col md:flex-row  justify-center mt-4 md:mt-0">
-              <Button
-                buttonText={
-                  savingSessionState
-                    ? "broadcasting..."
-                    : userWantsToCastAnon
-                    ? castAs == ""
-                      ? "dont cast and close"
-                      : `cast ${castAs}`
-                    : castAs == "me"
-                    ? `cast as ${farcasterUser.fid}`
-                    : "end session"
-                }
-                buttonAction={handleSaveSession}
-                buttonColor="mt-2 md:mt-0 bg-green-600"
-              />
-              {/* <Button
-                buttonText={"copy writing and close"}
-                buttonAction={() => {
-                  copyToClipboard();
-                  startNewRun();
-                  setDisplayWritingGameLanding(false);
-                }}
-                buttonColor="mt-2 md:mt-0 bg-red-600"
-              /> */}
+              {" "}
+              {time > 30 ? (
+                <Button
+                  buttonText={
+                    savingSessionState
+                      ? "broadcasting..."
+                      : userWantsToCastAnon
+                      ? castAs == ""
+                        ? "dont cast and close"
+                        : `cast ${castAs}`
+                      : castAs == "me"
+                      ? `cast as ${farcasterUser.fid}`
+                      : "end session"
+                  }
+                  buttonAction={handleSaveSession}
+                  buttonColor="mt-2 md:mt-0 bg-green-600"
+                />
+              ) : (
+                <div className="flex w-full justify-center">
+                  <Button
+                    buttonText={"try again"}
+                    buttonAction={() => {
+                      startNewRun();
+                    }}
+                    buttonColor="mt-2 md:mt-0 mx-2 bg-green-600"
+                  />
+                  <Button
+                    buttonText={"copy writing and close"}
+                    buttonAction={() => {
+                      copyToClipboard();
+                      startNewRun();
+                      setDisplayWritingGameLanding(false);
+                    }}
+                    buttonColor="mt-2 md:mt-0 mx-2 bg-purple-600"
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>

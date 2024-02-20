@@ -2,7 +2,7 @@ import React from "react";
 
 const MyGalleryPage = () => {
   return (
-    <div>
+    <div className="text-white">
       <p>display all of the users ankys</p>
     </div>
   );
