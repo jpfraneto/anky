@@ -67,8 +67,7 @@ const MintYourAnky = ({ cid }) => {
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_API_ROUTE}/ai/mint-an-anky/${cid}`
         );
-        console.log("the response is: ", response);
-        if (!anky) return;
+        if (!response.data.anky) return;
         setAnky(response.data.anky);
         const responseVotes = response.data.votes;
         setVotes(responseVotes);
@@ -227,6 +226,7 @@ const MintYourAnky = ({ cid }) => {
   }
 
   if (loading) return <p>loading...</p>;
+  if (!anky) return <p>this anky was not found</p>;
 
   const copyLinkToClipboard = async () => {
     try {

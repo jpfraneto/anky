@@ -76,16 +76,10 @@ const ReadIrysPage = ({ setShow }) => {
     async function getCastByCid() {
       try {
         if (!router?.query?.cid || !authenticated) return;
-        console.log("inside the get cast by cid function", router.query.cid);
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_API_ROUTE}/farcaster/get-cast-by-cid/${router.query.cid}`
         );
-        console.log("the response here is: ", response);
         if (response?.data?.cast) {
-          console.log(
-            "inside the get cast by cid, the cast is: ",
-            response.data
-          );
           setThisFullCast(response.data.cast);
         } else {
           setThisFullCast(null);
