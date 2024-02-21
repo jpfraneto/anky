@@ -362,8 +362,15 @@ const AnkyOnTheFeed = ({ anky, mintable, votable }) => {
   if (votable) {
     return (
       <div className="h-fit my-2 border-white border-2 p-2 rounded-xl flex flex-col items-center relative">
-        <span className="absolute right-0 top-0" onClick={copyLinkToClipboard}>
-          <LuShare2 size={22} color={copiedToClipboard ? "green" : "purple"} />
+        <span
+          className="cursor-pointer absolute right-1 top-1"
+          onClick={copyLinkToClipboard}
+        >
+          {copiedToClipboard ? (
+            <IoMdCheckmarkCircle size={26} color="green" />
+          ) : (
+            <MdOutlineInsertLink size={26} color="purple" />
+          )}
         </span>
         <p className="mb-2 text-xl">{anky.title}</p>
         <div
