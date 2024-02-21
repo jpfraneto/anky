@@ -5,7 +5,8 @@ import { getOneWriting } from "../lib/irys";
 import Button from "./Button";
 import Link from "next/link";
 import { ethers } from "ethers";
-import { LuShare2 } from "react-icons/lu";
+import { MdOutlineInsertLink } from "react-icons/md";
+import { IoMdCheckmarkCircle } from "react-icons/io";
 import ankyOneABI from "../lib/ankyOne.json";
 import degenBaseMainnetAbi from "../lib/degenBaseMainnetAbi.json";
 import { useWallets } from "@privy-io/react-auth";
@@ -44,7 +45,7 @@ const AnkyOnTheFeed = ({ anky, mintable, votable }) => {
     if (anky?.createdAt) {
       updateTimers();
     }
-  }, [anky?.createdAt, cid]);
+  }, [anky?.createdAt]);
 
   useEffect(() => {
     // Assuming `anky.createdAt` is a timestamp or a date string that can be parsed by `Date`
@@ -131,7 +132,7 @@ const AnkyOnTheFeed = ({ anky, mintable, votable }) => {
       }
     };
     thisAnkyForMinting();
-  }, [cid]);
+  }, []);
 
   const updateTimers = () => {
     const now = Date.now();
@@ -271,8 +272,15 @@ const AnkyOnTheFeed = ({ anky, mintable, votable }) => {
     return (
       <div className="h-fit my-2 border-white border-2 p-2 rounded-xl flex flex-col items-center relative">
         <p className="mb-2 text-2xl">{anky.title}</p>
-        <span className="absolute right-0 top-0" onClick={copyLinkToClipboard}>
-          <LuShare2 size={22} color={copiedToClipboard ? "green" : "purple"} />
+        <span
+          className="cursor-pointer absolute right-1 top-1"
+          onClick={copyLinkToClipboard}
+        >
+          {copiedToClipboard ? (
+            <IoMdCheckmarkCircle size={26} color="green" />
+          ) : (
+            <MdOutlineInsertLink size={26} color="purple" />
+          )}
         </span>
         <div
           onClick={toggleOverlay}

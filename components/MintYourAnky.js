@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Image from "next/image";
-import { LuShare2 } from "react-icons/lu";
+import { MdOutlineInsertLink } from "react-icons/md";
+import { IoMdCheckmarkCircle } from "react-icons/io";
 import { getOneWriting } from "../lib/irys";
 import Button from "./Button";
 import { ethers } from "ethers";
@@ -248,7 +249,11 @@ const MintYourAnky = ({ cid }) => {
         className="cursor-pointer absolute right-0 top-0"
         onClick={copyLinkToClipboard}
       >
-        <LuShare2 size={22} color={copiedToClipboard ? "green" : "purple"} />
+        {copiedToClipboard ? (
+          <IoMdCheckmarkCircle size={26} color="green" />
+        ) : (
+          <MdOutlineInsertLink size={26} color="purple" />
+        )}
       </span>
       <p className="text-white mt-2 text-xl">{anky.title || ""}</p>
       <div className="flex flex-col w-96">
