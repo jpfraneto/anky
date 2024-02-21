@@ -780,7 +780,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
         onHide={handleClose}
       >
         <div className="pl-4 h-full">
-          <div className="md:flex flex-col h-full  w-fit relative">
+          <div className="md:flex flex-col h-full  w-full  relative">
             <Link href="/ask-farcaster" passHref>
               <small
                 onClick={() => {
@@ -805,7 +805,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
                   handleClose();
                 }
               }}
-              className="text-red-600 text-xl  hover:text-red-400 cursor-pointer absolute right-0 top-0"
+              className="text-red-600 text-xl  hover:text-red-400 cursor-pointer absolute right-2 top-0"
             >
               reply
             </small>
@@ -825,7 +825,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
                 welcome to anky
               </p>
               <small className="text-purple-300 text-xl">
-                a meditation practice like no other
+                stop reading. just write.
               </small>
             </div>
             <div className="grow w-full">

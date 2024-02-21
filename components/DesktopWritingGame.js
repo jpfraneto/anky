@@ -101,6 +101,7 @@ const DesktopWritingGame = ({
   const [castForPreview, setCastForPreview] = useState(null);
   const [userWantsToStoreWritingForever, setUserWantsToStoreWritingForever] =
     useState(true);
+  const [displayAnkyExamples, setDisplayAnkyExamples] = useState(false);
   const [thereWasAnError, setThereWasAnError] = useState(false);
   const [moreThanMinRun, setMoreThanMinRound] = useState(null);
   const [savingTextAnon, setSavingTextAnon] = useState(false);
@@ -738,10 +739,9 @@ const DesktopWritingGame = ({
             {time < 30 ? (
               <p className="text-red-400 text-lg">
                 *maybe that was a bit fast. the interface recognizes when you
-                write, and for now, it is set to end your session after{" "}
-                {userSettings.secondsBetweenKeystrokes} seconds if you stop.
-                there is no time to think. (hint: that&apos;s the whole point).
-                you can change that time{" "}
+                write, and it is set to end your session after{" "}
+                {userSettings.secondsBetweenKeystrokes} seconds without writing.
+                you can change that{" "}
                 <span
                   onClick={() => {
                     setDisplayChangeTimeForWriting(
@@ -759,6 +759,25 @@ const DesktopWritingGame = ({
                   ? "for the next time, you can login before writing and you will earn $newen"
                   : responseFromPinging}
               </p>
+            )}
+            {displayAnkyExamples && (
+              <div className="flex text-xl flex-col border-white border-2 w-full h-fit px-1 py-2 bg-purple-200 text-black rounded-xl relative">
+                <p className="mb-2">this is how some of them look:</p>
+                <div className="flex">
+                  <div className="w-1/4 mx-1 aspect-square relative">
+                    <Image src="/images/generated-ankys/1.png" fill />
+                  </div>
+                  <div className="w-1/4 mx-1 aspect-square relative">
+                    <Image src="/images/generated-ankys/2.png" fill />
+                  </div>
+                  <div className="w-1/4 mx-1 aspect-square relative">
+                    <Image src="/images/generated-ankys/3.png" fill />
+                  </div>
+                  <div className="w-1/4 mx-1 aspect-square relative">
+                    <Image src="/images/generated-ankys/4.png" fill />
+                  </div>
+                </div>
+              </div>
             )}
             {displayChangeTimeForWriting && (
               <div className="flex flex-col border-white border-2 w-full h-fit px-1 py-2 bg-purple-200 text-black rounded-xl relative">
@@ -941,11 +960,19 @@ const DesktopWritingGame = ({
               </div>
             )}
 
-            {time > 30 && (
+            {time > 30 && userWantsToCastAnon && (
               <div className="bg-purple-500 text-black p-3 my-2 rounded-xl flex space-x-2 items-center justify-center">
                 <div className="flex flex-col">
                   <p className="text-left text-black flex">
                     do you want to create a custom anky with your writing?
+                    <span
+                      className="border border-black px-2 py-1 h-fit hover:bg-purple-600 cursor-pointer rounded-xl"
+                      onClick={() =>
+                        setDisplayAnkyExamples(!displayAnkyExamples)
+                      }
+                    >
+                      ?
+                    </span>
                   </p>
                   {userDatabaseInformation?.manaBalance && (
                     <small className="text-xs">
@@ -984,10 +1011,14 @@ const DesktopWritingGame = ({
                       : userWantsToCastAnon
                       ? castAs == ""
                         ? "dont cast and close"
-                        : `cast ${castAs}`
+                        : `cast ${
+                            userWantsToCreateImageFromWriting
+                              ? `${castAs} and create custom anky`
+                              : `${castAs}`
+                          }`
                       : castAs == "me"
                       ? `cast as ${farcasterUser.fid}`
-                      : "end session"
+                      : "copy writing and end session"
                   }
                   buttonAction={handleSaveSession}
                   buttonColor="mt-2 md:mt-0 bg-green-600"
@@ -997,6 +1028,7 @@ const DesktopWritingGame = ({
                   <Button
                     buttonText={"try again"}
                     buttonAction={() => {
+                      setSessionIsOver(false);
                       startNewRun();
                     }}
                     buttonColor="mt-2 md:mt-0 mx-2 bg-green-600"

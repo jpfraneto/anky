@@ -65,44 +65,50 @@ const MintYourAnky = ({ cid }) => {
     };
     const thisAnkyForMinting = async () => {
       try {
+        updateTimers();
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_API_ROUTE}/ai/mint-an-anky/${cid}`
         );
         if (!response.data.anky) return;
         setAnky(response.data.anky);
-        const responseVotes = response.data.votes;
-        setVotes(responseVotes);
-        let voteCounts = [0, 0, 0, 0];
-        responseVotes.forEach((vote) => {
-          if (vote.voteIndex >= 0 && vote.voteIndex < 4) {
-            voteCounts[vote.voteIndex]++;
-          }
-        });
-        setVotes(responseVotes);
-        // Calculate total votes for normalization
-        const totalVotes = responseVotes.length;
+        console.log("the anky is: ", response.data.anky);
+        if (response.data.anky.votingOpen) {
+          const responseVotes = response.data.votes;
+          setVotes(responseVotes);
+          let voteCounts = [0, 0, 0, 0];
+          responseVotes.forEach((vote) => {
+            if (vote.voteIndex >= 0 && vote.voteIndex < 4) {
+              voteCounts[vote.voteIndex]++;
+            }
+          });
+          setVotes(responseVotes);
+          // Calculate total votes for normalization
+          const totalVotes = responseVotes.length;
 
-        // Calculate percentages for each option
-        let votePercentagesResponse = voteCounts.map((count) => {
-          return totalVotes > 0 ? ((count / totalVotes) * 100).toFixed(2) : 0;
-        });
+          // Calculate percentages for each option
+          let votePercentagesResponse = voteCounts.map((count) => {
+            return totalVotes > 0 ? ((count / totalVotes) * 100).toFixed(2) : 0;
+          });
 
-        setVotePercentages(votePercentagesResponse);
-        const highestVoteIndex = votePercentagesResponse.findIndex(
-          (percentage) => {
-            return percentage == Math.max(...votePercentagesResponse);
-          }
-        );
+          setVotePercentages(votePercentagesResponse);
+          const highestVoteIndex = votePercentagesResponse.findIndex(
+            (percentage) => {
+              return percentage == Math.max(...votePercentagesResponse);
+            }
+          );
 
-        const newImageUrls = [
-          response.data.anky.imageOneUrl,
-          response.data.anky.imageTwoUrl,
-          response.data.anky.imageThreeUrl,
-          response.data.anky.imageFourUrl,
-        ];
-        setImageUrls(newImageUrls);
-        const highestVoteImageUrl = newImageUrls[highestVoteIndex];
-        setChosenImage(highestVoteImageUrl);
+          const newImageUrls = [
+            response.data.anky.imageOneUrl,
+            response.data.anky.imageTwoUrl,
+            response.data.anky.imageThreeUrl,
+            response.data.anky.imageFourUrl,
+          ];
+          setImageUrls(newImageUrls);
+          const highestVoteImageUrl = newImageUrls[highestVoteIndex];
+          setChosenImage(highestVoteImageUrl);
+        } else {
+          setChosenImage(response.data.anky.winningImageUrl);
+        }
 
         if (cid) {
           fetchWritingFromIrys(cid);
@@ -335,27 +341,17 @@ const MintYourAnky = ({ cid }) => {
                       <p>congratulations. your anky was minted successfully</p>
                     </div>
                   ) : (
-                    <>
-                      {!votingOn && !mintingEnded && (
-                        <div className="flex flex-col text-white">
-                          <p>
-                            {votingOn
-                              ? `Voting closes in ${countdownTimer}`
-                              : mintingEnded
-                              ? "Minting period ended"
-                              : `Minting ends in ${countdownTimer}`}
-                          </p>
-                          {mintingStatus.length > 0 && <p> {mintingStatus}</p>}
-                          <Button
-                            buttonText={
-                              mintingAnky ? "minting..." : "mint (222 $degen)"
-                            }
-                            buttonAction={mintThisAnky}
-                            buttonColor="bg-purple-600 text-white"
-                          />
-                        </div>
-                      )}
-                    </>
+                    <div className="flex flex-col text-white">
+                      <p>Minting ends in ${countdownTimer}</p>
+                      {mintingStatus.length > 0 && <p> {mintingStatus}</p>}
+                      <Button
+                        buttonText={
+                          mintingAnky ? "minting..." : "mint (222 $degen)"
+                        }
+                        buttonAction={mintThisAnky}
+                        buttonColor="bg-purple-600 text-white"
+                      />
+                    </div>
                   )}
                 </>
               ) : (
@@ -370,6 +366,7 @@ const MintYourAnky = ({ cid }) => {
         </div>
         {error && <p className="text-red-500">{error}</p>}
       </div>
+
       <div className="text-white text-left">
         {thisWriting ? (
           thisWriting.includes("\n") ? (

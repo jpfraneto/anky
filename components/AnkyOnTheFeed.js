@@ -26,7 +26,7 @@ const AnkyOnTheFeed = ({ anky, mintable, votable }) => {
   const [votes, setVotes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [imageUrls, setImageUrls] = useState([]);
-  const [votingOn, setVotingOn] = useState(false);
+  const [votingOn, setVotingOn] = useState(anky.votingOpen || false);
   const [mintingStatus, setMintingStatus] = useState("");
   const [mintingEnded, setMintingEnded] = useState(false);
   const [countdownTimer, setCountdownTimer] = useState("");
@@ -68,19 +68,50 @@ const AnkyOnTheFeed = ({ anky, mintable, votable }) => {
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_API_ROUTE}/ai/mint-an-anky/${anky.cid}`
         );
+        console.log("the response is: ", response);
         if (!response) return;
-        const responseVotes = response.data.votes;
-        setVotes(responseVotes);
-        let voteCounts = [0, 0, 0, 0];
-        responseVotes.forEach((vote) => {
-          if (vote.voteIndex >= 0 && vote.voteIndex < 4) {
-            voteCounts[vote.voteIndex]++;
-          }
-        });
         const now = Date.now();
         const votingEnds =
           new Date(anky.createdAt).getTime() + 8 * 60 * 60 * 1000; // 8 hours from createdAt
         const mintingEnds = votingEnds + 16 * 60 * 60 * 1000; // Additional 24 hours for minting window
+        if (response.data.anky.votingOpen) {
+          const responseVotes = response.data.votes;
+          setVotes(responseVotes);
+          let voteCounts = [0, 0, 0, 0];
+          responseVotes.forEach((vote) => {
+            if (vote.voteIndex >= 0 && vote.voteIndex < 4) {
+              voteCounts[vote.voteIndex]++;
+            }
+          });
+          setVotes(responseVotes);
+          // Calculate total votes for normalization
+          const totalVotes = responseVotes.length;
+
+          // Calculate percentages for each option
+          let votePercentagesResponse = voteCounts.map((count) => {
+            return totalVotes > 0 ? ((count / totalVotes) * 100).toFixed(2) : 0;
+          });
+
+          setVotePercentages(votePercentagesResponse);
+          const highestVoteIndex = votePercentagesResponse.findIndex(
+            (percentage) => {
+              return percentage == Math.max(...votePercentagesResponse);
+            }
+          );
+
+          const newImageUrls = [
+            response.data.anky.imageOneUrl,
+            response.data.anky.imageTwoUrl,
+            response.data.anky.imageThreeUrl,
+            response.data.anky.imageFourUrl,
+          ];
+          setImageUrls(newImageUrls);
+          const highestVoteImageUrl = newImageUrls[highestVoteIndex];
+          setChosenImage(highestVoteImageUrl);
+        } else {
+          setChosenImage(anky.winningImageUrl);
+        }
+
         if (now < votingEnds) {
           setVotingOn(true);
           setCountdownTimer(formatTime(votingEnds - now));
@@ -92,31 +123,6 @@ const AnkyOnTheFeed = ({ anky, mintable, votable }) => {
           setMintingEnded(true); // Both voting and minting periods have ended
           setCountdownTimer("00:00:00");
         }
-        setVotes(responseVotes);
-        // Calculate total votes for normalization
-        const totalVotes = responseVotes.length;
-
-        // Calculate percentages for each option
-        let votePercentagesResponse = voteCounts.map((count) => {
-          return totalVotes > 0 ? ((count / totalVotes) * 100).toFixed(2) : 0;
-        });
-
-        setVotePercentages(votePercentagesResponse);
-        const highestVoteIndex = votePercentagesResponse.findIndex(
-          (percentage) => {
-            return percentage == Math.max(...votePercentagesResponse);
-          }
-        );
-
-        const newImageUrls = [
-          response.data.anky.imageOneUrl,
-          response.data.anky.imageTwoUrl,
-          response.data.anky.imageThreeUrl,
-          response.data.anky.imageFourUrl,
-        ];
-        setImageUrls(newImageUrls);
-        const highestVoteImageUrl = newImageUrls[highestVoteIndex];
-        setChosenImage(highestVoteImageUrl);
 
         if (anky.cid) {
           fetchWritingFromIrys(anky.cid);
@@ -304,7 +310,7 @@ const AnkyOnTheFeed = ({ anky, mintable, votable }) => {
               <>
                 {ankyMinted ? (
                   <div className="text-white text-center p-4 bg-green-600 rounded-lg shadow-lg">
-                    <p>Congratulations! Your Anky was minted successfully 🎉</p>
+                    <p>congratulations, your anky was minted successfully 🎉</p>
                   </div>
                 ) : (
                   <>
@@ -316,7 +322,7 @@ const AnkyOnTheFeed = ({ anky, mintable, votable }) => {
                         {mintingStatus && (
                           <div className="my-2">
                             <p className="text-sm">{mintingStatus}</p>
-                            {/* Progress bar */}
+
                             <div className="w-full bg-gray-200 rounded-full dark:bg-gray-700">
                               <div
                                 className="bg-blue-600 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full"
@@ -338,7 +344,7 @@ const AnkyOnTheFeed = ({ anky, mintable, votable }) => {
                           onClick={mintThisAnky}
                           disabled={mintingAnky}
                         >
-                          {mintingAnky ? "Minting..." : "Mint (222 $DEGEN)"}
+                          {mintingAnky ? "minting..." : "mint (222 $degen)"}
                         </button>
                       </div>
                     ) : null}

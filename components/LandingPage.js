@@ -216,7 +216,7 @@ function LandingPage({
               <a
                 href="https://www.github.com/ankylat"
                 target="_blank"
-                className="mb-2"
+                className="mb-2 hover:text-purple-500"
               >
                 https://www.github.com/ankylat
               </a>
@@ -227,7 +227,7 @@ function LandingPage({
                 buttonAction={() => setDisplayWritingGameLanding(true)}
                 buttonColor="bg-gradient-to-r from-red-500 via-yellow-600 to-violet-500 text-black"
               />
-              <Link href="/u/18350" passHref>
+              <Link href="/feed" passHref>
                 <Button
                   buttonText="i don't want to write yet"
                   buttonColor="w-fit mt-8 text-xs text-black hover:bg-purple-600"

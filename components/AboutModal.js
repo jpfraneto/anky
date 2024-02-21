@@ -35,31 +35,25 @@ const AboutModal = ({ setDisplayAboutModal, setDisplayWritingGameLanding }) => {
           close
         </span>
         <p className="mb-2 mt-2">
-          first of all, welcome.these are some guidelines for using this app.
+          first of all, welcome. these are some guidelines for using this app.
         </p>
         <ol className="flex flex-col space-y-2">
           <li>
             <span className="text-purple-400">Login:</span> you can log in using
-            any email that you control, or a &quot;cryptocurrency backpack&quot;
-            (as 0xDesigner would say) directly. We use Privy as a provider, and
-            every transaction that happens in here is secured by their awesome
-            product.
+            any email that you control, or a crypto wallet directly. We use
+            Privy as a provider, and every transaction that happens in here is
+            secured by them.
           </li>
           <li>
             <span className="text-purple-400">Link to Farcaster:</span> it is
-            ideal that you connect your account. For doing so, go into the
-            settings tab and click on the Farcaster integration. If you follow
-            the flow, you will get a QR code (on desktop) or a fancy button (on
-            mobile) that will take you to Warpcast. This connection will allow
-            you to cast under your account and connect with others.
+            ideal that you connect your account. For doing so, login and then go
+            into the settings tab and click on the Farcaster integration. If you
+            follow the flow, you will get a QR code (on desktop) or a fancy
+            button (on mobile) that will take you to Warpcast. This connection
+            will allow you to cast under your account and connect with others.
           </li>
-          <li>
-            <span className="text-purple-400">Feed:</span> The landing feed is
-            the chronological organization of all the casts that have been
-            written through Anky, wether it is anonymously or under
-            people&apos;s connected account. The invitation is to be honest,
-            sincere, and to use this space as a collective trigger of the
-            spiritual evolution of humanity.
+          {/* <li>
+            <span className="text-purple-400">Feed:</span> The feed consist
           </li>
           <li>
             <span className="text-purple-400">$NEWEN:</span> This is a currency
@@ -90,7 +84,7 @@ const AboutModal = ({ setDisplayAboutModal, setDisplayWritingGameLanding }) => {
             represents your subconscious better than everything that you have
             seen until now. All of that will be possible, and we will build this
             platform together to get to that point.
-          </li>
+          </li>*/}
           <li>
             <span className="text-purple-400">Open source:</span> All of the
             code for what happens here is open source. You can contribute to it
@@ -127,12 +121,12 @@ const AboutModal = ({ setDisplayAboutModal, setDisplayWritingGameLanding }) => {
             each one representing a chakra. You can get to know more about the
             lore of anky on the{" "}
             <a
-              className="text-purple-400 active:text-purple-600"
+              className="text-purple-400 active:text-purple-600 hover:text-purple-500"
               rel="noopener noreferrer"
               href="https://wiki.anky.lat"
               target="_blank"
             >
-              wiki.
+              wiki
             </a>
             .
           </li>
@@ -144,14 +138,13 @@ const AboutModal = ({ setDisplayAboutModal, setDisplayWritingGameLanding }) => {
             eth. There are infinite Ankys, but only 8888 that are part of the
             genesis collection. Mint here:{" "}
             <a
-              className="text-purple-400 active:text-purple-600"
+              className="text-purple-400 active:text-purple-600 hover:text-purple-500"
               rel="noopener noreferrer"
               href="https://mint.anky.lat"
               target="_blank"
             >
               https://mint.anky.lat
             </a>
-            .
           </li>
         </ol>
         <div className="mt-2 w-24 flex ">
