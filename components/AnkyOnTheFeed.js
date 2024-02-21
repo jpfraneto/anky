@@ -40,21 +40,16 @@ const AnkyOnTheFeed = ({ anky, mintable, votable }) => {
   };
 
   useEffect(() => {
-    // Your existing useEffect code for fetching Anky data
-    // After setting Anky data, calculate and set timers
     if (anky?.createdAt) {
       updateTimers();
     }
   }, [anky?.createdAt]);
 
   useEffect(() => {
-    // Assuming `anky.createdAt` is a timestamp or a date string that can be parsed by `Date`
     if (anky && anky?.createdAt) {
       const intervalId = setInterval(() => {
         updateTimers();
       }, 1000); // Update every second
-
-      // Cleanup interval on component unmount or when `anky.createdAt` changes
       return () => clearInterval(intervalId);
     }
   }, [anky?.createdAt]);
@@ -308,39 +303,44 @@ const AnkyOnTheFeed = ({ anky, mintable, votable }) => {
             {authenticated ? (
               <>
                 {ankyMinted ? (
-                  <div className="text-white">
-                    <p>congratulations. your anky was minted successfully</p>
+                  <div className="text-white text-center p-4 bg-green-600 rounded-lg shadow-lg">
+                    <p>Congratulations! Your Anky was minted successfully 🎉</p>
                   </div>
                 ) : (
                   <>
-                    {!votingOn ? (
-                      <>
-                        {!mintingEnded && (
-                          <div className="flex flex-col text-white">
-                            <p>
-                              {votingOn
-                                ? `Voting closes in ${countdownTimer}`
-                                : mintingEnded
-                                ? "Minting period ended"
-                                : `Minting ends in ${countdownTimer}`}
-                            </p>
-                            {mintingStatus.length > 0 && (
-                              <p> {mintingStatus}</p>
-                            )}
-                            <div className="flex flex-row w-full justify-between">
-                              <Button
-                                buttonText={
-                                  mintingAnky
-                                    ? "minting..."
-                                    : "mint (222 $degen)"
-                                }
-                                buttonAction={mintThisAnky}
-                                buttonColor="bg-purple-600 text-white"
-                              />
+                    {!votingOn && !mintingEnded ? (
+                      <div className="flex flex-col items-center text-white">
+                        <p className="text-lg font-bold">
+                          {`Minting ends in ${countdownTimer}`}
+                        </p>
+                        {mintingStatus && (
+                          <div className="my-2">
+                            <p className="text-sm">{mintingStatus}</p>
+                            {/* Progress bar */}
+                            <div className="w-full bg-gray-200 rounded-full dark:bg-gray-700">
+                              <div
+                                className="bg-blue-600 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full"
+                                style={{
+                                  width: `calc(${countdownTimer} / totalMintingTime * 100%)`,
+                                }}
+                              >
+                                {" "}
+                              </div>
                             </div>
                           </div>
                         )}
-                      </>
+                        <button
+                          className={`mt-4 px-6 py-2 text-lg rounded-lg shadow-lg transform transition-all duration-300 ease-in-out ${
+                            mintingAnky
+                              ? "bg-gray-400"
+                              : "bg-purple-600 hover:bg-purple-700 focus:ring-4 focus:ring-purple-300"
+                          }`}
+                          onClick={mintThisAnky}
+                          disabled={mintingAnky}
+                        >
+                          {mintingAnky ? "Minting..." : "Mint (222 $DEGEN)"}
+                        </button>
+                      </div>
                     ) : null}
                   </>
                 )}
