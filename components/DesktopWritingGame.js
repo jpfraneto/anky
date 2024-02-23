@@ -83,7 +83,13 @@ const DesktopWritingGame = ({
     useState(false);
   const [amountOfManaAdded, setAmountOfManaAdded] = useState(0);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
-  const tracks = ["/music/1.wav", "/music/2.wav", "/music/3.wav"]; // Add more tracks as needed
+  const tracks = [
+    "/music/1.mp3",
+    "/music/2.mp3",
+    "/music/3.mp3",
+    "/music/4.mp3",
+    "/music/5.mp3",
+  ];
 
   const [time, setTime] = useState(countdownTarget || 0);
   const [bottomMessage, setBottomMessage] = useState("");
