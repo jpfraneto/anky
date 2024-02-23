@@ -46,7 +46,7 @@ const MyGalleryPage = () => {
     <div className="text-white">
       {ankyContractAddresses.map((collection, index) => {
         return (
-          <div>
+          <div key={index}>
             <h1>{collection.name}</h1>
             {/* here we need to render the nfts that the user owns of that specific collection */}
           </div>
