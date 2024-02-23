@@ -84,11 +84,11 @@ const WritingGameComponent = ({
   const [writingSavingLoading, setWritingSavingLoading] = useState(false);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const tracks = [
-    "/music/1.mp3",
-    "/music/2.mp3",
-    "/music/3.mp3",
-    "/music/4.mp3",
-    "/music/5.mp3",
+    "/music/uno.mp3",
+    "/music/dos.mp3",
+    "/music/tres.mp3",
+    "/music/cuatro.mp3",
+    "/music/cinco.mp3",
   ];
 
   const [progress, setProgress] = useState(null);
