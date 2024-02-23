@@ -7,6 +7,7 @@ import { useWallets } from "@privy-io/react-auth";
 import { LuCopyCheck, LuCopy } from "react-icons/lu";
 import { setUserData } from "../lib/idbHelper";
 import { v4 as uuidv4 } from "uuid";
+import { PiPillFill } from "react-icons/pi";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { BsArrowRepeat } from "react-icons/bs";
@@ -81,6 +82,9 @@ const DesktopWritingGame = ({
   const [displayChangeTimeForWriting, setDisplayChangeTimeForWriting] =
     useState(false);
   const [amountOfManaAdded, setAmountOfManaAdded] = useState(0);
+  const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
+  const tracks = ["/music/1.wav", "/music/2.wav", "/music/3.wav"]; // Add more tracks as needed
+
   const [time, setTime] = useState(countdownTarget || 0);
   const [bottomMessage, setBottomMessage] = useState("");
   const [whatIsThis, setWhatIsThis] = useState(false);
@@ -94,6 +98,8 @@ const DesktopWritingGame = ({
   const [userWantsToCastAnon, setUserWantsToCastAnon] = useState(true);
   const [savingRound, setSavingRound] = useState(false);
   const [castAs, setCastAs] = useState("anon");
+  const [showMusicModal, setShowMusicModal] = useState(true); // For controlling the visibility of the modal
+  const [playMusic, setPlayMusic] = useState(false);
   const [
     userWantsToCreateImageFromWriting,
     setUserWantsToCreateImageFromWriting,
@@ -152,6 +158,28 @@ const DesktopWritingGame = ({
         textareaRef.current.style.height = "64px"; // Reset to default height or any other value as needed
       }
     }
+  };
+
+  useEffect(() => {
+    // Play music when playMusic is true and there's a track to play
+    if (playMusic && audioRef.current && tracks[currentTrackIndex]) {
+      audioRef.current.src = tracks[currentTrackIndex]; // Set current track source
+      audioRef.current.play();
+    }
+  }, [playMusic, currentTrackIndex]);
+
+  const handlePlayMusic = () => {
+    setPlayMusic(true);
+    setShowMusicModal(false); // Hide modal after selection
+  };
+
+  const handleSkipMusic = () => {
+    setShowMusicModal(false); // Hide modal without playing music
+  };
+
+  const handleTrackEnd = () => {
+    // Move to the next track, or loop back to the first one
+    setCurrentTrackIndex((prevIndex) => (prevIndex + 1) % tracks.length);
   };
 
   useEffect(() => {
@@ -780,7 +808,7 @@ const DesktopWritingGame = ({
               </div>
             )}
             {displayChangeTimeForWriting && (
-              <div className="flex flex-col border-white border-2 w-full h-fit px-1 py-2 bg-purple-200 text-black rounded-xl relative">
+              <div className="mt-4 flex flex-col border-white border-2 w-full h-fit px-1 py-2 bg-purple-800 text-gray-400 rounded-xl relative">
                 <span
                   className="absolute right-1 top-1 text-red-600 cursor-pointer"
                   onClick={() => setDisplayChangeTimeForWriting(false)}
@@ -1102,6 +1130,28 @@ const DesktopWritingGame = ({
 
   return (
     <div className="h-full">
+      {showMusicModal && (
+        <div
+          className="bg-black border-2 border-white rounded-xl w-96 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 p-8"
+          style={{ opacity: "0.9" }}
+        >
+          <p className="text-white text-lg mb-4">
+            Do you want music? Play it out loud and just write.
+          </p>
+          <div>
+            <button onClick={handlePlayMusic} className="mx-2">
+              <PiPillFill size={88} color="red" />
+            </button>
+            <button onClick={handleSkipMusic} className="mx-2">
+              <PiPillFill size={88} color="green" />
+            </button>
+          </div>
+          <small className="text-xs text-white">
+            gently reminder: you are breathing
+          </small>
+        </div>
+      )}
+      <audio ref={audioRef} onEnded={handleTrackEnd} preload="auto" />
       <div className="md:block text-white relative w-full h-full mx-auto">
         <div className="flex h-full flex-col">
           <div
@@ -1167,9 +1217,9 @@ const DesktopWritingGame = ({
               {time === 0 && (
                 <span
                   onClick={() => setDisplaySettingsModal(true)}
-                  className="text-sm absolute bottom-0 right-0 text-red-600 hover:text-red-400 cursor-pointer"
+                  className="text-sm absolute bottom-0 right-0 text-red-800 hover:text-red-400 cursor-pointer"
                 >
-                  <IoSettings size={22} />
+                  <IoSettings size={17} />
                 </span>
               )}
             </div>
@@ -1189,7 +1239,9 @@ const DesktopWritingGame = ({
               }}
               className={`${
                 text ? "w-full h-full text-left" : "mt-8 w-4/5 md:w-3/5 h-64"
-              } p-2 text-white opacity-80 placeholder-white text-xl border placeholder:text-gray-300 border-white rounded-md bg-opacity-10 bg-black`}
+              } p-2 text-white ${
+                text ? "opacity-30" : "opacity-93"
+              } placeholder:opacity-70 placeholder-white text-xl border placeholder:text-gray-300 border-white rounded-md bg-opacity-10 bg-black`}
               placeholder={
                 theAsyncCastToReply ? "reply here..." : "write here..."
               }
@@ -1200,7 +1252,7 @@ const DesktopWritingGame = ({
               (!finished && (
                 <div>
                   <div className="flex w-48 justify-center mx-auto mt-4">
-                    <Button
+                    {/* <Button
                       buttonText="cancel"
                       buttonColor="bg-red-600"
                       buttonAction={() => {
@@ -1229,7 +1281,7 @@ const DesktopWritingGame = ({
                           router.push("/");
                         }
                       }}
-                    />
+                    /> */}
                   </div>
                 </div>
               ))}

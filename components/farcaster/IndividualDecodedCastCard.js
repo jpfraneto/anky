@@ -215,7 +215,6 @@ const IndividualDecodedCastCard = ({
 
   async function handleLike(e) {
     try {
-      console.log("the farcaster user is:", farcasterUser);
       if (farcasterUser.status === "approved") {
         const isLiked = hasUserLiked;
         const newLike = {

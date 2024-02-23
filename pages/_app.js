@@ -110,10 +110,7 @@ function MyApp({ Component, pageProps }) {
     >
       <Head>
         <title>anky</title>
-        <meta
-          name="description"
-          content="Transform writing into a meditation practice like no other."
-        />
+        <meta name="description" content="just write." />
         <link rel="icon" href="/favicon.ico" />
         <link rel="manifest" href="/site.webmanifest" />
         <meta

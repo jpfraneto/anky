@@ -55,6 +55,8 @@ const WritingGameComponent = ({
   const [chosenUpscaledImage, setChosenUpscaledImage] = useState("");
   const [savingTextAnon, setSavingTextAnon] = useState(false);
   const [savedText, setSavedText] = useState(false);
+  const [showMusicModal, setShowMusicModal] = useState(true); // For controlling the visibility of the modal
+  const [playMusic, setPlayMusic] = useState(false);
 
   const [generatedImages, setGeneratedImages] = useState("");
   const [loadingAnkyResponse, setLoadingAnkyResponse] = useState(false);
@@ -80,6 +82,8 @@ const WritingGameComponent = ({
   const [metadata, setMetadata] = useState(null);
   const [writingSaved, setWritingSaved] = useState(false);
   const [writingSavingLoading, setWritingSavingLoading] = useState(false);
+  const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
+  const tracks = ["/music/1.wav", "/music/2.wav", "/music/3.wav"]; // Add more tracks as needed
 
   const [progress, setProgress] = useState(null);
   const [startTime, setStartTime] = useState(null);
@@ -104,9 +108,7 @@ const WritingGameComponent = ({
     if (isActive) {
       keystrokeIntervalRef.current = setInterval(() => {
         const elapsedTime = Date.now() - lastKeystroke;
-        if (time === 480) {
-          // audioRef.current.play();
-        }
+
         if (elapsedTime > 3000 && !isDone) {
           if (time >= minimumWritingTime - 5) {
             finishRun();
@@ -145,6 +147,28 @@ const WritingGameComponent = ({
     // if (time > 3) {
     //   setLoadButtons(true);
     // }
+  };
+
+  useEffect(() => {
+    // Play music when playMusic is true and there's a track to play
+    if (playMusic && audioRef.current && tracks[currentTrackIndex]) {
+      audioRef.current.src = tracks[currentTrackIndex]; // Set current track source
+      audioRef.current.play();
+    }
+  }, [playMusic, currentTrackIndex]);
+
+  const handlePlayMusic = () => {
+    setPlayMusic(true);
+    setShowModal(false); // Hide modal after selection
+  };
+
+  const handleSkipMusic = () => {
+    setShowModal(false); // Hide modal without playing music
+  };
+
+  const handleTrackEnd = () => {
+    // Move to the next track, or loop back to the first one
+    setCurrentTrackIndex((prevIndex) => (prevIndex + 1) % tracks.length);
   };
 
   const copyToClipboard = async () => {
@@ -213,7 +237,7 @@ const WritingGameComponent = ({
           boxSizing: "border-box",
           height: "calc(100vh - 33px)",
           backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(${
-            preloadedBackground || "/images/mintbg.jpg"
+            preloadedBackground || "/images/the-monument-game.jpeg"
           })`,
           backgroundPosition: "center center",
           backgroundSize: "cover",
@@ -233,14 +257,37 @@ const WritingGameComponent = ({
       style={{
         boxSizing: "border-box",
         height: "calc(100vh - 33px)",
-        // backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(${
-        //   preloadedBackground || "/images/mintbg.jpg"
-        // })`,
+        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(${
+          preloadedBackground || "/images/the-monument-game.jpeg"
+        })`,
         backgroundPosition: "center center",
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
       }}
     >
+      <audio ref={audioRef} onEnded={handleTrackEnd} preload="auto" />
+      {showModal && (
+        <div
+          className="bg-black border-2 border-white rounded-xl fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 p-8"
+          style={{ opacity: "0.4" }}
+        >
+          <p className="text-white text-lg mb-4">
+            Do you want music? Play it out loud and just write.
+          </p>
+          <button
+            onClick={handlePlayMusic}
+            className="bg-green-500 text-white p-2 rounded-lg mr-4"
+          >
+            Yes
+          </button>
+          <button
+            onClick={handleSkipMusic}
+            className="bg-red-500 text-white p-2 rounded-lg"
+          >
+            No
+          </button>
+        </div>
+      )}
       <div className="md:block text-white  w-screen h-full ">
         <div className="flex h-full  items-center flex-col">
           <div

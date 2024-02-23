@@ -18,8 +18,6 @@ export const FarcasterProvider = ({ children }) => {
   useEffect(() => {
     async function loadTheUpdatedGlobalFeed() {
       try {
-        console.log("the farcaster user is: ", farcasterUser);
-        console.log("fetching the feed for this user");
         let response = await axios.get(
           `${process.env.NEXT_PUBLIC_API_ROUTE}/farcaster/feed`
         );

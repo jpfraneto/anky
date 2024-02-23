@@ -252,7 +252,7 @@ const DementorGame = ({
           boxSizing: "border-box",
           height: "calc(100vh - 33px)",
           backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(${
-            preloadedBackground || "/images/mintbg.jpg"
+            preloadedBackground || "/images/the-monument-game.jpeg"
           })`,
           backgroundPosition: "center center",
           backgroundSize: "cover",

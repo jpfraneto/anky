@@ -342,7 +342,7 @@ const MintYourAnky = ({ cid }) => {
                     </div>
                   ) : (
                     <div className="flex flex-col text-white">
-                      <p>Minting ends in ${countdownTimer}</p>
+                      <p>Minting ends in {countdownTimer}</p>
                       {mintingStatus.length > 0 && <p> {mintingStatus}</p>}
                       <Button
                         buttonText={
