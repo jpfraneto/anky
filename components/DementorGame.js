@@ -231,7 +231,7 @@ const DementorGame = ({
         style={{
           boxSizing: "border-box",
           height: "calc(100vh  - 90px)",
-          backgroundImage: "url('/images/the-monumental-game.jpeg')",
+          backgroundImage: "url('/images/maxx.jpeg')",
           backgroundPosition: "center center",
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",
@@ -252,7 +252,7 @@ const DementorGame = ({
           boxSizing: "border-box",
           height: "calc(100vh - 33px)",
           backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(${
-            preloadedBackground || "/images/the-monument-game.jpeg"
+            preloadedBackground || "/images/maxx.jpeg"
           })`,
           backgroundPosition: "center center",
           backgroundSize: "cover",

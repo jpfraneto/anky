@@ -1092,7 +1092,7 @@ const DesktopWritingGame = ({
         style={{
           boxSizing: "border-box",
           height: "calc(100vh)",
-          backgroundImage: "url('/images/the-monumental-game.jpeg')",
+          backgroundImage: "url('/images/maxx.jpeg')",
           backgroundPosition: "center center",
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",

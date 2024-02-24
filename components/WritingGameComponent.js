@@ -55,7 +55,7 @@ const WritingGameComponent = ({
   const [chosenUpscaledImage, setChosenUpscaledImage] = useState("");
   const [savingTextAnon, setSavingTextAnon] = useState(false);
   const [savedText, setSavedText] = useState(false);
-  const [showMusicModal, setShowMusicModal] = useState(true); // For controlling the visibility of the modal
+  const [showMusicModal, setShowMusicModal] = useState(false); // For controlling the visibility of the modal
   const [playMusic, setPlayMusic] = useState(false);
 
   const [generatedImages, setGeneratedImages] = useState("");
@@ -155,27 +155,27 @@ const WritingGameComponent = ({
     // }
   };
 
-  useEffect(() => {
-    // Play music when playMusic is true and there's a track to play
-    if (playMusic && audioRef.current && tracks[currentTrackIndex]) {
-      audioRef.current.src = tracks[currentTrackIndex]; // Set current track source
-      audioRef.current.play();
-    }
-  }, [playMusic, currentTrackIndex]);
+  // useEffect(() => {
+  //   // Play music when playMusic is true and there's a track to play
+  //   if (playMusic && audioRef.current && tracks[currentTrackIndex]) {
+  //     audioRef.current.src = tracks[currentTrackIndex]; // Set current track source
+  //     audioRef.current.play();
+  //   }
+  // }, [playMusic, currentTrackIndex]);
 
-  const handlePlayMusic = () => {
-    setPlayMusic(true);
-    setShowModal(false); // Hide modal after selection
-  };
+  // const handlePlayMusic = () => {
+  //   setPlayMusic(true);
+  //   setShowModal(false); // Hide modal after selection
+  // };
 
-  const handleSkipMusic = () => {
-    setShowModal(false); // Hide modal without playing music
-  };
+  // const handleSkipMusic = () => {
+  //   setShowModal(false); // Hide modal without playing music
+  // };
 
-  const handleTrackEnd = () => {
-    // Move to the next track, or loop back to the first one
-    setCurrentTrackIndex((prevIndex) => (prevIndex + 1) % tracks.length);
-  };
+  // const handleTrackEnd = () => {
+  //   // Move to the next track, or loop back to the first one
+  //   setCurrentTrackIndex((prevIndex) => (prevIndex + 1) % tracks.length);
+  // };
 
   const copyToClipboard = async () => {
     await navigator.clipboard.writeText(text);
@@ -217,7 +217,7 @@ const WritingGameComponent = ({
         style={{
           boxSizing: "border-box",
           height: "calc(100vh  - 90px)",
-          backgroundImage: "url('/images/the-monumental-game.jpeg')",
+          backgroundImage: "url('/images/maxx.jpeg')",
           backgroundPosition: "center center",
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",
@@ -243,7 +243,7 @@ const WritingGameComponent = ({
           boxSizing: "border-box",
           height: "calc(100vh - 33px)",
           backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(${
-            preloadedBackground || "/images/the-monument-game.jpeg"
+            preloadedBackground || "/images/maxx.jpeg"
           })`,
           backgroundPosition: "center center",
           backgroundSize: "cover",
@@ -264,7 +264,7 @@ const WritingGameComponent = ({
         boxSizing: "border-box",
         height: "calc(100vh - 33px)",
         backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(${
-          preloadedBackground || "/images/the-monument-game.jpeg"
+          preloadedBackground || "/images/maxx.jpeg"
         })`,
         backgroundPosition: "center center",
         backgroundSize: "cover",
