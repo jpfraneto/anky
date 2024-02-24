@@ -1246,7 +1246,7 @@ const DesktopWritingGame = ({
               className={`${
                 text ? "w-full h-full text-left" : "mt-8 w-4/5 md:w-3/5 h-64"
               } p-2 text-white ${
-                text ? "opacity-30" : "opacity-93"
+                text ? "opacity-80" : "opacity-80"
               } placeholder:opacity-70 placeholder-white text-xl border placeholder:text-gray-300 border-white rounded-md bg-opacity-10 bg-black`}
               placeholder={
                 theAsyncCastToReply ? "reply here..." : "write here..."
