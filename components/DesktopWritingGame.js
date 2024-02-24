@@ -1136,7 +1136,7 @@ const DesktopWritingGame = ({
 
   return (
     <div className="h-full">
-      {showMusicModal && (
+      {/* {showMusicModal && (
         <div
           className="bg-black border-2 border-white rounded-xl w-96 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 p-8"
           style={{ opacity: "0.9" }}
@@ -1156,7 +1156,7 @@ const DesktopWritingGame = ({
             gently reminder: you are breathing
           </small>
         </div>
-      )}
+      )} */}
       <audio ref={audioRef} onEnded={handleTrackEnd} preload="auto" />
       <div className="md:block text-white relative w-full h-full mx-auto">
         <div className="flex h-full flex-col">
