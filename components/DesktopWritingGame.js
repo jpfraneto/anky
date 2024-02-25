@@ -1092,7 +1092,7 @@ const DesktopWritingGame = ({
         style={{
           boxSizing: "border-box",
           height: "calc(100vh)",
-          backgroundImage: "url('/images/maxx.jpeg')",
+          backgroundImage: "url('/images/weareearly.jpeg')",
           backgroundPosition: "center center",
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",
@@ -1258,7 +1258,7 @@ const DesktopWritingGame = ({
               (!finished && (
                 <div>
                   <div className="flex w-48 justify-center mx-auto mt-4">
-                    {/* <Button
+                    <Button
                       buttonText="cancel"
                       buttonColor="bg-red-600"
                       buttonAction={() => {
@@ -1287,7 +1287,7 @@ const DesktopWritingGame = ({
                           router.push("/");
                         }
                       }}
-                    /> */}
+                    />
                   </div>
                 </div>
               ))}
