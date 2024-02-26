@@ -703,7 +703,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
             className="h-full"
             style={{
               backgroundImage:
-                "linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/images/weareearly.jpeg')",
+                "linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/images/basepaint.png')",
               backgroundColor: "black",
               backgroundPosition: "center center",
               backgroundSize: "cover",
