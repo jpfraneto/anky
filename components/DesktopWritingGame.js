@@ -1092,7 +1092,7 @@ const DesktopWritingGame = ({
         style={{
           boxSizing: "border-box",
           height: "calc(100vh)",
-          backgroundImage: "url('/images/basepaint.png')",
+          backgroundImage: "url('/images/primordia.png')",
           backgroundPosition: "center center",
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",

@@ -141,7 +141,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
   const [countdownTarget, setCountdownTarget] = useState(0);
   const [show, setShow] = useState(false);
   const [displayWritingGameLanding, setDisplayWritingGameLanding] =
-    useState(true);
+    useState(false);
   const [userWallet, setUserWallet] = useState(null);
   const [userIsMintingAnky, setUserIsMintingAnky] = useState(false);
   const wallets = useWallets();
@@ -703,7 +703,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
             className="h-full"
             style={{
               backgroundImage:
-                "linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/images/basepaint.png')",
+                "linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/images/primordia.png')",
               backgroundColor: "black",
               backgroundPosition: "center center",
               backgroundSize: "cover",

@@ -217,7 +217,7 @@ const WritingGameComponent = ({
         style={{
           boxSizing: "border-box",
           height: "calc(100vh  - 90px)",
-          backgroundImage: "url('/images/basepaint.png')",
+          backgroundImage: "url('/images/primordia.png')",
           backgroundPosition: "center center",
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",
@@ -243,7 +243,7 @@ const WritingGameComponent = ({
           boxSizing: "border-box",
           height: "calc(100vh - 33px)",
           backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(${
-            preloadedBackground || "/images/basepaint.png"
+            preloadedBackground || "/images/primordia.png"
           })`,
           backgroundPosition: "center center",
           backgroundSize: "cover",
@@ -264,7 +264,7 @@ const WritingGameComponent = ({
         boxSizing: "border-box",
         height: "calc(100vh - 33px)",
         backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(${
-          preloadedBackground || "/images/basepaint.png"
+          preloadedBackground || "/images/primordia.png"
         })`,
         backgroundPosition: "center center",
         backgroundSize: "cover",
