@@ -71,6 +71,21 @@ const AnkyWritersIndexPage = () => {
           <p>loading...</p>
         </div>
       )}
+      <p className="text-white px-8 mb-2 text-white">
+        these were only 8 of the 192 anky writers for the third sojourn, which
+        starts on the 31th of march.
+      </p>
+      <p className="text-white px-8 mb-2 text-white">
+        reminder: you can submit your email to get yours on{" "}
+        <a
+          className="text-blue-300 hover:text-yellow-600"
+          href="https://warpcast.com/jpfraneto/0x9664dfc0"
+          target="_blank"
+        >
+          this farcaster frame
+        </a>
+        . they will be free.
+      </p>
     </div>
   );
 };
