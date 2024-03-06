@@ -71,12 +71,12 @@ function LandingPage({
                       buttonText="write"
                       buttonColor="bg-gradient-to-r from-red-500 via-yellow-600 to-violet-500 text-black"
                     />
-                    <Link href="/feed" passHref>
+                    {/* <Link href="/feed" passHref>
                       <Button
                         buttonText="read"
                         buttonColor="bg-purple-400 text-black"
                       />
-                    </Link>
+                    </Link> */}
                   </div>
                 </div>
               ) : (
@@ -87,13 +87,13 @@ function LandingPage({
                       buttonText="write"
                       buttonColor="bg-gradient-to-r from-red-500 via-yellow-600 to-violet-500 text-black"
                     />
-
+                    {/* 
                     <Link href="/feed">
                       <Button
                         buttonText="read"
                         buttonColor="bg-gradient-to-r from-red-500 via-yellow-600 to-violet-500 text-black"
                       />
-                    </Link>
+                    </Link> */}
                   </div>
                 </div>
               )}
