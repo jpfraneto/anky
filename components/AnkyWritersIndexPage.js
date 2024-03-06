@@ -256,18 +256,15 @@ const placeholderWriters = [
 
 const AnkyWritersIndexPage = () => {
   const [ankyWriters, setAnkyWriters] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchAllAnkyWriters = async () => {
       try {
-        console.log("inside here");
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_API_ROUTE}/ankywriters`
         );
-        console.log("watiign here");
         const writers = await response.data;
-        console.log("the writers are: ", writers);
 
         setAnkyWriters(writers.ankyWriters);
         setLoading(false);
