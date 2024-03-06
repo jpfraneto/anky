@@ -336,8 +336,7 @@ const AnkyWritersIndexPage = () => {
           </p>
         </div>
       ) : (
-        <div className="flex flex-col">
-          <p className="text-white mb-2">loading...</p>
+        <div className="flex flex-col items-center">
           <Spinner />
         </div>
       )}
