@@ -22,7 +22,7 @@ const AnkyWritersIndexPage = () => {
 
   return (
     <div className="w-full">
-      <p className="text-white px-8 py-4 mb-2">
+      <p className="text-white px-8 mb-2">
         welcome to anky writers. this is the website where you will be able to
         see the stories of the 192 anky writers that will be available for free
         minting on the 10th of march at 5 am eastern time. you can add any email
@@ -36,7 +36,7 @@ const AnkyWritersIndexPage = () => {
         </a>{" "}
         to receive the minting link on your email.
       </p>
-      <p>
+      <p className="text-white px-8 mb-2 text-white">
         this will be a journey to develop consistency, using the practice of
         writing as an excuse. the target is 8 minutes every day for the whole
         duration of the third sojourn, which starts the 31th of march and lasts
