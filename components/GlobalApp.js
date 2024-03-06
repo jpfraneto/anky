@@ -10,6 +10,7 @@ import Image from "next/image";
 import MintYourAnky from "./MintYourAnky";
 import FarcasterConnectionModal from "./farcaster/FarcasterConnectionModal";
 import FeedByFidPage from "./FeedByFidPage";
+import AnkyWritersIndexPage from "./AnkyWritersIndexPage";
 import { getThisUserWritings } from "../lib/irys";
 import { IndividualWritingDisplayModal } from "./IndividualWritingDisplayModal";
 import Button from "./Button";
@@ -427,6 +428,14 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
       case "/leaderboard":
         return <Leaderboard />;
       case "/bounty":
+        return (
+          <BountyPage
+            setDisplayWritingGameLanding={setDisplayWritingGameLanding}
+          />
+        );
+      case "/anky-writers":
+        return <AnkyWritersIndexPage />;
+      case `/anky-writers/${route.split("/").pop()}`:
         return (
           <BountyPage
             setDisplayWritingGameLanding={setDisplayWritingGameLanding}
