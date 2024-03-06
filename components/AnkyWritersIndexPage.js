@@ -275,7 +275,7 @@ const AnkyWritersIndexPage = () => {
         console.log("there was an error", error);
       }
     };
-    // fetchAllAnkyWriters();
+    fetchAllAnkyWriters();
   }, []);
 
   return (
@@ -295,11 +295,15 @@ const AnkyWritersIndexPage = () => {
           </a>
           . they will be free.
         </p>
+        <p className="text-white px-8 mb-2 text-white">
+          the mission: write every day for 8 minutes during 96 days. without
+          judgements. only exploring what comes.
+        </p>
       </div>
 
       {!loading ? (
         <div>
-          {placeholderWriters.map((writer, index) => {
+          {ankyWriters.map((writer, index) => {
             return (
               <div
                 key={index}
