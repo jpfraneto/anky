@@ -1,9 +1,11 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import { Spinner } from "./Spinner";
 
 const AnkyWritersIndexPage = () => {
   const [ankyWriters, setAnkyWriters] = useState([]);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     const fetchAllAnkyWriters = async () => {
       try {
@@ -13,6 +15,7 @@ const AnkyWritersIndexPage = () => {
         const writers = await response.data;
 
         setAnkyWriters(writers.ankyWriters);
+        setLoading(false);
       } catch (error) {
         console.log("there was an error", error);
       }
@@ -42,7 +45,7 @@ const AnkyWritersIndexPage = () => {
         duration of the third sojourn, which starts the 31th of march and lasts
         for 96 days.
       </p>
-      {ankyWriters.length > 0 ? (
+      {loading ? (
         <div>
           {ankyWriters.map((writer, index) => {
             return (
@@ -65,27 +68,28 @@ const AnkyWritersIndexPage = () => {
               </div>
             );
           })}
+          <p className="text-white px-8 mb-2 text-white">
+            these were only 8 of the 192 anky writers for the third sojourn,
+            which starts on the 31th of march.
+          </p>
+          <p className="text-white px-8 mb-2 text-white">
+            reminder: you can submit your email to get yours on{" "}
+            <a
+              className="text-blue-300 hover:text-yellow-600"
+              href="https://warpcast.com/jpfraneto/0x9664dfc0"
+              target="_blank"
+            >
+              this farcaster frame
+            </a>
+            . they will be free.
+          </p>
         </div>
       ) : (
-        <div>
-          <p>loading...</p>
+        <div className="flex flex-col">
+          <p className="text-white mb-2">loading...</p>
+          <Spinner />
         </div>
       )}
-      <p className="text-white px-8 mb-2 text-white">
-        these were only 8 of the 192 anky writers for the third sojourn, which
-        starts on the 31th of march.
-      </p>
-      <p className="text-white px-8 mb-2 text-white">
-        reminder: you can submit your email to get yours on{" "}
-        <a
-          className="text-blue-300 hover:text-yellow-600"
-          href="https://warpcast.com/jpfraneto/0x9664dfc0"
-          target="_blank"
-        >
-          this farcaster frame
-        </a>
-        . they will be free.
-      </p>
     </div>
   );
 };
