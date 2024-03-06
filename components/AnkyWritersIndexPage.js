@@ -10,9 +10,7 @@ const AnkyWritersIndexPage = () => {
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_API_ROUTE}/ankywriters`
         );
-        console.log("respo", response);
         const writers = await response.data;
-        console.log("the resopnse is : ", writers);
 
         setAnkyWriters(writers.ankyWriters);
       } catch (error) {
@@ -36,8 +34,13 @@ const AnkyWritersIndexPage = () => {
         >
           this farcaster frame
         </a>{" "}
-        to participate. this will be a journey to develop consistency, using the
-        practice of writing as an excuse.
+        to receive the minting link on your email.
+      </p>
+      <p>
+        this will be a journey to develop consistency, using the practice of
+        writing as an excuse. the target is 8 minutes every day for the whole
+        duration of the third sojourn, which starts the 31th of march and lasts
+        for 96 days.
       </p>
       {ankyWriters.length > 0 ? (
         <div>
