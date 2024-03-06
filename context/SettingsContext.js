@@ -10,7 +10,7 @@ const SettingsContext = createContext();
 
 export const SettingsProvider = ({ children }) => {
   const [userSettings, setUserSettings] = useState({
-    secondsBetweenKeystrokes: 3,
+    secondsBetweenKeystrokes: 8,
   });
   return (
     <SettingsContext.Provider
