@@ -48,7 +48,10 @@ const AnkyWritersIndexPage = () => {
                 className="flex mb-4 md:mb-0 flex-col md:flex-row w-full"
               >
                 <div className="md:w-96 w-full aspect-[10/16] relative">
-                  <Image src={writer[writer.votedImage]} fill />
+                  <Image
+                    src={`${process.env.NEXT_PUBLIC_GATEWAY_URL}/ipfs/${writer.uploadedImage}`}
+                    fill
+                  />
                 </div>
                 <div className="pt-4 md:pt-0 flex-grow w-full flex flex-col items-start text-left px-4 text-white text-2xl">
                   <h2 className="my-2">

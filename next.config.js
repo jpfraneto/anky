@@ -24,6 +24,12 @@ module.exports = {
     remotePatterns: [
       {
         protocol: "https",
+        hostname: "anky.mypinata.cloud",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
         hostname: "res.cloudinary.com",
         port: "",
         pathname: "/**",
