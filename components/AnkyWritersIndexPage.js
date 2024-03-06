@@ -68,16 +68,22 @@ const AnkyWritersIndexPage = () => {
           <div>
             <input
               type="email"
+              placeholder="jp@anky.lat"
               onChange={(e) => setEmail(e.target.value)}
-              className="p-2 w-96 mx-auto"
+              className="p-2 w-48 mx-auto rounded-xl my-1"
             />
             <Button
               buttonText="submit"
               buttonAction={sendEmail}
-              buttonColor="bg-purple-600 text-white"
+              buttonColor="bg-purple-600 text-white w-48 mb-2"
             />
           </div>
         )}
+        <div className="relative">
+          <p className="px-8 mb-2 text-red-600">welcome to the ankyverse</p>{" "}
+          <p className=" px-8 mb-2 text-orange-600">welcome to the ankyverse</p>{" "}
+          <p className="px-8 mb-2 text-yellow-600">welcome to the ankyverse</p>
+        </div>
       </div>
 
       {!loading ? (
@@ -95,10 +101,17 @@ const AnkyWritersIndexPage = () => {
                   />
                 </div>
                 <div className="pt-4 md:pt-0 flex-grow w-full flex flex-col items-start text-left px-4 text-white text-2xl">
-                  <h2 className="my-2">
-                    {writer.newName}, inspired by {writer.writer} -{" "}
-                    {writer.book}
+                  <h2 className="my-2 text-3xl text-purple-200">
+                    {writer.newName}
                   </h2>
+                  <p className="text-yellow-400">
+                    art is honoring {writer.painter}
+                  </p>
+                  <p className="text-red-200">
+                    the image, the text, and all of its particular lore are
+                    inspired by the book {writer.book}, written by{" "}
+                    {writer.writer}, and the deity {writer.deity}
+                  </p>
 
                   {writer.description ? (
                     writer.description.includes("\n") ? (
