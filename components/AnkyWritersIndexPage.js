@@ -346,9 +346,21 @@ const AnkyWritersIndexPage = () => {
                 </div>
                 <div className="pt-4 md:pt-0 flex-grow w-full flex flex-col items-start text-left px-4 text-white text-2xl">
                   <h2 className="my-2">
-                    {writer.writer} - {writer.book}
+                    {writer.newName}, inspired by {writer.writer} -{" "}
+                    {writer.book}
                   </h2>
-                  <p className="text-gray-400 text-xl">{writer.story}</p>
+
+                  {writer.description ? (
+                    writer.description.includes("\n") ? (
+                      writer.description.split("\n").map((x, i) => (
+                        <p className="my-2" key={i}>
+                          {x}
+                        </p>
+                      ))
+                    ) : (
+                      <p className="my-2">{writer.description}</p>
+                    )
+                  ) : null}
                 </div>
               </div>
             );
