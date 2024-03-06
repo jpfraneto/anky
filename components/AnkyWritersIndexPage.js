@@ -43,7 +43,10 @@ const AnkyWritersIndexPage = () => {
         <div>
           {ankyWriters.map((writer, index) => {
             return (
-              <div className="flex mb-4 md:mb-0 flex-col md:flex-row w-full">
+              <div
+                key={index}
+                className="flex mb-4 md:mb-0 flex-col md:flex-row w-full"
+              >
                 <div className="md:w-96 w-full aspect-[10/16] relative">
                   <Image src={writer[writer.votedImage]} fill />
                 </div>
