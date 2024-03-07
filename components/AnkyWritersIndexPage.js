@@ -19,6 +19,7 @@ const AnkyWritersIndexPage = () => {
         const writers = await response.data;
 
         setAnkyWriters(writers.ankyWriters);
+        console.log("w", writers.ankyWriters);
         setLoading(false);
       } catch (error) {
         console.log("there was an error", error);
@@ -94,13 +95,16 @@ const AnkyWritersIndexPage = () => {
                 key={index}
                 className="flex mb-4 md:mb-0 flex-col md:flex-row w-full"
               >
-                <div className="md:w-96 w-full aspect-[10/16] relative">
-                  <Image
-                    src={`${process.env.NEXT_PUBLIC_GATEWAY_URL}/ipfs/${writer.uploadedImage}`}
-                    fill
-                  />
+                <div>
+                  <div className="md:w-96 w-full aspect-[10/16] relative">
+                    <Image
+                      src={`${process.env.NEXT_PUBLIC_GATEWAY_URL}/ipfs/${writer.uploadedImage}`}
+                      fill
+                    />
+                  </div>
                 </div>
-                <div className="pt-4 md:pt-0 flex-grow w-full flex flex-col items-start text-left px-4 text-white text-2xl">
+
+                <div className=" md:pt-0 flex-grow w-full flex flex-col items-start text-left px-4 text-white text-2xl">
                   <h2 className="my-2 text-3xl text-purple-200">
                     {writer.newName}
                   </h2>
@@ -114,8 +118,8 @@ const AnkyWritersIndexPage = () => {
                   </p>
 
                   {writer.description ? (
-                    writer.description.includes("\n") ? (
-                      writer.description.split("\n").map((x, i) => (
+                    writer.description.includes("\n\n") ? (
+                      writer.description.split("\n\n").map((x, i) => (
                         <p className="my-2" key={i}>
                           {x}
                         </p>

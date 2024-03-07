@@ -24,6 +24,7 @@ import { getOneWriting } from "../lib/irys";
 import { FaRegCircleQuestion } from "react-icons/fa6";
 import { IoArrowBack } from "react-icons/io5";
 import { IoMdClose } from "react-icons/io";
+import CreateFarcasterAccount from "./CreateFarcasterAccount";
 import { MdMenuOpen } from "react-icons/md";
 import UserDisplayPage from "./UserDisplayPage";
 import { IoIosHome, IoMdSettings } from "react-icons/io";
@@ -441,6 +442,8 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
             setDisplayWritingGameLanding={setDisplayWritingGameLanding}
           />
         );
+      case "/create-account":
+        return <CreateFarcasterAccount />;
       case "/farcaster":
         return (
           <FarcasterPage
