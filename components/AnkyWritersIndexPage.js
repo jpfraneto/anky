@@ -53,7 +53,7 @@ const AnkyWritersIndexPage = () => {
     <div className="w-full md:px-32">
       <div className="md:w-2/3 text-white  mt-2 mx-auto">
         <h2 className="text-3xl mb-2">
-          anky writers · mint live · 10 march 2024 · 5 am EST
+          anky writers · yoinking live · 10 march 2024 · 5 am EST
         </h2>
         <p className="text-white px-8 mb-2 text-white">
           submit your email to get yours and participate on this journey. they
@@ -117,15 +117,15 @@ const AnkyWritersIndexPage = () => {
                     {writer.writer}, and the deity {writer.deity}
                   </p>
 
-                  {writer.description ? (
-                    writer.description.includes("\n\n") ? (
-                      writer.description.split("\n\n").map((x, i) => (
+                  {writer.letterToWriter ? (
+                    writer.letterToWriter.includes("\n\n") ? (
+                      writer.letterToWriter.split("\n\n").map((x, i) => (
                         <p className="my-2" key={i}>
                           {x}
                         </p>
                       ))
                     ) : (
-                      <p className="my-2">{writer.description}</p>
+                      <p className="my-2">{writer.letterToWriter}</p>
                     )
                   ) : null}
                 </div>
