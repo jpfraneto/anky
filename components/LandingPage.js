@@ -7,34 +7,9 @@ import Image from "next/image";
 import { useUser } from "../context/UserContext";
 import Spinner from "./Spinner";
 
-const notebookTypes = [
-  {
-    name: "dementor",
-    description:
-      "your anky prompts you on a ongoing journey of self discovery.",
-  },
-  {
-    name: "notebook",
-    description: "created by users, you can buy and write on them.",
-  },
-  {
-    name: "eulogias",
-    description:
-      "community written notebook. want say happy birthday? say goodbye to someone that died? eulogias are for that.",
-  },
-  {
-    name: "journal",
-    description:
-      "write without any direction. just allow it to happen through you.",
-  },
-];
-
-function LandingPage({
-  setDisplayWritingGameLanding,
-  displayWritingGameLanding,
-}) {
+function LandingPage({ setDisplayWritingGameLanding, loadUserMentors }) {
   const { login, authenticated, loading } = usePrivy();
-  const { userAppInformation, libraryLoading } = useUser();
+  const { userAppInformation, libraryLoading, userOwnsAnky } = useUser();
   const router = useRouter();
   const [startJourney, setStartJourney] = useState(false);
   const [promptForTheUser, setPromptForTheUser] = useState(
@@ -66,11 +41,30 @@ function LandingPage({
               {authenticated ? (
                 <div className="text-gray-400">
                   <div className="mt-2 flex space-x-2">
-                    <Button
-                      buttonAction={() => setDisplayWritingGameLanding(true)}
-                      buttonText="write"
-                      buttonColor="bg-gradient-to-r from-red-500 via-yellow-600 to-violet-500 text-black"
-                    />
+                    {userOwnsAnky ? (
+                      <Button
+                        buttonAction={() => {
+                          loadUserMentors();
+                        }}
+                        buttonText="load my mentor"
+                        buttonColor="bg-gradient-to-r from-red-500 via-yellow-600 text-2xl to-violet-500 text-black"
+                      />
+                    ) : (
+                      <div>
+                        <p className="mb-3 text-white">
+                          you need an anky mentor to use this app and earn
+                          $newen
+                        </p>
+                        <a
+                          href="https://highlight.xyz/mint/65ecc65e9ab450e98aed98bb/marketplace"
+                          target="_blank"
+                          className="p-2 hover:opacity-70 rounded-xl bg-gradient-to-r from-red-500 via-yellow-600 text-2xl to-violet-500 text-black"
+                        >
+                          buy on secondary
+                        </a>
+                      </div>
+                    )}
+
                     {/* <Link href="/feed" passHref>
                       <Button
                         buttonText="read"
@@ -83,9 +77,9 @@ function LandingPage({
                 <div className="text-gray-400">
                   <div className="mt-2 w-full space-x-2 flex mx-auto justify-center">
                     <Button
-                      buttonAction={() => setDisplayWritingGameLanding(true)}
-                      buttonText="write"
-                      buttonColor="bg-gradient-to-r from-red-500 via-yellow-600 to-violet-500 text-black"
+                      buttonAction={login}
+                      buttonText="login"
+                      buttonColor="bg-gradient-to-r from-red-500 text-2xl via-yellow-600 to-violet-500 text-black"
                     />
                     {/* 
                     <Link href="/feed">
@@ -144,7 +138,7 @@ function LandingPage({
                 over.
               </p>
               <p className="mb-4">
-                the default value of X is 3 seconds. if you want it to be
+                the default value of X is 8 seconds. if you want it to be
                 faster, you can click (or tap) the gear at the bottom of the
                 time on the writing screen. then you can move the slider and
                 choose between 1 and 8 seconds. you decide.
@@ -227,12 +221,6 @@ function LandingPage({
                 buttonAction={() => setDisplayWritingGameLanding(true)}
                 buttonColor="bg-gradient-to-r from-red-500 via-yellow-600 to-violet-500 text-black"
               />
-              <Link href="/feed" passHref>
-                <Button
-                  buttonText="i don't want to write yet"
-                  buttonColor="w-fit mt-8 text-xs text-black hover:bg-purple-600"
-                />
-              </Link>
             </div>
           </div>
         </>

@@ -34,32 +34,17 @@ import { ethers } from "ethers";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useSettings } from "../context/SettingsContext";
-import { fetchUserDementors } from "../lib/notebooks";
 import { Transition } from "react-transition-group";
-import airdropABI from "../lib/airdropABI.json";
 import InstallPwaModal from "./InstallPwaModal";
 import { BsInfoLg } from "react-icons/bs";
-import NewNotebookPage from "./NewNotebookPage";
 import BountyPage from "./BountyPage";
 import WhatIsThisPage from "./WhatIsThisPage";
 import MyGalleryPage from "./MyGalleryPage";
 import LandingPage from "./LandingPage";
 import ReadIrysPage from "./ReadIrysPage";
-import DementorPage from "./DementorById";
 import DashboardPage from "./DashboardPage";
 import ReadCastPage from "./ReadCastPage";
 import ProfilePage from "./ProfilePage";
-import NotebookPage from "./NotebookById";
-import AnkyDementorPage from "./AnkyDementorPage";
-import JournalPage from "./journals/JournalPage";
-import LibraryPage from "./library/LibraryPage";
-import EulogiasListPage from "./eulogias/EulogiasListPage";
-import NewEulogiaPage from "./eulogias/NewEulogiaPage";
-import IndividualEulogiaDisplayPage from "./eulogias/IndividualEulogiaDisplayPage";
-import IndividualNotebookPage from "./notebook/IndividualNotebookPage";
-import IndividualWritingDisplayPage from "./IndividualWritingDisplayPage";
-import JournalById from "./journals/JournalById";
-import BuyNewJournal from "./journals/BuyNewJournal";
 import { FaChartLine } from "react-icons/fa";
 import LitProtocol from "./LitProtocol";
 import Irys from "./Irys";
@@ -240,6 +225,13 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
     }
   }, [authenticated]);
 
+  async function loadUserMentors() {
+    try {
+    } catch (error) {
+      console.log("there was an error", error);
+    }
+  }
+
   async function uploadPromptToIrys(prompt) {
     try {
       const getWebIrys = async () => {
@@ -370,6 +362,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
       case "/":
         return (
           <LandingPage
+            loadUserMentors={loadUserMentors}
             setDisplayWritingGameLanding={setDisplayWritingGameLanding}
           />
         );
@@ -514,45 +507,14 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
         return <ReadIrysPage setShow={setShow} />;
       case `/feed-by-fid`:
         return <FeedByFidPage />;
-      case "/dementor":
-        return (
-          <AnkyDementorPage
-            setLifeBarLength={setLifeBarLength}
-            lifeBarLength={lifeBarLength}
-          />
-        );
-      case `/dementor/${route.split("/").pop()}`: // Extracts the dementor id from the route
-        return (
-          <DementorPage
-            userAnky={userAppInformation}
-            alchemy={alchemy}
-            router={router}
-            setLifeBarLength={setLifeBarLength}
-            lifeBarLength={lifeBarLength}
-          />
-        );
       case "/irys":
         return <Irys />;
       case "/profile":
         return <ProfilePage />;
       case "/lit":
         return <LitProtocol />;
-      case "/notebooks/new":
-        return <NewNotebookPage userAnky={userAppInformation} />;
-      case `/notebook/${route.split("/").pop()}`: // Extracts the template id from the route
-        return (
-          <NotebookPage
-            setLifeBarLength={setLifeBarLength}
-            lifeBarLength={lifeBarLength}
-            wallet={wallet}
-            router={router}
-          />
-        );
       case `/mint-an-anky/${route.split("/").pop()}`:
         return <MintYourAnky cid={router.query.cid} />;
-
-      case "/community-notebook":
-        return <GlobalFeed thisWallet={wallet} />;
       case `/reply/${route.split("/").pop()}`:
         return (
           <DesktopWritingGame
@@ -653,7 +615,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
   return (
     <div className="fixed overflow-y-scroll text-center w-screen text-white flex flex-col h-screen">
       <div className="standalone:mt-8 flex-none text-gray-400 w-full h-16 justify-between md:flex items-center flex-col">
-        <div className=" h-12 items-center flex-row w-full bg-black px-2  cursor-pointer justify-between flex ">
+        <div className="h-12 items-center flex-row w-full bg-black px-2  cursor-pointer justify-between flex ">
           <div
             className="active:text-yellow-600 translate-y-2 md:translate-y-0 h-full md:mt-2  hover:text-purple-600"
             onClick={handleShow}
@@ -949,30 +911,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
                   handleClose();
                 }}
                 className="flex"
-              >
-                <p
-                  className="h-4 my-1 hover:text-purple-600 cursor-pointer"
-                  onClick={() => {
-                    setDisplayAboutModal(!displayAboutModal);
-                  }}
-                >
-                  about
-                </p>
-
-                {authenticated && (
-                  <>
-                    <span>
-                      {"  "}· · ·{"  "}
-                    </span>{" "}
-                    <Link
-                      className="h-4 my-1 hover:text-purple-600 cursor-pointer"
-                      href="/my-gallery"
-                    >
-                      my gallery
-                    </Link>
-                  </>
-                )}
-              </div>
+              ></div>
 
               {authenticated && (
                 <div className="h-12 mt-2 w-96   flex">

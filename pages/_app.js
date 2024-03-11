@@ -92,6 +92,7 @@ function MyApp({ Component, pageProps }) {
 
   const handleLogin = async (user) => {
     try {
+      console.log("inside the handle login route");
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_ROUTE}/user/login`,
         {
