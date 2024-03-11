@@ -6,13 +6,14 @@ import { getOneWriting } from "../lib/irys";
 import SimpleCast from "./SimpleCast";
 import Link from "next/link";
 import Button from "./Button";
-import { Inter } from "next/font/google";
+import { Inter, Comic_Neue } from "next/font/google";
 import IndividualDecodedCastCard from "./farcaster/IndividualDecodedCastCard";
 import Image from "next/image";
 import { useUser } from "../context/UserContext";
 import { usePrivy } from "@privy-io/react-auth";
 import Spinner from "./Spinner";
 
+const comic = Comic_Neue({ subsets: ["latin"], weight: ["400"] });
 const inter = Inter({ subsets: ["cyrillic"], weight: ["400"] });
 
 var options = {
@@ -207,7 +208,7 @@ const ReadIrysPage = ({ setShow }) => {
 
   return (
     <div
-      className={`${inter.className} h-full px-3 flex flex-col items-start justify-start text-left pt-8`}
+      className={`${comic.className} h-full px-3 flex flex-col items-start justify-start text-left text-xl pt-8`}
     >
       {thisFullCast ? (
         <div className="text-white w-96 mx-auto">
@@ -221,7 +222,7 @@ const ReadIrysPage = ({ setShow }) => {
               options
             )}
           </span>
-          <div className="my-2 flex ">
+          <div className="my-2 flex mb-4">
             {showCopyTextButton && (
               <Button
                 buttonAction={copyToClipboard}
