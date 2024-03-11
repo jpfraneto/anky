@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import DesktopWritingGame from "./DesktopWritingGame";
 import { usePrivy, useWallets } from "@privy-io/react-auth";
-import { Righteous, Inter } from "next/font/google";
+import { Righteous, Inter, Comic_Neue } from "next/font/google";
 import { WebIrys } from "@irys/sdk";
 import { getAnkyverseDay, getAnkyverseQuestion } from "../lib/ankyverse";
 import { useUser } from "../context/UserContext";
@@ -80,6 +80,7 @@ import MyCollectionGallery from "./MyCollectionGallery";
 
 const righteous = Righteous({ weight: "400", subsets: ["latin"] });
 const inter = Inter({ subsets: ["cyrillic"], weight: ["400"] });
+const comic = Comic_Neue({ subsets: ["latin"], weight: ["400"] });
 
 const ankyverseToday = getAnkyverseDay(new Date());
 const ankyverseQuestion = getAnkyverseQuestion(ankyverseToday.wink);
@@ -708,7 +709,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
         )} */}
 
       <div
-        className={`${inter.className} grow text-black relative  items-center justify-center`}
+        className={`${comic.className} grow text-black relative  items-center justify-center`}
       >
         {displayWritingGameLanding ? (
           <div
@@ -784,7 +785,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
         <InstallPwaModal setDisplayInstallPWA={setDisplayInstallPWA} />
       )}
       <Offcanvas
-        className={`${inter.className} bg-black text-gray-600 h-screen`}
+        className={`${comic.className} bg-black text-gray-600 h-screen`}
         placement="start"
         backdrop="true"
         scroll="false"

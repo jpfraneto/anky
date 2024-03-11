@@ -2,7 +2,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/globals.css";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
-import { Inter, Righteous } from "next/font/google";
+import { Inter, Righteous, Comic_Neue } from "next/font/google";
 import axios from "axios";
 import ErrorBoundary from "../components/ErrorBoundary"; // Make sure the path is correct
 import { PrivyProvider, usePrivy } from "@privy-io/react-auth";
@@ -33,6 +33,7 @@ const alchemy = new Alchemy(settings);
 
 const inter = Inter({ subsets: ["cyrillic"], weight: ["400"] });
 const GlobalApp = dynamic(() => import("../components/GlobalApp"));
+const comic = Comic_Neue({ subsets: ["latin"], weight: ["400"] });
 
 function MyApp({ Component, pageProps }) {
   const [isDesktop, setIsDesktop] = useState(false);
@@ -105,7 +106,7 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <main
-      className={`${inter.className}`}
+      className={`${comic.className}`}
       style={{ WebkitTapHighlightColor: "transparent" }}
     >
       <Head>
