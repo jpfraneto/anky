@@ -13,6 +13,7 @@ import FeedByFidPage from "./FeedByFidPage";
 import AnkyWritersIndexPage from "./AnkyWritersIndexPage";
 import { getThisUserWritings } from "../lib/irys";
 import { IndividualWritingDisplayModal } from "./IndividualWritingDisplayModal";
+import IndividualWritingDisplayPage from "./IndividualWritingDisplayPage";
 import Button from "./Button";
 import {
   FaPencilAlt,
@@ -545,47 +546,17 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
         return <GlobalFeed thisWallet={wallet} />;
       case "/me":
         return <UserFeed exportWallet={exportWallet} thisWallet={wallet} />;
-      case "/eulogias":
-        return <EulogiasListPage />;
+
       case "/my-collection":
         return <MyCollectionGallery />;
-      case "/library":
-        return <LibraryPage />;
-      case "/write?":
-        return <LibraryPage />;
+
       case `/writing/${route.split("/").pop()}`:
         return <IndividualWritingDisplayPage />;
       case "/settings":
         return <SettingsPage />;
-      case "/journal":
-        return <JournalPage userAppInformation={userAppInformation} />;
-      case `/journal/new`:
-        return <BuyNewJournal />;
+
       case `/ask-farcaster`:
         return <AskFarcaster />;
-      case `/journal/${route.split("/").pop()}`:
-        return (
-          <JournalById
-            setLifeBarLength={setLifeBarLength}
-            lifeBarLength={lifeBarLength}
-          />
-        );
-      case "/eulogias/new":
-        return <NewEulogiaPage wallet={wallet} />;
-      case `/eulogias/${route.split("/").pop()}`:
-        return (
-          <IndividualEulogiaDisplayPage
-            setLifeBarLength={setLifeBarLength}
-            lifeBarLength={lifeBarLength}
-          />
-        );
-      case `/notebook/${route.split("/").pop()}`:
-        return (
-          <IndividualNotebookPage
-            setLifeBarLength={setLifeBarLength}
-            lifeBarLength={lifeBarLength}
-          />
-        );
 
       default:
         return (
