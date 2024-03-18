@@ -614,7 +614,39 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
 
   return (
     <div className="fixed overflow-y-scroll text-center w-screen text-white flex flex-col h-screen">
-      <div className="standalone:mt-8 flex-none text-gray-400 w-full h-16 justify-between md:flex items-center flex-col">
+      <div
+        className="h-full px-8"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/images/primordia.png')",
+          backgroundColor: "black",
+          backgroundPosition: "center center",
+          backgroundSize: "cover",
+          backgroundRepeat: "no-repeat",
+        }}
+      >
+        <p className="pt-24">welcome to anky</p>
+        <p className="pt-24">
+          this web app will come back to life on the 31st of march, at 5 am
+          eastern time
+        </p>
+        <p className="pt-24">
+          if you want to participate on the upcoming season of anky, get your
+          mentor here:
+        </p>
+        <a
+          href="https://opensea.io/collection/anky-mentors"
+          target="_blank"
+          className="pt-24"
+        >
+          https://opensea.io/collection/anky-mentors
+        </a>
+        <p className="pt-24">
+          thank you for your patience and support. if you have any feedback,
+          just reach out @jpfraneto (telegram and farcaster)
+        </p>
+      </div>
+      {/* <div className="standalone:mt-8 flex-none text-gray-400 w-full h-16 justify-between md:flex items-center flex-col">
         <div className="h-12 items-center flex-row w-full bg-black px-2  cursor-pointer justify-between flex ">
           <div
             className="active:text-yellow-600 translate-y-2 md:translate-y-0 h-full md:mt-2  hover:text-purple-600"
@@ -652,7 +684,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
             }}
           ></div>
         </div>
-      </div>
+      </div> */}
       {/* {authenticated &&
         farcasterUser.status != "approved" &&
         farcasterUser.signerStatus != "approved" && (
@@ -670,7 +702,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
           </div>
         )} */}
 
-      <div
+      {/* <div
         className={`${comic.className} grow text-black relative  items-center justify-center`}
       >
         {displayWritingGameLanding ? (
@@ -902,7 +934,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
                       disabled={!isAuthenticated || !hasEmbeddedWallet}
                     >
                       export wallet
-                    </p> */}
+                    </p> 
                   </div>
                 </div>
               )}
@@ -952,7 +984,7 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
             </div>
           </div>
         </div>
-      </Offcanvas>
+      </Offcanvas> */}
     </div>
   );
 };
