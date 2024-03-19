@@ -549,8 +549,6 @@ const GlobalApp = ({ alchemy, loginResponse }) => {
       case "/my-collection":
         return <MyCollectionGallery />;
 
-      case `/writing/${route.split("/").pop()}`:
-        return <IndividualWritingDisplayPage />;
       case "/settings":
         return <SettingsPage />;
 
